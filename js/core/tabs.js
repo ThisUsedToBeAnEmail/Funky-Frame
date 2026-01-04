@@ -26,7 +26,7 @@
  *   P.on('funky:tabs:show', function(data) { console.log('Tab showing:', data.tabId); });
  *   P.on('funky:tabs:shown', function(data) { console.log('Tab shown:', data.tabId); });
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

@@ -5,7 +5,7 @@
  * Import via: importScripts('/assets/js/sw/strategies.js');
  *
  * @namespace FunkySW.strategies
- * @version 1.0.0
+ * @version 1.0.1
  *
  * Strategies:
  *   cacheFirst           - Cache first, network fallback (static assets)

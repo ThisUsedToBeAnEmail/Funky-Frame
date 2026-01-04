@@ -2,7 +2,7 @@
  * Funky.Truncate - Text Truncation Component
  * Smart text truncation with show more/less toggle
  * @module Funky.Truncate
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
   'use strict';

@@ -2,7 +2,7 @@
  * Funky.Typewriter - Animated Typing Text Component
  * Renders text with typewriter animation effect
  * @module Funky.Typewriter
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
   'use strict';

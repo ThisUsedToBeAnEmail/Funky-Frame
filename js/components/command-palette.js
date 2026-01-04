@@ -5,7 +5,7 @@
  * Integrates with Funky.Keyboard for shortcut handling.
  * 
  * @module Funky.CommandPalette
- * @version 1.0.0
+ * @version 1.0.1
  * @requires Funky.Dom
  * @requires Funky.Events
  * @requires Funky.Keyboard

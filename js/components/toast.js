@@ -15,7 +15,7 @@
  *     onConfirm: function() { ... }
  *   });
  * 
- * @version 1.0.0 - Removed Bootstrap JS dependency
+ * @version 1.0.1 - Removed Bootstrap JS dependency
  */
 (function(window) {
 	'use strict';

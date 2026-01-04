@@ -3,7 +3,7 @@
  * Handles navigation position detection, dropdown/flyout behavior,
  * and modal slide direction awareness for all four positions.
  * @module Funky.NavPosition
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

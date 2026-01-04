@@ -8,7 +8,7 @@
  *   builder.fetchAvailableColumns('trade');
  *   var config = builder.getConfig();
  * 
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

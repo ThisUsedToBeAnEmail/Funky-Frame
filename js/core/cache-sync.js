@@ -12,7 +12,7 @@
  * - updated: Invalidate specific item (will be refetched on next access)
  * - deleted: Invalidate specific item and remove from list
  * 
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

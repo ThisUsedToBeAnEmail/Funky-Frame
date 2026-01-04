@@ -1020,7 +1020,7 @@
 	// ============================================
 
 	/**
-	 * Show loading indicator (progress bar + optional overlay)
+	 * Show loading indicator (progress bar + content spinner)
 	 */
 	SPA.showLoading = function() {
 		// Show progress bar (immediate, subtle feedback)
@@ -1030,15 +1030,29 @@
 			progressBar.classList.add('active');
 		}
 
-		// Delay showing overlay for longer loads (300ms)
+		// Delay showing content spinner for longer loads (300ms)
 		SPA.loadingTimeout = setTimeout(function() {
-			var loader = document.querySelector(SPA.config.loadingSelector);
-			if (loader) {
-				loader.classList.add('active');
+			// Create content spinner if it doesn't exist
+			var contentSpinner = document.querySelector('.spa-content-loading');
+			if (!contentSpinner) {
+				contentSpinner = document.createElement('div');
+				contentSpinner.className = 'spa-content-loading';
+				contentSpinner.innerHTML = '<div class="spa-loading-spinner"><div class="spinner-ring"></div><span class="spinner-text">Loading...</span></div>';
+			}
+
+			// Insert into spaContent
+			var spaContent = document.querySelector('#spaContent');
+			if (spaContent && !spaContent.contains(contentSpinner)) {
+				spaContent.appendChild(contentSpinner);
+			}
+
+			// Show the spinner
+			if (contentSpinner) {
+				contentSpinner.classList.add('active');
 			}
 		}, 300);
 
-		// Also add loading state to body
+		// Also add loading state to body (keeps pointer-events disabled)
 		document.body.classList.add('spa-loading');
 	};
 
@@ -1046,7 +1060,7 @@
 	 * Hide loading indicator
 	 */
 	SPA.hideLoading = function() {
-		// Clear the overlay timeout
+		// Clear the spinner timeout
 		if (SPA.loadingTimeout) {
 			clearTimeout(SPA.loadingTimeout);
 			SPA.loadingTimeout = null;
@@ -1062,10 +1076,10 @@
 			}, 200);
 		}
 
-		// Hide overlay
-		var loader = document.querySelector(SPA.config.loadingSelector);
-		if (loader) {
-			loader.classList.remove('active');
+		// Hide content spinner
+		var contentSpinner = document.querySelector('.spa-content-loading');
+		if (contentSpinner) {
+			contentSpinner.classList.remove('active');
 		}
 
 		document.body.classList.remove('spa-loading');

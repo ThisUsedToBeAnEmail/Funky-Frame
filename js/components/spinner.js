@@ -2,7 +2,7 @@
  * Funky.Spinner - Loading Spinner Component
  * Versatile loading spinners with multiple styles
  * @module Funky.Spinner
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
   'use strict';

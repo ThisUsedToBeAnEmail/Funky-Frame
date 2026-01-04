@@ -6,7 +6,7 @@
  * 2. InstanceRegistry - For tracking component instances with lifecycle management
  * 
  * @module Funky.Registry
- * @version 1.0.0
+ * @version 1.0.1
  * @requires Funky (namespace.js must load first)
  * 
  * @example Config Registry

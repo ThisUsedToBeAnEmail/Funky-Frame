@@ -29,7 +29,7 @@
  *   <main id="spaContent" data-skip-target="main" data-skip-label="main content">
  *   <nav data-skip-target="navigation" data-skip-label="primary navigation" data-skip-order="0">
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

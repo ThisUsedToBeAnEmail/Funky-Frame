@@ -14,7 +14,7 @@
  *   // Or from existing markup
  *   Funky.Carousel.create('.carousel-container');
  * 
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

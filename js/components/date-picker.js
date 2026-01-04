@@ -51,7 +51,7 @@
  *   data-max-date-bind="cache:booking.maxDate"     - Bind max date constraint
  *   data-disabled-dates-bind="api:/unavailable"    - Bind disabled dates
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';

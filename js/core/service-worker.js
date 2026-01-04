@@ -5,7 +5,7 @@
  * service workers. Integrates with PubSub for lifecycle events.
  *
  * @module Funky.ServiceWorker
- * @version 1.0.0
+ * @version 1.0.1
  * @requires Funky (namespace.js must load first)
  * @requires Funky.PubSub (for lifecycle events)
  *

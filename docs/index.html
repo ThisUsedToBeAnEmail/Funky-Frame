@@ -42,6 +42,7 @@
   <link href="../css/test-runner.css" rel="stylesheet">
   <link href="../css/morph.css" rel="stylesheet">
   <link href="../css/tour.css" rel="stylesheet">
+  <link href="../css/spa.css" rel="stylesheet">
   <!-- themes.css MUST load last -->
   <link href="../css/themes.css" rel="stylesheet">
 </head>
@@ -350,7 +351,9 @@
           var _currentDoc = null;
           var _pubsubUnsubscribes = [];
 
-          function initDocs() {
+          function initDocs(state) {
+            state = state || {};
+
             // Initialize sidenav
             _sidenav = new Funky.SideNav('#docsSideNav', {
               items: DOC_CATEGORIES,
@@ -403,14 +406,34 @@
               });
             }
 
-            // Load doc from URL hash or default
+            // Load doc from: 1) SPA state, 2) URL hash, 3) localStorage
             var hash = window.location.hash.slice(1);
-            if (hash) {
-              var item = findItemById(hash);
-              if (item && item.url) {
-                loadDoc(item.url, hash, item.label);
-                if (_sidenav) _sidenav.select(hash, true);
+            var docToLoad = null;
+
+            if (state.docId) {
+              // Restore from SPA navigation state (highest priority)
+              docToLoad = findItemById(state.docId);
+            } else if (hash) {
+              // Hash in URL
+              docToLoad = findItemById(hash);
+            } else {
+              // Check for previously selected item from sidenav localStorage
+              try {
+                var savedNavState = localStorage.getItem('funky_docs_nav_state');
+                if (savedNavState) {
+                  var navState = JSON.parse(savedNavState);
+                  if (navState.selected) {
+                    docToLoad = findItemById(navState.selected);
+                  }
+                }
+              } catch (e) {
+                // Ignore localStorage errors
               }
+            }
+
+            if (docToLoad && docToLoad.url) {
+              loadDoc(docToLoad.url, docToLoad.id, docToLoad.label);
+              if (_sidenav) _sidenav.select(docToLoad.id, true);
             }
 
             // Set up internal doc link handler
@@ -571,24 +594,30 @@
             });
             _pubsubUnsubscribes = [];
 
+            // Capture state before destroying
+            var savedDocUrl = _currentDoc;
+            var savedDocId = window.location.hash.slice(1) || null;
+
             // Destroy sidenav
             if (_sidenav && _sidenav.destroy) {
               _sidenav.destroy();
             }
             _sidenav = null;
             _currentDoc = null;
+
+            return { docUrl: savedDocUrl, docId: savedDocId };
           }
 
           // Page lifecycle
           if (typeof Funky !== 'undefined' && Funky.Pages) {
             Funky.Pages.register('docs', {
               init: function(state) {
-                initDocs();
+                initDocs(state);
               },
               destroy: function() {
-                destroyDocs();
-                console.log('[Docs] Page destroyed');
-                return {};
+                var state = destroyDocs();
+                console.log('[Docs] Page destroyed, state:', state);
+                return state;
               }
             });
           } else {

@@ -159,61 +159,48 @@ Full API documentation is available in the `docs/` directory:
 
 ## 🖥️ Development Server
 
-Start the framework using your favorite language! We support **27 languages** via Make:
+Funky Frame requires no build step - just serve the files with any static HTTP server.
 
 ```bash
-make help                # Show all available commands
+make help                # Show available make commands
 ```
 
-### Popular Options
+### Available Make Targets
 
-| Command | Language | Port |
-|---------|----------|------|
+| Command | Server | Port |
+|---------|--------|------|
+| `make start` | Node.js/serve | 3000 |
 | `make start-js` | Node.js/serve | 3000 |
-| `make start-python` | Python 3 | 8000 |
+| `make start-python` | Python 3 http.server | 8000 |
 | `make start-perl` | Perl/Mojolicious | 8000 |
 | `make start-ruby` | Ruby/WEBrick | 8000 |
-| `make start-php` | PHP built-in | 8000 |
-| `make start-go` | Go | 8000 |
-| `make start-deno` | Deno | 8000 |
-| `make start-bun` | Bun | 8000 |
-
-### The Fun Ones 🎉
-
-| Command | Language | Notes |
-|---------|----------|-------|
-| `make start-scala` | Scala | Requires scala-cli |
-| `make start-raku` | Raku | Perl's fancy sibling |
-| `make start-elixir` | Elixir | Erlang VM |
-| `make start-rust` | Rust | Via miniserve |
-| `make start-swift` | Swift | macOS native |
-| `make start-crystal` | Crystal | Ruby-like compiled |
-| `make start-nim` | Nim | Python-like compiled |
-| `make start-haskell` | Haskell | Functional purity |
-
-### The Boring Enterprise Ones 🏢
-
-| Command | Language |
-|---------|----------|
-| `make start-java` | Java |
-| `make start-kotlin` | Kotlin |
-| `make start-groovy` | Groovy |
-| `make start-csharp` | C# / .NET |
-| `make start-fsharp` | F# / .NET |
-| `make start-powershell` | PowerShell |
-
-### The Absurd Ones 🤪
-
-| Command | Language | Warning |
-|---------|----------|---------|
-| `make start-bash` | Bash + netcat | Very basic |
-| `make start-awk` | AWK | Single request only |
-| `make start-tcl` | Tcl | For nostalgia |
-| `make start-lua` | Lua | Gaming heritage |
+| `make start-php` | PHP built-in server | 8000 |
+| `make start-deno` | Deno file_server | 8000 |
+| `make start-bun` | Bun/serve | 8000 |
+| `make start-rust` | miniserve | 8000 |
+| `make start-csharp` | dotnet-serve | 8000 |
 
 Override the default port:
 ```bash
 make start-python PORT=9000
+```
+
+### Other Servers
+
+Any server that serves static HTML files will work:
+
+```bash
+# Using npx
+npx serve . -p 3000
+
+# Using Python
+python3 -m http.server 8000
+
+# Using PHP
+php -S localhost:8000
+
+# Using Apache/Nginx
+# Just point the document root to the project directory
 ```
 
 ## 🌐 Browser Support

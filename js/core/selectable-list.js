@@ -7,7 +7,7 @@
  * Used by: CommandPalette, SideNav, WidgetCatalog
  * 
  * @module Funky.SelectableList
- * @version 1.0.0
+ * @version 1.0.1
  * @requires Funky.Dom
  */
 (function(global) {

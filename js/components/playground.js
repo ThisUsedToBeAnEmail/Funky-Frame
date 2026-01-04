@@ -2,7 +2,7 @@
  * Funky.Playground - Component Testing Environment
  * Provides isolated rendering, props editing, and event logging for components
  * @module Funky.Playground
- * @version 1.0.0
+ * @version 1.0.1
  */
 (function(window) {
 	'use strict';
