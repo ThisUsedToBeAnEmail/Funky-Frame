@@ -1,0 +1,446 @@
+<div data-page="component-video" class="component-demo">
+  <h2>Video Player</h2>
+  <p class="text-muted">Lightweight video player with minimal overlay controls, keyboard navigation, and accessibility features.</p>
+
+  <!-- Section 1: Main Video Player -->
+  <section class="demo-section">
+    <h3>Interactive Video Player</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">A video player with overlay controls. Click the video or use keyboard shortcuts to control playback.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="video-source">Video:</label>
+          <select id="video-source" class="form-select">
+            <option value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">Big Buck Bunny</option>
+            <option value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4">Elephants Dream</option>
+            <option value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4">Sintel</option>
+            <option value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4">Tears of Steel</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-load-video">
+          <i class="fas fa-sync me-1"></i> Load
+        </button>
+      </div>
+      <figure class="video-demo__player-wrapper">
+        <div class="video-demo__player" id="video-main"></div>
+        <figcaption class="video-demo__keyboard-hints">
+          <kbd>Space</kbd> Play/Pause
+          <kbd>←</kbd> Rewind
+          <kbd>→</kbd> Forward
+          <kbd>M</kbd> Mute
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Section 2: Configuration Options -->
+  <section class="demo-section">
+    <h3>Player Configuration</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Configure video player options. Changes apply when you click "Apply".</p>
+      <fieldset class="demo-form-row">
+        <legend class="visually-hidden">Video Options</legend>
+        <label class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="opt-loop">
+          <span class="form-check-label">Loop</span>
+        </label>
+        <label class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="opt-muted">
+          <span class="form-check-label">Muted</span>
+        </label>
+        <label class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="opt-autoplay">
+          <span class="form-check-label">Autoplay</span>
+        </label>
+        <label class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="opt-controls" checked>
+          <span class="form-check-label">Controls</span>
+        </label>
+        <button type="button" class="btn btn-primary" id="btn-apply-config">
+          <i class="fas fa-check me-1"></i> Apply
+        </button>
+      </fieldset>
+      <figure class="video-demo__player-wrapper video-demo__player-wrapper--small">
+        <div class="video-demo__player" id="video-config"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Section 3: API Controls -->
+  <section class="demo-section">
+    <h3>Programmatic API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control the video player programmatically using the Video API.</p>
+      <div class="btn-toolbar mb-3" role="toolbar" aria-label="Video controls">
+        <div class="btn-group me-2" role="group" aria-label="Playback">
+          <button type="button" class="btn btn-success" id="btn-play">
+            <i class="fas fa-play me-1"></i> play()
+          </button>
+          <button type="button" class="btn btn-warning" id="btn-pause">
+            <i class="fas fa-pause me-1"></i> pause()
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="btn-toggle">
+            <i class="fas fa-exchange-alt me-1"></i> toggle()
+          </button>
+        </div>
+        <div class="btn-group me-2" role="group" aria-label="Seek">
+          <button type="button" class="btn btn-outline-secondary" id="btn-rewind">
+            <i class="fas fa-undo me-1"></i> rewind()
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="btn-forward">
+            <i class="fas fa-redo me-1"></i> forward()
+          </button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Volume">
+          <button type="button" class="btn btn-outline-info" id="btn-mute">
+            <i class="fas fa-volume-mute me-1"></i> toggleMute()
+          </button>
+        </div>
+      </div>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="jump-time">Jump to (sec):</label>
+          <input type="number" id="jump-time" class="form-control" value="30" min="0" step="5">
+        </div>
+        <button type="button" class="btn btn-outline-primary" id="btn-jump">
+          <i class="fas fa-crosshairs me-1"></i> setCurrentTime()
+        </button>
+      </div>
+      <output id="api-status" class="demo-status mt-3">Status: Ready</output>
+    </div>
+  </section>
+
+  <!-- Section 4: Multiple Players -->
+  <section class="demo-section">
+    <h3>Multiple Players</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Multiple video instances can coexist on the same page, each with independent controls.</p>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <figure class="video-demo__player-wrapper">
+            <div class="video-demo__player" id="video-multi-1"></div>
+            <figcaption class="text-center text-muted mt-2">Player 1 - Looping</figcaption>
+          </figure>
+        </div>
+        <div class="col-md-6">
+          <figure class="video-demo__player-wrapper">
+            <div class="video-demo__player" id="video-multi-2"></div>
+            <figcaption class="text-center text-muted mt-2">Player 2 - Muted</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Player Info -->
+  <section class="demo-section">
+    <h3>Player Information</h3>
+    <div class="demo-area">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Current Time:</dt>
+        <dd class="col-sm-3" id="info-current">0:00</dd>
+        <dt class="col-sm-3">Duration:</dt>
+        <dd class="col-sm-3" id="info-duration">0:00</dd>
+        <dt class="col-sm-3">Status:</dt>
+        <dd class="col-sm-3" id="info-status">Ready</dd>
+        <dt class="col-sm-3">Volume:</dt>
+        <dd class="col-sm-3" id="info-volume">100%</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Events Log -->
+  <section class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="video-log" class="demo-log">Waiting for events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = {};
+  var propsChangedHandler = null;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('video-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
+    var mins = Math.floor(seconds / 60);
+    var secs = Math.floor(seconds % 60);
+    return mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+
+  function syncInputsFromProps(props) {
+    var sourceSelect = document.getElementById('video-source');
+    var loopCheck = document.getElementById('opt-loop');
+    var mutedCheck = document.getElementById('opt-muted');
+    var autoplayCheck = document.getElementById('opt-autoplay');
+    var controlsCheck = document.getElementById('opt-controls');
+
+    if (sourceSelect && props.src) sourceSelect.value = props.src;
+    if (loopCheck) loopCheck.checked = props.loop === true;
+    if (mutedCheck) mutedCheck.checked = props.muted === true;
+    if (autoplayCheck) autoplayCheck.checked = props.autoplay === true;
+    if (controlsCheck) controlsCheck.checked = props.controls !== false;
+  }
+
+  Funky.Pages.register('component-video', {
+    init: function(state) {
+      var props = getProps();
+      var Video = Funky.Video;
+
+      if (!Video) {
+        log('Error: Funky.Video not available');
+        return;
+      }
+
+      log('Video module initialized');
+      syncInputsFromProps(props);
+
+      var sourceSelect = document.getElementById('video-source');
+
+      // =========================================================================
+      // Section 1: Main Video Player
+      // =========================================================================
+
+      function createMainPlayer() {
+        var currentProps = getProps();
+        var videoSrc = currentProps.src || sourceSelect.value;
+
+        // Sync dropdown to match current prop
+        sourceSelect.value = videoSrc;
+
+        if (instances.main) {
+          instances.main.destroy();
+        }
+
+        instances.main = Video.init('#video-main', {
+          src: videoSrc,
+          loop: currentProps.loop || false,
+          autoplay: currentProps.autoplay || false,
+          muted: currentProps.muted || false,
+          controls: currentProps.controls !== false
+        });
+
+        if (instances.main && instances.main.video) {
+          instances.main.video.addEventListener('timeupdate', function() {
+            if (!instances.main || !instances.main.getCurrentTime) return;
+            document.getElementById('info-current').textContent = formatTime(instances.main.getCurrentTime());
+            document.getElementById('info-duration').textContent = formatTime(instances.main.getDuration());
+          });
+
+          instances.main.video.addEventListener('play', function() {
+            document.getElementById('info-status').textContent = 'Playing';
+            log('Main player: play');
+            emit('event', { event: 'video:play', payload: {} });
+          });
+
+          instances.main.video.addEventListener('pause', function() {
+            document.getElementById('info-status').textContent = 'Paused';
+            log('Main player: pause');
+            emit('event', { event: 'video:pause', payload: {} });
+          });
+
+          instances.main.video.addEventListener('ended', function() {
+            document.getElementById('info-status').textContent = 'Ended';
+            log('Main player: ended');
+            emit('event', { event: 'video:ended', payload: {} });
+          });
+
+          instances.main.video.addEventListener('volumechange', function() {
+            var vol = instances.main.video.muted ? 'Muted' : Math.round(instances.main.video.volume * 100) + '%';
+            document.getElementById('info-volume').textContent = vol;
+          });
+
+          instances.main.video.addEventListener('loadedmetadata', function() {
+            document.getElementById('info-duration').textContent = formatTime(instances.main.getDuration());
+            document.getElementById('info-status').textContent = 'Ready';
+            log('Main player: loaded');
+          });
+
+          instances.main.video.addEventListener('error', function() {
+            document.getElementById('info-status').textContent = 'Error';
+            log('Main player: error loading video');
+          });
+        }
+
+        log('Main player: ' + videoSrc.split('/').pop());
+      }
+
+      createMainPlayer();
+
+      document.getElementById('btn-load-video').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.setSrc(sourceSelect.value);
+          log('Loaded: ' + sourceSelect.value.split('/').pop());
+          emit('event', { event: 'video:load', payload: { src: sourceSelect.value } });
+        }
+      });
+
+      // =========================================================================
+      // Section 2: Configuration Options
+      // =========================================================================
+
+      var loopCheck = document.getElementById('opt-loop');
+      var mutedCheck = document.getElementById('opt-muted');
+      var autoplayCheck = document.getElementById('opt-autoplay');
+      var controlsCheck = document.getElementById('opt-controls');
+
+      function createConfigPlayer() {
+        if (instances.config) {
+          instances.config.destroy();
+        }
+
+        instances.config = Video.init('#video-config', {
+          src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+          loop: loopCheck.checked,
+          autoplay: autoplayCheck.checked,
+          muted: mutedCheck.checked,
+          controls: controlsCheck.checked
+        });
+
+        log('Config: loop=' + loopCheck.checked + ', muted=' + mutedCheck.checked);
+      }
+
+      createConfigPlayer();
+
+      document.getElementById('btn-apply-config').addEventListener('click', function() {
+        createConfigPlayer();
+        emit('event', { event: 'video:config', payload: {
+          loop: loopCheck.checked,
+          muted: mutedCheck.checked,
+          autoplay: autoplayCheck.checked,
+          controls: controlsCheck.checked
+        }});
+      });
+
+      // =========================================================================
+      // Section 3: API Controls
+      // =========================================================================
+
+      var apiStatus = document.getElementById('api-status');
+
+      document.getElementById('btn-play').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.play();
+          apiStatus.textContent = 'Status: play() called';
+          log('API: play()');
+        }
+      });
+
+      document.getElementById('btn-pause').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.pause();
+          apiStatus.textContent = 'Status: pause() called';
+          log('API: pause()');
+        }
+      });
+
+      document.getElementById('btn-toggle').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.toggle();
+          apiStatus.textContent = 'Status: toggle() called';
+          log('API: toggle()');
+        }
+      });
+
+      document.getElementById('btn-rewind').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.rewind();
+          apiStatus.textContent = 'Status: rewind() (-10s)';
+          log('API: rewind()');
+        }
+      });
+
+      document.getElementById('btn-forward').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.forward();
+          apiStatus.textContent = 'Status: forward() (+10s)';
+          log('API: forward()');
+        }
+      });
+
+      document.getElementById('btn-mute').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.toggleMute();
+          apiStatus.textContent = 'Status: toggleMute() called';
+          log('API: toggleMute()');
+        }
+      });
+
+      document.getElementById('btn-jump').addEventListener('click', function() {
+        if (instances.main) {
+          var time = parseFloat(document.getElementById('jump-time').value) || 0;
+          instances.main.setCurrentTime(time);
+          apiStatus.textContent = 'Status: setCurrentTime(' + time + ')';
+          log('API: setCurrentTime(' + time + ')');
+        }
+      });
+
+      // =========================================================================
+      // Section 4: Multiple Players
+      // =========================================================================
+
+      instances.multi1 = Video.init('#video-multi-1', {
+        src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+        loop: true,
+        muted: true,
+        controls: true
+      });
+
+      instances.multi2 = Video.init('#video-multi-2', {
+        src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+        loop: false,
+        muted: true,
+        controls: true
+      });
+
+      log('Multiple players initialized');
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+
+          if (instances.main && newProps.src) {
+            instances.main.setSrc(newProps.src);
+          }
+
+          props = newProps;
+          createMainPlayer();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      Object.keys(instances).forEach(function(key) {
+        if (instances[key] && instances[key].destroy) {
+          instances[key].destroy();
+        }
+      });
+      instances = {};
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

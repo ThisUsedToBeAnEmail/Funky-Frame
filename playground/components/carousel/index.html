@@ -1,0 +1,134 @@
+<div data-page="component-carousel" class="component-demo">
+  <h2>Carousel</h2>
+  <p class="text-muted">Responsive carousel/slider component with touch support, autoplay, and multiple configuration options.</p>
+
+  <div class="demo-section">
+    <h3>Interactive Demo</h3>
+    <div class="demo-area">
+      <div id="carousel-demo"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Controls</h3>
+    <div class="demo-area">
+      <button class="btn btn-primary" id="carousel-prev" type="button"><i class="fas fa-chevron-left" aria-hidden="true"></i> Previous</button>
+      <button class="btn btn-primary" id="carousel-next" type="button">Next <i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+      <button class="btn btn-secondary" id="carousel-toggle-autoplay" type="button">Toggle Autoplay</button>
+      <button class="btn btn-outline-secondary" id="carousel-fullscreen" type="button"><i class="fas fa-expand" aria-hidden="true"></i> Fullscreen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var carouselInstance = null;
+  var propsChangedHandler = null;
+
+  // Build config from props - uses ALL 14 props from playground.js
+  function buildConfig(props) {
+    return {
+      slidesToShow: props.slidesToShow || 3,
+      slidesToScroll: props.slidesToScroll || 1,
+      gap: props.gap !== undefined ? props.gap : 16,
+      speed: props.speed || 400,
+      autoplay: props.autoplay === true,
+      autoplaySpeed: props.autoplaySpeed || 5000,
+      arrows: props.arrows !== false,
+      dots: props.dots !== false,
+      infinite: props.infinite === true,
+      centerMode: props.centerMode === true,
+      fullscreen: props.fullscreen === true,
+      fullWidth: props.fullWidth === true,
+      fullWidthSlides: props.fullWidthSlides === true
+    };
+  }
+
+  // Generate demo slide HTML - uses carousel__slide for component's slideSelector
+  function generateSlides(count) {
+    var html = '';
+    for (var i = 1; i <= count; i++) {
+      html += '<div class="carousel__slide carousel-demo__slide" data-slide="' + i + '">' +
+        '<span class="carousel-demo__slide-number">Slide ' + i + '</span>' +
+        '</div>';
+    }
+    return html;
+  }
+
+  // Create carousel with current props
+  function createCarousel(container, props) {
+    if (carouselInstance && carouselInstance.destroy) {
+      carouselInstance.destroy();
+      carouselInstance = null;
+    }
+
+    var slideCount = props.demoSlides || 6;
+    container.innerHTML = '<div class="funky-carousel">' + generateSlides(slideCount) + '</div>';
+
+    if (Funky.Carousel) {
+      var config = buildConfig(props);
+      carouselInstance = Funky.Carousel.init(container.querySelector('.funky-carousel'), config);
+      emit('event', { event: 'funky:carousel:init', payload: config });
+    }
+  }
+
+  Funky.Pages.register('component-carousel', {
+    init: function(state) {
+      var props = getProps();
+      var container = document.getElementById('carousel-demo');
+
+      createCarousel(container, props);
+
+      // Control buttons
+      document.getElementById('carousel-prev').onclick = function() {
+        if (carouselInstance) carouselInstance.prev();
+        emit('event', { event: 'funky:carousel:prev' });
+      };
+
+      document.getElementById('carousel-next').onclick = function() {
+        if (carouselInstance) carouselInstance.next();
+        emit('event', { event: 'funky:carousel:next' });
+      };
+
+      document.getElementById('carousel-toggle-autoplay').onclick = function() {
+        if (carouselInstance && carouselInstance.toggleAutoplay) {
+          var isPlaying = carouselInstance.toggleAutoplay();
+          emit('event', { event: 'funky:carousel:toggleAutoplay', payload: { playing: isPlaying } });
+        }
+      };
+
+      document.getElementById('carousel-fullscreen').onclick = function() {
+        if (carouselInstance && carouselInstance.enterFullscreen) {
+          carouselInstance.enterFullscreen();
+          emit('event', { event: 'funky:carousel:fullscreen' });
+        }
+      };
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          createCarousel(container, getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return {};
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      if (carouselInstance && carouselInstance.destroy) {
+        carouselInstance.destroy();
+        carouselInstance = null;
+      }
+      return {};
+    }
+  });
+})();
+</script>

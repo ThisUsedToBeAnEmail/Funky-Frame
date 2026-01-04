@@ -1,0 +1,650 @@
+<div data-page="component-dom-vs-vdom" class="component-demo">
+  <h2>Dom vs VDom</h2>
+  <p class="text-muted">Compare Funky.Dom (direct) vs Funky.VDom (virtual) - when to use each</p>
+
+  <div id="dom-demo-container" class="dom-demo"></div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var currentScenario = null;
+  var cleanupFns = [];
+
+  // Helper to create consistent panel
+  function createPanel(title, subtitle, isWinner) {
+    var panel = document.createElement('div');
+    panel.className = 'dom-demo__panel';
+
+    var header = document.createElement('div');
+    header.className = 'dom-demo__panel-header';
+
+    var titleEl = document.createElement('h4');
+    titleEl.className = 'dom-demo__panel-title';
+    titleEl.textContent = title;
+    header.appendChild(titleEl);
+
+    if (isWinner) {
+      var badge = document.createElement('span');
+      badge.className = 'dom-demo__badge dom-demo__badge--winner';
+      badge.textContent = 'Best for this';
+      header.appendChild(badge);
+    }
+
+    panel.appendChild(header);
+
+    if (subtitle) {
+      var subtitleEl = document.createElement('p');
+      subtitleEl.className = 'dom-demo__panel-subtitle';
+      subtitleEl.textContent = subtitle;
+      panel.appendChild(subtitleEl);
+    }
+
+    var content = document.createElement('div');
+    content.className = 'dom-demo__panel-content';
+    panel.appendChild(content);
+
+    panel.contentEl = content;
+    return panel;
+  }
+
+  // Helper to create timing display
+  function createTimingDisplay() {
+    var timing = document.createElement('div');
+    timing.className = 'dom-demo__timing';
+    timing.innerHTML = '<span class="dom-demo__timing-label">Time:</span> <span class="dom-demo__timing-value">-</span>';
+    return timing;
+  }
+
+  // Cleanup helper
+  function cleanup() {
+    cleanupFns.forEach(function(fn) { fn(); });
+    cleanupFns = [];
+  }
+
+  // Scenario: Create Simple (1000 cards)
+  function renderCreateSimple(container) {
+    var COUNT = 1000;
+    var D = Funky.Dom;
+    var V = Funky.VDom;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dom-demo__wrapper';
+
+    var description = document.createElement('p');
+    description.className = 'dom-demo__description';
+    description.textContent = 'Creating ' + COUNT + ' simple card elements. Dom creates real DOM directly; VDom builds virtual tree then renders.';
+    wrapper.appendChild(description);
+
+    var panels = document.createElement('div');
+    panels.className = 'dom-demo__panels';
+
+    // DOM Panel
+    var domPanel = createPanel('Funky.Dom (Direct)', 'Zero overhead', true);
+    var domResult = document.createElement('div');
+    domResult.className = 'dom-demo__result-scroll';
+    var domResultInner = document.createElement('div');
+    domResultInner.id = 'dom-create-result';
+    domResult.appendChild(domResultInner);
+    domPanel.contentEl.appendChild(domResult);
+    var domTiming = createTimingDisplay();
+    domPanel.contentEl.appendChild(domTiming);
+
+    // VDom Panel
+    var vdomPanel = createPanel('Funky.VDom (Virtual)', 'VNode allocation overhead', false);
+    var vdomResult = document.createElement('div');
+    vdomResult.className = 'dom-demo__result-scroll';
+    var vdomResultInner = document.createElement('div');
+    vdomResultInner.id = 'vdom-create-result';
+    vdomResult.appendChild(vdomResultInner);
+    vdomPanel.contentEl.appendChild(vdomResult);
+    var vdomTiming = createTimingDisplay();
+    vdomPanel.contentEl.appendChild(vdomTiming);
+
+    panels.appendChild(domPanel);
+    panels.appendChild(vdomPanel);
+    wrapper.appendChild(panels);
+
+    // Run button
+    var actions = document.createElement('div');
+    actions.className = 'dom-demo__actions';
+    var runBtn = document.createElement('button');
+    runBtn.type = 'button';
+    runBtn.className = 'btn btn-primary';
+    runBtn.innerHTML = '<i class="fas fa-play me-2" aria-hidden="true"></i>Run Benchmark';
+    actions.appendChild(runBtn);
+    wrapper.appendChild(actions);
+
+    container.appendChild(wrapper);
+
+    function runBenchmark() {
+      // Clear previous results
+      domResultInner.innerHTML = '';
+      vdomResultInner.innerHTML = '';
+
+      // Benchmark Funky.Dom
+      var startDom = performance.now();
+      var domContainer = D.div();
+      for (var i = 0; i < COUNT; i++) {
+        domContainer.child(
+          D.div().class('dom-demo__card').child(
+            D.h5().text('Card #' + (i + 1)),
+            D.p().text('Created with D.div().class().child()')
+          )
+        );
+      }
+      var domTime = (performance.now() - startDom).toFixed(2);
+      domResultInner.appendChild(domContainer.el);
+      domTiming.querySelector('.dom-demo__timing-value').textContent = domTime + 'ms';
+
+      // Benchmark Funky.VDom
+      var startVdom = performance.now();
+      var vdomTree = V.div().child(
+        V.each(Array.from({length: COUNT}, function(_, idx) { return idx; }), function(idx) {
+          return V.div().class('dom-demo__card').child(
+            V.h5().text('Card #' + (idx + 1)),
+            V.p().text('Created with V.div(), then V.render()')
+          );
+        })
+      ).build();
+      var renderedVdom = V.render(vdomTree);
+      var vdomTime = (performance.now() - startVdom).toFixed(2);
+      vdomResultInner.appendChild(renderedVdom);
+      vdomTiming.querySelector('.dom-demo__timing-value').textContent = vdomTime + 'ms';
+
+      emit('event', {
+        event: 'funky:dom:benchmark',
+        payload: {
+          scenario: 'create-simple',
+          domTime: parseFloat(domTime),
+          vdomTime: parseFloat(vdomTime),
+          count: COUNT
+        }
+      });
+    }
+
+    runBtn.addEventListener('click', runBenchmark);
+    cleanupFns.push(function() {
+      runBtn.removeEventListener('click', runBenchmark);
+    });
+
+    // Auto-run on load
+    setTimeout(runBenchmark, 100);
+  }
+
+  // Scenario: Create Nested (1000 list items)
+  function renderCreateNested(container) {
+    var COUNT = 1000;
+    var D = Funky.Dom;
+    var V = Funky.VDom;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dom-demo__wrapper';
+
+    var description = document.createElement('p');
+    description.className = 'dom-demo__description';
+    description.textContent = 'Creating ' + COUNT + ' nested list items with multiple child elements. Same clean API, different execution.';
+    wrapper.appendChild(description);
+
+    var panels = document.createElement('div');
+    panels.className = 'dom-demo__panels';
+
+    // DOM Panel
+    var domPanel = createPanel('Funky.Dom (Direct)', 'Direct DOM creation', true);
+    var domResult = document.createElement('div');
+    domResult.className = 'dom-demo__result-scroll';
+    var domResultInner = document.createElement('div');
+    domResultInner.id = 'dom-nested-result';
+    domResult.appendChild(domResultInner);
+    domPanel.contentEl.appendChild(domResult);
+    var domTiming = createTimingDisplay();
+    domPanel.contentEl.appendChild(domTiming);
+
+    // VDom Panel
+    var vdomPanel = createPanel('Funky.VDom (Virtual)', 'Build + render', false);
+    var vdomResult = document.createElement('div');
+    vdomResult.className = 'dom-demo__result-scroll';
+    var vdomResultInner = document.createElement('div');
+    vdomResultInner.id = 'vdom-nested-result';
+    vdomResult.appendChild(vdomResultInner);
+    vdomPanel.contentEl.appendChild(vdomResult);
+    var vdomTiming = createTimingDisplay();
+    vdomPanel.contentEl.appendChild(vdomTiming);
+
+    panels.appendChild(domPanel);
+    panels.appendChild(vdomPanel);
+    wrapper.appendChild(panels);
+
+    // Run button
+    var actions = document.createElement('div');
+    actions.className = 'dom-demo__actions';
+    var runBtn = document.createElement('button');
+    runBtn.type = 'button';
+    runBtn.className = 'btn btn-primary';
+    runBtn.innerHTML = '<i class="fas fa-play me-2" aria-hidden="true"></i>Run Benchmark';
+    actions.appendChild(runBtn);
+    wrapper.appendChild(actions);
+
+    container.appendChild(wrapper);
+
+    var items = [];
+    for (var i = 0; i < COUNT; i++) {
+      items.push('Item ' + (i + 1));
+    }
+
+    function runBenchmark() {
+      domResultInner.innerHTML = '';
+      vdomResultInner.innerHTML = '';
+
+      // DOM
+      var startDom = performance.now();
+      var domList = D.ul().class('dom-demo__list').child(
+        D.each(items, function(item, idx) {
+          return D.li().class('dom-demo__list-item').child(
+            D.span().class('dom-demo__list-num').text('#' + (idx + 1)),
+            D.span().class('dom-demo__list-text').text(item),
+            D.span().class('dom-demo__list-badge badge bg-secondary').text('DOM')
+          );
+        })
+      );
+      var domTime = (performance.now() - startDom).toFixed(2);
+      domResultInner.appendChild(domList.el);
+      domTiming.querySelector('.dom-demo__timing-value').textContent = domTime + 'ms';
+
+      // VDom
+      var startVdom = performance.now();
+      var vdomList = V.ul().class('dom-demo__list').child(
+        V.each(items, function(item, idx) {
+          return V.li().class('dom-demo__list-item').child(
+            V.span().class('dom-demo__list-num').text('#' + (idx + 1)),
+            V.span().class('dom-demo__list-text').text(item),
+            V.span().class('dom-demo__list-badge badge bg-primary').text('VDom')
+          );
+        })
+      ).build();
+      var renderedList = V.render(vdomList);
+      var vdomTime = (performance.now() - startVdom).toFixed(2);
+      vdomResultInner.appendChild(renderedList);
+      vdomTiming.querySelector('.dom-demo__timing-value').textContent = vdomTime + 'ms';
+
+      emit('event', {
+        event: 'funky:dom:benchmark',
+        payload: { scenario: 'create-nested', domTime: parseFloat(domTime), vdomTime: parseFloat(vdomTime) }
+      });
+    }
+
+    runBtn.addEventListener('click', runBenchmark);
+    cleanupFns.push(function() {
+      runBtn.removeEventListener('click', runBenchmark);
+    });
+
+    setTimeout(runBenchmark, 100);
+  }
+
+  // Scenario: Manipulate existing elements
+  function renderManipulate(container) {
+    var D = Funky.Dom;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dom-demo__wrapper';
+
+    var description = document.createElement('p');
+    description.className = 'dom-demo__description';
+    description.textContent = 'Manipulating existing DOM elements. VDom cannot do this - it only creates and patches containers.';
+    wrapper.appendChild(description);
+
+    var panels = document.createElement('div');
+    panels.className = 'dom-demo__panels';
+
+    // DOM Panel - Interactive
+    var domPanel = createPanel('Funky.Dom (Direct)', 'Toggle, show, hide existing elements', true);
+
+    var targetBox = document.createElement('div');
+    targetBox.id = 'manipulate-target';
+    targetBox.className = 'dom-demo__target-box';
+    targetBox.textContent = 'Click buttons below';
+    domPanel.contentEl.appendChild(targetBox);
+
+    var btnGroup = document.createElement('div');
+    btnGroup.className = 'dom-demo__btn-group';
+
+    var toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.id = 'btn-toggle';
+    toggleBtn.className = 'btn btn-sm btn-secondary';
+    toggleBtn.textContent = 'Toggle Active';
+
+    var hideBtn = document.createElement('button');
+    hideBtn.type = 'button';
+    hideBtn.id = 'btn-hide';
+    hideBtn.className = 'btn btn-sm btn-secondary';
+    hideBtn.textContent = 'Hide/Show';
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.id = 'btn-reset';
+    resetBtn.className = 'btn btn-sm btn-outline-secondary';
+    resetBtn.textContent = 'Reset';
+
+    btnGroup.appendChild(toggleBtn);
+    btnGroup.appendChild(hideBtn);
+    btnGroup.appendChild(resetBtn);
+    domPanel.contentEl.appendChild(btnGroup);
+
+    // VDom Panel - Explanation
+    var vdomPanel = createPanel('Funky.VDom (Virtual)', null, false);
+    var explanation = document.createElement('div');
+    explanation.className = 'dom-demo__explanation';
+    explanation.innerHTML = '<p><strong>VDom cannot manipulate existing elements.</strong></p>' +
+      '<p>VDom works by:</p>' +
+      '<ol>' +
+      '<li>Building a virtual tree</li>' +
+      '<li>Diffing old vs new tree</li>' +
+      '<li>Patching the container</li>' +
+      '</ol>' +
+      '<p>For toggling classes or showing/hiding elements, <strong>Dom is the right tool</strong>.</p>';
+    vdomPanel.contentEl.appendChild(explanation);
+
+    panels.appendChild(domPanel);
+    panels.appendChild(vdomPanel);
+    wrapper.appendChild(panels);
+    container.appendChild(wrapper);
+
+    // Wire up buttons
+    setTimeout(function() {
+      var target = D.one('#manipulate-target');
+
+      function handleToggle() {
+        target.classToggle('dom-demo__target-box--active');
+        target.text(target.hasClass('dom-demo__target-box--active') ? 'ACTIVE!' : 'Click buttons below');
+        emit('event', { event: 'funky:dom:toggle', payload: { active: target.hasClass('dom-demo__target-box--active') }});
+      }
+
+      function handleHide() {
+        target.toggle();
+        emit('event', { event: 'funky:dom:visibility', payload: { visible: target.el.style.display !== 'none' }});
+      }
+
+      function handleReset() {
+        target.classRemove('dom-demo__target-box--active').show();
+        target.text('Click buttons below');
+        emit('event', { event: 'funky:dom:reset', payload: {}});
+      }
+
+      D.one('#btn-toggle').on('click', handleToggle);
+      D.one('#btn-hide').on('click', handleHide);
+      D.one('#btn-reset').on('click', handleReset);
+
+      cleanupFns.push(function() {
+        D.one('#btn-toggle').off('click', handleToggle);
+        D.one('#btn-hide').off('click', handleHide);
+        D.one('#btn-reset').off('click', handleReset);
+      });
+    }, 0);
+  }
+
+  // Scenario: Efficient Updates
+  function renderUpdateEfficient(container) {
+    var COUNT = 1000;
+    var D = Funky.Dom;
+    var V = Funky.VDom;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dom-demo__wrapper';
+
+    var description = document.createElement('p');
+    description.className = 'dom-demo__description';
+    description.textContent = 'Updating 1 item in a list of ' + COUNT + '. Dom requires you to track what changed; VDom auto-diffs.';
+    wrapper.appendChild(description);
+
+    var panels = document.createElement('div');
+    panels.className = 'dom-demo__panels';
+
+    // DOM Panel
+    var domPanel = createPanel('Funky.Dom (Direct)', 'You track what changed', true);
+    var domResult = document.createElement('div');
+    domResult.className = 'dom-demo__result-scroll';
+    var domResultInner = document.createElement('div');
+    domResultInner.id = 'dom-update-list';
+    domResult.appendChild(domResultInner);
+    domPanel.contentEl.appendChild(domResult);
+
+    var domUpdateBtn = document.createElement('button');
+    domUpdateBtn.type = 'button';
+    domUpdateBtn.id = 'btn-update-dom';
+    domUpdateBtn.className = 'btn btn-sm btn-primary dom-demo__update-btn';
+    domUpdateBtn.textContent = 'Update 1 Random Item';
+    domPanel.contentEl.appendChild(domUpdateBtn);
+
+    var domTiming = createTimingDisplay();
+    domTiming.id = 'dom-update-timing';
+    domPanel.contentEl.appendChild(domTiming);
+
+    // VDom Panel
+    var vdomPanel = createPanel('Funky.VDom (Virtual)', 'Auto-diff finds changes', false);
+    var vdomResult = document.createElement('div');
+    vdomResult.className = 'dom-demo__result-scroll';
+    var vdomResultInner = document.createElement('div');
+    vdomResultInner.id = 'vdom-update-list';
+    vdomResult.appendChild(vdomResultInner);
+    vdomPanel.contentEl.appendChild(vdomResult);
+
+    var vdomUpdateBtn = document.createElement('button');
+    vdomUpdateBtn.type = 'button';
+    vdomUpdateBtn.id = 'btn-update-vdom';
+    vdomUpdateBtn.className = 'btn btn-sm btn-primary dom-demo__update-btn';
+    vdomUpdateBtn.textContent = 'Update 1 Random Item';
+    vdomPanel.contentEl.appendChild(vdomUpdateBtn);
+
+    var vdomTiming = createTimingDisplay();
+    vdomTiming.id = 'vdom-update-timing';
+    vdomPanel.contentEl.appendChild(vdomTiming);
+
+    panels.appendChild(domPanel);
+    panels.appendChild(vdomPanel);
+    wrapper.appendChild(panels);
+    container.appendChild(wrapper);
+
+    // Setup data
+    var domItems = [];
+    var vdomItems = [];
+    for (var i = 0; i < COUNT; i++) {
+      domItems.push({ id: i, value: 'Item ' + (i + 1) });
+      vdomItems.push({ id: i, value: 'Item ' + (i + 1) });
+    }
+
+    // Build DOM list
+    var domList = D.ul().class('dom-demo__list');
+    var domElements = [];
+    domItems.forEach(function(item) {
+      var li = D.li().class('dom-demo__list-item').attr('data-id', item.id).text(item.value);
+      domElements.push(li);
+      domList.child(li);
+    });
+    domResultInner.appendChild(domList.el);
+
+    // Build VDom tree
+    function buildVdomTree(data) {
+      return V.ul().class('dom-demo__list').child(
+        V.each(data, function(item) {
+          return V.li().key(item.id).class('dom-demo__list-item').text(item.value);
+        })
+      ).build();
+    }
+    var oldVdomTree = buildVdomTree(vdomItems);
+    vdomResultInner.appendChild(V.render(oldVdomTree));
+
+    // DOM Update handler
+    function handleDomUpdate() {
+      var idx = Math.floor(Math.random() * COUNT);
+      var newValue = 'Updated! ' + new Date().toLocaleTimeString();
+      domItems[idx].value = newValue;
+
+      var start = performance.now();
+      domElements[idx].text(newValue).classAdd('dom-demo__list-item--updated');
+      var time = (performance.now() - start).toFixed(3);
+
+      document.querySelector('#dom-update-timing .dom-demo__timing-value').textContent = time + 'ms (direct update)';
+
+      // Scroll to show updated item
+      domElements[idx].el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+      emit('event', { event: 'funky:dom:update', payload: { index: idx, time: parseFloat(time), method: 'direct' }});
+
+      // Remove highlight after delay
+      setTimeout(function() {
+        domElements[idx].classRemove('dom-demo__list-item--updated');
+      }, 1000);
+    }
+
+    // VDom Update handler
+    function handleVdomUpdate() {
+      var idx = Math.floor(Math.random() * COUNT);
+      var newValue = 'Updated! ' + new Date().toLocaleTimeString();
+      vdomItems[idx].value = newValue;
+
+      var start = performance.now();
+      var newVdomTree = buildVdomTree(vdomItems);
+      var patches = V.diff(oldVdomTree, newVdomTree);
+      V.patch(vdomResultInner, patches);
+      oldVdomTree = newVdomTree;
+      var time = (performance.now() - start).toFixed(3);
+
+      document.querySelector('#vdom-update-timing .dom-demo__timing-value').textContent = time + 'ms (diff + patch)';
+
+      // Highlight updated item
+      var updatedEl = vdomResultInner.querySelector('[data-key="' + idx + '"]') ||
+                      vdomResultInner.querySelectorAll('.dom-demo__list-item')[idx];
+      if (updatedEl) {
+        updatedEl.classList.add('dom-demo__list-item--updated');
+        updatedEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        setTimeout(function() {
+          updatedEl.classList.remove('dom-demo__list-item--updated');
+        }, 1000);
+      }
+
+      emit('event', { event: 'funky:dom:update', payload: { index: idx, time: parseFloat(time), method: 'diff-patch' }});
+    }
+
+    domUpdateBtn.addEventListener('click', handleDomUpdate);
+    vdomUpdateBtn.addEventListener('click', handleVdomUpdate);
+
+    cleanupFns.push(function() {
+      domUpdateBtn.removeEventListener('click', handleDomUpdate);
+      vdomUpdateBtn.removeEventListener('click', handleVdomUpdate);
+    });
+  }
+
+  // Scenario: When to Use guide
+  function renderWhenToUse(container) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dom-demo__wrapper';
+
+    var description = document.createElement('p');
+    description.className = 'dom-demo__description';
+    description.textContent = 'Quick reference guide for choosing between Funky.Dom and Funky.VDom.';
+    wrapper.appendChild(description);
+
+    var insight = document.createElement('div');
+    insight.className = 'dom-demo__insight';
+    insight.innerHTML = '<strong>Key Insight:</strong> Dom is always faster. VDom trades speed for convenience — you don\'t track what changed.';
+    wrapper.appendChild(insight);
+
+    var table = document.createElement('div');
+    table.className = 'dom-demo__guide-table';
+    table.innerHTML =
+      '<table>' +
+      '<thead><tr>' +
+      '<th>Scenario</th>' +
+      '<th>Funky.Dom</th>' +
+      '<th>Funky.VDom</th>' +
+      '</tr></thead>' +
+      '<tbody>' +
+      '<tr><td>You know which element changed</td><td class="dom-demo__winner">Faster</td><td>Overhead</td></tr>' +
+      '<tr><td>Data changed, don\'t know what</td><td>Manual tracking</td><td class="dom-demo__winner">Auto-diff</td></tr>' +
+      '<tr><td>Toggle class, show/hide</td><td class="dom-demo__winner">Direct</td><td>N/A</td></tr>' +
+      '<tr><td>One-time element creation</td><td class="dom-demo__winner">Faster</td><td>Okay</td></tr>' +
+      '<tr><td>Re-render from state</td><td>Rebuild all</td><td class="dom-demo__winner">Patches only</td></tr>' +
+      '<tr><td>Preserve focus/scroll on update</td><td>Manual</td><td class="dom-demo__winner">Auto</td></tr>' +
+      '</tbody></table>';
+    wrapper.appendChild(table);
+
+    var summary = document.createElement('div');
+    summary.className = 'dom-demo__summary';
+    summary.innerHTML = '<strong>Summary:</strong>' +
+      '<ul>' +
+      '<li><strong>Funky.Dom</strong> — Performance-critical, known updates, existing elements</li>' +
+      '<li><strong>Funky.VDom</strong> — State-driven UIs where you re-render and let diff find changes</li>' +
+      '</ul>';
+    wrapper.appendChild(summary);
+
+    container.appendChild(wrapper);
+  }
+
+  // Main render function
+  function render(props) {
+    var container = document.getElementById('dom-demo-container');
+    if (!container) return;
+
+    cleanup();
+    container.innerHTML = '';
+
+    var scenario = props.scenario || 'create-simple';
+    currentScenario = scenario;
+
+    switch (scenario) {
+      case 'create-simple':
+        renderCreateSimple(container);
+        break;
+      case 'create-nested':
+        renderCreateNested(container);
+        break;
+      case 'manipulate':
+        renderManipulate(container);
+        break;
+      case 'update-efficient':
+        renderUpdateEfficient(container);
+        break;
+      case 'when-to-use':
+        renderWhenToUse(container);
+        break;
+      default:
+        renderCreateSimple(container);
+    }
+  }
+
+  Funky.Pages.register('component-dom-vs-vdom', {
+    init: function(state) {
+      var props = getProps();
+      render(props);
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          render(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return {};
+    },
+
+    destroy: function() {
+      cleanup();
+
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      currentScenario = null;
+
+      return {};
+    }
+  });
+})();
+</script>

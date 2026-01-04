@@ -1,0 +1,1100 @@
+/**
+ * Funky.Tour Component Styles
+ * 
+ * Phase 9: CSS Theming
+ * Comprehensive theme-aware CSS with --pro-* variables
+ */
+
+/* ============================================================================
+   CSS Variables Definition
+   ============================================================================ */
+
+:root {
+  /* ---------------------------------------------------------------------------
+     Tour Overlay
+     --------------------------------------------------------------------------- */
+  --pro-tour-overlay-bg: rgba(0, 0, 0, 0.6);
+  --pro-tour-overlay-transition: opacity 0.3s ease;
+  
+  /* ---------------------------------------------------------------------------
+     Tour Spotlight
+     --------------------------------------------------------------------------- */
+  --pro-tour-spotlight-radius: var(--pro-border-radius, 8px);
+  --pro-tour-spotlight-padding: 8px;
+  --pro-tour-spotlight-border-width: 2px;
+  --pro-tour-spotlight-border-color: var(--pro-accent-primary, #3b82f6);
+  --pro-tour-spotlight-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+  
+  /* ---------------------------------------------------------------------------
+     Tour Tooltip
+     --------------------------------------------------------------------------- */
+  --pro-tour-tooltip-bg: var(--pro-bg-elevated, #ffffff);
+  --pro-tour-tooltip-border: 1px solid var(--pro-border-color, #e5e7eb);
+  --pro-tour-tooltip-border-radius: var(--pro-border-radius-lg, 12px);
+  --pro-tour-tooltip-shadow: var(--pro-shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.15));
+  --pro-tour-tooltip-min-width: 280px;
+  --pro-tour-tooltip-max-width: 400px;
+  --pro-tour-tooltip-padding: 1rem;
+  --pro-tour-tooltip-transition: opacity 0.2s ease, transform 0.2s ease;
+  
+  /* Tooltip Arrow */
+  --pro-tour-arrow-size: 8px;
+  --pro-tour-arrow-bg: var(--pro-bg-elevated, #ffffff);
+  --pro-tour-arrow-border-color: var(--pro-border-color, #e5e7eb);
+  
+  /* ---------------------------------------------------------------------------
+     Tour Typography
+     --------------------------------------------------------------------------- */
+  --pro-tour-title-font-size: 1rem;
+  --pro-tour-title-font-weight: 600;
+  --pro-tour-title-color: var(--pro-text-primary, #1f2937);
+  --pro-tour-title-margin-bottom: 0.5rem;
+  
+  --pro-tour-content-font-size: 0.875rem;
+  --pro-tour-content-line-height: 1.5;
+  --pro-tour-content-color: var(--pro-text-secondary, #6b7280);
+  
+  /* ---------------------------------------------------------------------------
+     Tour Navigation
+     --------------------------------------------------------------------------- */
+  --pro-tour-nav-gap: 0.5rem;
+  --pro-tour-nav-margin-top: 1rem;
+  
+  /* Buttons */
+  --pro-tour-btn-padding: 0.5rem 1rem;
+  --pro-tour-btn-font-size: 0.875rem;
+  --pro-tour-btn-border-radius: var(--pro-border-radius-sm, 6px);
+  --pro-tour-btn-transition: all 0.15s ease;
+  
+  /* Primary Button */
+  --pro-tour-btn-primary-bg: var(--pro-accent-primary, #3b82f6);
+  --pro-tour-btn-primary-color: #ffffff;
+  --pro-tour-btn-primary-border: none;
+  --pro-tour-btn-primary-hover-bg: var(--pro-accent-primary-hover, #2563eb);
+  
+  /* Secondary Button */
+  --pro-tour-btn-secondary-bg: transparent;
+  --pro-tour-btn-secondary-color: var(--pro-text-secondary, #6b7280);
+  --pro-tour-btn-secondary-border: 1px solid var(--pro-border-color, #e5e7eb);
+  --pro-tour-btn-secondary-hover-bg: var(--pro-bg-hover, #f3f4f6);
+  
+  /* ---------------------------------------------------------------------------
+     Tour Progress
+     --------------------------------------------------------------------------- */
+  --pro-tour-progress-height: 4px;
+  --pro-tour-progress-bg: var(--pro-bg-tertiary, #e5e7eb);
+  --pro-tour-progress-fill: var(--pro-accent-primary, #3b82f6);
+  --pro-tour-progress-radius: 2px;
+  
+  /* Progress Dots */
+  --pro-tour-dot-size: 8px;
+  --pro-tour-dot-gap: 6px;
+  --pro-tour-dot-bg: var(--pro-bg-tertiary, #e5e7eb);
+  --pro-tour-dot-active-bg: var(--pro-accent-primary, #3b82f6);
+  --pro-tour-dot-completed-bg: var(--pro-success, #10b981);
+  
+  /* ---------------------------------------------------------------------------
+     Tour Step Counter
+     --------------------------------------------------------------------------- */
+  --pro-tour-counter-font-size: 0.75rem;
+  --pro-tour-counter-color: var(--pro-text-muted, #9ca3af);
+  
+  /* ---------------------------------------------------------------------------
+     Tour Animations
+     --------------------------------------------------------------------------- */
+  --pro-tour-fade-duration: 0.2s;
+  --pro-tour-slide-distance: 10px;
+  --pro-tour-spotlight-transition: all 0.2s ease-out;
+  
+  /* ---------------------------------------------------------------------------
+     Z-index Layers - Must be above modals (1050), toasts (9999), progress (10000)
+     --------------------------------------------------------------------------- */
+  --pro-tour-z-overlay: 100000;
+  --pro-tour-z-spotlight: 100001;
+  --pro-tour-z-tooltip: 100002;
+}
+
+/* ============================================================================
+   Dark Theme Overrides
+   ============================================================================ */
+
+[data-theme="dark"],
+.theme-dark {
+  --pro-tour-overlay-bg: rgba(0, 0, 0, 0.75);
+  
+  --pro-tour-tooltip-bg: var(--pro-bg-elevated, #1e293b);
+  --pro-tour-tooltip-border: 1px solid var(--pro-border-color, #334155);
+  --pro-tour-tooltip-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  
+  --pro-tour-arrow-bg: var(--pro-bg-elevated, #1e293b);
+  --pro-tour-arrow-border-color: var(--pro-border-color, #334155);
+  
+  --pro-tour-title-color: var(--pro-text-primary, #f1f5f9);
+  --pro-tour-content-color: var(--pro-text-secondary, #94a3b8);
+  
+  --pro-tour-btn-secondary-color: var(--pro-text-secondary, #94a3b8);
+  --pro-tour-btn-secondary-border: 1px solid var(--pro-border-color, #334155);
+  --pro-tour-btn-secondary-hover-bg: var(--pro-bg-hover, #334155);
+  
+  --pro-tour-progress-bg: var(--pro-bg-tertiary, #334155);
+  --pro-tour-dot-bg: var(--pro-bg-tertiary, #334155);
+  
+  --pro-tour-counter-color: var(--pro-text-muted, #64748b);
+}
+
+/* ============================================================================
+   Tour Overlay
+   ============================================================================ */
+
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--pro-tour-z-overlay);
+  pointer-events: none;
+  transition: var(--pro-tour-overlay-transition);
+}
+
+.tour-overlay.tour-overlay--active {
+  pointer-events: auto;
+}
+
+.tour-overlay svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================================================
+   Tour Spotlight
+   ============================================================================ */
+
+.tour-spotlight {
+  position: fixed;
+  z-index: var(--pro-tour-z-spotlight);
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: var(--pro-tour-spotlight-radius);
+  box-shadow: var(--pro-tour-spotlight-shadow);
+  transition: var(--pro-tour-spotlight-transition);
+  opacity: 0;
+}
+
+.tour-spotlight.tour--active {
+  opacity: 1;
+}
+
+.tour-spotlight::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--pro-tour-spotlight-border-width));
+  border: var(--pro-tour-spotlight-border-width) solid var(--pro-tour-spotlight-border-color);
+  border-radius: calc(var(--pro-tour-spotlight-radius) + var(--pro-tour-spotlight-border-width));
+  pointer-events: none;
+}
+
+/* Interactive spotlight - allows clicking through to element */
+.tour-spotlight.tour-spotlight--interactive {
+  pointer-events: none;
+}
+
+/* ============================================================================
+   Tour Spotlight Animations
+   ============================================================================ */
+
+@keyframes tourPulse {
+  0%, 100% {
+    box-shadow: var(--pro-tour-spotlight-shadow);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.2);
+  }
+}
+
+.tour-spotlight--pulse {
+  animation: tourPulse 2s ease-in-out infinite;
+}
+
+/* ============================================================================
+   Tour Tooltip
+   ============================================================================ */
+
+.tour-tooltip {
+  position: absolute;
+  z-index: var(--pro-tour-z-tooltip);
+  min-width: var(--pro-tour-tooltip-min-width);
+  max-width: var(--pro-tour-tooltip-max-width);
+  background: var(--pro-tour-tooltip-bg);
+  border: var(--pro-tour-tooltip-border);
+  border-radius: var(--pro-tour-tooltip-border-radius);
+  box-shadow: var(--pro-tour-tooltip-shadow);
+  transition: var(--pro-tour-tooltip-transition);
+  opacity: 0;
+  transform: translateY(var(--pro-tour-slide-distance));
+}
+
+.tour-tooltip.tour-tooltip--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Position-specific transforms */
+.tour-tooltip[data-position="top"],
+.tour-tooltip--top {
+  transform: translateY(calc(-1 * var(--pro-tour-slide-distance)));
+}
+
+.tour-tooltip[data-position="top"].tour-tooltip--visible,
+.tour-tooltip--top.tour-tooltip--visible {
+  transform: translateY(0);
+}
+
+.tour-tooltip[data-position="left"],
+.tour-tooltip--left {
+  transform: translateX(calc(-1 * var(--pro-tour-slide-distance)));
+}
+
+.tour-tooltip[data-position="left"].tour-tooltip--visible,
+.tour-tooltip--left.tour-tooltip--visible {
+  transform: translateX(0);
+}
+
+.tour-tooltip[data-position="right"],
+.tour-tooltip--right {
+  transform: translateX(var(--pro-tour-slide-distance));
+}
+
+.tour-tooltip[data-position="right"].tour-tooltip--visible,
+.tour-tooltip--right.tour-tooltip--visible {
+  transform: translateX(0);
+}
+
+/* ============================================================================
+   Tour Tooltip Header
+   ============================================================================ */
+
+.tour-tooltip__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--pro-tour-tooltip-padding);
+  padding-bottom: 0;
+  margin-bottom: var(--pro-tour-title-margin-bottom);
+}
+
+.tour-tooltip__title {
+  margin: 0;
+  font-size: var(--pro-tour-title-font-size);
+  font-weight: var(--pro-tour-title-font-weight);
+  color: var(--pro-tour-title-color);
+  line-height: 1.3;
+}
+
+.tour-tooltip__close {
+  flex-shrink: 0;
+  padding: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--pro-tour-content-color);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+  line-height: 1;
+  border-radius: var(--pro-tour-btn-border-radius);
+}
+
+.tour-tooltip__close:hover {
+  opacity: 1;
+}
+
+.tour-tooltip__close:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* ============================================================================
+   Tour Tooltip Body
+   ============================================================================ */
+
+.tour-tooltip__body {
+  padding: 0 var(--pro-tour-tooltip-padding);
+}
+
+.tour-tooltip__content {
+  font-size: var(--pro-tour-content-font-size);
+  line-height: var(--pro-tour-content-line-height);
+  color: var(--pro-tour-content-color);
+}
+
+.tour-tooltip__content p {
+  margin: 0 0 0.5rem;
+}
+
+.tour-tooltip__content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================================
+   Tour Tooltip Footer
+   ============================================================================ */
+
+.tour-tooltip__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pro-tour-nav-gap);
+  padding: var(--pro-tour-tooltip-padding);
+  padding-top: var(--pro-tour-nav-margin-top);
+}
+
+.tour-tooltip__progress {
+  font-size: var(--pro-tour-counter-font-size);
+  color: var(--pro-tour-counter-color);
+}
+
+.tour-tooltip__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--pro-tour-nav-gap);
+}
+
+/* Bootstrap button overrides within tour */
+.tour-tooltip__nav .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tour-tooltip__nav .btn-primary,
+.tour-tooltip__nav .btn-primary i,
+.tour-tooltip__nav .btn-primary .fas,
+.tour-tooltip__nav .btn-primary .far,
+.tour-tooltip__nav .btn-primary .fa {
+  color: #ffffff !important;
+}
+
+.tour-tooltip__nav .btn-outline-secondary i,
+.tour-tooltip__nav .btn-outline-secondary .fas,
+.tour-tooltip__nav .btn-outline-secondary .far,
+.tour-tooltip__nav .btn-outline-secondary .fa {
+  color: inherit;
+}
+
+/* ============================================================================
+   Tour Tooltip Arrow
+   ============================================================================ */
+
+.tour-tooltip__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Bottom arrow (tooltip above target) */
+.tour-tooltip--top .tour-tooltip__arrow,
+.tour-tooltip[data-position="top"] .tour-tooltip__arrow {
+  bottom: calc(-1 * var(--pro-tour-arrow-size));
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: var(--pro-tour-arrow-size) solid transparent;
+  border-right: var(--pro-tour-arrow-size) solid transparent;
+  border-top: var(--pro-tour-arrow-size) solid var(--pro-tour-arrow-bg);
+}
+
+/* Top arrow (tooltip below target) */
+.tour-tooltip--bottom .tour-tooltip__arrow,
+.tour-tooltip[data-position="bottom"] .tour-tooltip__arrow {
+  top: calc(-1 * var(--pro-tour-arrow-size));
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: var(--pro-tour-arrow-size) solid transparent;
+  border-right: var(--pro-tour-arrow-size) solid transparent;
+  border-bottom: var(--pro-tour-arrow-size) solid var(--pro-tour-arrow-bg);
+}
+
+/* Right arrow (tooltip to left of target) */
+.tour-tooltip--left .tour-tooltip__arrow,
+.tour-tooltip[data-position="left"] .tour-tooltip__arrow {
+  right: calc(-1 * var(--pro-tour-arrow-size));
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: var(--pro-tour-arrow-size) solid transparent;
+  border-bottom: var(--pro-tour-arrow-size) solid transparent;
+  border-left: var(--pro-tour-arrow-size) solid var(--pro-tour-arrow-bg);
+}
+
+/* Left arrow (tooltip to right of target) */
+.tour-tooltip--right .tour-tooltip__arrow,
+.tour-tooltip[data-position="right"] .tour-tooltip__arrow {
+  left: calc(-1 * var(--pro-tour-arrow-size));
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: var(--pro-tour-arrow-size) solid transparent;
+  border-bottom: var(--pro-tour-arrow-size) solid transparent;
+  border-right: var(--pro-tour-arrow-size) solid var(--pro-tour-arrow-bg);
+}
+
+/* ============================================================================
+   Tour Buttons
+   ============================================================================ */
+
+.tour-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pro-tour-btn-padding);
+  font-size: var(--pro-tour-btn-font-size);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  border-radius: var(--pro-tour-btn-border-radius);
+  cursor: pointer;
+  transition: var(--pro-tour-btn-transition);
+}
+
+.tour-btn:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* Primary button */
+.tour-btn--primary {
+  background: var(--pro-tour-btn-primary-bg);
+  color: var(--pro-tour-btn-primary-color);
+  border: var(--pro-tour-btn-primary-border);
+}
+
+.tour-btn--primary:hover {
+  background: var(--pro-tour-btn-primary-hover-bg);
+}
+
+/* Secondary button */
+.tour-btn--secondary {
+  background: var(--pro-tour-btn-secondary-bg);
+  color: var(--pro-tour-btn-secondary-color);
+  border: var(--pro-tour-btn-secondary-border);
+}
+
+.tour-btn--secondary:hover {
+  background: var(--pro-tour-btn-secondary-hover-bg);
+}
+
+/* Skip button (text only) */
+.tour-btn--skip {
+  background: transparent;
+  color: var(--pro-tour-counter-color);
+  border: none;
+  padding: var(--pro-tour-btn-padding);
+  font-size: var(--pro-tour-counter-font-size);
+}
+
+.tour-btn--skip:hover {
+  color: var(--pro-tour-content-color);
+}
+
+/* Action button */
+.tour-btn--action {
+  background: transparent;
+  color: var(--pro-accent-primary, #3b82f6);
+  border: 1px solid var(--pro-accent-primary, #3b82f6);
+}
+
+.tour-btn--action:hover {
+  background: var(--pro-accent-primary, #3b82f6);
+  color: #ffffff;
+}
+
+/* ============================================================================
+   Tour Progress Indicators
+   ============================================================================ */
+
+/* Progress bar */
+.tour-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--pro-tour-progress-height);
+  background: var(--pro-tour-progress-bg);
+  border-radius: var(--pro-tour-progress-radius) var(--pro-tour-progress-radius) 0 0;
+  overflow: hidden;
+}
+
+.tour-progress-bar__fill {
+  height: 100%;
+  background: var(--pro-tour-progress-fill);
+  transition: width 0.3s ease;
+}
+
+/* Progress dots */
+.tour-progress-dots {
+  display: flex;
+  align-items: center;
+  gap: var(--pro-tour-dot-gap);
+}
+
+.tour-progress-dot {
+  width: var(--pro-tour-dot-size);
+  height: var(--pro-tour-dot-size);
+  border-radius: 50%;
+  background: var(--pro-tour-dot-bg);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tour-progress-dot--active {
+  background: var(--pro-tour-dot-active-bg);
+  transform: scale(1.2);
+}
+
+.tour-progress-dot--completed {
+  background: var(--pro-tour-dot-completed-bg);
+}
+
+/* ============================================================================
+   Tour Target Element
+   ============================================================================ */
+
+.tour-target--active {
+  position: relative;
+  z-index: var(--pro-tour-z-spotlight) !important;
+}
+
+/* ============================================================================
+   Tour Animations
+   ============================================================================ */
+
+@keyframes tourFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tourFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes tourSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--pro-tour-slide-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tourSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--pro-tour-slide-distance)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================================
+   Don't Show Again (Phase 7)
+   ============================================================================ */
+
+.tour-dont-show-again {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem var(--pro-tour-tooltip-padding);
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--pro-border-color, #e5e7eb);
+}
+
+.tour-dont-show-again .form-check-input {
+  margin: 0;
+  cursor: pointer;
+}
+
+.tour-dont-show-again .form-check-label {
+  font-size: var(--pro-tour-counter-font-size);
+  color: var(--pro-tour-counter-color);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tour-dont-show-again .form-check-label:hover {
+  color: var(--pro-tour-content-color);
+}
+
+/* ============================================================================
+   Tour Active State (body class)
+   ============================================================================ */
+
+body.tour-active {
+  overflow: hidden;
+}
+
+body.tour-active--scroll-locked {
+  position: fixed;
+  width: 100%;
+}
+
+/* ============================================================================
+   Density Modes
+   ============================================================================ */
+
+/* Compact density */
+[data-density="compact"] .tour-tooltip {
+  --pro-tour-tooltip-padding: 0.75rem;
+  --pro-tour-title-font-size: 0.875rem;
+  --pro-tour-content-font-size: 0.8125rem;
+  --pro-tour-btn-padding: 0.375rem 0.75rem;
+  --pro-tour-btn-font-size: 0.8125rem;
+  --pro-tour-nav-margin-top: 0.75rem;
+}
+
+/* Comfortable density */
+[data-density="comfortable"] .tour-tooltip {
+  --pro-tour-tooltip-padding: 1.25rem;
+  --pro-tour-title-font-size: 1.125rem;
+  --pro-tour-content-font-size: 0.9375rem;
+  --pro-tour-btn-padding: 0.625rem 1.25rem;
+  --pro-tour-btn-font-size: 0.9375rem;
+  --pro-tour-nav-margin-top: 1.25rem;
+}
+
+/* ============================================================================
+   Responsive Adjustments
+   ============================================================================ */
+
+@media (max-width: 576px) {
+  .tour-tooltip {
+    --pro-tour-tooltip-min-width: 260px;
+    --pro-tour-tooltip-max-width: calc(100vw - 2rem);
+    position: fixed !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    bottom: 1rem !important;
+    top: auto !important;
+    width: auto !important;
+    transform: translateY(0) !important;
+  }
+  
+  .tour-tooltip__arrow {
+    display: none;
+  }
+  
+  .tour-tooltip__footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .tour-tooltip__nav {
+    justify-content: stretch;
+  }
+  
+  .tour-tooltip__nav .tour-btn {
+    flex: 1;
+  }
+}
+
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
+
+@media print {
+  .tour-overlay,
+  .tour-spotlight,
+  .tour-tooltip {
+    display: none !important;
+  }
+}
+
+/* ============================================================================
+   Reduced Motion
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-overlay,
+  .tour-spotlight,
+  .tour-tooltip,
+  .tour-progress-bar__fill,
+  .tour-progress-dot,
+  .tour-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .tour-spotlight--pulse {
+    animation: none !important;
+  }
+  
+  .tour-overlay svg rect {
+    transition: none !important;
+  }
+}
+
+/* ============================================================================
+   High Contrast Mode (Phase 10)
+   ============================================================================ */
+
+@media (forced-colors: active) {
+  .tour-spotlight::after {
+    border-width: 4px;
+    border-color: Highlight;
+  }
+  
+  .tour-tooltip {
+    border: 2px solid ButtonText;
+    forced-color-adjust: none;
+  }
+  
+  .tour-btn {
+    border: 2px solid ButtonText;
+  }
+  
+  .tour-btn--primary {
+    background: Highlight;
+    color: HighlightText;
+  }
+  
+  .tour-btn:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+  }
+}
+
+/* High contrast class for programmatic detection */
+.tour-high-contrast .tour-spotlight::after {
+  border-width: 4px;
+}
+
+.tour-high-contrast .tour-tooltip {
+  border-width: 2px;
+}
+
+/* ============================================================================
+   Screen Reader Only (Phase 10)
+   ============================================================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   TOUR PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+.tour-demo {
+  padding: var(--pro-spacing-lg, 1.5rem);
+  width: 100%;
+}
+
+.tour-demo__section {
+  margin-bottom: var(--pro-spacing-xl, 2rem);
+}
+
+.tour-demo__section h3 {
+  margin-bottom: var(--pro-spacing-sm, 0.5rem);
+  color: var(--pro-text, #c9d1d9);
+  font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+.tour-demo__section h4 {
+  margin-bottom: var(--pro-spacing-xs, 0.25rem);
+  color: var(--pro-text-muted, #8b949e);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* State Display */
+.tour-demo__state {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--pro-spacing-md, 1rem);
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.tour-demo__state-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.tour-demo__state-label {
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  color: var(--pro-text-muted, #8b949e);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tour-demo__state-value {
+  font-size: var(--pro-font-size-base, 1rem);
+  color: var(--pro-text, #c9d1d9);
+  font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* Demo Area */
+.tour-demo__area {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+/* Demo Interface - Simulated Dashboard */
+.tour-demo__interface {
+  background-color: var(--pro-bg-tertiary, #21262d);
+  border-radius: var(--pro-border-radius, 6px);
+  overflow: hidden;
+}
+
+.tour-demo__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border-bottom: 1px solid var(--pro-border-color, #30363d);
+}
+
+.tour-demo__title {
+  margin: 0;
+  font-size: var(--pro-font-size-lg, 1.125rem);
+  color: var(--pro-text, #c9d1d9);
+}
+
+.tour-demo__header-actions {
+  display: flex;
+  gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.tour-demo__header-actions .btn {
+  position: relative;
+}
+
+.tour-demo__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  color: #fff;
+  background-color: var(--pro-danger, #f85149);
+  border-radius: 8px;
+}
+
+.tour-demo__layout {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  min-height: 200px;
+}
+
+.tour-demo__sidebar {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border-right: 1px solid var(--pro-border-color, #30363d);
+}
+
+.tour-demo__nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--pro-spacing-sm, 0.5rem);
+  padding: var(--pro-spacing-sm, 0.5rem) var(--pro-spacing-md, 1rem);
+  margin-bottom: var(--pro-spacing-xs, 0.25rem);
+  color: var(--pro-text-muted, #8b949e);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  border-radius: var(--pro-border-radius-sm, 4px);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tour-demo__nav-item:hover {
+  background-color: var(--pro-bg-tertiary, #21262d);
+  color: var(--pro-text, #c9d1d9);
+}
+
+.tour-demo__nav-item--active {
+  background-color: var(--pro-primary, #238636);
+  color: #fff;
+}
+
+.tour-demo__nav-item--active:hover {
+  background-color: var(--pro-primary, #238636);
+  color: #fff;
+}
+
+.tour-demo__content {
+  padding: var(--pro-spacing-md, 1rem);
+}
+
+.tour-demo__content p {
+  margin: 0 0 var(--pro-spacing-md, 1rem) 0;
+  color: var(--pro-text-muted, #8b949e);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  line-height: 1.5;
+}
+
+.tour-demo__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pro-spacing-md, 1rem);
+}
+
+.tour-demo__stat {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius, 6px);
+  text-align: center;
+}
+
+.tour-demo__stat-value {
+  display: block;
+  font-size: var(--pro-font-size-xl, 1.5rem);
+  font-weight: var(--pro-font-weight-bold, 700);
+  color: var(--pro-text, #c9d1d9);
+}
+
+.tour-demo__stat-label {
+  display: block;
+  margin-top: var(--pro-spacing-xs, 0.25rem);
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  color: var(--pro-text-muted, #8b949e);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Controls */
+.tour-demo__controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--pro-spacing-lg, 1.5rem);
+}
+
+.tour-demo__control-group {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.tour-demo__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pro-spacing-xs, 0.25rem);
+  margin-top: var(--pro-spacing-sm, 0.5rem);
+}
+
+/* Info Box */
+.tour-demo__info {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.tour-demo__info p {
+  margin-bottom: var(--pro-spacing-sm, 0.5rem);
+  color: var(--pro-text, #c9d1d9);
+}
+
+.tour-demo__info ul {
+  margin: 0 0 var(--pro-spacing-sm, 0.5rem) 0;
+  padding-left: var(--pro-spacing-lg, 1.5rem);
+  color: var(--pro-text-muted, #8b949e);
+}
+
+.tour-demo__info li {
+  margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+.tour-demo__info strong {
+  color: var(--pro-text, #c9d1d9);
+}
+
+.tour-demo__info kbd {
+  display: inline-block;
+  padding: 0.15em 0.4em;
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  font-family: var(--pro-font-mono, monospace);
+  color: var(--pro-text, #c9d1d9);
+  background-color: var(--pro-bg-tertiary, #21262d);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius-sm, 3px);
+  box-shadow: inset 0 -1px 0 var(--pro-border-color, #30363d);
+}
+
+/* Event Log */
+.tour-demo__log-controls {
+  margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.tour-demo__log {
+  margin: 0;
+  padding: var(--pro-spacing-md, 1rem);
+  max-height: 200px;
+  overflow: auto;
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  font-family: var(--pro-font-mono, monospace);
+  color: var(--pro-text-muted, #8b949e);
+  background-color: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: var(--pro-border-radius, 6px);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .tour-demo {
+    padding: var(--pro-spacing-md, 1rem);
+  }
+
+  .tour-demo__controls {
+    grid-template-columns: 1fr;
+  }
+
+  .tour-demo__state {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tour-demo__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tour-demo__sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--pro-border-color, #30363d);
+  }
+
+  .tour-demo__stats {
+    grid-template-columns: 1fr;
+  }
+}

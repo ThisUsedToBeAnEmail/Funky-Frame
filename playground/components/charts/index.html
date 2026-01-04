@@ -1,0 +1,537 @@
+<div data-page="component-charts" class="component-demo" tabindex="-1">
+  <h2>Charts (Sparklines)</h2>
+  <p class="text-muted">Lightweight SVG sparkline charts for inline data visualization and trend indicators. No external dependencies.</p>
+
+  <!-- Section 1: Configuration -->
+  <section class="demo-section">
+    <h3>Configuration</h3>
+    <div class="demo-area">
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="sparkline-type">Type:</label>
+          <select id="sparkline-type" class="form-select">
+            <option value="line" selected>Line</option>
+            <option value="bar">Bar</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="sparkline-color">Color:</label>
+          <select id="sparkline-color" class="form-select">
+            <option value="auto" selected>Auto (trend-based)</option>
+            <option value="positive">Positive (green)</option>
+            <option value="negative">Negative (red)</option>
+            <option value="neutral">Neutral (gray)</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="sparkline-width">Width:</label>
+          <input type="number" id="sparkline-width" class="form-control" value="120" min="40" max="300">
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="sparkline-height">Height:</label>
+          <input type="number" id="sparkline-height" class="form-control" value="40" min="20" max="100">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-render">
+          <i class="fas fa-chart-line me-1"></i> Render
+        </button>
+      </div>
+      <div class="charts-demo__status-row">
+        <span id="sparkline-status" class="badge bg-secondary">Ready</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Live Preview -->
+  <section class="demo-section">
+    <h3>Live Preview</h3>
+    <div class="demo-area">
+      <div class="charts-demo__preview-card">
+        <div class="charts-demo__preview-header">
+          <span class="charts-demo__preview-title">Sample Metric</span>
+          <span id="preview-trend" class="charts-demo__preview-trend"></span>
+        </div>
+        <div id="live-sparkline" class="charts-demo__preview-sparkline" aria-label="Live sparkline preview"></div>
+        <div class="charts-demo__preview-footer">
+          <span id="preview-values" class="text-muted"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: API Methods -->
+  <section class="demo-section">
+    <h3>API Methods</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control sparklines programmatically.</p>
+      <div class="charts-demo__api-controls">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-random-data">
+          <i class="fas fa-random me-1" aria-hidden="true"></i> Random Data
+        </button>
+        <button type="button" class="btn btn-outline-success btn-sm" id="btn-upward-trend">
+          <i class="fas fa-arrow-trend-up me-1" aria-hidden="true"></i> Upward Trend
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm" id="btn-downward-trend">
+          <i class="fas fa-arrow-trend-down me-1" aria-hidden="true"></i> Downward Trend
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-flat-trend">
+          <i class="fas fa-minus me-1" aria-hidden="true"></i> Flat Trend
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm" id="btn-get-trend">
+          <i class="fas fa-info-circle me-1" aria-hidden="true"></i> Get Trend
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Dashboard Cards -->
+  <section class="demo-section">
+    <h3>Dashboard Stat Cards</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Common use case: inline sparklines in dashboard stat cards.</p>
+      <div class="charts-demo__stats-grid">
+        <div class="charts-demo__stat-card">
+          <div class="charts-demo__stat-header">
+            <span class="charts-demo__stat-label">Revenue</span>
+            <span class="charts-demo__stat-badge charts-demo__stat-badge--up">+12.5%</span>
+          </div>
+          <div class="charts-demo__stat-value">$1.2M</div>
+          <div id="stat-sparkline-1" class="charts-demo__stat-sparkline" aria-label="Revenue trend"></div>
+        </div>
+        <div class="charts-demo__stat-card">
+          <div class="charts-demo__stat-header">
+            <span class="charts-demo__stat-label">Orders</span>
+            <span class="charts-demo__stat-badge charts-demo__stat-badge--down">-3.2%</span>
+          </div>
+          <div class="charts-demo__stat-value">8,432</div>
+          <div id="stat-sparkline-2" class="charts-demo__stat-sparkline" aria-label="Orders trend"></div>
+        </div>
+        <div class="charts-demo__stat-card">
+          <div class="charts-demo__stat-header">
+            <span class="charts-demo__stat-label">Users</span>
+            <span class="charts-demo__stat-badge charts-demo__stat-badge--up">+8.7%</span>
+          </div>
+          <div class="charts-demo__stat-value">24.5K</div>
+          <div id="stat-sparkline-3" class="charts-demo__stat-sparkline" aria-label="Users trend"></div>
+        </div>
+        <div class="charts-demo__stat-card">
+          <div class="charts-demo__stat-header">
+            <span class="charts-demo__stat-label">Bounce Rate</span>
+            <span class="charts-demo__stat-badge">0%</span>
+          </div>
+          <div class="charts-demo__stat-value">42.1%</div>
+          <div id="stat-sparkline-4" class="charts-demo__stat-sparkline" aria-label="Bounce rate trend"></div>
+        </div>
+      </div>
+      <div class="charts-demo__stat-actions">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-refresh-stats">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i> Refresh All
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Sparkline Types Comparison -->
+  <section class="demo-section">
+    <h3>Sparkline Types</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Line vs Bar sparklines with different color modes.</p>
+      <div class="charts-demo__types-grid">
+        <div class="charts-demo__type-item">
+          <span class="charts-demo__type-label">Line (auto):</span>
+          <span id="type-line-auto" class="charts-demo__type-sparkline"></span>
+        </div>
+        <div class="charts-demo__type-item">
+          <span class="charts-demo__type-label">Bar (auto):</span>
+          <span id="type-bar-auto" class="charts-demo__type-sparkline"></span>
+        </div>
+        <div class="charts-demo__type-item">
+          <span class="charts-demo__type-label">Line (positive):</span>
+          <span id="type-line-positive" class="charts-demo__type-sparkline"></span>
+        </div>
+        <div class="charts-demo__type-item">
+          <span class="charts-demo__type-label">Bar (positive):</span>
+          <span id="type-bar-positive" class="charts-demo__type-sparkline"></span>
+        </div>
+        <div class="charts-demo__type-item">
+          <span class="charts-demo__type-label">Line (negative):</span>
+          <span id="type-line-negative" class="charts-demo__type-sparkline"></span>
+        </div>
+        <div class="charts-demo__type-item">
+          <span class="charts-demo__type-label">Bar (negative):</span>
+          <span id="type-bar-negative" class="charts-demo__type-sparkline"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Data Attribute Initialization -->
+  <section class="demo-section">
+    <h3>Data Attribute Initialization</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Initialize sparklines declaratively using data attributes.</p>
+      <div class="charts-demo__data-attr-examples">
+        <div class="charts-demo__data-attr-item">
+          <h4><i class="fas fa-code me-2"></i>Line Sparkline</h4>
+          <div class="charts-demo__data-attr-demo">
+            <span data-sparkline="line" data-values="5,10,8,15,12,18,14,20" data-width="100" data-height="30"></span>
+          </div>
+          <pre class="charts-demo__code-block"><code>&lt;span data-sparkline="line"
+      data-values="5,10,8,15,12,18,14,20"
+      data-width="100"
+      data-height="30"&gt;&lt;/span&gt;</code></pre>
+        </div>
+        <div class="charts-demo__data-attr-item">
+          <h4><i class="fas fa-code me-2"></i>Bar Sparkline</h4>
+          <div class="charts-demo__data-attr-demo">
+            <span data-sparkline="bar" data-values="8,12,5,15,10,18,7,14" data-width="100" data-height="30"></span>
+          </div>
+          <pre class="charts-demo__code-block"><code>&lt;span data-sparkline="bar"
+      data-values="8,12,5,15,10,18,7,14"
+      data-width="100"
+      data-height="30"&gt;&lt;/span&gt;</code></pre>
+        </div>
+        <div class="charts-demo__data-attr-item">
+          <h4><i class="fas fa-code me-2"></i>With Color Override</h4>
+          <div class="charts-demo__data-attr-demo">
+            <span data-sparkline="line" data-values="20,18,15,12,10,8,5,3" data-width="100" data-height="30" data-color="negative"></span>
+          </div>
+          <pre class="charts-demo__code-block"><code>&lt;span data-sparkline="line"
+      data-values="20,18,15,12,10,8,5,3"
+      data-color="negative"&gt;&lt;/span&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Programmatic Usage -->
+  <section class="demo-section">
+    <h3>Programmatic Usage</h3>
+    <div class="demo-area">
+      <pre class="charts-demo__code-block"><code>// Line sparkline
+Funky.Charts.line(container, [10, 15, 12, 18, 22, 19, 25], {
+  width: 100,
+  height: 40,
+  color: 'positive'  // or 'negative', 'neutral', 'auto'
+});
+
+// Bar sparkline
+Funky.Charts.bar(container, [5, 8, 3, 12, 7, 9, 4], {
+  width: 100,
+  height: 40,
+  gap: 2
+});
+
+// Get trend direction from data
+var trend = Funky.Charts.getTrend([1, 2, 3, 4, 5]);
+// Returns: 'positive', 'negative', or 'neutral'
+
+// Auto-initialize all data-sparkline elements
+Funky.Charts.autoInit(container);</code></pre>
+    </div>
+  </section>
+
+  <!-- Section 8: Event Log -->
+  <section class="demo-section">
+    <h3>Event Log</h3>
+    <div class="demo-area">
+      <pre id="charts-log" class="demo-log" aria-live="polite" aria-label="Event log">Interact with sparklines to see events</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var Charts = window.Funky && window.Funky.Charts ? window.Funky.Charts : null;
+  var Toast = window.Funky && window.Funky.Toast ? window.Funky.Toast : null;
+
+  var logs = [];
+  var propsChangedHandler = null;
+  var currentData = [10, 15, 12, 18, 22, 19, 25, 30];
+
+  // Sample data for stat cards
+  var statData = {
+    revenue: [980, 1050, 1100, 1080, 1150, 1200, 1180, 1250],
+    orders: [8800, 8600, 8500, 8450, 8400, 8380, 8350, 8432],
+    users: [22000, 22500, 23000, 23200, 23800, 24000, 24200, 24500],
+    bounce: [42, 42, 42, 42, 42, 42, 42, 42]
+  };
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('charts-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getOptions() {
+    return {
+      type: document.getElementById('sparkline-type').value,
+      color: document.getElementById('sparkline-color').value,
+      width: parseInt(document.getElementById('sparkline-width').value) || 120,
+      height: parseInt(document.getElementById('sparkline-height').value) || 40
+    };
+  }
+
+  function renderLiveSparkline() {
+    if (!Charts) {
+      document.getElementById('live-sparkline').innerHTML = '<span class="text-warning">Funky.Charts not available</span>';
+      return;
+    }
+
+    var opts = getOptions();
+    var container = document.getElementById('live-sparkline');
+    var options = {
+      width: opts.width,
+      height: opts.height
+    };
+
+    if (opts.color !== 'auto') {
+      options.color = opts.color;
+    }
+
+    if (opts.type === 'bar') {
+      Charts.bar(container, currentData, options);
+    } else {
+      Charts.line(container, currentData, options);
+    }
+
+    // Update trend badge
+    var trend = Charts.getTrend(currentData);
+    var trendEl = document.getElementById('preview-trend');
+    trendEl.textContent = trend === 'positive' ? '↑ Up' : (trend === 'negative' ? '↓ Down' : '→ Flat');
+    trendEl.className = 'charts-demo__preview-trend charts-demo__preview-trend--' + trend;
+
+    // Update values display
+    document.getElementById('preview-values').textContent =
+      'Data: [' + currentData.join(', ') + ']';
+
+    document.getElementById('sparkline-status').textContent = opts.type + ' sparkline';
+    document.getElementById('sparkline-status').className = 'badge bg-success';
+
+    log('Rendered ' + opts.type + ' sparkline (' + opts.width + 'x' + opts.height + ')');
+  }
+
+  function renderStatCards() {
+    if (!Charts) return;
+
+    Charts.line(document.getElementById('stat-sparkline-1'), statData.revenue, { width: 80, height: 25 });
+    Charts.line(document.getElementById('stat-sparkline-2'), statData.orders, { width: 80, height: 25 });
+    Charts.line(document.getElementById('stat-sparkline-3'), statData.users, { width: 80, height: 25 });
+    Charts.line(document.getElementById('stat-sparkline-4'), statData.bounce, { width: 80, height: 25 });
+    log('Rendered stat card sparklines');
+  }
+
+  function renderTypeComparison() {
+    if (!Charts) return;
+
+    var upData = [5, 8, 6, 10, 12, 11, 15, 18];
+    var downData = [18, 15, 16, 12, 10, 11, 8, 5];
+
+    // Auto color (based on trend)
+    Charts.line(document.getElementById('type-line-auto'), upData, { width: 80, height: 25 });
+    Charts.bar(document.getElementById('type-bar-auto'), upData, { width: 80, height: 25 });
+
+    // Positive color
+    Charts.line(document.getElementById('type-line-positive'), upData, { width: 80, height: 25, color: 'positive' });
+    Charts.bar(document.getElementById('type-bar-positive'), upData, { width: 80, height: 25, color: 'positive' });
+
+    // Negative color
+    Charts.line(document.getElementById('type-line-negative'), downData, { width: 80, height: 25, color: 'negative' });
+    Charts.bar(document.getElementById('type-bar-negative'), downData, { width: 80, height: 25, color: 'negative' });
+
+    log('Rendered type comparison sparklines');
+  }
+
+  function generateRandomData() {
+    var data = [];
+    for (var i = 0; i < 8; i++) {
+      data.push(Math.floor(Math.random() * 50) + 10);
+    }
+    return data;
+  }
+
+  function generateUpwardData() {
+    var base = 10;
+    var data = [];
+    for (var i = 0; i < 8; i++) {
+      base += Math.floor(Math.random() * 10) + 2;
+      data.push(base);
+    }
+    return data;
+  }
+
+  function generateDownwardData() {
+    var base = 60;
+    var data = [];
+    for (var i = 0; i < 8; i++) {
+      base -= Math.floor(Math.random() * 10) + 2;
+      data.push(Math.max(5, base));
+    }
+    return data;
+  }
+
+  function generateFlatData() {
+    var base = 30;
+    var data = [];
+    for (var i = 0; i < 8; i++) {
+      data.push(base + (Math.random() > 0.5 ? 1 : -1));
+    }
+    return data;
+  }
+
+  function syncInputsFromProps(props) {
+    if (props.sparklineType != null) {
+      document.getElementById('sparkline-type').value = props.sparklineType;
+    }
+    if (props.color != null) {
+      document.getElementById('sparkline-color').value = props.color;
+    }
+    if (props.width != null) {
+      document.getElementById('sparkline-width').value = props.width;
+    }
+    if (props.height != null) {
+      document.getElementById('sparkline-height').value = props.height;
+    }
+  }
+
+  Funky.Pages.register('component-charts', {
+    init: function(state) {
+      var props = getProps();
+      syncInputsFromProps(props);
+
+      // =========================================================================
+      // Section 1: Configuration
+      // =========================================================================
+
+      document.getElementById('btn-render').addEventListener('click', function() {
+        renderLiveSparkline();
+        emit('event', { event: 'sparkline:render', payload: getOptions() });
+      });
+
+      document.getElementById('sparkline-type').addEventListener('change', function() {
+        emit('event', { event: 'prop:sparklineType', payload: this.value });
+        renderLiveSparkline();
+      });
+
+      document.getElementById('sparkline-color').addEventListener('change', function() {
+        emit('event', { event: 'prop:color', payload: this.value });
+        renderLiveSparkline();
+      });
+
+      document.getElementById('sparkline-width').addEventListener('change', function() {
+        emit('event', { event: 'prop:width', payload: parseInt(this.value) });
+        renderLiveSparkline();
+      });
+
+      document.getElementById('sparkline-height').addEventListener('change', function() {
+        emit('event', { event: 'prop:height', payload: parseInt(this.value) });
+        renderLiveSparkline();
+      });
+
+      // =========================================================================
+      // Section 3: API Methods
+      // =========================================================================
+
+      document.getElementById('btn-random-data').addEventListener('click', function() {
+        currentData = generateRandomData();
+        renderLiveSparkline();
+        log('Generated random data');
+        emit('event', { event: 'data:random', payload: currentData });
+      });
+
+      document.getElementById('btn-upward-trend').addEventListener('click', function() {
+        currentData = generateUpwardData();
+        renderLiveSparkline();
+        log('Generated upward trend data');
+        emit('event', { event: 'data:upward', payload: currentData });
+      });
+
+      document.getElementById('btn-downward-trend').addEventListener('click', function() {
+        currentData = generateDownwardData();
+        renderLiveSparkline();
+        log('Generated downward trend data');
+        emit('event', { event: 'data:downward', payload: currentData });
+      });
+
+      document.getElementById('btn-flat-trend').addEventListener('click', function() {
+        currentData = generateFlatData();
+        renderLiveSparkline();
+        log('Generated flat trend data');
+        emit('event', { event: 'data:flat', payload: currentData });
+      });
+
+      document.getElementById('btn-get-trend').addEventListener('click', function() {
+        if (Charts) {
+          var trend = Charts.getTrend(currentData);
+          log('getTrend() returned: ' + trend);
+          if (Toast) Toast.info('Trend: ' + trend);
+          emit('event', { event: 'api:getTrend', payload: trend });
+        }
+      });
+
+      // =========================================================================
+      // Section 4: Stat Cards
+      // =========================================================================
+
+      document.getElementById('btn-refresh-stats').addEventListener('click', function() {
+        // Randomize stat data
+        statData.revenue = generateUpwardData();
+        statData.orders = generateDownwardData();
+        statData.users = generateUpwardData();
+        statData.bounce = generateFlatData();
+        renderStatCards();
+        log('Refreshed stat card sparklines');
+        if (Toast) Toast.success('Stats refreshed');
+        emit('event', { event: 'stats:refresh', payload: {} });
+      });
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+          renderLiveSparkline();
+          emit('event', { event: 'props:change', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // =========================================================================
+      // Initialize
+      // =========================================================================
+
+      renderLiveSparkline();
+      renderStatCards();
+      renderTypeComparison();
+
+      // Auto-init data attribute sparklines
+      if (Charts && Charts.autoInit) {
+        Charts.autoInit(document.querySelector('[data-page="component-charts"]'));
+        log('Auto-initialized data attribute sparklines');
+      }
+
+      // Focus page container
+      var pageContainer = document.querySelector('[data-page="component-charts"]');
+      if (pageContainer) {
+        pageContainer.focus();
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      logs = [];
+      currentData = [10, 15, 12, 18, 22, 19, 25, 30];
+      return {};
+    }
+  });
+})();
+</script>

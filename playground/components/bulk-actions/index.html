@@ -1,0 +1,556 @@
+<div data-page="component-bulk-actions" class="component-demo" tabindex="-1">
+  <h2>Bulk Actions</h2>
+  <p class="text-muted">Multi-select and batch operations for Funky.Table with action bar, selection persistence, and dynamic action management.</p>
+
+  <!-- Section 1: Configuration -->
+  <section class="demo-section">
+    <h3>Configuration</h3>
+    <div class="demo-area">
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="bar-position">Bar Position:</label>
+          <select id="bar-position" class="form-select">
+            <option value="top" selected>Top</option>
+            <option value="bottom">Bottom</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="show-count">Show Count:</label>
+          <select id="show-count" class="form-select">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="show-clear">Show Clear:</label>
+          <select id="show-clear" class="form-select">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-init">
+          <i class="fas fa-play me-1"></i> Reinitialize
+        </button>
+      </div>
+      <div class="bulk-actions-demo__status-row">
+        <span id="bulk-status" class="badge bg-secondary">Not initialized</span>
+        <span id="api-status" class="text-muted">Ready</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Funky.Table with Selection -->
+  <section class="demo-section">
+    <h3>Selectable Table</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Click rows to select (Ctrl/Cmd+click for multi, Shift+click for range). The bulk action bar appears when items are selected.</p>
+      <div id="bulk-table-container">
+        <!-- Funky.Table will be rendered here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Selection Controls -->
+  <section class="demo-section">
+    <h3>Selection API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control selection state programmatically via BulkActions or directly on Funky.Table.</p>
+      <div class="bulk-actions-demo__api-controls">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-select-all">
+          <i class="fas fa-check-double me-1" aria-hidden="true"></i> Select All
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-clear-selection">
+          <i class="fas fa-times me-1" aria-hidden="true"></i> Clear Selection
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm" id="btn-get-selected">
+          <i class="fas fa-list me-1" aria-hidden="true"></i> Get Selected
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm" id="btn-get-count">
+          <i class="fas fa-hashtag me-1" aria-hidden="true"></i> Get Count
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-select-by-id">
+          <i class="fas fa-hand-pointer me-1" aria-hidden="true"></i> Select IDs 1,3,5
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Action Management -->
+  <section class="demo-section">
+    <h3>Action Registry</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Dynamically add, remove, or modify bulk actions.</p>
+      <div class="bulk-actions-demo__action-form">
+        <div class="demo-form-row">
+          <div class="demo-form-row__field">
+            <label class="demo-form-row__label" for="action-id">Action ID:</label>
+            <input type="text" id="action-id" class="form-control" placeholder="custom-action">
+          </div>
+          <div class="demo-form-row__field">
+            <label class="demo-form-row__label" for="action-label">Label:</label>
+            <input type="text" id="action-label" class="form-control" placeholder="Custom Action">
+          </div>
+          <div class="demo-form-row__field">
+            <label class="demo-form-row__label" for="action-icon">Icon:</label>
+            <input type="text" id="action-icon" class="form-control" placeholder="fa-star">
+          </div>
+          <div class="demo-form-row__field">
+            <label class="demo-form-row__label" for="action-variant">Variant:</label>
+            <select id="action-variant" class="form-select">
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="success">Success</option>
+              <option value="warning">Warning</option>
+              <option value="danger">Danger</option>
+              <option value="info">Info</option>
+            </select>
+          </div>
+        </div>
+        <div class="bulk-actions-demo__action-buttons">
+          <button type="button" class="btn btn-success btn-sm" id="btn-add-action">
+            <i class="fas fa-plus me-1" aria-hidden="true"></i> Add Action
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" id="btn-remove-action">
+            <i class="fas fa-minus me-1" aria-hidden="true"></i> Remove Action
+          </button>
+          <button type="button" class="btn btn-warning btn-sm" id="btn-toggle-action">
+            <i class="fas fa-toggle-on me-1" aria-hidden="true"></i> Toggle Enable
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: State Display -->
+  <section class="demo-section">
+    <h3>Current State</h3>
+    <div class="demo-area">
+      <div class="bulk-actions-demo__state-grid">
+        <div class="bulk-actions-demo__state-card">
+          <h4><i class="fas fa-check-square" aria-hidden="true"></i> Selected Items</h4>
+          <pre id="selected-items" class="bulk-actions-demo__code-block">[]</pre>
+        </div>
+        <div class="bulk-actions-demo__state-card">
+          <h4><i class="fas fa-bolt" aria-hidden="true"></i> Registered Actions</h4>
+          <pre id="registered-actions" class="bulk-actions-demo__code-block">[]</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Keyboard Navigation -->
+  <section class="demo-section">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="demo-area">
+      <dl class="bulk-actions-demo__keyboard-hints">
+        <div class="bulk-actions-demo__keyboard-hint">
+          <dt><kbd>Cmd/Ctrl</kbd>+<kbd>A</kbd></dt>
+          <dd>Select all (when table focused)</dd>
+        </div>
+        <div class="bulk-actions-demo__keyboard-hint">
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Clear selection</dd>
+        </div>
+        <div class="bulk-actions-demo__keyboard-hint">
+          <dt><kbd>Cmd/Ctrl</kbd>+<kbd>Click</kbd></dt>
+          <dd>Toggle row selection</dd>
+        </div>
+        <div class="bulk-actions-demo__keyboard-hint">
+          <dt><kbd>Shift</kbd>+<kbd>Click</kbd></dt>
+          <dd>Range select</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Section 7: Event Log -->
+  <section class="demo-section">
+    <h3>Event Log</h3>
+    <div class="demo-area">
+      <pre id="bulk-log" class="demo-log" aria-live="polite" aria-label="Event log">Select items to see bulk action events</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var Toast = window.Funky && window.Funky.Toast ? window.Funky.Toast : null;
+  var Table = window.Funky && window.Funky.Table ? window.Funky.Table : null;
+  var BulkActions = window.Funky && window.Funky.BulkActions ? window.Funky.BulkActions : null;
+
+  var logs = [];
+  var tableInstance = null;
+  var bulkInstance = null;
+  var propsChangedHandler = null;
+
+  // Sample data
+  var tableData = [
+    { id: 1, name: 'Document Alpha', status: 'Active', category: 'Report', created: '2024-01-15' },
+    { id: 2, name: 'Report Beta', status: 'Pending', category: 'Analysis', created: '2024-01-14' },
+    { id: 3, name: 'Spreadsheet Gamma', status: 'Active', category: 'Data', created: '2024-01-13' },
+    { id: 4, name: 'Presentation Delta', status: 'Archived', category: 'Slides', created: '2024-01-12' },
+    { id: 5, name: 'Document Epsilon', status: 'Active', category: 'Report', created: '2024-01-11' },
+    { id: 6, name: 'Report Zeta', status: 'Pending', category: 'Analysis', created: '2024-01-10' },
+    { id: 7, name: 'Archive Eta', status: 'Deleted', category: 'Backup', created: '2024-01-09' },
+    { id: 8, name: 'Document Theta', status: 'Active', category: 'Report', created: '2024-01-08' }
+  ];
+
+  // Default actions
+  var defaultActions = [
+    { id: 'edit', label: 'Edit', icon: 'fa-edit', variant: 'primary' },
+    { id: 'export', label: 'Export', icon: 'fa-download', variant: 'secondary' },
+    { id: 'archive', label: 'Archive', icon: 'fa-archive', variant: 'warning' },
+    { id: 'delete', label: 'Delete', icon: 'fa-trash', variant: 'danger' }
+  ];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('bulk-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay() {
+    var selectedEl = document.getElementById('selected-items');
+    var actionsEl = document.getElementById('registered-actions');
+
+    if (selectedEl && bulkInstance) {
+      var ids = bulkInstance.getSelectedIds();
+      selectedEl.textContent = JSON.stringify(ids, null, 2);
+    }
+
+    if (actionsEl && bulkInstance && bulkInstance.actionRegistry) {
+      var actions = bulkInstance.actionRegistry.getSorted().map(function(a) {
+        return { id: a.id, label: a.label, disabled: a.disabled || false };
+      });
+      actionsEl.textContent = JSON.stringify(actions, null, 2);
+    }
+  }
+
+  function getStatusBadgeClass(status) {
+    switch (status) {
+      case 'Active': return 'bg-success';
+      case 'Pending': return 'bg-warning text-dark';
+      case 'Archived': return 'bg-secondary';
+      case 'Deleted': return 'bg-danger';
+      default: return 'bg-secondary';
+    }
+  }
+
+  function initialize() {
+    var props = getProps();
+    var barPosition = document.getElementById('bar-position').value || props.barPosition || 'top';
+    var showCount = document.getElementById('show-count').value === 'true';
+    var showClear = document.getElementById('show-clear').value === 'true';
+
+    // Destroy existing instances
+    if (bulkInstance) {
+      bulkInstance.destroy();
+      bulkInstance = null;
+    }
+    if (tableInstance) {
+      tableInstance.destroy();
+      tableInstance = null;
+    }
+
+    // Clear container
+    var container = document.getElementById('bulk-table-container');
+    container.innerHTML = '';
+
+    // Check if Funky.Table is available
+    if (!Table) {
+      container.innerHTML = '<div class="alert alert-warning">Funky.Table is not available</div>';
+      log('Error: Funky.Table not found');
+      return;
+    }
+
+    // Create Funky.Table with selection
+    tableInstance = Table.init('#bulk-table-container', {
+      data: tableData,
+      selectable: 'multi',
+      columns: [
+        { data: 'id', title: 'ID', width: '60px' },
+        { data: 'name', title: 'Name' },
+        {
+          data: 'status',
+          title: 'Status',
+          render: function(data) {
+            return '<span class="badge ' + getStatusBadgeClass(data) + '">' + data + '</span>';
+          }
+        },
+        { data: 'category', title: 'Category' },
+        { data: 'created', title: 'Created' }
+      ],
+      onSelect: function(data) {
+        log('Table onSelect: ' + data.map(function(d) { return d.id; }).join(', '));
+        updateStateDisplay();
+      },
+      onDeselect: function(data) {
+        log('Table onDeselect: ' + data.map(function(d) { return d.id; }).join(', '));
+        updateStateDisplay();
+      }
+    });
+
+    // Check if BulkActions is available
+    if (!BulkActions) {
+      log('Warning: Funky.BulkActions not available');
+      document.getElementById('bulk-status').className = 'badge bg-warning';
+      document.getElementById('bulk-status').textContent = 'Table only (no BulkActions)';
+      return;
+    }
+
+    // Get actions from props or use defaults
+    var actions = (props.actions && Array.isArray(props.actions)) ? props.actions : defaultActions;
+
+    // Create BulkActions
+    bulkInstance = BulkActions.create({
+      table: tableInstance,
+      barPosition: barPosition,
+      showCount: showCount,
+      showClear: showClear,
+      actions: actions,
+      onAction: function(actionId, selectedItems, table) {
+        log('Action "' + actionId + '" on ' + selectedItems.length + ' items');
+        emit('event', { event: 'bulk:action', payload: { action: actionId, items: selectedItems } });
+
+        if (Toast) {
+          Toast.info('Action "' + actionId + '" would process ' + selectedItems.length + ' items');
+        }
+      }
+    });
+
+    document.getElementById('bulk-status').className = 'badge bg-success';
+    document.getElementById('bulk-status').textContent = 'Initialized';
+    log('BulkActions initialized (barPosition: ' + barPosition + ')');
+    updateStateDisplay();
+
+    emit('event', { event: 'bulk:initialized', payload: { barPosition: barPosition } });
+  }
+
+  function syncInputsFromProps(props) {
+    if (props.barPosition != null) {
+      document.getElementById('bar-position').value = props.barPosition;
+    }
+    if (props.showCount != null) {
+      document.getElementById('show-count').value = props.showCount.toString();
+    }
+    if (props.showClear != null) {
+      document.getElementById('show-clear').value = props.showClear.toString();
+    }
+  }
+
+  Funky.Pages.register('component-bulk-actions', {
+    init: function(state) {
+      var props = getProps();
+
+      // Sync inputs from props
+      syncInputsFromProps(props);
+
+      // Initialize
+      initialize();
+
+      // =========================================================================
+      // Section 1: Configuration
+      // =========================================================================
+
+      document.getElementById('btn-init').addEventListener('click', initialize);
+
+      document.getElementById('bar-position').addEventListener('change', function() {
+        initialize();
+        emit('event', { event: 'prop:barPosition', payload: this.value });
+      });
+
+      document.getElementById('show-count').addEventListener('change', function() {
+        initialize();
+        emit('event', { event: 'prop:showCount', payload: this.value === 'true' });
+      });
+
+      document.getElementById('show-clear').addEventListener('change', function() {
+        initialize();
+        emit('event', { event: 'prop:showClear', payload: this.value === 'true' });
+      });
+
+      // =========================================================================
+      // Section 3: Selection API
+      // =========================================================================
+
+      document.getElementById('btn-select-all').addEventListener('click', function() {
+        if (bulkInstance) {
+          bulkInstance.selectAll();
+          log('API: selectAll()');
+        } else if (tableInstance) {
+          tableInstance.selectAll();
+          log('Table: selectAll()');
+        }
+      });
+
+      document.getElementById('btn-clear-selection').addEventListener('click', function() {
+        if (bulkInstance) {
+          bulkInstance.clearSelection();
+          log('API: clearSelection()');
+        } else if (tableInstance) {
+          tableInstance.deselectAll();
+          log('Table: deselectAll()');
+        }
+      });
+
+      document.getElementById('btn-get-selected').addEventListener('click', function() {
+        var items = bulkInstance ? bulkInstance.getSelectedItems() : (tableInstance ? tableInstance.getSelectedData() : []);
+        log('getSelectedItems(): ' + items.length + ' items');
+        if (Toast) {
+          Toast.info('Selected: ' + items.map(function(i) { return i.name; }).join(', ') || 'None');
+        }
+      });
+
+      document.getElementById('btn-get-count').addEventListener('click', function() {
+        var count = bulkInstance ? bulkInstance.getSelectionCount() : (tableInstance ? tableInstance.selectedIds.size : 0);
+        log('getSelectionCount(): ' + count);
+        if (Toast) {
+          Toast.info('Selection count: ' + count);
+        }
+      });
+
+      document.getElementById('btn-select-by-id').addEventListener('click', function() {
+        if (bulkInstance) {
+          bulkInstance.select([1, 3, 5]);
+          log('API: select([1, 3, 5])');
+        } else if (tableInstance) {
+          tableInstance.select([1, 3, 5]);
+          log('Table: select([1, 3, 5])');
+        }
+      });
+
+      // =========================================================================
+      // Section 4: Action Management
+      // =========================================================================
+
+      document.getElementById('btn-add-action').addEventListener('click', function() {
+        if (!bulkInstance) {
+          log('Error: BulkActions not initialized');
+          return;
+        }
+
+        var id = document.getElementById('action-id').value.trim();
+        var label = document.getElementById('action-label').value.trim();
+        var icon = document.getElementById('action-icon').value.trim();
+        var variant = document.getElementById('action-variant').value;
+
+        if (!id || !label) {
+          log('Error: Action ID and Label are required');
+          if (Toast) Toast.error('Action ID and Label are required');
+          return;
+        }
+
+        bulkInstance.addAction({ id: id, label: label, icon: icon || null, variant: variant });
+        log('Added action: ' + id);
+        updateStateDisplay();
+
+        // Clear inputs
+        document.getElementById('action-id').value = '';
+        document.getElementById('action-label').value = '';
+        document.getElementById('action-icon').value = '';
+      });
+
+      document.getElementById('btn-remove-action').addEventListener('click', function() {
+        if (!bulkInstance) {
+          log('Error: BulkActions not initialized');
+          return;
+        }
+
+        var id = document.getElementById('action-id').value.trim();
+        if (!id) {
+          log('Error: Enter an action ID to remove');
+          if (Toast) Toast.error('Enter an action ID to remove');
+          return;
+        }
+
+        bulkInstance.removeAction(id);
+        log('Removed action: ' + id);
+        updateStateDisplay();
+      });
+
+      document.getElementById('btn-toggle-action').addEventListener('click', function() {
+        if (!bulkInstance) {
+          log('Error: BulkActions not initialized');
+          return;
+        }
+
+        var id = document.getElementById('action-id').value.trim();
+        if (!id) {
+          log('Error: Enter an action ID to toggle');
+          if (Toast) Toast.error('Enter an action ID to toggle');
+          return;
+        }
+
+        var action = bulkInstance.getAction(id);
+        if (action) {
+          bulkInstance.setActionEnabled(id, action.disabled);
+          log('Toggled action "' + id + '": ' + (action.disabled ? 'enabled' : 'disabled'));
+          updateStateDisplay();
+        } else {
+          log('Error: Action "' + id + '" not found');
+        }
+      });
+
+      // =========================================================================
+      // Keyboard shortcuts
+      // =========================================================================
+
+      document.querySelector('[data-page="component-bulk-actions"]').addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+        if (e.key === 'Escape') {
+          if (bulkInstance) {
+            bulkInstance.clearSelection();
+            log('Keyboard: clearSelection()');
+          } else if (tableInstance) {
+            tableInstance.deselectAll();
+            log('Keyboard: deselectAll()');
+          }
+          e.preventDefault();
+        }
+      });
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+          initialize();
+          emit('event', { event: 'props:change', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Focus page container for keyboard shortcuts
+      var pageContainer = document.querySelector('[data-page="component-bulk-actions"]');
+      if (pageContainer) {
+        pageContainer.focus();
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      if (bulkInstance) {
+        bulkInstance.destroy();
+        bulkInstance = null;
+      }
+      if (tableInstance) {
+        tableInstance.destroy();
+        tableInstance = null;
+      }
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

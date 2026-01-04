@@ -1,0 +1,556 @@
+<div data-page="component-inline-edit" class="component-demo">
+  <h2>Inline Edit</h2>
+  <p class="text-muted">Click-to-edit any element with automatic API save, validation, and undo support.</p>
+
+  <!-- Interactive Demo Section -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to configure the inline edit behavior.</p>
+    <div class="demo-area">
+      <div class="inline-edit-demo__interactive" id="interactive-container">
+        <div class="inline-edit-demo__field">
+          <label class="inline-edit-demo__label" id="interactive-label">Field:</label>
+          <span id="interactive-edit" class="inline-edit" role="button" tabindex="0" data-local="true" aria-labelledby="interactive-label">Loading...</span>
+        </div>
+      </div>
+      <div class="inline-edit-demo__config" id="config-display">
+        <!-- Config display populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Input Types Section -->
+  <section class="demo-section" aria-labelledby="types-heading">
+    <h3 id="types-heading">Input Types</h3>
+    <p class="text-muted small">Different input types for various data formats.</p>
+    <div class="demo-area">
+      <div class="inline-edit-demo__types-grid">
+        <div class="inline-edit-demo__type-item">
+          <span class="inline-edit-demo__type-label">Text:</span>
+          <span id="edit-text" class="inline-edit" role="button" tabindex="0" data-type="text" data-local="true" data-placeholder="Enter name...">John Smith</span>
+        </div>
+        <div class="inline-edit-demo__type-item">
+          <span class="inline-edit-demo__type-label">Number:</span>
+          <span id="edit-number" class="inline-edit" role="button" tabindex="0" data-type="number" data-local="true" data-min="0" data-max="100">42</span>
+        </div>
+        <div class="inline-edit-demo__type-item">
+          <span class="inline-edit-demo__type-label">Date:</span>
+          <span id="edit-date" class="inline-edit" role="button" tabindex="0" data-type="date" data-local="true">2024-01-15</span>
+        </div>
+        <div class="inline-edit-demo__type-item">
+          <span class="inline-edit-demo__type-label">Select:</span>
+          <span id="edit-select" class="inline-edit" role="button" tabindex="0" data-type="select" data-local="true" data-options='[{"value":"active","label":"Active"},{"value":"pending","label":"Pending"},{"value":"inactive","label":"Inactive"}]'>Active</span>
+        </div>
+        <div class="inline-edit-demo__type-item inline-edit-demo__type-item--full">
+          <span class="inline-edit-demo__type-label">Textarea:</span>
+          <span id="edit-textarea" class="inline-edit" role="button" tabindex="0" data-type="textarea" data-local="true" data-placeholder="Enter bio...">Software developer passionate about building great user experiences.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Validation Section -->
+  <section class="demo-section" aria-labelledby="validation-heading">
+    <h3 id="validation-heading">Validation</h3>
+    <p class="text-muted small">Built-in validation for required fields and pattern matching.</p>
+    <div class="demo-area">
+      <div class="inline-edit-demo__validation-grid">
+        <div class="inline-edit-demo__validation-item">
+          <span class="inline-edit-demo__validation-label">Required Field:</span>
+          <span id="edit-required" class="inline-edit" role="button" tabindex="0" data-type="text" data-local="true" data-required="true" data-placeholder="This field is required">Required Value</span>
+          <span class="inline-edit-demo__validation-hint">Cannot be empty</span>
+        </div>
+        <div class="inline-edit-demo__validation-item">
+          <span class="inline-edit-demo__validation-label">Email Pattern:</span>
+          <span id="edit-email" class="inline-edit" role="button" tabindex="0" data-type="text" data-local="true" data-pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" data-pattern-message="Please enter a valid email" data-placeholder="Enter email...">user@example.com</span>
+          <span class="inline-edit-demo__validation-hint">Must be valid email format</span>
+        </div>
+        <div class="inline-edit-demo__validation-item">
+          <span class="inline-edit-demo__validation-label">Number Range:</span>
+          <span id="edit-range" class="inline-edit" role="button" tabindex="0" data-type="number" data-local="true" data-min="1" data-max="10" data-placeholder="1-10">5</span>
+          <span class="inline-edit-demo__validation-hint">Must be between 1 and 10</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Programmatically control inline edit instances.</p>
+    <div class="demo-area">
+      <div class="inline-edit-demo__api-target">
+        <span class="inline-edit-demo__api-label">Target Field:</span>
+        <span id="edit-api-target" class="inline-edit" role="button" tabindex="0" data-type="text" data-local="true">Click or use buttons</span>
+      </div>
+      <div class="inline-edit-demo__api-buttons">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-start-edit">
+          <i class="fas fa-edit me-1" aria-hidden="true"></i>startEdit()
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-cancel-edit">
+          <i class="fas fa-times me-1" aria-hidden="true"></i>cancelEdit()
+        </button>
+        <button type="button" class="btn btn-outline-success btn-sm" id="btn-save">
+          <i class="fas fa-check me-1" aria-hidden="true"></i>save()
+        </button>
+        <button type="button" class="btn btn-outline-warning btn-sm" id="btn-toggle-enabled">
+          <i class="fas fa-toggle-on me-1" aria-hidden="true"></i>setEnabled()
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display Section -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="inline-edit-demo__state">
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Type:</span>
+          <span class="inline-edit-demo__state-value" id="state-type">text</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Entity:</span>
+          <span class="inline-edit-demo__state-value" id="state-entity">demo</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">ID:</span>
+          <span class="inline-edit-demo__state-value" id="state-id">1</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Field:</span>
+          <span class="inline-edit-demo__state-value" id="state-field">name</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Value:</span>
+          <span class="inline-edit-demo__state-value inline-edit-demo__state-value--text" id="state-value">John Smith</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Required:</span>
+          <span class="inline-edit-demo__state-value" id="state-required">false</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Pattern:</span>
+          <span class="inline-edit-demo__state-value" id="state-pattern">(none)</span>
+        </div>
+        <div class="inline-edit-demo__state-item">
+          <span class="inline-edit-demo__state-label">Placeholder:</span>
+          <span class="inline-edit-demo__state-value" id="state-placeholder">(none)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="events-heading">
+    <h3 id="events-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre class="inline-edit-demo__log" id="event-log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var interactiveInstance = null;
+  var apiTargetInstance = null;
+  var typeInstances = [];
+  var validationInstances = [];
+  var logs = [];
+  var apiTargetEnabled = true;
+
+  /**
+   * Log an event to the event log
+   */
+  function logEvent(eventName, detail) {
+    var time = new Date().toLocaleTimeString();
+    var message = time + ' - ' + eventName;
+    if (detail) {
+      message += ': ' + JSON.stringify(detail);
+    }
+    logs.unshift(message);
+    if (logs.length > 15) logs.pop();
+
+    var logEl = document.getElementById('event-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+  }
+
+  /**
+   * Update state display from props
+   */
+  function updateStateDisplay(props) {
+    var stateType = document.getElementById('state-type');
+    var stateEntity = document.getElementById('state-entity');
+    var stateId = document.getElementById('state-id');
+    var stateField = document.getElementById('state-field');
+    var stateValue = document.getElementById('state-value');
+    var stateRequired = document.getElementById('state-required');
+    var statePattern = document.getElementById('state-pattern');
+    var statePlaceholder = document.getElementById('state-placeholder');
+
+    if (stateType) stateType.textContent = props.type || 'text';
+    if (stateEntity) stateEntity.textContent = props.entity || 'demo';
+    if (stateId) stateId.textContent = props.id || '1';
+    if (stateField) stateField.textContent = props.field || 'name';
+    if (stateValue) {
+      var val = props.value || 'John Smith';
+      stateValue.textContent = val.length > 25 ? val.substring(0, 25) + '...' : val;
+      stateValue.title = val;
+    }
+    if (stateRequired) stateRequired.textContent = props.required ? 'true' : 'false';
+    if (statePattern) statePattern.textContent = props.pattern || '(none)';
+    if (statePlaceholder) statePlaceholder.textContent = props.placeholder || '(none)';
+  }
+
+  /**
+   * Update config display
+   */
+  function updateConfigDisplay(props) {
+    var configEl = document.getElementById('config-display');
+    if (!configEl) return;
+
+    var items = [
+      { label: 'Type', value: props.type || 'text' },
+      { label: 'Entity', value: props.entity || 'demo' },
+      { label: 'ID', value: props.id || '1' },
+      { label: 'Field', value: props.field || 'name' }
+    ];
+
+    if (props.required) {
+      items.push({ label: 'Required', value: 'Yes' });
+    }
+    if (props.pattern) {
+      items.push({ label: 'Pattern', value: props.pattern });
+    }
+    if (props.placeholder) {
+      items.push({ label: 'Placeholder', value: props.placeholder });
+    }
+
+    configEl.innerHTML = '';
+    items.forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'inline-edit-demo__config-item';
+
+      var label = document.createElement('span');
+      label.className = 'inline-edit-demo__config-label';
+      label.textContent = item.label + ':';
+
+      var value = document.createElement('span');
+      value.className = 'inline-edit-demo__config-value';
+      value.textContent = item.value;
+
+      div.appendChild(label);
+      div.appendChild(value);
+      configEl.appendChild(div);
+    });
+  }
+
+  /**
+   * Create the interactive demo element
+   */
+  function createInteractiveDemo(props) {
+    var container = document.getElementById('interactive-container');
+    var editEl = document.getElementById('interactive-edit');
+    var labelEl = document.getElementById('interactive-label');
+    if (!container || !editEl) return;
+
+    // Destroy previous instance
+    if (interactiveInstance && interactiveInstance.destroy) {
+      interactiveInstance.destroy();
+      interactiveInstance = null;
+    }
+
+    var type = props.type || 'text';
+    var entity = props.entity || 'demo';
+    var id = props.id || '1';
+    var field = props.field || 'name';
+    var value = props.value || 'John Smith';
+    var required = props.required || false;
+    var pattern = props.pattern || '';
+    var placeholder = props.placeholder || 'Click to edit...';
+
+    // Update label
+    if (labelEl) {
+      labelEl.textContent = field.charAt(0).toUpperCase() + field.slice(1) + ':';
+    }
+
+    // Update element attributes
+    editEl.setAttribute('data-type', type);
+    editEl.setAttribute('data-entity', entity);
+    editEl.setAttribute('data-id', id);
+    editEl.setAttribute('data-field', field);
+    editEl.setAttribute('data-placeholder', placeholder);
+
+    if (required) {
+      editEl.setAttribute('data-required', 'true');
+    } else {
+      editEl.removeAttribute('data-required');
+    }
+
+    if (pattern) {
+      editEl.setAttribute('data-pattern', pattern);
+    } else {
+      editEl.removeAttribute('data-pattern');
+    }
+
+    // Set display value based on type
+    if (type === 'select') {
+      editEl.setAttribute('data-options', JSON.stringify([
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+        { value: 'option3', label: 'Option 3' }
+      ]));
+      editEl.textContent = value || 'Option 1';
+    } else {
+      editEl.removeAttribute('data-options');
+      editEl.textContent = value;
+    }
+
+    // Re-initialize with Funky.InlineEdit if available
+    if (Funky.InlineEdit && Funky.InlineEdit.init) {
+      Funky.InlineEdit.init();
+      interactiveInstance = Funky.InlineEdit.getInstance(editEl);
+    }
+
+    // Update config display
+    updateConfigDisplay(props);
+  }
+
+  /**
+   * Initialize input type demo fields
+   */
+  function initTypeFields() {
+    var typeIds = ['edit-text', 'edit-number', 'edit-date', 'edit-select', 'edit-textarea'];
+
+    typeIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && Funky.InlineEdit) {
+        var instance = Funky.InlineEdit.getInstance(el);
+        if (instance) {
+          typeInstances.push(instance);
+        }
+      }
+    });
+  }
+
+  /**
+   * Initialize validation demo fields
+   */
+  function initValidationFields() {
+    var validationIds = ['edit-required', 'edit-email', 'edit-range'];
+
+    validationIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && Funky.InlineEdit) {
+        var instance = Funky.InlineEdit.getInstance(el);
+        if (instance) {
+          validationInstances.push(instance);
+        }
+      }
+    });
+  }
+
+  /**
+   * Initialize API target field
+   */
+  function initApiTarget() {
+    var el = document.getElementById('edit-api-target');
+    if (el && Funky.InlineEdit) {
+      apiTargetInstance = Funky.InlineEdit.getInstance(el);
+    }
+  }
+
+  /**
+   * Set up event listeners for inline edit events
+   */
+  function setupEventListeners() {
+    // Listen for all inline edit events
+    // Note: Only send serializable data (no DOM elements) via emit
+    document.addEventListener('funky.inline-edit.start', function(e) {
+      var detail = { entity: e.detail.entity, id: e.detail.id, field: e.detail.field };
+      logEvent('start', { field: e.detail.field });
+      emit('event', { event: 'funky:inline-edit:start', payload: detail });
+    });
+
+    document.addEventListener('funky.inline-edit.cancel', function(e) {
+      var detail = { entity: e.detail.entity, id: e.detail.id, field: e.detail.field };
+      logEvent('cancel', { field: e.detail.field });
+      emit('event', { event: 'funky:inline-edit:cancel', payload: detail });
+    });
+
+    document.addEventListener('funky.inline-edit.save', function(e) {
+      var detail = { entity: e.detail.entity, id: e.detail.id, field: e.detail.field, oldValue: e.detail.oldValue, newValue: e.detail.newValue };
+      logEvent('save', { field: e.detail.field, oldValue: e.detail.oldValue, newValue: e.detail.newValue });
+      emit('event', { event: 'funky:inline-edit:save', payload: detail });
+    });
+
+    document.addEventListener('funky.inline-edit.error', function(e) {
+      var detail = { entity: e.detail.entity, id: e.detail.id, field: e.detail.field, error: e.detail.error };
+      logEvent('error', { field: e.detail.field, error: e.detail.error });
+      emit('event', { event: 'funky:inline-edit:error', payload: detail });
+    });
+
+    document.addEventListener('funky.inline-edit.undo', function(e) {
+      var detail = { entity: e.detail.entity, id: e.detail.id, field: e.detail.field, value: e.detail.value };
+      logEvent('undo', { field: e.detail.field, value: e.detail.value });
+      emit('event', { event: 'funky:inline-edit:undo', payload: detail });
+    });
+  }
+
+  /**
+   * Set up API method buttons
+   */
+  function setupApiButtons() {
+    var btnStartEdit = document.getElementById('btn-start-edit');
+    var btnCancelEdit = document.getElementById('btn-cancel-edit');
+    var btnSave = document.getElementById('btn-save');
+    var btnToggleEnabled = document.getElementById('btn-toggle-enabled');
+
+    if (btnStartEdit) {
+      btnStartEdit.onclick = function() {
+        if (apiTargetInstance && apiTargetInstance.startEdit) {
+          apiTargetInstance.startEdit();
+          logEvent('API: startEdit()');
+          emit('event', { event: 'funky:inline-edit:api', payload: { method: 'startEdit' } });
+        }
+      };
+    }
+
+    if (btnCancelEdit) {
+      btnCancelEdit.onclick = function() {
+        if (apiTargetInstance && apiTargetInstance.cancelEdit) {
+          apiTargetInstance.cancelEdit();
+          logEvent('API: cancelEdit()');
+          emit('event', { event: 'funky:inline-edit:api', payload: { method: 'cancelEdit' } });
+        }
+      };
+    }
+
+    if (btnSave) {
+      btnSave.onclick = function() {
+        if (apiTargetInstance && apiTargetInstance.save) {
+          apiTargetInstance.save();
+          logEvent('API: save()');
+          emit('event', { event: 'funky:inline-edit:api', payload: { method: 'save' } });
+        }
+      };
+    }
+
+    if (btnToggleEnabled) {
+      btnToggleEnabled.onclick = function() {
+        if (apiTargetInstance && apiTargetInstance.setEnabled) {
+          apiTargetEnabled = !apiTargetEnabled;
+          apiTargetInstance.setEnabled(apiTargetEnabled);
+          logEvent('API: setEnabled(' + apiTargetEnabled + ')');
+          emit('event', { event: 'funky:inline-edit:api', payload: { method: 'setEnabled', enabled: apiTargetEnabled } });
+
+          // Update button icon
+          var icon = btnToggleEnabled.querySelector('i');
+          if (icon) {
+            icon.className = apiTargetEnabled ? 'fas fa-toggle-on me-1' : 'fas fa-toggle-off me-1';
+          }
+        }
+      };
+    }
+  }
+
+  /**
+   * Clean up all instances
+   */
+  function cleanup() {
+    if (interactiveInstance && interactiveInstance.destroy) {
+      interactiveInstance.destroy();
+      interactiveInstance = null;
+    }
+
+    typeInstances.forEach(function(inst) {
+      if (inst && inst.destroy) inst.destroy();
+    });
+    typeInstances = [];
+
+    validationInstances.forEach(function(inst) {
+      if (inst && inst.destroy) inst.destroy();
+    });
+    validationInstances = [];
+
+    if (apiTargetInstance && apiTargetInstance.destroy) {
+      apiTargetInstance.destroy();
+      apiTargetInstance = null;
+    }
+  }
+
+  Funky.Pages.register('component-inline-edit', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Initialize Funky.InlineEdit if available
+      if (Funky.InlineEdit && Funky.InlineEdit.init) {
+        Funky.InlineEdit.init();
+      }
+
+      // Create interactive demo
+      createInteractiveDemo(props);
+
+      // Initialize type fields
+      initTypeFields();
+
+      // Initialize validation fields
+      initValidationFields();
+
+      // Initialize API target
+      initApiTarget();
+
+      // Set up event listeners
+      setupEventListeners();
+
+      // Set up API buttons
+      setupApiButtons();
+
+      // Log initialization
+      logEvent('InlineEdit demo initialized');
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          createInteractiveDemo(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clean up all instances
+      cleanup();
+
+      // Clear logs
+      logs = [];
+
+      // Reset enabled state
+      apiTargetEnabled = true;
+
+      return {};
+    }
+  });
+})();
+</script>

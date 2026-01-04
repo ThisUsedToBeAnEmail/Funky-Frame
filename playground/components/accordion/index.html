@@ -1,0 +1,402 @@
+<div data-page="component-accordion" class="component-demo">
+  <h2>Accordion</h2>
+  <p class="text-muted">Collapsible panel system with search, lazy loading, and keyboard navigation.</p>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current Configuration</h3>
+    <div class="demo-area">
+      <div class="accordion-demo__state-display">
+        <div class="accordion-demo__state-item">
+          <span class="badge bg-secondary">Items</span>
+          <span id="state-itemCount">3</span>
+        </div>
+        <div class="accordion-demo__state-item">
+          <span class="badge bg-secondary">Multiple</span>
+          <span id="state-allowMultiple">true</span>
+        </div>
+        <div class="accordion-demo__state-item">
+          <span class="badge bg-secondary">Animated</span>
+          <span id="state-animated">true</span>
+        </div>
+        <div class="accordion-demo__state-item">
+          <span class="badge bg-secondary">Icon</span>
+          <span id="state-iconPosition">right</span>
+        </div>
+        <div class="accordion-demo__state-item">
+          <span class="badge bg-secondary">Searchable</span>
+          <span id="state-searchable">false</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Demo -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">All props from the props panel are applied to this accordion.</p>
+    <div class="demo-area">
+      <div id="accordion-main"></div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">API Controls</h3>
+    <p class="text-muted small">Test Accordion methods programmatically.</p>
+    <div class="demo-area">
+      <div class="accordion-demo__controls">
+        <button class="btn btn-primary btn-sm" id="btn-expand-all" type="button">
+          <i class="fas fa-chevron-down me-1" aria-hidden="true"></i> Expand All
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-collapse-all" type="button">
+          <i class="fas fa-chevron-up me-1" aria-hidden="true"></i> Collapse All
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-toggle-first" type="button">
+          <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i> Toggle First
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-toggle-all" type="button">
+          <i class="fas fa-arrows-alt-v me-1" aria-hidden="true"></i> Toggle All
+        </button>
+      </div>
+      <div class="accordion-demo__controls accordion-demo__controls--items">
+        <button class="btn btn-success btn-sm" id="btn-add-item" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> Add Item
+        </button>
+        <button class="btn btn-danger btn-sm" id="btn-remove-last" type="button">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> Remove Last
+        </button>
+        <button class="btn btn-info btn-sm" id="btn-get-expanded" type="button">
+          <i class="fas fa-info me-1" aria-hidden="true"></i> Get Expanded
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="accordion-log" class="accordion-demo__log" aria-live="polite">Interact with the accordion to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var accordionInstance = null;
+  var propsChangedHandler = null;
+  var logs = [];
+  var itemCounter = 0;
+
+  // Sample items - base set
+  var baseItems = [
+    {
+      id: 'getting-started',
+      title: 'Getting Started',
+      icon: 'fas fa-rocket',
+      content: 'Welcome to the Accordion component! This panel demonstrates the basic functionality with collapsible content sections.'
+    },
+    {
+      id: 'configuration',
+      title: 'Configuration Options',
+      icon: 'fas fa-cog',
+      content: 'The Accordion supports many configuration options including animations, multiple open sections, searchable content, and keyboard navigation.'
+    },
+    {
+      id: 'advanced',
+      title: 'Advanced Features',
+      icon: 'fas fa-magic',
+      content: 'Advanced features include lazy loading, nested accordions, hash navigation, and custom templates for headers and content.'
+    },
+    {
+      id: 'accessibility',
+      title: 'Accessibility',
+      icon: 'fas fa-universal-access',
+      content: 'Full ARIA support with keyboard navigation, focus management, and screen reader announcements.'
+    },
+    {
+      id: 'api',
+      title: 'API Reference',
+      icon: 'fas fa-book',
+      content: 'Comprehensive API with methods like expand(), collapse(), toggle(), expandAll(), collapseAll(), and more.'
+    },
+    {
+      id: 'examples',
+      title: 'Examples',
+      icon: 'fas fa-code',
+      content: 'Check out the various examples showing FAQs, settings panels, navigation menus, and documentation layouts.'
+    }
+  ];
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data !== undefined) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('accordion-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay(props) {
+    var stateItemCount = document.getElementById('state-itemCount');
+    var stateAllowMultiple = document.getElementById('state-allowMultiple');
+    var stateAnimated = document.getElementById('state-animated');
+    var stateIconPosition = document.getElementById('state-iconPosition');
+    var stateSearchable = document.getElementById('state-searchable');
+
+    if (stateItemCount) stateItemCount.textContent = String(props.itemCount || 3);
+    if (stateAllowMultiple) stateAllowMultiple.textContent = String(props.allowMultiple !== false);
+    if (stateAnimated) stateAnimated.textContent = String(props.animated !== false);
+    if (stateIconPosition) stateIconPosition.textContent = props.iconPosition || 'right';
+    if (stateSearchable) stateSearchable.textContent = String(props.searchable === true);
+  }
+
+  function getItems(props) {
+    var count = props.itemCount || 3;
+    var items = baseItems.slice(0, count).map(function(item, index) {
+      var newItem = Object.assign({}, item);
+
+      // Add badge to first item if showBadges is enabled
+      if (props.showBadges && index === 0) {
+        newItem.badge = { text: 'New', variant: 'success' };
+      }
+      if (props.showBadges && index === 1) {
+        newItem.badge = { text: '5', variant: 'primary' };
+      }
+
+      // Disable second item if disableSecond is enabled
+      if (props.disableSecond && index === 1) {
+        newItem.disabled = true;
+      }
+
+      // Add nested items to first item if showNested is enabled
+      if (props.showNested && index === 0) {
+        newItem.children = [
+          { id: 'nested-1', title: 'Nested Item 1', content: 'First nested content' },
+          { id: 'nested-2', title: 'Nested Item 2', content: 'Second nested content' }
+        ];
+      }
+
+      return newItem;
+    });
+
+    itemCounter = count;
+    return items;
+  }
+
+  function createAccordion(props) {
+    // Destroy existing instance
+    if (accordionInstance && accordionInstance.destroy) {
+      accordionInstance.destroy();
+      accordionInstance = null;
+    }
+
+    var container = document.getElementById('accordion-main');
+    if (!container || !Funky.Accordion) {
+      log('Accordion not available');
+      return;
+    }
+
+    // Clear container
+    container.innerHTML = '';
+
+    // Build config from ALL props
+    var config = {
+      items: getItems(props),
+      allowMultiple: props.allowMultiple !== false,
+      expandFirst: props.expandFirst !== false,
+      collapsible: props.collapsible !== false,
+      animated: props.animated !== false,
+      iconPosition: props.iconPosition || 'right',
+      searchable: props.searchable === true,
+      searchPlaceholder: 'Search sections...',
+      searchKeys: ['title', 'content'],
+      highlightMatches: true
+    };
+
+    // Event handlers
+    config.onExpand = function(item) {
+      log('expand', { id: item.id, title: item.title });
+      emit('event', { event: 'funky:accordion:expand', payload: { id: item.id, title: item.title } });
+    };
+
+    config.onCollapse = function(item) {
+      log('collapse', { id: item.id, title: item.title });
+      emit('event', { event: 'funky:accordion:collapse', payload: { id: item.id, title: item.title } });
+    };
+
+    config.onSearch = function(query, count) {
+      log('search', { query: query, results: count });
+      emit('event', { event: 'funky:accordion:search', payload: { query: query, count: count } });
+    };
+
+    // Initialize
+    accordionInstance = Funky.Accordion.init(container, config);
+
+    log('initialized', { items: config.items.length, allowMultiple: config.allowMultiple, animated: config.animated });
+    emit('event', { event: 'funky:accordion:init', payload: { items: config.items.length } });
+  }
+
+  function setupControls() {
+    // Expand All
+    var btnExpandAll = document.getElementById('btn-expand-all');
+    if (btnExpandAll) {
+      btnExpandAll.onclick = function() {
+        if (accordionInstance && accordionInstance.expandAll) {
+          accordionInstance.expandAll();
+          log('API: expandAll()');
+        }
+      };
+    }
+
+    // Collapse All
+    var btnCollapseAll = document.getElementById('btn-collapse-all');
+    if (btnCollapseAll) {
+      btnCollapseAll.onclick = function() {
+        if (accordionInstance && accordionInstance.collapseAll) {
+          accordionInstance.collapseAll();
+          log('API: collapseAll()');
+        }
+      };
+    }
+
+    // Toggle First
+    var btnToggleFirst = document.getElementById('btn-toggle-first');
+    if (btnToggleFirst) {
+      btnToggleFirst.onclick = function() {
+        if (accordionInstance && accordionInstance.toggle) {
+          var items = accordionInstance.getItems();
+          if (items && items.length > 0) {
+            accordionInstance.toggle(items[0].id);
+            log('API: toggle(' + items[0].id + ')');
+          }
+        }
+      };
+    }
+
+    // Toggle All
+    var btnToggleAll = document.getElementById('btn-toggle-all');
+    if (btnToggleAll) {
+      btnToggleAll.onclick = function() {
+        if (accordionInstance && accordionInstance.toggleAll) {
+          accordionInstance.toggleAll();
+          log('API: toggleAll()');
+        }
+      };
+    }
+
+    // Add Item
+    var btnAddItem = document.getElementById('btn-add-item');
+    if (btnAddItem) {
+      btnAddItem.onclick = function() {
+        if (accordionInstance && accordionInstance.addItem) {
+          itemCounter++;
+          var newItem = {
+            id: 'item-' + itemCounter,
+            title: 'New Item ' + itemCounter,
+            icon: 'fas fa-star',
+            content: 'This is dynamically added content for item ' + itemCounter + '.'
+          };
+          accordionInstance.addItem(newItem);
+          log('API: addItem()', { id: newItem.id });
+        }
+      };
+    }
+
+    // Remove Last
+    var btnRemoveLast = document.getElementById('btn-remove-last');
+    if (btnRemoveLast) {
+      btnRemoveLast.onclick = function() {
+        if (accordionInstance && accordionInstance.removeItem) {
+          var items = accordionInstance.getItems();
+          if (items && items.length > 0) {
+            var lastItem = items[items.length - 1];
+            accordionInstance.removeItem(lastItem.id);
+            log('API: removeItem(' + lastItem.id + ')');
+          }
+        }
+      };
+    }
+
+    // Get Expanded
+    var btnGetExpanded = document.getElementById('btn-get-expanded');
+    if (btnGetExpanded) {
+      btnGetExpanded.onclick = function() {
+        if (accordionInstance && accordionInstance.getExpanded) {
+          var expanded = accordionInstance.getExpanded();
+          log('API: getExpanded()', expanded);
+        }
+      };
+    }
+
+    // Clear Log
+    var btnClearLog = document.getElementById('btn-clear-log');
+    if (btnClearLog) {
+      btnClearLog.onclick = function() {
+        logs = [];
+        var logEl = document.getElementById('accordion-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+      };
+    }
+  }
+
+  Funky.Pages.register('component-accordion', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Create accordion with current props
+      createAccordion(props);
+
+      // Setup control buttons
+      setupControls();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          // Recreate accordion with new props
+          createAccordion(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return {};
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy accordion instance
+      if (accordionInstance && accordionInstance.destroy) {
+        accordionInstance.destroy();
+        accordionInstance = null;
+      }
+
+      // Reset state
+      logs = [];
+      itemCounter = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

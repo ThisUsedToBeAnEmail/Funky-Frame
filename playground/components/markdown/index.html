@@ -1,0 +1,307 @@
+<div data-page="component-markdown" class="component-demo">
+  <h2>Markdown</h2>
+  <p class="text-muted">Markdown renderer with syntax highlighting, GFM extensions, and table of contents</p>
+
+  <section class="demo-section" aria-labelledby="markdown-preview-heading">
+    <h3 id="markdown-preview-heading">Rendered Preview</h3>
+    <p class="text-muted small">Enable TOC to see the slide-out navigation panel with TreeView</p>
+    <div class="demo-area">
+      <div id="markdown-container" class="markdown-demo__container funky-markdown"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="markdown-source-heading">
+    <h3 id="markdown-source-heading">Source</h3>
+    <p class="text-muted small">The markdown source being rendered</p>
+    <div class="demo-area">
+      <div class="markdown-demo__source-wrapper">
+        <button type="button" id="copy-source-btn" class="btn btn-outline-secondary btn-sm markdown-demo__copy-btn">
+          <i class="fas fa-copy" aria-hidden="true"></i> Copy Source
+        </button>
+        <pre id="markdown-source" class="markdown-demo__source"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="markdown-actions-heading">
+    <h3 id="markdown-actions-heading">Actions</h3>
+    <div class="demo-area">
+      <div class="markdown-demo__actions">
+        <button type="button" id="render-btn" class="btn btn-primary">
+          <i class="fas fa-sync" aria-hidden="true"></i> Re-render
+        </button>
+        <button type="button" id="extract-headings-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-list" aria-hidden="true"></i> Extract Headings
+        </button>
+        <button type="button" id="highlight-code-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-code" aria-hidden="true"></i> Re-highlight Code
+        </button>
+        <button type="button" id="toggle-toc-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-bars" aria-hidden="true"></i> Toggle TOC
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="markdown-settings-heading">
+    <h3 id="markdown-settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="markdown-demo__settings" id="markdown-settings">
+        <div class="markdown-demo__setting">
+          <span class="markdown-demo__setting-label">Sample Type:</span>
+          <span class="markdown-demo__setting-value" id="setting-sample">full</span>
+        </div>
+        <div class="markdown-demo__setting">
+          <span class="markdown-demo__setting-label">Syntax Highlighting:</span>
+          <span class="markdown-demo__setting-value" id="setting-highlight">Yes</span>
+        </div>
+        <div class="markdown-demo__setting">
+          <span class="markdown-demo__setting-label">Line Numbers:</span>
+          <span class="markdown-demo__setting-value" id="setting-lines">No</span>
+        </div>
+        <div class="markdown-demo__setting">
+          <span class="markdown-demo__setting-label">Heading Anchors:</span>
+          <span class="markdown-demo__setting-value" id="setting-anchors">No</span>
+        </div>
+        <div class="markdown-demo__setting">
+          <span class="markdown-demo__setting-label">Show TOC:</span>
+          <span class="markdown-demo__setting-value" id="setting-toc">No</span>
+        </div>
+        <div class="markdown-demo__setting">
+          <span class="markdown-demo__setting-label">Density:</span>
+          <span class="markdown-demo__setting-value" id="setting-density">Default</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="markdown-log-heading">
+    <h3 id="markdown-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="markdown-log" class="markdown-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var currentSource = '';
+  var logs = [];
+
+  // Sample markdown content
+  var SAMPLES = {
+    basic: '# Hello World\n\nThis is **bold** and *italic* text.\n\n- Item 1\n- Item 2\n- Item 3\n\n> A blockquote for emphasis.',
+
+    code: '## Code Example\n\n```javascript\nvar accordion = Funky.Accordion.create(\'#container\', {\n    items: [\n        { id: \'intro\', title: \'Introduction\', content: \'...\' },\n        { id: \'setup\', title: \'Setup Guide\', content: \'...\' }\n    ],\n    allowMultiple: true,\n    keyboard: true\n});\n\n// Expand a section programmatically\naccordion.expand(\'intro\');\n```\n\n```css\n.button {\n    background: var(--pro-accent-primary);\n    color: white;\n    padding: 0.5rem 1rem;\n}\n```',
+
+    table: '## Data Table\n\n| Component | Purpose | Status |\n|:----------|:-------:|-------:|\n| Markdown | Render docs | ✅ Complete |\n| Accordion | Collapsible | ✅ Complete |\n| Table | Data display | ✅ Complete |\n| Form | User input | 🔄 In progress |',
+
+    abbr: '## Abbreviations\n\nThe HTML spec defines how CSS styles are applied to the DOM.\n\nYou can also use JS to manipulate elements.\n\n*[HTML]: HyperText Markup Language\n*[CSS]: Cascading Style Sheets\n*[DOM]: Document Object Model\n*[JS]: JavaScript',
+
+    full: '# Funky.Markdown Demo\n\nWelcome to the **Markdown** playground! This component renders _markdown_ with:\n\n- Syntax highlighting via Funky.CodePreview\n- Interactive tables via Funky.Table\n- Keyboard navigation (press `?` for help)\n- Abbreviation support (hover over HTML below)\n\nThe HTML specification is maintained by the W3C.\n\n*[HTML]: HyperText Markup Language\n*[W3C]: World Wide Web Consortium\n\n## Code Example\n\n```javascript\nvar accordion = Funky.Accordion.create(\'#container\', {\n    items: [\n        { id: \'intro\', title: \'Introduction\', content: \'...\' },\n        { id: \'setup\', title: \'Setup Guide\', content: \'...\' }\n    ],\n    allowMultiple: true,\n    keyboard: true\n});\n\n// Expand a section programmatically\naccordion.expand(\'intro\');\n```\n\n## Data Table\n\n| Component | Purpose | Status |\n|:----------|:-------:|-------:|\n| Markdown | Render docs | ✅ Complete |\n| Accordion | Collapsible | ✅ Complete |\n| Table | Data display | ✅ Complete |\n\n## Task List\n\n- [x] Create parser\n- [x] Add highlighting\n- [x] Funky.Table integration\n- [ ] Write tests\n- [ ] Documentation\n\n> **Note:** This is a blockquote with a `code` snippet.\n>\n> It can span multiple lines and include **formatting**.\n\n---\n\nVisit [Funky Docs](/docs) for more information.'
+  };
+
+  function log(message, type) {
+    var prefix = type ? '[' + type.toUpperCase() + '] ' : '';
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + prefix + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('markdown-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      sampleType: props.sampleType || 'full',
+      syntaxHighlight: props.syntaxHighlight !== false,
+      lineNumbers: props.lineNumbers === true,
+      headingAnchors: props.headingAnchors === true,
+      showToc: props.showToc === true,
+      tocPosition: props.tocPosition || 'top-left',
+      tocSticky: props.tocSticky === true,
+      density: props.density || ''
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+
+    var el = document.getElementById('setting-sample');
+    if (el) el.textContent = opts.sampleType;
+
+    el = document.getElementById('setting-highlight');
+    if (el) el.textContent = opts.syntaxHighlight ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-lines');
+    if (el) el.textContent = opts.lineNumbers ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-anchors');
+    if (el) el.textContent = opts.headingAnchors ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-toc');
+    if (el) el.textContent = opts.showToc ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-density');
+    if (el) el.textContent = opts.density || 'Default';
+  }
+
+  function renderMarkdown() {
+    var opts = getOptions();
+    var containerEl = document.getElementById('markdown-container');
+    var sourceEl = document.getElementById('markdown-source');
+
+    if (!containerEl || !Funky.Markdown) {
+      log('Markdown component not available', 'error');
+      return;
+    }
+
+    // Get sample content
+    currentSource = SAMPLES[opts.sampleType] || SAMPLES.full;
+
+    // Show source
+    if (sourceEl) {
+      sourceEl.textContent = currentSource;
+    }
+
+    // Render markdown using the built-in tocPanel option
+    Funky.Markdown.renderTo(containerEl, currentSource, {
+      highlightCode: opts.syntaxHighlight,
+      lineNumbers: opts.lineNumbers,
+      headingAnchors: opts.headingAnchors,
+      density: opts.density,
+      abbreviations: true,
+      tocPanel: opts.showToc,
+      tocPanelPosition: opts.tocPosition,
+      tocPanelSticky: opts.tocSticky,
+      tocMaxLevel: 3
+    });
+
+    // Listen for markdown events
+    containerEl.addEventListener('funky.markdown.render', function(e) {
+      log('Render complete: ' + (e.detail.headings ? e.detail.headings.length : 0) + ' headings');
+    });
+
+    containerEl.addEventListener('funky.markdown.copy', function(e) {
+      log('Code copied: ' + (e.detail.language || 'plain'));
+    });
+
+    log('Rendered markdown (' + opts.sampleType + ')' + (opts.showToc ? ' with TOC panel' : ''), 'render');
+    emit('event', { event: 'markdown:render', payload: { sampleType: opts.sampleType, showToc: opts.showToc } });
+  }
+
+  function setupEventListeners() {
+    // Render button
+    var renderBtn = document.getElementById('render-btn');
+    if (renderBtn) {
+      renderBtn.addEventListener('click', renderMarkdown);
+    }
+
+    // Extract headings button
+    var extractBtn = document.getElementById('extract-headings-btn');
+    if (extractBtn) {
+      extractBtn.addEventListener('click', function() {
+        var headings = Funky.Markdown.extractHeadings(currentSource);
+        log('Extracted ' + headings.length + ' headings:', 'info');
+        headings.forEach(function(h) {
+          log('  H' + h.level + ': ' + h.text + ' (#' + h.id + ')');
+        });
+        emit('event', { event: 'markdown:extractHeadings', payload: { count: headings.length } });
+      });
+    }
+
+    // Highlight code button
+    var highlightBtn = document.getElementById('highlight-code-btn');
+    if (highlightBtn) {
+      highlightBtn.addEventListener('click', function() {
+        var containerEl = document.getElementById('markdown-container');
+        if (containerEl) {
+          Funky.Markdown.highlightCode(containerEl);
+          log('Re-highlighted code blocks', 'highlight');
+          emit('event', { event: 'markdown:highlight', payload: {} });
+        }
+      });
+    }
+
+    // Toggle TOC button
+    var toggleTocBtn = document.getElementById('toggle-toc-btn');
+    if (toggleTocBtn) {
+      toggleTocBtn.addEventListener('click', function() {
+        var containerEl = document.getElementById('markdown-container');
+        var tocPanel = Funky.Markdown.getTocPanel(containerEl);
+        if (tocPanel) {
+          if (tocPanel.isOpen()) {
+            tocPanel.close();
+            log('TOC panel closed', 'toc');
+          } else {
+            tocPanel.open();
+            log('TOC panel opened', 'toc');
+          }
+          emit('event', { event: 'markdown:toggleToc', payload: { isOpen: tocPanel.isOpen() } });
+        } else {
+          log('TOC panel not available (enable Show TOC in settings)', 'warn');
+        }
+      });
+    }
+
+    // Copy source button
+    var copyBtn = document.getElementById('copy-source-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        if (Funky.Clipboard) {
+          Funky.Clipboard.copy(currentSource);
+          log('Copied markdown source to clipboard', 'copy');
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(currentSource);
+          log('Copied markdown source to clipboard', 'copy');
+        }
+        emit('event', { event: 'markdown:copySource', payload: {} });
+      });
+    }
+  }
+
+  Funky.Pages.register('component-markdown', {
+    init: function(state) {
+      updateSettingsDisplay();
+      renderMarkdown();
+      setupEventListeners();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          renderMarkdown();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      log('Markdown demo initialized');
+      emit('event', { event: 'markdown:init', payload: {} });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clean up TOC panel if exists
+      var containerEl = document.getElementById('markdown-container');
+      var tocPanel = Funky.Markdown.getTocPanel(containerEl);
+      if (tocPanel) {
+        tocPanel.destroy();
+      }
+
+      currentSource = '';
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

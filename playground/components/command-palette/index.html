@@ -1,0 +1,635 @@
+<div data-page="component-command-palette" class="component-demo command-palette-demo">
+  <h2>Command Palette</h2>
+  <p class="text-muted">Spotlight-style keyboard-driven command launcher with fuzzy search, categories, and recent history.</p>
+
+  <div class="demo-section">
+    <h3>Open Command Palette</h3>
+    <div class="demo-area command-palette-demo__open-area">
+      <button class="btn btn-primary btn-lg" id="open-palette">
+        <i class="fas fa-search me-2"></i>Open Command Palette
+        <kbd class="command-palette-demo__kbd">⌘K</kbd>
+      </button>
+      <p class="text-muted mt-2">Or press <kbd>Cmd+K</kbd> / <kbd>Ctrl+K</kbd> anywhere</p>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>API Controls</h3>
+    <div class="demo-area">
+      <div class="command-palette-demo__button-grid">
+        <div class="command-palette-demo__button-group">
+          <h5>Core Methods</h5>
+          <button class="btn btn-outline-primary" id="btn-open">open()</button>
+          <button class="btn btn-outline-primary" id="btn-close">close()</button>
+          <button class="btn btn-outline-primary" id="btn-toggle">toggle()</button>
+        </div>
+        <div class="command-palette-demo__button-group">
+          <h5>Dynamic State</h5>
+          <button class="btn btn-outline-warning" id="btn-disable">disable('action-save')</button>
+          <button class="btn btn-outline-success" id="btn-enable">enable('action-save')</button>
+          <button class="btn btn-outline-info" id="btn-update">update('action-save', {...})</button>
+        </div>
+        <div class="command-palette-demo__button-group">
+          <h5>Visibility</h5>
+          <button class="btn btn-outline-secondary" id="btn-hide">hide('action-delete')</button>
+          <button class="btn btn-outline-secondary" id="btn-show">show('action-delete')</button>
+        </div>
+        <div class="command-palette-demo__button-group">
+          <h5>Execute</h5>
+          <button class="btn btn-outline-danger" id="btn-execute">execute('nav-home')</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Context-Aware Commands</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Commands can be scoped to specific contexts. Only matching context commands appear.</p>
+      <div class="command-palette-demo__context-buttons">
+        <button class="btn btn-primary" id="ctx-global">Global Context (default)</button>
+        <button class="btn btn-info" id="ctx-edit">Edit Mode Context</button>
+        <button class="btn btn-warning" id="ctx-view">View Mode Context</button>
+      </div>
+      <p class="text-muted mt-2" id="current-context-label">Current context: <strong>global</strong></p>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Sub-Palettes &amp; API Search</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Sub-palettes provide nested command navigation or API-driven search.</p>
+      <div class="command-palette-demo__subpalette-buttons">
+        <button class="btn btn-outline-primary" id="btn-static-sub">
+          <i class="fas fa-palette me-2"></i>Theme Sub-Palette (static children)
+        </button>
+        <button class="btn btn-outline-success" id="btn-api-search">
+          <i class="fas fa-users me-2"></i>User Search (API mode)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Command Registration</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Dynamically add new commands at runtime.</p>
+      <div class="command-palette-demo__register-form">
+        <div class="mb-3">
+          <label class="form-label" for="new-cmd-title">Command Title</label>
+          <input type="text" class="form-control" id="new-cmd-title" placeholder="My Custom Command">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="new-cmd-category">Category</label>
+          <select class="form-select" id="new-cmd-category">
+            <option value="Custom">Custom</option>
+            <option value="Navigation">Navigation</option>
+            <option value="Actions">Actions</option>
+            <option value="View">View</option>
+          </select>
+        </div>
+        <button class="btn btn-success" id="btn-register">
+          <i class="fas fa-plus me-2"></i>Register Command
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="palette-log" class="command-palette-demo__log">Interact with the command palette to see events...</pre>
+      <button class="btn btn-sm btn-outline-secondary mt-2" id="btn-clear-log">
+        <i class="fas fa-trash me-2"></i>Clear Log
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var customCommandCount = 0;
+  var pubsubCleanups = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('palette-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  Funky.Pages.register('component-command-palette', {
+    init: function(state) {
+      var props = getProps();
+      var CommandPalette = Funky.CommandPalette;
+
+      if (!CommandPalette) {
+        log('ERROR: CommandPalette module not loaded');
+        return;
+      }
+
+      // Demo commands covering all features
+      var demoCommands = [
+        // Navigation category
+        {
+          id: 'nav-home',
+          title: 'Go to Home',
+          hint: 'Navigate to dashboard',
+          icon: 'fa-home',
+          category: 'Navigation',
+          shortcut: 'g h',
+          action: function() {
+            log('Executed: Go to Home');
+            if (Funky.Toast) Funky.Toast.info('Navigating to Home');
+          }
+        },
+        {
+          id: 'nav-settings',
+          title: 'Open Settings',
+          hint: 'User preferences',
+          icon: 'fa-cog',
+          category: 'Navigation',
+          shortcut: 'g s',
+          action: function() {
+            log('Executed: Open Settings');
+            if (Funky.Toast) Funky.Toast.info('Opening Settings');
+          }
+        },
+        {
+          id: 'nav-profile',
+          title: 'View Profile',
+          hint: 'Your account',
+          icon: 'fa-user',
+          category: 'Navigation',
+          action: function() {
+            log('Executed: View Profile');
+            if (Funky.Toast) Funky.Toast.info('Opening Profile');
+          }
+        },
+        // Actions category
+        {
+          id: 'action-new',
+          title: 'Create New Item',
+          hint: 'Add something new',
+          icon: 'fa-plus',
+          category: 'Actions',
+          shortcut: 'mod+n',
+          action: function() {
+            log('Executed: Create New Item');
+            if (Funky.Toast) Funky.Toast.success('Creating new item');
+          }
+        },
+        {
+          id: 'action-save',
+          title: 'Save',
+          hint: 'Save current changes',
+          icon: 'fa-save',
+          category: 'Actions',
+          shortcut: 'mod+s',
+          action: function() {
+            log('Executed: Save');
+            if (Funky.Toast) Funky.Toast.success('Saved!');
+          }
+        },
+        {
+          id: 'action-delete',
+          title: 'Delete',
+          hint: 'Remove selected item',
+          icon: 'fa-trash',
+          category: 'Actions',
+          action: function() {
+            log('Executed: Delete');
+            if (Funky.Toast) Funky.Toast.warning('Deleted!');
+          }
+        },
+        // View category with sub-palette
+        {
+          id: 'view-fullscreen',
+          title: 'Toggle Fullscreen',
+          hint: 'Enter/exit fullscreen mode',
+          icon: 'fa-expand',
+          category: 'View',
+          shortcut: 'f11',
+          action: function() {
+            log('Executed: Toggle Fullscreen');
+            if (Funky.Toast) Funky.Toast.info('Toggling fullscreen');
+          }
+        },
+        {
+          id: 'view-sidebar',
+          title: 'Toggle Sidebar',
+          hint: 'Show/hide navigation',
+          icon: 'fa-bars',
+          category: 'View',
+          shortcut: 'mod+b',
+          action: function() {
+            log('Executed: Toggle Sidebar');
+            if (Funky.Toast) Funky.Toast.info('Toggling sidebar');
+          }
+        },
+        {
+          id: 'theme-switcher',
+          title: 'Change Theme',
+          hint: 'Select color theme',
+          icon: 'fa-palette',
+          category: 'View',
+          children: [
+            {
+              id: 'theme-light',
+              title: 'Light Theme',
+              icon: 'fa-sun',
+              action: function() {
+                log('Executed: Light Theme');
+                if (Funky.Toast) Funky.Toast.info('Switched to light theme');
+              }
+            },
+            {
+              id: 'theme-dark',
+              title: 'Dark Theme',
+              icon: 'fa-moon',
+              action: function() {
+                log('Executed: Dark Theme');
+                if (Funky.Toast) Funky.Toast.info('Switched to dark theme');
+              }
+            },
+            {
+              id: 'theme-system',
+              title: 'System Theme',
+              icon: 'fa-desktop',
+              action: function() {
+                log('Executed: System Theme');
+                if (Funky.Toast) Funky.Toast.info('Using system theme');
+              }
+            }
+          ]
+        },
+        // Help category
+        {
+          id: 'help-docs',
+          title: 'View Documentation',
+          hint: 'Open help center',
+          icon: 'fa-book',
+          category: 'Help',
+          shortcut: '?',
+          action: function() {
+            log('Executed: View Documentation');
+            if (Funky.Toast) Funky.Toast.info('Opening documentation');
+          }
+        },
+        {
+          id: 'help-shortcuts',
+          title: 'Keyboard Shortcuts',
+          hint: 'View all shortcuts',
+          icon: 'fa-keyboard',
+          category: 'Help',
+          action: function() {
+            log('Executed: Keyboard Shortcuts');
+            if (Funky.Toast) Funky.Toast.info('Showing keyboard shortcuts');
+          }
+        }
+      ];
+
+      // Context-specific commands
+      var editModeCommands = [
+        {
+          id: 'edit-undo',
+          title: 'Undo',
+          hint: 'Undo last action',
+          icon: 'fa-undo',
+          category: 'Edit',
+          shortcut: 'mod+z',
+          action: function() {
+            log('Executed: Undo');
+            if (Funky.Toast) Funky.Toast.info('Undo');
+          }
+        },
+        {
+          id: 'edit-redo',
+          title: 'Redo',
+          hint: 'Redo last action',
+          icon: 'fa-redo',
+          category: 'Edit',
+          shortcut: 'mod+shift+z',
+          action: function() {
+            log('Executed: Redo');
+            if (Funky.Toast) Funky.Toast.info('Redo');
+          }
+        },
+        {
+          id: 'edit-copy',
+          title: 'Copy',
+          hint: 'Copy selection',
+          icon: 'fa-copy',
+          category: 'Edit',
+          shortcut: 'mod+c',
+          action: function() {
+            log('Executed: Copy');
+            if (Funky.Toast) Funky.Toast.info('Copied to clipboard');
+          }
+        }
+      ];
+
+      var viewModeCommands = [
+        {
+          id: 'view-zoom-in',
+          title: 'Zoom In',
+          hint: 'Increase zoom level',
+          icon: 'fa-search-plus',
+          category: 'View',
+          shortcut: 'mod+plus',
+          action: function() {
+            log('Executed: Zoom In');
+            if (Funky.Toast) Funky.Toast.info('Zoomed in');
+          }
+        },
+        {
+          id: 'view-zoom-out',
+          title: 'Zoom Out',
+          hint: 'Decrease zoom level',
+          icon: 'fa-search-minus',
+          category: 'View',
+          shortcut: 'mod+minus',
+          action: function() {
+            log('Executed: Zoom Out');
+            if (Funky.Toast) Funky.Toast.info('Zoomed out');
+          }
+        },
+        {
+          id: 'view-fit',
+          title: 'Fit to Screen',
+          hint: 'Fit content to viewport',
+          icon: 'fa-compress',
+          category: 'View',
+          action: function() {
+            log('Executed: Fit to Screen');
+            if (Funky.Toast) Funky.Toast.info('Fitted to screen');
+          }
+        }
+      ];
+
+      // Destroy previous instance if exists
+      if (CommandPalette.getState && CommandPalette.getState().initialized) {
+        CommandPalette.destroy();
+      }
+
+      // Initialize with playground props
+      CommandPalette.init({
+        placeholder: props.placeholder || 'Type a command or search...',
+        hotkey: props.hotkey || 'mod+k',
+        maxResults: props.maxResults || 10,
+        showRecent: props.showRecent !== false,
+        maxRecent: props.maxRecent || 5,
+        closeOnSelect: props.closeOnSelect !== false,
+        showShortcuts: props.showShortcuts !== false,
+        showContextBadge: props.showContextBadge || false,
+        fuzzyThreshold: props.fuzzyThreshold || 0.4
+      });
+
+      log('CommandPalette.init() called');
+      emit('event', { event: 'init', payload: props });
+
+      // Register demo commands
+      CommandPalette.registerMany(demoCommands);
+      log('Registered ' + demoCommands.length + ' demo commands');
+
+      // Register context-specific commands
+      CommandPalette.registerContext('edit', editModeCommands);
+      CommandPalette.registerContext('view', viewModeCommands);
+      log('Registered context commands: edit, view');
+
+      // Helper to sanitize data for postMessage (remove functions)
+      function sanitizeForPostMessage(obj) {
+        if (!obj || typeof obj !== 'object') return obj;
+        var result = {};
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            var val = obj[key];
+            if (typeof val === 'function') {
+              result[key] = '[Function]';
+            } else if (Array.isArray(val)) {
+              result[key] = val.map(function(item) {
+                return typeof item === 'function' ? '[Function]' :
+                       (typeof item === 'object' ? sanitizeForPostMessage(item) : item);
+              });
+            } else if (typeof val === 'object' && val !== null) {
+              result[key] = sanitizeForPostMessage(val);
+            } else {
+              result[key] = val;
+            }
+          }
+        }
+        return result;
+      }
+
+      // Subscribe to PubSub events
+      if (Funky.PubSub) {
+        var eventNames = [
+          'funky:palette:open',
+          'funky:palette:close',
+          'funky:palette:execute',
+          'funky:palette:search',
+          'funky:palette:navigate',
+          'funky:palette:subpalette:open',
+          'funky:palette:subpalette:close'
+        ];
+
+        eventNames.forEach(function(eventName) {
+          var cleanup = Funky.PubSub.on(eventName, function(data) {
+            var shortName = eventName.replace('funky:palette:', '');
+            var safeData = sanitizeForPostMessage(data);
+            log('Event: ' + shortName + (safeData ? ' → ' + JSON.stringify(safeData).slice(0, 50) : ''));
+            emit('event', { event: shortName, payload: safeData });
+          });
+          pubsubCleanups.push(cleanup);
+        });
+      }
+
+      // Core methods
+      document.getElementById('open-palette').onclick = function() {
+        CommandPalette.open();
+        log('API: open()');
+      };
+
+      document.getElementById('btn-open').onclick = function() {
+        CommandPalette.open();
+        log('API: open()');
+      };
+
+      document.getElementById('btn-close').onclick = function() {
+        CommandPalette.close();
+        log('API: close()');
+      };
+
+      document.getElementById('btn-toggle').onclick = function() {
+        CommandPalette.toggle();
+        log('API: toggle()');
+      };
+
+      // Dynamic state methods
+      document.getElementById('btn-disable').onclick = function() {
+        CommandPalette.disable('action-save');
+        log('API: disable("action-save") - command is now grayed out');
+        if (Funky.Toast) Funky.Toast.warning('Save command disabled');
+      };
+
+      document.getElementById('btn-enable').onclick = function() {
+        CommandPalette.enable('action-save');
+        log('API: enable("action-save") - command is active again');
+        if (Funky.Toast) Funky.Toast.success('Save command enabled');
+      };
+
+      document.getElementById('btn-update').onclick = function() {
+        CommandPalette.update('action-save', {
+          title: 'Save (Modified)',
+          hint: 'Updated hint text'
+        });
+        log('API: update("action-save", { title: "Save (Modified)" })');
+        if (Funky.Toast) Funky.Toast.info('Save command updated');
+      };
+
+      // Visibility methods
+      document.getElementById('btn-hide').onclick = function() {
+        CommandPalette.hide('action-delete');
+        log('API: hide("action-delete") - command hidden from list');
+        if (Funky.Toast) Funky.Toast.warning('Delete command hidden');
+      };
+
+      document.getElementById('btn-show').onclick = function() {
+        CommandPalette.show('action-delete');
+        log('API: show("action-delete") - command visible again');
+        if (Funky.Toast) Funky.Toast.success('Delete command visible');
+      };
+
+      // Execute method
+      document.getElementById('btn-execute').onclick = function() {
+        CommandPalette.execute('nav-home');
+        log('API: execute("nav-home") - runs command programmatically');
+      };
+
+      // Context switching
+      document.getElementById('ctx-global').onclick = function() {
+        CommandPalette.setContext(null);
+        document.getElementById('current-context-label').innerHTML = 'Current context: <strong>global</strong>';
+        log('API: setContext(null) - using global commands');
+        if (Funky.Toast) Funky.Toast.info('Switched to global context');
+      };
+
+      document.getElementById('ctx-edit').onclick = function() {
+        CommandPalette.setContext('edit');
+        document.getElementById('current-context-label').innerHTML = 'Current context: <strong>edit</strong>';
+        log('API: setContext("edit") - edit mode commands active');
+        if (Funky.Toast) Funky.Toast.info('Switched to edit context');
+      };
+
+      document.getElementById('ctx-view').onclick = function() {
+        CommandPalette.setContext('view');
+        document.getElementById('current-context-label').innerHTML = 'Current context: <strong>view</strong>';
+        log('API: setContext("view") - view mode commands active');
+        if (Funky.Toast) Funky.Toast.info('Switched to view context');
+      };
+
+      // Sub-palette: static children (already registered via theme-switcher)
+      document.getElementById('btn-static-sub').onclick = function() {
+        CommandPalette.open();
+        // Slight delay to let palette open, then execute theme-switcher to show sub-palette
+        setTimeout(function() {
+          CommandPalette.execute('theme-switcher');
+        }, 100);
+        log('Opening theme sub-palette (static children)');
+      };
+
+      // Sub-palette: API search mode
+      document.getElementById('btn-api-search').onclick = function() {
+        CommandPalette.openSearch({
+          placeholder: 'Search users...',
+          minLength: 1,
+          api: function(query) {
+            // Simulated API search - returns Promise
+            return new Promise(function(resolve) {
+              var users = [
+                { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+                { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'Editor' },
+                { id: 3, name: 'Bob Wilson', email: 'bob@example.com', role: 'Viewer' },
+                { id: 4, name: 'Alice Brown', email: 'alice@example.com', role: 'Editor' },
+                { id: 5, name: 'Charlie Davis', email: 'charlie@example.com', role: 'Admin' }
+              ];
+              // Simulate network delay
+              setTimeout(function() {
+                var filtered = users.filter(function(u) {
+                  return u.name.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
+                         u.email.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+                });
+                resolve(filtered.map(function(u) {
+                  return {
+                    id: 'user-' + u.id,
+                    title: u.name,
+                    hint: u.email,
+                    icon: 'fa-user',
+                    badge: u.role
+                  };
+                }));
+              }, 200);
+            });
+          },
+          onSelect: function(item) {
+            log('Selected user: ' + item.title);
+            if (Funky.Toast) Funky.Toast.success('Selected: ' + item.title);
+          }
+        });
+        log('API: openSearch() - API-driven user search');
+      };
+
+      // Dynamic command registration
+      document.getElementById('btn-register').onclick = function() {
+        var title = document.getElementById('new-cmd-title').value.trim() || 'Custom Command ' + (++customCommandCount);
+        var category = document.getElementById('new-cmd-category').value;
+        var id = 'custom-' + Date.now();
+
+        CommandPalette.register({
+          id: id,
+          title: title,
+          hint: 'Dynamically registered command',
+          icon: 'fa-star',
+          category: category,
+          action: function() {
+            log('Executed custom command: ' + title);
+            if (Funky.Toast) Funky.Toast.success('Custom: ' + title);
+          }
+        });
+
+        log('API: register({ id: "' + id + '", title: "' + title + '" })');
+        if (Funky.Toast) Funky.Toast.success('Registered: ' + title);
+        document.getElementById('new-cmd-title').value = '';
+      };
+
+      // Clear log
+      document.getElementById('btn-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('palette-log').textContent = 'Log cleared...';
+      };
+
+      log('Demo initialized successfully');
+    },
+
+    destroy: function() {
+      // Clean up PubSub subscriptions
+      pubsubCleanups.forEach(function(cleanup) {
+        if (typeof cleanup === 'function') cleanup();
+      });
+      pubsubCleanups = [];
+
+      // Destroy CommandPalette
+      if (Funky.CommandPalette && Funky.CommandPalette.destroy) {
+        Funky.CommandPalette.destroy();
+      }
+
+      logs = [];
+      customCommandCount = 0;
+      return {};
+    }
+  });
+})();
+</script>

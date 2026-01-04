@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Funky Truncate Component
+   Theme-aware, density-aware text truncation
+   ========================================================================== */
+
+/* ==========================================================================
+   BASE STYLES
+   ========================================================================== */
+
+.funky-truncate {
+  position: relative;
+}
+
+.funky-truncate-text {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.funky-truncate-toggle {
+  display: inline;
+  color: var(--pro-accent-primary, #2f81f7);
+  cursor: pointer;
+  font-size: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: var(--pro-spacing-xs, 0.25rem);
+  font-weight: 500;
+  transition: color 0.15s ease;
+  font-family: inherit;
+}
+
+.funky-truncate-toggle:hover {
+  color: var(--pro-accent-primary-hover, #388bfd);
+  text-decoration: underline;
+}
+
+.funky-truncate-toggle:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+  border-radius: 2px;
+}
+
+/* Ellipsis */
+.funky-truncate-ellipsis {
+  color: var(--pro-text-secondary, #8b949e);
+}
+
+/* ==========================================================================
+   LINE CLAMP MODE (CSS-only truncation)
+   ========================================================================== */
+
+.funky-truncate-lines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.funky-truncate-lines-1 { -webkit-line-clamp: 1; }
+.funky-truncate-lines-2 { -webkit-line-clamp: 2; }
+.funky-truncate-lines-3 { -webkit-line-clamp: 3; }
+.funky-truncate-lines-4 { -webkit-line-clamp: 4; }
+.funky-truncate-lines-5 { -webkit-line-clamp: 5; }
+
+.funky-truncate-lines.expanded {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
+/* ==========================================================================
+   INLINE MODE (for table cells)
+   ========================================================================== */
+
+.funky-truncate-inline {
+  display: inline;
+}
+
+.funky-truncate-inline .funky-truncate-toggle {
+  margin-left: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* ==========================================================================
+   BLOCK MODE WITH TOGGLE
+   ========================================================================== */
+
+.funky-truncate-block .funky-truncate-toggle {
+  display: inline;
+}
+
+/* ==========================================================================
+   DENSITY OVERRIDES
+   ========================================================================== */
+
+[data-density="compact"] .funky-truncate-toggle {
+  font-size: 0.75rem;
+}
+
+[data-density="spacious"] .funky-truncate-toggle {
+  font-size: 0.9375rem;
+}
+
+/* ==========================================================================
+   ANIMATION
+   ========================================================================== */
+
+.funky-truncate.animate .funky-truncate-text {
+  transition: max-height 0.3s ease-out, opacity 0.2s ease;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .funky-truncate.animate .funky-truncate-text {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   EVEN FUNKYER THEME
+   ========================================================================== */
+
+.even-funkyer .funky-truncate-toggle {
+  background: linear-gradient(135deg, var(--pro-accent-primary), var(--pro-accent-secondary, #00ffff));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.even-funkyer .funky-truncate-toggle:hover {
+  filter: brightness(1.2);
+}
+
+/* ==========================================================================
+   HIGH CONTRAST MODE
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+  .funky-truncate-toggle {
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .funky-truncate-toggle:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+  }
+
+  .funky-truncate-toggle:hover {
+    text-decoration: underline double;
+  }
+
+  .funky-truncate-ellipsis {
+    font-weight: 600;
+  }
+
+  /* Disable animations */
+  .funky-truncate.animate .funky-truncate-text {
+    transition: none;
+  }
+
+  /* Even funkyer overrides for high contrast */
+  .even-funkyer .funky-truncate-toggle {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: currentColor;
+    background-clip: unset;
+    text-decoration: underline;
+  }
+}

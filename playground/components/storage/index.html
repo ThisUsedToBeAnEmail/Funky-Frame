@@ -1,0 +1,455 @@
+<div data-page="component-storage" class="component-demo">
+  <h2>Storage</h2>
+  <p class="text-muted">Namespaced localStorage management with automatic JSON serialization</p>
+
+  <!-- Current Keys Section -->
+  <section class="demo-section" aria-labelledby="keys-heading">
+    <h3 id="keys-heading">Stored Keys</h3>
+    <p class="text-muted small">All keys stored with the <code>funky_</code> prefix</p>
+    <div class="demo-area">
+      <div id="stored-keys" class="storage-demo__keys">
+        <span class="text-muted">No keys stored</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add/Edit Entry Section -->
+  <section class="demo-section" aria-labelledby="add-heading">
+    <h3 id="add-heading">Add / Edit Entry</h3>
+    <p class="text-muted small">Store a new value or update an existing key</p>
+    <div class="demo-area">
+      <div class="storage-demo__form">
+        <div class="storage-demo__form-row">
+          <label for="input-key" class="storage-demo__label">Key:</label>
+          <input type="text" id="input-key" class="form-control form-control-sm" placeholder="myKey" value="demo_user">
+        </div>
+        <div class="storage-demo__form-row">
+          <label for="input-value" class="storage-demo__label">Value:</label>
+          <textarea id="input-value" class="form-control form-control-sm" rows="3" placeholder='{"name": "John"}'></textarea>
+        </div>
+        <div class="storage-demo__form-row">
+          <label class="storage-demo__label">Type:</label>
+          <div class="storage-demo__type-toggle">
+            <button type="button" class="btn btn-sm btn-outline-primary active" id="btn-type-json">
+              <i class="fa-solid fa-code" aria-hidden="true"></i> JSON
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-type-raw">
+              <i class="fa-solid fa-font" aria-hidden="true"></i> Raw String
+            </button>
+          </div>
+        </div>
+        <div class="storage-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-set">
+            <i class="fa-solid fa-save" aria-hidden="true"></i> Save
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-get">
+            <i class="fa-solid fa-search" aria-hidden="true"></i> Get
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" id="btn-remove">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i> Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Retrieved Value Section -->
+  <section class="demo-section" aria-labelledby="result-heading">
+    <h3 id="result-heading">Result</h3>
+    <p class="text-muted small">Output from get/set operations</p>
+    <div class="demo-area">
+      <pre id="result-output" class="storage-demo__output"><span class="text-muted">// Results will appear here</span></pre>
+    </div>
+  </section>
+
+  <!-- API Controls Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Test the component's public methods</p>
+    <div class="demo-area">
+      <div class="storage-demo__controls">
+        <div class="storage-demo__control-group">
+          <span class="storage-demo__control-label">Query:</span>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-list-keys">
+            <i class="fa-solid fa-list" aria-hidden="true"></i> List All Keys
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-has-key">
+            <i class="fa-solid fa-question" aria-hidden="true"></i> Has Key?
+          </button>
+        </div>
+        <div class="storage-demo__control-group">
+          <span class="storage-demo__control-label">Actions:</span>
+          <button type="button" class="btn btn-sm btn-outline-warning" id="btn-add-sample">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Sample Data
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" id="btn-clear-all">
+            <i class="fa-solid fa-trash-alt" aria-hidden="true"></i> Clear All
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Storage Info Section -->
+  <section class="demo-section" aria-labelledby="info-heading">
+    <h3 id="info-heading">Storage Info</h3>
+    <div class="demo-area">
+      <div class="storage-demo__info">
+        <div class="storage-demo__info-item">
+          <span class="storage-demo__info-label">Prefix:</span>
+          <code>funky_</code>
+        </div>
+        <div class="storage-demo__info-item">
+          <span class="storage-demo__info-label">Key Count:</span>
+          <span id="key-count" class="badge bg-info">0</span>
+        </div>
+        <div class="storage-demo__info-item">
+          <span class="storage-demo__info-label">Storage Type:</span>
+          <span class="badge bg-secondary">localStorage</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var propsChangedHandler = null;
+  var isJsonMode = true;
+
+  /**
+   * Escape HTML entities
+   */
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * Update stored keys display
+   */
+  function updateKeysDisplay() {
+    var container = document.getElementById('stored-keys');
+    var countEl = document.getElementById('key-count');
+    if (!container) return;
+
+    var keys = Funky.Storage.keys();
+
+    if (countEl) {
+      countEl.textContent = keys.length;
+    }
+
+    if (keys.length === 0) {
+      container.innerHTML = '<span class="text-muted">No keys stored</span>';
+      return;
+    }
+
+    var html = keys.map(function(key) {
+      var value = Funky.Storage.get(key);
+      var displayValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+      if (displayValue.length > 50) {
+        displayValue = displayValue.substring(0, 47) + '...';
+      }
+      return '<div class="storage-demo__key-item">' +
+        '<span class="storage-demo__key-name">' + escapeHtml(key) + '</span>' +
+        '<span class="storage-demo__key-value">' + escapeHtml(displayValue) + '</span>' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary storage-demo__key-load" data-key="' + escapeHtml(key) + '">' +
+        '<i class="fa-solid fa-edit" aria-hidden="true"></i>' +
+        '</button>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+
+    // Bind load buttons
+    container.querySelectorAll('.storage-demo__key-load').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var key = this.getAttribute('data-key');
+        loadKey(key);
+      });
+    });
+  }
+
+  /**
+   * Load a key into the form
+   */
+  function loadKey(key) {
+    var keyInput = document.getElementById('input-key');
+    var valueInput = document.getElementById('input-value');
+
+    if (keyInput) keyInput.value = key;
+
+    var value = Funky.Storage.get(key);
+    if (valueInput) {
+      if (typeof value === 'object') {
+        valueInput.value = JSON.stringify(value, null, 2);
+        setJsonMode(true);
+      } else {
+        valueInput.value = String(value);
+        // Check if it's valid JSON
+        try {
+          JSON.parse(String(value));
+          setJsonMode(true);
+        } catch (e) {
+          setJsonMode(false);
+        }
+      }
+    }
+
+    showResult('Loaded key: ' + key, 'info');
+  }
+
+  /**
+   * Set JSON/Raw mode
+   */
+  function setJsonMode(json) {
+    isJsonMode = json;
+    var btnJson = document.getElementById('btn-type-json');
+    var btnRaw = document.getElementById('btn-type-raw');
+
+    if (btnJson && btnRaw) {
+      if (json) {
+        btnJson.classList.remove('btn-outline-primary');
+        btnJson.classList.add('btn-primary', 'active');
+        btnRaw.classList.remove('btn-secondary', 'active');
+        btnRaw.classList.add('btn-outline-secondary');
+      } else {
+        btnRaw.classList.remove('btn-outline-secondary');
+        btnRaw.classList.add('btn-secondary', 'active');
+        btnJson.classList.remove('btn-primary', 'active');
+        btnJson.classList.add('btn-outline-primary');
+      }
+    }
+  }
+
+  /**
+   * Show result in output area
+   */
+  function showResult(message, type) {
+    var output = document.getElementById('result-output');
+    if (!output) return;
+
+    var colorClass = '';
+    switch (type) {
+      case 'success': colorClass = 'text-success'; break;
+      case 'error': colorClass = 'text-danger'; break;
+      case 'info': colorClass = 'text-info'; break;
+      default: colorClass = '';
+    }
+
+    if (typeof message === 'object') {
+      message = JSON.stringify(message, null, 2);
+    }
+
+    output.innerHTML = '<span class="' + colorClass + '">' + escapeHtml(message) + '</span>';
+  }
+
+  /**
+   * Bind events
+   */
+  function bindEvents() {
+    var btnTypeJson = document.getElementById('btn-type-json');
+    var btnTypeRaw = document.getElementById('btn-type-raw');
+    var btnSet = document.getElementById('btn-set');
+    var btnGet = document.getElementById('btn-get');
+    var btnRemove = document.getElementById('btn-remove');
+    var btnListKeys = document.getElementById('btn-list-keys');
+    var btnHasKey = document.getElementById('btn-has-key');
+    var btnAddSample = document.getElementById('btn-add-sample');
+    var btnClearAll = document.getElementById('btn-clear-all');
+
+    // Type toggle
+    if (btnTypeJson) {
+      btnTypeJson.addEventListener('click', function() {
+        setJsonMode(true);
+      });
+    }
+
+    if (btnTypeRaw) {
+      btnTypeRaw.addEventListener('click', function() {
+        setJsonMode(false);
+      });
+    }
+
+    // Set value
+    if (btnSet) {
+      btnSet.addEventListener('click', function() {
+        var key = document.getElementById('input-key').value.trim();
+        var valueStr = document.getElementById('input-value').value;
+
+        if (!key) {
+          showResult('Error: Key is required', 'error');
+          return;
+        }
+
+        var success;
+        if (isJsonMode) {
+          try {
+            var value = JSON.parse(valueStr);
+            success = Funky.Storage.set(key, value);
+            showResult('Stored (JSON): ' + key + ' = ' + JSON.stringify(value), 'success');
+          } catch (e) {
+            showResult('Error: Invalid JSON - ' + e.message, 'error');
+            return;
+          }
+        } else {
+          success = Funky.Storage.setRaw(key, valueStr);
+          showResult('Stored (Raw): ' + key + ' = ' + valueStr, 'success');
+        }
+
+        if (success) {
+          updateKeysDisplay();
+          emit('event', { event: 'storage:set', payload: { key: key, mode: isJsonMode ? 'json' : 'raw' } });
+        }
+      });
+    }
+
+    // Get value
+    if (btnGet) {
+      btnGet.addEventListener('click', function() {
+        var key = document.getElementById('input-key').value.trim();
+
+        if (!key) {
+          showResult('Error: Key is required', 'error');
+          return;
+        }
+
+        var value = isJsonMode ? Funky.Storage.get(key) : Funky.Storage.getRaw(key);
+
+        if (value === undefined || value === null) {
+          showResult('Key not found: ' + key, 'info');
+        } else {
+          var displayValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
+          showResult('Retrieved: ' + key + '\n\n' + displayValue, 'success');
+
+          // Update textarea
+          var valueInput = document.getElementById('input-value');
+          if (valueInput) {
+            valueInput.value = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
+          }
+        }
+
+        emit('event', { event: 'storage:get', payload: { key: key, found: value !== undefined && value !== null } });
+      });
+    }
+
+    // Remove value
+    if (btnRemove) {
+      btnRemove.addEventListener('click', function() {
+        var key = document.getElementById('input-key').value.trim();
+
+        if (!key) {
+          showResult('Error: Key is required', 'error');
+          return;
+        }
+
+        Funky.Storage.remove(key);
+        showResult('Removed: ' + key, 'success');
+        updateKeysDisplay();
+        emit('event', { event: 'storage:remove', payload: { key: key } });
+      });
+    }
+
+    // List all keys
+    if (btnListKeys) {
+      btnListKeys.addEventListener('click', function() {
+        var keys = Funky.Storage.keys();
+        if (keys.length === 0) {
+          showResult('No keys found', 'info');
+        } else {
+          showResult('Keys (' + keys.length + '):\n\n' + keys.join('\n'), 'success');
+        }
+        emit('event', { event: 'storage:keys', payload: { count: keys.length } });
+      });
+    }
+
+    // Has key
+    if (btnHasKey) {
+      btnHasKey.addEventListener('click', function() {
+        var key = document.getElementById('input-key').value.trim();
+
+        if (!key) {
+          showResult('Error: Key is required', 'error');
+          return;
+        }
+
+        var exists = Funky.Storage.has(key);
+        showResult('has("' + key + '"): ' + exists, exists ? 'success' : 'info');
+        emit('event', { event: 'storage:has', payload: { key: key, exists: exists } });
+      });
+    }
+
+    // Add sample data
+    if (btnAddSample) {
+      btnAddSample.addEventListener('click', function() {
+        Funky.Storage.set('demo_user', { name: 'John Doe', email: 'john@example.com' });
+        Funky.Storage.set('demo_prefs', { theme: 'dark', language: 'en', notifications: true });
+        Funky.Storage.setRaw('demo_token', 'abc123xyz789');
+        Funky.Storage.set('demo_history', ['page1', 'page2', 'page3']);
+
+        showResult('Added sample data:\n- demo_user (object)\n- demo_prefs (object)\n- demo_token (raw string)\n- demo_history (array)', 'success');
+        updateKeysDisplay();
+        emit('event', { event: 'storage:addSample', payload: {} });
+      });
+    }
+
+    // Clear all
+    if (btnClearAll) {
+      btnClearAll.addEventListener('click', function() {
+        var keys = Funky.Storage.keys();
+        var count = keys.length;
+        Funky.Storage.clear();
+        showResult('Cleared ' + count + ' key(s)', 'success');
+        updateKeysDisplay();
+        emit('event', { event: 'storage:clear', payload: { count: count } });
+      });
+    }
+  }
+
+  // Page registration
+  Funky.Pages.register('component-storage', {
+    init: function(state) {
+      var props = getProps();
+
+      // Set default value in textarea
+      var valueInput = document.getElementById('input-value');
+      if (valueInput) {
+        valueInput.value = JSON.stringify({ name: 'John', email: 'john@example.com' }, null, 2);
+      }
+
+      // Update keys display
+      updateKeysDisplay();
+
+      // Bind events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateKeysDisplay();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'storage:init', payload: props });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,636 @@
+/**
+ * Splash Page Styles
+ * Styles for public-facing splash pages: About, Docs, Playground, Login
+ *
+ * Uses Funky theme system variables (--pro-*) for consistent theming
+ * Uses --pro-spacing-* for density-aware spacing
+ */
+
+/* ========================================
+   Smooth Scrolling for Anchor Links
+   ======================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset for fixed header when navigating to anchors */
+:target {
+  scroll-margin-top: calc(var(--nav-height-horizontal, 56px) + 1rem);
+}
+
+/* ========================================
+   CSS Variables - Border Radius Scale
+   ======================================== */
+:root {
+  /* Border Radius Scale */
+  --splash-radius-sm: 6px;
+  --splash-radius-md: 8px;
+  --splash-radius-lg: 12px;
+
+  /* Map to pro-* variables for compatibility */
+  --pro-border-radius: var(--splash-radius-md);
+  --pro-border-radius-sm: var(--splash-radius-sm);
+  --pro-border-radius-lg: var(--splash-radius-lg);
+}
+
+/* ========================================
+   Shared Components
+   Reusable across all splash pages
+   Uses --pro-spacing-* which are density-aware
+   ======================================== */
+
+/* Hero Section */
+.splash-hero {
+  text-align: center;
+  padding: var(--pro-spacing-lg);
+  margin-bottom: var(--pro-spacing-lg);
+  background: linear-gradient(135deg, var(--pro-bg-secondary) 0%, var(--pro-bg-primary) 100%);
+  border-radius: var(--splash-radius-lg);
+  border: 1px solid var(--pro-border-color);
+}
+
+.splash-hero h1 {
+  font-size: var(--pro-font-size-4xl);
+  font-weight: var(--pro-font-weight-bold);
+  margin-bottom: var(--pro-spacing-md);
+  background: linear-gradient(135deg, var(--pro-accent-primary), var(--pro-accent-info));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.splash-hero .tagline {
+  font-size: var(--pro-font-size-2xl);
+  color: var(--pro-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: var(--pro-font-weight-light);
+  letter-spacing: 0.05em;
+}
+
+.splash-hero .tagline-sub {
+  font-size: var(--pro-font-size-md);
+  color: var(--pro-text-tertiary);
+  max-width: 600px;
+  margin: var(--pro-spacing-md) auto 0;
+}
+
+/* Content Card */
+.splash-card {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--splash-radius-lg);
+  padding: var(--pro-spacing-lg);
+  margin-bottom: var(--pro-spacing-lg);
+}
+
+/* Section */
+.splash-section {
+  margin-bottom: var(--pro-spacing-lg);
+  padding-top: var(--pro-spacing-md);
+}
+
+.splash-section h2 {
+  font-size: var(--pro-font-size-2xl);
+  font-weight: var(--pro-font-weight-semibold);
+  color: var(--pro-text-primary);
+  margin-bottom: var(--pro-spacing-md);
+  padding-bottom: var(--pro-spacing-xs);
+  border-bottom: 2px solid var(--pro-accent-primary);
+}
+
+.splash-section h3 {
+  font-size: var(--pro-font-size-lg);
+  font-weight: var(--pro-font-weight-semibold);
+  color: var(--pro-text-primary);
+  margin: var(--pro-spacing-sm) 0 var(--pro-spacing-sm);
+}
+
+.splash-section h4 {
+  font-size: var(--pro-font-size-base);
+  font-weight: var(--pro-font-weight-semibold);
+  color: var(--pro-text-secondary);
+  margin: var(--pro-spacing-sm) 0 var(--pro-spacing-sm);
+}
+
+.splash-section p {
+  margin-bottom: var(--pro-spacing-sm);
+  color: var(--pro-text-secondary);
+  line-height: var(--pro-line-height-relaxed);
+}
+
+/* Callout */
+.splash-callout {
+  background: var(--pro-bg-secondary);
+  border-left: 4px solid var(--pro-accent-primary);
+  padding: var(--pro-spacing-sm) var(--pro-spacing-md);
+  margin: var(--pro-spacing-md) 0;
+  border-radius: 0 var(--splash-radius-md) var(--splash-radius-md) 0;
+}
+
+.splash-callout.success {
+  border-left-color: var(--pro-accent-success);
+}
+
+.splash-callout.warning {
+  border-left-color: var(--pro-accent-warning);
+}
+
+.splash-callout.splash-callout-info {
+  border-left-color: var(--pro-accent-info);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pro-spacing-sm);
+}
+
+.splash-callout.info {
+  border-left-color: var(--pro-accent-info);
+}
+
+.splash-callout-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: var(--pro-accent-info);
+  margin-top: 0.125rem;
+}
+
+.splash-callout-content {
+  flex: 1;
+  line-height: 1.6;
+  color: var(--pro-text-secondary);
+}
+
+.splash-callout-content strong {
+  color: var(--pro-text-primary);
+}
+
+.splash-callout p {
+  margin: 0;
+}
+
+/* Code Block */
+.splash-pre {
+  background: var(--pro-bg-elevated);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--splash-radius-md);
+  padding: var(--pro-spacing-sm);
+  overflow-x: auto;
+  margin: var(--pro-spacing-sm) 0;
+}
+
+.splash-pre code {
+  background: none;
+  padding: 0;
+  color: var(--pro-text-primary);
+  font-size: var(--pro-font-size-sm);
+  line-height: var(--pro-line-height-normal);
+  font-family: var(--pro-font-mono);
+}
+
+/* Code Syntax Highlighting */
+.code-comment { color: var(--pro-text-muted); }
+.code-keyword { color: var(--pro-accent-info); }
+.code-string { color: var(--pro-accent-success); }
+.code-function { color: var(--pro-accent-primary); }
+.code-variable { color: var(--pro-accent-purple); }
+
+/* Diagram/ASCII Art Block */
+.splash-diagram {
+  background: var(--pro-bg-elevated);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--splash-radius-md);
+  padding: var(--pro-spacing-md);
+  margin: var(--pro-spacing-md) 0;
+  overflow-x: auto;
+  font-family: var(--pro-font-mono);
+  font-size: var(--pro-font-size-xs);
+  line-height: 1.4;
+  color: var(--pro-text-secondary);
+  white-space: pre;
+}
+
+.splash-diagram pre {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  white-space: pre;
+  overflow-x: visible;
+}
+
+.splash-diagram figcaption {
+  margin-bottom: 0;
+}
+
+/* Table */
+.splash-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--pro-spacing-sm) 0;
+  font-size: var(--pro-font-size-sm);
+}
+
+.splash-table th,
+.splash-table td {
+  padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+  text-align: left;
+  border: 1px solid var(--pro-border-color);
+}
+
+.splash-table th {
+  background: var(--pro-bg-tertiary);
+  font-weight: var(--pro-font-weight-semibold);
+  color: var(--pro-text-primary);
+}
+
+.splash-table td {
+  background: var(--pro-bg-secondary);
+  color: var(--pro-text-secondary);
+}
+
+/* Grid */
+.splash-grid {
+  display: grid;
+  gap: var(--pro-spacing-md);
+  margin: var(--pro-spacing-md) 0;
+}
+
+.splash-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.splash-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Footer */
+.splash-footer {
+  text-align: center;
+  padding: var(--pro-spacing-lg);
+  border-top: 1px solid var(--pro-border-color);
+  color: var(--pro-text-muted);
+  font-size: var(--pro-font-size-sm);
+  margin-top: var(--pro-spacing-lg);
+}
+
+.splash-footer .quote {
+  font-style: italic;
+  color: var(--pro-text-secondary);
+  font-size: var(--pro-font-size-base);
+  margin-bottom: var(--pro-spacing-sm);
+}
+
+/* ========================================
+   About Page Specific
+   ======================================== */
+
+/* About Content Container - density-aware */
+.about-content {
+  padding: var(--pro-spacing-lg);
+}
+
+/* Override Bootstrap py-4 utility with density-aware spacing */
+.about-content.py-4 {
+  padding-top: var(--pro-spacing-lg) !important;
+  padding-bottom: var(--pro-spacing-lg) !important;
+}
+
+/* TOC Navigation */
+.about-toc {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--splash-radius-lg);
+  padding: var(--pro-spacing-md);
+  margin-bottom: var(--pro-spacing-lg);
+}
+
+.about-toc h2 {
+  font-size: var(--pro-font-size-sm);
+  color: var(--pro-text-secondary);
+  margin-bottom: var(--pro-spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.about-toc-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--pro-spacing-xs);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.about-toc-list a {
+  color: var(--pro-accent-info);
+  text-decoration: none;
+  font-size: var(--pro-font-size-sm);
+  padding: var(--pro-spacing-xs) 0;
+  display: block;
+  transition: color 0.2s;
+}
+
+.about-toc-list a:hover {
+  color: var(--pro-accent-primary);
+}
+
+/* Principles Cards */
+.about-principles {
+  display: grid;
+  gap: var(--pro-spacing-md);
+  margin: var(--pro-spacing-md) 0;
+  overflow: hidden;
+}
+
+.about-principle {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--splash-radius-lg);
+  padding: var(--pro-spacing-md);
+  overflow: hidden;
+  min-width: 0;
+  margin-bottom: var(--pro-spacing-md);
+}
+
+/* Remove bottom margin when inside a grid (gap handles spacing) */
+.about-principles .about-principle {
+  margin-bottom: 0;
+}
+
+.about-principle h4 {
+  color: var(--pro-accent-primary);
+  margin-top: 0;
+  margin-bottom: var(--pro-spacing-sm);
+}
+
+/* Comparison Boxes */
+.about-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pro-spacing-sm);
+  margin-bottom: var(--pro-spacing-md);
+}
+
+.about-comparison-box {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--splash-radius-md);
+  padding: var(--pro-spacing-sm);
+}
+
+.about-comparison-box.bad {
+  border-color: var(--pro-accent-danger);
+}
+
+.about-comparison-box.good {
+  border-color: var(--pro-accent-success);
+}
+
+.about-comparison-box h5 {
+  font-size: var(--pro-font-size-sm);
+  margin-bottom: var(--pro-spacing-xs);
+}
+
+.about-comparison-box.bad h5 {
+  color: var(--pro-accent-danger);
+}
+
+.about-comparison-box.good h5 {
+  color: var(--pro-accent-success);
+}
+
+/* ========================================
+   Density-Specific Font Sizes for Splash
+   ======================================== */
+[data-density="compact"] .splash-hero h1 {
+  font-size: calc(var(--pro-font-size-4xl) * 0.85);
+}
+
+[data-density="compact"] .splash-hero .tagline {
+  font-size: calc(var(--pro-font-size-2xl) * 0.85);
+}
+
+[data-density="compact"] .splash-section h2 {
+  font-size: calc(var(--pro-font-size-2xl) * 0.85);
+}
+
+[data-density="compact"] .splash-section h3 {
+  font-size: calc(var(--pro-font-size-lg) * 0.9);
+}
+
+[data-density="compact"] .splash-section p,
+[data-density="compact"] .about-comparison-box,
+[data-density="compact"] .about-principle {
+  font-size: var(--pro-font-size-sm);
+}
+
+[data-density="spacious"] .splash-hero h1 {
+  font-size: calc(var(--pro-font-size-4xl) * 1.15);
+}
+
+[data-density="spacious"] .splash-hero .tagline {
+  font-size: calc(var(--pro-font-size-2xl) * 1.1);
+}
+
+[data-density="spacious"] .splash-section h2 {
+  font-size: calc(var(--pro-font-size-2xl) * 1.1);
+}
+
+[data-density="spacious"] .splash-section h3 {
+  font-size: calc(var(--pro-font-size-lg) * 1.1);
+}
+
+[data-density="spacious"] .splash-section p,
+[data-density="spacious"] .about-comparison-box,
+[data-density="spacious"] .about-principle {
+  font-size: var(--pro-font-size-lg);
+  line-height: 1.8;
+}
+
+/* ========================================
+   Responsive Adjustments
+   ======================================== */
+@media (max-width: 768px) {
+  .splash-hero h1 {
+    font-size: var(--pro-font-size-2xl);
+  }
+
+  .splash-hero .tagline {
+    font-size: var(--pro-font-size-base);
+  }
+
+  .about-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .splash-diagram {
+    font-size: 0.65rem;
+  }
+
+  /* Reset horizontal nav items to vertical on mobile */
+  [data-nav-position="top"] .nav-group,
+  [data-nav-position="bottom"] .nav-group,
+  [data-nav-position="top"] .nav-standalone,
+  [data-nav-position="bottom"] .nav-standalone {
+    position: relative;
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+/* ========================================
+   Sidebar Footer - Icon buttons with tooltips
+   ======================================== */
+.sidebar-footer {
+  padding: var(--pro-spacing-sm);
+  margin-top: auto;
+  border-top: 1px solid var(--pro-border-color);
+  display: flex;
+  gap: var(--pro-spacing-xs);
+  justify-content: center;
+}
+
+.sidebar-footer .nav-link,
+.sidebar-footer .pwa-install-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: var(--pro-border-radius);
+  color: var(--pro-text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.sidebar-footer .nav-link:hover,
+.sidebar-footer .pwa-install-button:hover {
+  background: var(--pro-bg-hover, rgba(255, 255, 255, 0.1));
+  color: var(--pro-primary);
+}
+
+.sidebar-footer .nav-link .nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* Hide text labels - always icon only */
+.sidebar-footer .nav-link .nav-text,
+.sidebar-footer .pwa-install-button .pwa-install-text {
+  display: none;
+}
+
+/* Tooltips for all footer items */
+.sidebar-footer .nav-link[data-tooltip]:hover::after,
+.sidebar-footer .pwa-install-button[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 0.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--pro-bg-secondary);
+  color: var(--pro-text-primary);
+  padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: var(--pro-shadow-md);
+}
+
+/* Tooltip position for top nav - show below instead of to the right */
+[data-nav-position="top"] .sidebar-footer .nav-link[data-tooltip]:hover::after,
+[data-nav-position="top"] .sidebar-footer .pwa-install-button[data-tooltip]:hover::after {
+  left: 50%;
+  top: calc(100% + 0.5rem);
+  transform: translateX(-50%);
+}
+
+/* Remove border-top for top nav on splash pages */
+[data-nav-position="top"] .sidebar-footer {
+  border-top: none;
+}
+
+/* Ensure sidebar uses flexbox for footer positioning */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .splash-hero {
+    border-width: 2px;
+    background: var(--pro-bg-secondary);
+  }
+
+  .splash-hero h1 {
+    -webkit-text-fill-color: unset;
+    background: none;
+    color: var(--pro-text-primary);
+  }
+
+  .splash-card {
+    border-width: 2px;
+  }
+
+  .splash-section h2 {
+    border-bottom-width: 3px;
+  }
+
+  .splash-callout {
+    border-left-width: 6px;
+  }
+
+  .splash-pre {
+    border-width: 2px;
+  }
+
+  .splash-table th,
+  .splash-table td {
+    border-width: 2px;
+  }
+
+  .about-toc {
+    border-width: 2px;
+  }
+
+  .about-toc-list a {
+    text-decoration: underline;
+  }
+
+  .about-principle {
+    border-width: 2px;
+  }
+
+  .about-comparison-box {
+    border-width: 2px;
+  }
+
+  .sidebar-footer .nav-link:focus-visible,
+  .sidebar-footer .pwa-install-button:focus-visible {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,424 @@
+<div data-page="component-clipboard" class="component-demo">
+  <h2>Clipboard</h2>
+  <p class="text-muted">Copy to clipboard with visual feedback. Supports inline fields, buttons, and programmatic copying.</p>
+
+  <!-- Interactive Demo Section -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to customize the clipboard behavior.</p>
+    <div class="demo-area">
+      <div class="clipboard-demo__interactive" id="interactive-container">
+        <!-- Content will be rendered by JavaScript based on showInline prop -->
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test the Funky.Clipboard API methods.</p>
+    <div class="demo-area">
+      <div class="clipboard-demo__api-grid">
+        <button type="button" class="btn btn-outline-primary" id="btn-copy-programmatic">
+          <i class="fas fa-terminal me-1" aria-hidden="true"></i>copy()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-copy-from">
+          <i class="fas fa-code me-1" aria-hidden="true"></i>copyFrom()
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-is-supported">
+          <i class="fas fa-check-circle me-1" aria-hidden="true"></i>isSupported()
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Declarative Usage Section -->
+  <section class="demo-section" aria-labelledby="declarative-heading">
+    <h3 id="declarative-heading">Declarative Usage</h3>
+    <p class="text-muted small">Use data attributes for zero-config clipboard functionality.</p>
+    <div class="demo-area">
+      <div class="clipboard-demo__declarative">
+        <button type="button" class="btn btn-outline-primary funky-clipboard-btn" data-clipboard-text="hello@example.com">
+          <i class="fas fa-copy" aria-hidden="true"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
+          <span class="ms-1">Copy Email</span>
+        </button>
+        <button type="button" class="btn btn-outline-primary funky-clipboard-btn" data-clipboard-text="+1 (555) 123-4567">
+          <i class="fas fa-copy" aria-hidden="true"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
+          <span class="ms-1">Copy Phone</span>
+        </button>
+        <button type="button" class="btn btn-outline-primary funky-clipboard-btn" data-clipboard="#code-sample">
+          <i class="fas fa-copy" aria-hidden="true"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
+          <span class="ms-1">Copy Code</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Block Section -->
+  <section class="demo-section" aria-labelledby="code-heading">
+    <h3 id="code-heading">Copy Code Block</h3>
+    <p class="text-muted small">Copy from a target element using data-clipboard attribute.</p>
+    <div class="demo-area">
+      <div class="clipboard-demo__code-wrapper">
+        <pre class="clipboard-demo__code" id="code-sample">npm install funky-frame
+# or
+yarn add funky-frame</pre>
+        <button type="button" class="btn btn-sm clipboard-demo__code-btn funky-clipboard-btn" data-clipboard="#code-sample" aria-label="Copy code">
+          <i class="fas fa-copy" aria-hidden="true"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inline Field Section -->
+  <section class="demo-section" aria-labelledby="inline-heading">
+    <h3 id="inline-heading">Inline Copy Fields</h3>
+    <p class="text-muted small">Pre-built inline components using createInline().</p>
+    <div class="demo-area">
+      <div class="clipboard-demo__inline-fields" id="inline-fields-container">
+        <!-- Inline fields will be created here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="clipboard-demo__state">
+        <div class="clipboard-demo__state-item">
+          <span class="clipboard-demo__state-label">Text:</span>
+          <span class="clipboard-demo__state-value clipboard-demo__state-value--text" id="state-text">Sample text...</span>
+        </div>
+        <div class="clipboard-demo__state-item">
+          <span class="clipboard-demo__state-label">Show Inline:</span>
+          <span class="clipboard-demo__state-value" id="state-inline">true</span>
+        </div>
+        <div class="clipboard-demo__state-item">
+          <span class="clipboard-demo__state-label">Button Text:</span>
+          <span class="clipboard-demo__state-value" id="state-button-text">Copy</span>
+        </div>
+        <div class="clipboard-demo__state-item">
+          <span class="clipboard-demo__state-label">Show Text:</span>
+          <span class="clipboard-demo__state-value" id="state-icon">true</span>
+        </div>
+        <div class="clipboard-demo__state-item">
+          <span class="clipboard-demo__state-label">Duration:</span>
+          <span class="clipboard-demo__state-value" id="state-duration">2000ms</span>
+        </div>
+        <div class="clipboard-demo__state-item">
+          <span class="clipboard-demo__state-label">Notification:</span>
+          <span class="clipboard-demo__state-value" id="state-notification">false</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var controllers = [];
+  var inlineElements = [];
+
+  /**
+   * Update state display from props
+   */
+  function updateStateDisplay(props) {
+    var textEl = document.getElementById('state-text');
+    if (textEl) {
+      var text = props.text || 'Sample text to copy - click the button!';
+      textEl.textContent = text.length > 30 ? text.substring(0, 30) + '...' : text;
+      textEl.title = text;
+    }
+
+    var inlineEl = document.getElementById('state-inline');
+    if (inlineEl) inlineEl.textContent = props.showInline !== false ? 'true' : 'false';
+
+    var btnTextEl = document.getElementById('state-button-text');
+    if (btnTextEl) btnTextEl.textContent = props.buttonText || 'Copy';
+
+    var iconEl = document.getElementById('state-icon');
+    if (iconEl) iconEl.textContent = props.showIcon !== false ? 'true' : 'false';
+
+    var durationEl = document.getElementById('state-duration');
+    if (durationEl) durationEl.textContent = (props.duration || 2000) + 'ms';
+
+    var notifEl = document.getElementById('state-notification');
+    if (notifEl) notifEl.textContent = props.showNotification ? 'true' : 'false';
+  }
+
+  /**
+   * Render the interactive demo based on props
+   */
+  function renderInteractiveDemo(props) {
+    var container = document.getElementById('interactive-container');
+    if (!container) return;
+
+    // Clean up previous
+    container.innerHTML = '';
+
+    var text = props.text || 'Sample text to copy - click the button!';
+    var showInline = props.showInline !== false;
+    var buttonText = props.buttonText || 'Copy';
+    var showIcon = props.showIcon !== false;
+    var successText = props.successText || 'Copied!';
+    var duration = props.duration || 2000;
+    var showNotification = props.showNotification || false;
+
+    /**
+     * Build clipboard button with optional icon
+     */
+    function buildButton(btn, withIcon, btnText) {
+      if (withIcon) {
+        var copyIcon = document.createElement('i');
+        copyIcon.className = 'fas fa-copy';
+        copyIcon.setAttribute('aria-hidden', 'true');
+        btn.appendChild(copyIcon);
+
+        var checkIcon = document.createElement('i');
+        checkIcon.className = 'fas fa-check';
+        checkIcon.setAttribute('aria-hidden', 'true');
+        btn.appendChild(checkIcon);
+      }
+
+      if (btnText) {
+        var span = document.createElement('span');
+        if (withIcon) span.className = 'ms-1';
+        span.textContent = btnText;
+        btn.appendChild(span);
+      }
+    }
+
+    if (showInline) {
+      // Create inline field layout
+      var wrapper = document.createElement('div');
+      wrapper.className = 'clipboard-demo__inline-wrapper';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'form-control clipboard-demo__input';
+      input.value = text;
+      input.readOnly = true;
+      input.id = 'interactive-input';
+
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn btn-primary funky-clipboard-btn';
+      button.setAttribute('data-clipboard', '#interactive-input');
+
+      buildButton(button, showIcon, buttonText);
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(button);
+      container.appendChild(wrapper);
+
+      // Attach clipboard functionality
+      if (Funky.Clipboard) {
+        var ctrl = Funky.Clipboard.attach(button, {
+          tooltip: successText,
+          duration: duration,
+          showNotification: showNotification,
+          onCopy: function(copiedText) {
+            emit('event', { event: 'funky:clipboard:copy', payload: { text: copiedText, source: 'interactive' } });
+          }
+        });
+        if (ctrl) controllers.push(ctrl);
+      }
+    } else {
+      // Button only layout
+      var btnWrapper = document.createElement('div');
+      btnWrapper.className = 'clipboard-demo__button-wrapper';
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-primary funky-clipboard-btn';
+      btn.setAttribute('data-clipboard-text', text);
+
+      buildButton(btn, showIcon, buttonText);
+
+      btnWrapper.appendChild(btn);
+      container.appendChild(btnWrapper);
+
+      // Attach clipboard functionality
+      if (Funky.Clipboard) {
+        var c = Funky.Clipboard.attach(btn, {
+          tooltip: successText,
+          duration: duration,
+          showNotification: showNotification,
+          onCopy: function(copiedText) {
+            emit('event', { event: 'funky:clipboard:copy', payload: { text: copiedText, source: 'interactive' } });
+          }
+        });
+        if (c) controllers.push(c);
+      }
+    }
+  }
+
+  /**
+   * Create inline demo fields
+   */
+  function createInlineFields() {
+    var container = document.getElementById('inline-fields-container');
+    if (!container || !Funky.Clipboard) return;
+
+    container.innerHTML = '';
+
+    var samples = [
+      'sk_live_abc123xyz789',
+      'https://api.funky-frame.dev/v1',
+      'npm install funky-frame'
+    ];
+
+    samples.forEach(function(text) {
+      var el = Funky.Clipboard.createInline(text, {
+        onCopy: function() {
+          emit('event', { event: 'funky:clipboard:copy', payload: { text: text, source: 'inline' } });
+        }
+      });
+      container.appendChild(el);
+      inlineElements.push(el);
+    });
+  }
+
+  /**
+   * Set up button handlers
+   */
+  function setupHandlers() {
+    var props = getProps();
+
+    // Programmatic copy
+    document.getElementById('btn-copy-programmatic').onclick = function() {
+      var text = props.text || 'Sample text to copy - click the button!';
+      if (Funky.Clipboard) {
+        Funky.Clipboard.copy(text, {
+          showNotification: true,
+          onCopy: function() {
+            emit('event', { event: 'funky:clipboard:copy', payload: { text: text, method: 'copy()' } });
+          }
+        });
+      }
+    };
+
+    // Copy from element
+    document.getElementById('btn-copy-from').onclick = function() {
+      if (Funky.Clipboard) {
+        Funky.Clipboard.copyFrom('#code-sample', {
+          showNotification: true,
+          onCopy: function(text) {
+            emit('event', { event: 'funky:clipboard:copy', payload: { text: text, method: 'copyFrom()' } });
+          }
+        });
+      }
+    };
+
+    // Check support
+    document.getElementById('btn-is-supported').onclick = function() {
+      var supported = Funky.Clipboard ? Funky.Clipboard.isSupported() : false;
+      if (Funky.Toast) {
+        Funky.Toast.info('Clipboard API supported: ' + supported);
+      }
+      emit('event', { event: 'funky:clipboard:isSupported', payload: { supported: supported } });
+    };
+  }
+
+  /**
+   * Initialize declarative buttons
+   */
+  function initDeclarativeButtons() {
+    if (!Funky.Clipboard) return;
+
+    var buttons = document.querySelectorAll('.clipboard-demo__declarative .funky-clipboard-btn');
+    buttons.forEach(function(btn) {
+      var ctrl = Funky.Clipboard.attach(btn, {
+        onCopy: function(text) {
+          emit('event', { event: 'funky:clipboard:copy', payload: { text: text, source: 'declarative' } });
+        }
+      });
+      if (ctrl) controllers.push(ctrl);
+    });
+
+    // Code block button
+    var codeBtn = document.querySelector('.clipboard-demo__code-btn');
+    if (codeBtn) {
+      var ctrl = Funky.Clipboard.attach(codeBtn, {
+        onCopy: function(text) {
+          emit('event', { event: 'funky:clipboard:copy', payload: { text: text, source: 'code-block' } });
+        }
+      });
+      if (ctrl) controllers.push(ctrl);
+    }
+  }
+
+  /**
+   * Clean up all controllers
+   */
+  function cleanup() {
+    controllers.forEach(function(ctrl) {
+      if (ctrl && ctrl.destroy) ctrl.destroy();
+    });
+    controllers = [];
+    inlineElements = [];
+  }
+
+  Funky.Pages.register('component-clipboard', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Render interactive demo
+      renderInteractiveDemo(props);
+
+      // Create inline fields
+      createInlineFields();
+
+      // Initialize declarative buttons
+      initDeclarativeButtons();
+
+      // Set up API method handlers
+      setupHandlers();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+
+          // Clean up and re-render interactive demo
+          cleanup();
+          renderInteractiveDemo(currentProps);
+          createInlineFields();
+          initDeclarativeButtons();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clean up all controllers
+      cleanup();
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,635 @@
+<div data-page="component-quick-nav" class="component-demo quick-nav-demo">
+  <h2>QuickNav</h2>
+  <p class="text-muted">Floating navigation widget with section discovery, custom actions, and back-to-top functionality.</p>
+
+  <!-- Interactive Demo -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-demo-heading">
+    <h3 id="quicknav-demo-heading">Interactive Demo</h3>
+    <p class="text-muted">The QuickNav FAB appears in the corner of the canvas. Click it to expand and see available actions.</p>
+    <div id="quicknav-demo-container" class="quick-nav-demo__container">
+      <!-- Sections for navigation demo -->
+      <section id="demo-section-1" class="quick-nav-demo__content-section" data-skip-target="section1" data-skip-label="Section 1">
+        <h4>Section 1: Introduction</h4>
+        <p>This is the first section. The QuickNav can detect and navigate between page sections.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      </section>
+      <section id="demo-section-2" class="quick-nav-demo__content-section" data-skip-target="section2" data-skip-label="Section 2">
+        <h4>Section 2: Features</h4>
+        <p>QuickNav provides floating navigation with custom actions, badges, and section discovery.</p>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </section>
+      <section id="demo-section-3" class="quick-nav-demo__content-section" data-skip-target="section3" data-skip-label="Section 3">
+        <h4>Section 3: Customization</h4>
+        <p>Position, actions, and behavior can all be customized via the API.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+      </section>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-state-heading">
+    <h3 id="quicknav-state-heading">Current State</h3>
+    <pre id="quicknav-state" class="quick-nav-demo__state" aria-live="polite">Loading...</pre>
+  </section>
+
+  <!-- Expand/Collapse Controls -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-expand-heading">
+    <h3 id="quicknav-expand-heading">Expand / Collapse</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-expand">
+        <i class="fas fa-expand-alt" aria-hidden="true"></i> Expand
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-collapse">
+        <i class="fas fa-compress-alt" aria-hidden="true"></i> Collapse
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-toggle">
+        <i class="fas fa-exchange-alt" aria-hidden="true"></i> Toggle
+      </button>
+    </div>
+  </section>
+
+  <!-- Position Controls -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-position-heading">
+    <h3 id="quicknav-position-heading">Position</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-pos-br">
+        <i class="fas fa-arrow-down" aria-hidden="true"></i> Bottom-Right
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-pos-bl">
+        <i class="fas fa-arrow-down" aria-hidden="true"></i> Bottom-Left
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-pos-tr">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i> Top-Right
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-pos-tl">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i> Top-Left
+      </button>
+    </div>
+  </section>
+
+  <!-- Visibility Controls -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-visibility-heading">
+    <h3 id="quicknav-visibility-heading">Visibility</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-show">
+        <i class="fas fa-eye" aria-hidden="true"></i> Show
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-hide">
+        <i class="fas fa-eye-slash" aria-hidden="true"></i> Hide
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-toggle-visibility">
+        <i class="fas fa-adjust" aria-hidden="true"></i> Toggle Visibility
+      </button>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-sections-heading">
+    <h3 id="quicknav-sections-heading">Section Navigation</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-prev-section">
+        <i class="fas fa-chevron-up" aria-hidden="true"></i> Previous Section
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-next-section">
+        <i class="fas fa-chevron-down" aria-hidden="true"></i> Next Section
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-refresh-sections">
+        <i class="fas fa-sync" aria-hidden="true"></i> Refresh Sections
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-get-sections">
+        <i class="fas fa-list" aria-hidden="true"></i> Get Sections
+      </button>
+    </div>
+  </section>
+
+  <!-- Custom Actions -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-actions-heading">
+    <h3 id="quicknav-actions-heading">Custom Actions</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-add-action">
+        <i class="fas fa-plus" aria-hidden="true"></i> Add Action
+      </button>
+      <button type="button" class="btn btn-danger" id="btn-remove-action">
+        <i class="fas fa-minus" aria-hidden="true"></i> Remove Action
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-hide-action">
+        <i class="fas fa-eye-slash" aria-hidden="true"></i> Hide Action
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-show-action">
+        <i class="fas fa-eye" aria-hidden="true"></i> Show Action
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-get-actions">
+        <i class="fas fa-info-circle" aria-hidden="true"></i> Get Actions
+      </button>
+    </div>
+  </section>
+
+  <!-- Badge Controls -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-badge-heading">
+    <h3 id="quicknav-badge-heading">Badges</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-set-badge">
+        <i class="fas fa-bell" aria-hidden="true"></i> Set Badge (5)
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-increment-badge">
+        <i class="fas fa-plus-circle" aria-hidden="true"></i> Increment Badge
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-dot-badge">
+        <i class="fas fa-circle" aria-hidden="true"></i> Dot Badge
+      </button>
+      <button type="button" class="btn btn-danger" id="btn-clear-badge">
+        <i class="fas fa-times-circle" aria-hidden="true"></i> Clear Badge
+      </button>
+    </div>
+  </section>
+
+  <!-- Navigate To Section -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-navigate-heading">
+    <h3 id="quicknav-navigate-heading">Navigate To</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-nav-top">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i> Back to Top
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-nav-section1">
+        <i class="fas fa-bookmark" aria-hidden="true"></i> Section 1
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-nav-section2">
+        <i class="fas fa-bookmark" aria-hidden="true"></i> Section 2
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-nav-section3">
+        <i class="fas fa-bookmark" aria-hidden="true"></i> Section 3
+      </button>
+    </div>
+  </section>
+
+  <!-- Settings -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-settings-heading">
+    <h3 id="quicknav-settings-heading">Settings</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-secondary" id="btn-stay-expanded">
+        <i class="fas fa-lock-open" aria-hidden="true"></i> Toggle Stay Expanded
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-reset">
+        <i class="fas fa-undo" aria-hidden="true"></i> Reset QuickNav
+      </button>
+    </div>
+  </section>
+
+  <!-- Keyboard Navigation Info -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-keyboard-heading">
+    <h3 id="quicknav-keyboard-heading">Keyboard Navigation</h3>
+    <div class="quick-nav-demo__keyboard-info">
+      <div class="quick-nav-demo__key-row">
+        <kbd>Tab</kbd>
+        <span>Navigate between actions</span>
+      </div>
+      <div class="quick-nav-demo__key-row">
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+        <span>Activate action or FAB</span>
+      </div>
+      <div class="quick-nav-demo__key-row">
+        <kbd>Escape</kbd>
+        <span>Collapse QuickNav</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="quick-nav-demo__section" aria-labelledby="quicknav-events-heading">
+    <h3 id="quicknav-events-heading">Event Log</h3>
+    <div class="quick-nav-demo__controls">
+      <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-log">
+        <i class="fas fa-trash" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+    <pre id="quicknav-log" class="quick-nav-demo__log" aria-live="polite" aria-label="Event log">Waiting for events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var customActionCounter = 0;
+  var currentBadgeValue = 0;
+  var lastAddedActionId = null;
+
+  function log(message, data) {
+    var timestamp = new Date().toLocaleTimeString();
+    var entry = timestamp + ' - ' + message;
+    if (data !== undefined) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 50) logs.pop();
+    var logEl = document.getElementById('quicknav-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('quicknav-state');
+    if (!stateEl || !Funky.QuickNav) return;
+
+    var isVisible = Funky.QuickNav.isVisible ? Funky.QuickNav.isVisible() : false;
+    var isExpanded = Funky.QuickNav.isExpanded ? Funky.QuickNav.isExpanded() : false;
+    var position = Funky.QuickNav.getPosition ? Funky.QuickNav.getPosition() : 'unknown';
+    var sections = Funky.QuickNav.getSections ? Funky.QuickNav.getSections() : [];
+    var actions = Funky.QuickNav.getActions ? Funky.QuickNav.getActions() : [];
+    var currentIndex = Funky.QuickNav.getCurrentSectionIndex ? Funky.QuickNav.getCurrentSectionIndex() : -1;
+    var stayExpanded = Funky.QuickNav.getStayExpanded ? Funky.QuickNav.getStayExpanded() : false;
+
+    stateEl.textContent = JSON.stringify({
+      isVisible: isVisible,
+      isExpanded: isExpanded,
+      position: position,
+      sectionCount: sections.length,
+      actionCount: actions.length,
+      currentSectionIndex: currentIndex,
+      stayExpanded: stayExpanded
+    }, null, 2);
+  }
+
+  Funky.Pages.register('component-quick-nav', {
+    init: function(state) {
+      var props = getProps();
+
+      // Check if QuickNav is available
+      if (!Funky.QuickNav) {
+        log('ERROR', 'Funky.QuickNav not available');
+        return;
+      }
+
+      // Destroy existing instance if any
+      if (Funky.QuickNav._getState && Funky.QuickNav._getState().initialized) {
+        Funky.QuickNav.destroy();
+      }
+
+      // Initialize QuickNav with props
+      var config = {
+        position: props.position || 'bottom-right',
+        collapsed: props.collapsed !== false,
+        backToTop: true,
+        sections: true,
+        showTrigger: 'always',
+        collapseOnAction: true,
+        collapseDelay: 5000,
+        spa: {
+          autoRefresh: true,
+          persistActions: true
+        },
+        // Disable preferences in playground to avoid API calls
+        preferences: {
+          enabled: false
+        }
+      };
+
+      Funky.QuickNav.init(config);
+      log('QuickNav initialized', { position: config.position });
+
+      // Add some default custom actions for demo
+      if (props.showHome !== false) {
+        Funky.QuickNav.addAction({
+          id: 'demo-home',
+          icon: 'fas fa-home',
+          label: 'Home',
+          order: 10,
+          onClick: function() {
+            log('Home action clicked');
+            Funky.Toast.info('Home action triggered!');
+          }
+        });
+      }
+
+      if (props.showSettings !== false) {
+        Funky.QuickNav.addAction({
+          id: 'demo-settings',
+          icon: 'fas fa-cog',
+          label: 'Settings',
+          order: 20,
+          onClick: function() {
+            log('Settings action clicked');
+            Funky.Toast.info('Settings action triggered!');
+          }
+        });
+      }
+
+      // Set up PubSub event listeners
+      if (Funky.PubSub) {
+        Funky.PubSub.on('funky:quick-nav:expanded', function() {
+          log('QuickNav expanded');
+          updateState();
+          emit('event', { event: 'quicknav:expanded', payload: {} });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:collapsed', function() {
+          log('QuickNav collapsed');
+          updateState();
+          emit('event', { event: 'quicknav:collapsed', payload: {} });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:shown', function() {
+          log('QuickNav shown');
+          updateState();
+          emit('event', { event: 'quicknav:shown', payload: {} });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:hidden', function() {
+          log('QuickNav hidden');
+          updateState();
+          emit('event', { event: 'quicknav:hidden', payload: {} });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:navigate', function(data) {
+          log('QuickNav navigate', data);
+          updateState();
+          emit('event', { event: 'quicknav:navigate', payload: data });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:section:navigated', function(data) {
+          log('Section navigated', data);
+          updateState();
+          emit('event', { event: 'quicknav:section:navigated', payload: data });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:action:click', function(data) {
+          log('Action clicked', { id: data.id });
+          emit('event', { event: 'quicknav:action:click', payload: data });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:action:added', function(data) {
+          log('Action added', { id: data.id });
+          updateState();
+        });
+
+        Funky.PubSub.on('funky:quick-nav:action:removed', function(data) {
+          log('Action removed', { id: data.id });
+          updateState();
+        });
+
+        Funky.PubSub.on('funky:quick-nav:position:changed', function(data) {
+          log('Position changed', data);
+          updateState();
+          emit('event', { event: 'quicknav:position:changed', payload: data });
+        });
+
+        Funky.PubSub.on('funky:quick-nav:badge:updated', function(data) {
+          log('Badge updated', data);
+        });
+
+        Funky.PubSub.on('funky:quick-nav:badge:cleared', function(data) {
+          log('Badge cleared', data);
+        });
+      }
+
+      updateState();
+
+      // ===== EXPAND/COLLAPSE =====
+      document.getElementById('btn-expand').onclick = function() {
+        Funky.QuickNav.expand();
+        log('expand() called');
+      };
+
+      document.getElementById('btn-collapse').onclick = function() {
+        Funky.QuickNav.collapse();
+        log('collapse() called');
+      };
+
+      document.getElementById('btn-toggle').onclick = function() {
+        Funky.QuickNav.toggle();
+        log('toggle() called');
+      };
+
+      // ===== POSITION =====
+      document.getElementById('btn-pos-br').onclick = function() {
+        Funky.QuickNav.setPosition('bottom-right');
+        log('setPosition called', 'bottom-right');
+      };
+
+      document.getElementById('btn-pos-bl').onclick = function() {
+        Funky.QuickNav.setPosition('bottom-left');
+        log('setPosition called', 'bottom-left');
+      };
+
+      document.getElementById('btn-pos-tr').onclick = function() {
+        Funky.QuickNav.setPosition('top-right');
+        log('setPosition called', 'top-right');
+      };
+
+      document.getElementById('btn-pos-tl').onclick = function() {
+        Funky.QuickNav.setPosition('top-left');
+        log('setPosition called', 'top-left');
+      };
+
+      // ===== VISIBILITY =====
+      document.getElementById('btn-show').onclick = function() {
+        Funky.QuickNav.show();
+        log('show() called');
+      };
+
+      document.getElementById('btn-hide').onclick = function() {
+        Funky.QuickNav.hide();
+        log('hide() called');
+      };
+
+      document.getElementById('btn-toggle-visibility').onclick = function() {
+        Funky.QuickNav.toggleVisibility();
+        log('toggleVisibility() called');
+      };
+
+      // ===== SECTION NAVIGATION =====
+      document.getElementById('btn-prev-section').onclick = function() {
+        var result = Funky.QuickNav.previousSection();
+        log('previousSection() called', { success: result });
+      };
+
+      document.getElementById('btn-next-section').onclick = function() {
+        var result = Funky.QuickNav.nextSection();
+        log('nextSection() called', { success: result });
+      };
+
+      document.getElementById('btn-refresh-sections').onclick = function() {
+        Funky.QuickNav.refreshSections();
+        log('refreshSections() called');
+        updateState();
+      };
+
+      document.getElementById('btn-get-sections').onclick = function() {
+        var sections = Funky.QuickNav.getSections();
+        log('getSections() result', sections.map(function(s) { return { id: s.id, label: s.label }; }));
+        Funky.Toast.info('Found ' + sections.length + ' sections');
+      };
+
+      // ===== CUSTOM ACTIONS =====
+      document.getElementById('btn-add-action').onclick = function() {
+        customActionCounter++;
+        var actionId = 'custom-action-' + customActionCounter;
+        var icons = ['fa-star', 'fa-heart', 'fa-bolt', 'fa-flag', 'fa-bell'];
+        var icon = icons[customActionCounter % icons.length];
+
+        Funky.QuickNav.addAction({
+          id: actionId,
+          icon: 'fas ' + icon,
+          label: 'Custom Action ' + customActionCounter,
+          order: 30 + customActionCounter,
+          onClick: function() {
+            log('Custom action clicked', actionId);
+            Funky.Toast.success('Custom action ' + customActionCounter + ' triggered!');
+          }
+        });
+
+        lastAddedActionId = actionId;
+        log('addAction called', { id: actionId });
+      };
+
+      document.getElementById('btn-remove-action').onclick = function() {
+        if (lastAddedActionId) {
+          Funky.QuickNav.removeAction(lastAddedActionId);
+          log('removeAction called', { id: lastAddedActionId });
+          lastAddedActionId = null;
+        } else {
+          log('No custom action to remove');
+          Funky.Toast.warning('Add an action first');
+        }
+      };
+
+      document.getElementById('btn-hide-action').onclick = function() {
+        if (lastAddedActionId) {
+          Funky.QuickNav.hideAction(lastAddedActionId);
+          log('hideAction called', { id: lastAddedActionId });
+        } else {
+          Funky.QuickNav.hideAction('demo-settings');
+          log('hideAction called', { id: 'demo-settings' });
+        }
+      };
+
+      document.getElementById('btn-show-action').onclick = function() {
+        if (lastAddedActionId) {
+          Funky.QuickNav.showAction(lastAddedActionId);
+          log('showAction called', { id: lastAddedActionId });
+        } else {
+          Funky.QuickNav.showAction('demo-settings');
+          log('showAction called', { id: 'demo-settings' });
+        }
+      };
+
+      document.getElementById('btn-get-actions').onclick = function() {
+        var actions = Funky.QuickNav.getActions();
+        log('getActions() result', actions.map(function(a) { return { id: a.id, label: a.label, order: a.order }; }));
+        Funky.Toast.info('Found ' + actions.length + ' actions');
+      };
+
+      // ===== BADGES =====
+      document.getElementById('btn-set-badge').onclick = function() {
+        currentBadgeValue = 5;
+        Funky.QuickNav.setBadge('demo-settings', currentBadgeValue);
+        log('setBadge called', { actionId: 'demo-settings', value: currentBadgeValue });
+      };
+
+      document.getElementById('btn-increment-badge').onclick = function() {
+        currentBadgeValue++;
+        Funky.QuickNav.setBadge('demo-settings', currentBadgeValue);
+        log('setBadge (increment)', { actionId: 'demo-settings', value: currentBadgeValue });
+      };
+
+      document.getElementById('btn-dot-badge').onclick = function() {
+        Funky.QuickNav.setBadge('demo-home', { value: '', type: 'dot' });
+        log('setBadge (dot)', { actionId: 'demo-home', type: 'dot' });
+      };
+
+      document.getElementById('btn-clear-badge').onclick = function() {
+        Funky.QuickNav.clearBadge('demo-settings');
+        Funky.QuickNav.clearBadge('demo-home');
+        currentBadgeValue = 0;
+        log('clearBadge called');
+      };
+
+      // ===== NAVIGATE TO =====
+      document.getElementById('btn-nav-top').onclick = function() {
+        Funky.QuickNav.navigateTo('top');
+        log('navigateTo called', 'top');
+      };
+
+      document.getElementById('btn-nav-section1').onclick = function() {
+        Funky.QuickNav.navigateTo('skip-section1');
+        log('navigateTo called', 'skip-section1');
+      };
+
+      document.getElementById('btn-nav-section2').onclick = function() {
+        Funky.QuickNav.navigateTo('skip-section2');
+        log('navigateTo called', 'skip-section2');
+      };
+
+      document.getElementById('btn-nav-section3').onclick = function() {
+        Funky.QuickNav.navigateTo('skip-section3');
+        log('navigateTo called', 'skip-section3');
+      };
+
+      // ===== SETTINGS =====
+      document.getElementById('btn-stay-expanded').onclick = function() {
+        var current = Funky.QuickNav.getStayExpanded();
+        Funky.QuickNav.setStayExpanded(!current);
+        log('setStayExpanded called', { value: !current });
+        updateState();
+        Funky.Toast.info('Stay Expanded: ' + (!current ? 'ON' : 'OFF'));
+      };
+
+      document.getElementById('btn-reset').onclick = function() {
+        Funky.QuickNav.reset(true);
+        log('reset() called');
+        updateState();
+      };
+
+      // ===== CLEAR LOG =====
+      document.getElementById('btn-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('quicknav-log').textContent = 'Log cleared...';
+      };
+
+      // Listen for prop changes
+      if (Funky.PubSub) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          if (data && data.props) {
+            if (data.props.position !== undefined) {
+              Funky.QuickNav.setPosition(data.props.position);
+              updateState();
+            }
+          }
+        });
+      }
+    },
+
+    destroy: function() {
+      if (Funky.QuickNav && Funky.QuickNav._getState && Funky.QuickNav._getState().initialized) {
+        Funky.QuickNav.destroy();
+        log('QuickNav destroyed');
+      }
+
+      // Clean up PubSub listeners
+      if (Funky.PubSub) {
+        Funky.PubSub.off('funky:quick-nav:expanded');
+        Funky.PubSub.off('funky:quick-nav:collapsed');
+        Funky.PubSub.off('funky:quick-nav:shown');
+        Funky.PubSub.off('funky:quick-nav:hidden');
+        Funky.PubSub.off('funky:quick-nav:navigate');
+        Funky.PubSub.off('funky:quick-nav:section:navigated');
+        Funky.PubSub.off('funky:quick-nav:action:click');
+        Funky.PubSub.off('funky:quick-nav:action:added');
+        Funky.PubSub.off('funky:quick-nav:action:removed');
+        Funky.PubSub.off('funky:quick-nav:position:changed');
+        Funky.PubSub.off('funky:quick-nav:badge:updated');
+        Funky.PubSub.off('funky:quick-nav:badge:cleared');
+        Funky.PubSub.off('playground:propsChanged');
+      }
+
+      logs = [];
+      customActionCounter = 0;
+      currentBadgeValue = 0;
+      lastAddedActionId = null;
+      return {};
+    }
+  });
+})();
+</script>

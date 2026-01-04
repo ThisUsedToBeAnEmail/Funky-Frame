@@ -1,0 +1,1428 @@
+/* ============================================
+   TEST RUNNER UI STYLES
+   Uses Funky theme variables for consistency
+   ============================================ */
+
+.test-runner {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    height: 100%;
+    min-height: calc(100vh - 60px); /* Ensure full height while loading */
+    background: var(--pro-bg-primary);
+    position: relative;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+
+.test-runner-sidebar {
+    background: var(--pro-bg-secondary);
+    border-right: 1px solid var(--pro-border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.test-runner-controls {
+    padding: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--pro-border-color);
+}
+
+.test-runner-controls .btn-funky {
+    flex: 1;
+    min-width: 100px;
+}
+
+.test-runner-filter {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--pro-border-color);
+}
+
+.test-runner-filter input {
+    width: 100%;
+    background: var(--pro-bg-tertiary);
+    border: 1px solid var(--pro-border-color);
+    color: var(--pro-text-primary);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.test-runner-filter input:focus {
+    border-color: var(--focus-ring-color);
+}
+
+.test-runner-filter input:focus-visible {
+    border-color: var(--focus-ring-color);
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+}
+
+.test-runner-filter input::placeholder {
+    color: var(--pro-text-muted);
+}
+
+.test-suite-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+/* ============================================
+   MAIN PANEL
+   ============================================ */
+
+.test-runner-main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ============================================
+   STATS BAR
+   ============================================ */
+
+.test-runner-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--pro-bg-secondary);
+    border-bottom: 1px solid var(--pro-border-color);
+    flex-wrap: wrap;
+}
+
+.test-runner-stats .stat {
+    text-align: center;
+    min-width: 60px;
+}
+
+.test-runner-stats .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--pro-font-mono);
+    line-height: 1.2;
+}
+
+.test-runner-stats .stat-label {
+    font-size: 0.7rem;
+    color: var(--pro-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-total .stat-value { color: var(--pro-text-primary); }
+.stat-passed .stat-value { color: var(--pro-accent-success); }
+.stat-failed .stat-value { color: var(--pro-accent-danger); }
+.stat-skipped .stat-value { color: var(--pro-accent-warning); }
+.stat-duration .stat-value { color: var(--pro-accent-info); }
+
+.stat-progress {
+    flex: 1;
+    min-width: 150px;
+    max-width: 300px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--pro-bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pro-accent-success), var(--pro-accent-primary));
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-fill.has-failures {
+    background: linear-gradient(90deg, var(--pro-accent-success), var(--pro-accent-danger));
+}
+
+.progress-text {
+    font-size: 0.7rem;
+    color: var(--pro-text-secondary);
+    text-align: center;
+    display: block;
+}
+
+/* ============================================
+   CURRENT TEST PANEL
+   ============================================ */
+
+.current-test-panel {
+    background: linear-gradient(135deg, var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.1)), var(--pro-bg-tertiary));
+    border-bottom: 1px solid var(--pro-accent-primary);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.current-test-panel.hidden {
+    display: none;
+}
+
+.current-test-header {
+    display: flex;
+    align-items: center;
+    color: var(--pro-accent-primary);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.current-test-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.current-test-suite {
+    font-size: 0.6875rem;
+    color: var(--pro-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.current-test-name {
+    font-family: var(--pro-font-mono);
+    font-size: 0.875rem;
+    color: var(--pro-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+/* ============================================
+   TEST RESULTS
+   ============================================ */
+
+.test-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.test-results-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--pro-text-muted);
+    text-align: center;
+    padding: 2rem;
+}
+
+.test-results-empty h3 {
+    margin: 0 0 0.5rem;
+    color: var(--pro-text-secondary);
+    font-weight: 600;
+}
+
+.test-results-empty p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Test Suite Header */
+.test-suite-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--pro-bg-tertiary);
+    border-bottom: 1px solid var(--pro-border-color);
+    cursor: pointer;
+    user-select: none;
+}
+
+.test-suite-header:hover {
+    background: var(--pro-bg-elevated);
+}
+
+.test-suite-header .suite-icon {
+    width: 20px;
+    color: var(--pro-text-muted);
+    transition: transform 0.2s ease;
+}
+
+.test-suite-header.collapsed .suite-icon {
+    transform: rotate(-90deg);
+}
+
+.test-suite-header .suite-name {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.test-suite-header .suite-stats {
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary);
+    font-family: var(--pro-font-mono);
+}
+
+.test-suite-header .suite-stats .passed { color: var(--pro-accent-success); }
+.test-suite-header .suite-stats .failed { color: var(--pro-accent-danger); }
+
+/* Test Items */
+.test-suite-tests {
+    border-bottom: 1px solid var(--pro-border-color);
+}
+
+.test-suite-tests.collapsed {
+    display: none;
+}
+
+.test-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border-bottom: 1px solid var(--pro-border-muted);
+    transition: background 0.15s ease;
+}
+
+.test-item:last-child {
+    border-bottom: none;
+}
+
+.test-item:hover {
+    background: var(--pro-bg-tertiary);
+}
+
+.test-item .test-icon {
+    width: 18px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.test-item .test-name {
+    flex: 1;
+    font-family: var(--pro-font-mono);
+    font-size: 0.8125rem;
+    color: var(--pro-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.test-item .test-duration {
+    color: var(--pro-text-muted);
+    font-size: 0.75rem;
+    font-family: var(--pro-font-mono);
+    min-width: 50px;
+    text-align: right;
+}
+
+.test-item .test-error-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.15));
+    color: var(--pro-accent-danger);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.15s ease;
+}
+
+.test-item .test-error-btn:hover {
+    background: var(--pro-accent-danger);
+    color: white;
+}
+
+/* Status-specific styles */
+.test-item.test-passed .test-icon { color: var(--pro-accent-success); }
+.test-item.test-failed .test-icon { color: var(--pro-accent-danger); }
+.test-item.test-skipped .test-icon { color: var(--pro-accent-warning); }
+.test-item.test-running .test-icon { color: var(--pro-accent-primary); }
+
+.test-item.test-skipped .test-name {
+    color: var(--pro-text-muted);
+    font-style: italic;
+}
+
+/* ============================================
+   ERROR PANEL
+   ============================================ */
+
+.test-error-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 500px;
+    max-width: 100%;
+    height: 100%;
+    background: var(--pro-bg-secondary);
+    border-left: 1px solid var(--pro-border-color);
+    box-shadow: var(--pro-shadow-lg, -4px 0 20px rgba(0, 0, 0, 0.3));
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.test-error-panel.hidden {
+    transform: translateX(100%);
+    pointer-events: none;
+}
+
+.error-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--pro-border-color);
+    background: var(--pro-bg-tertiary);
+}
+
+.error-panel-header h3 {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--pro-accent-danger);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    padding-right: 1rem;
+}
+
+.error-panel-header .btn-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--pro-text-secondary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.error-panel-header .btn-close:hover {
+    background: var(--pro-bg-elevated);
+    color: var(--pro-text-primary);
+}
+
+.error-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.error-section {
+    margin-bottom: 1.5rem;
+}
+
+.error-section:last-child {
+    margin-bottom: 0;
+}
+
+.error-section h4 {
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+}
+
+.error-section pre {
+    font-family: var(--pro-font-mono);
+    font-size: 0.8125rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 1rem;
+    background: var(--pro-bg-primary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: 6px;
+    color: var(--pro-accent-danger);
+    line-height: 1.5;
+}
+
+.error-section pre.error-stack {
+    color: var(--pro-text-secondary);
+    font-size: 0.75rem;
+}
+
+/* ============================================
+   TREE VIEW CUSTOMIZATION
+   ============================================ */
+
+.test-suite-tree .tree-node {
+    display: flex;
+    align-items: center;
+    padding: 0.375rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.test-suite-tree .tree-node:hover {
+    background: var(--pro-bg-tertiary);
+}
+
+.test-suite-tree .tree-node.selected {
+    background: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+}
+
+/* Toggle expand/collapse icon */
+.test-suite-tree .tree-toggle {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+    color: var(--pro-text-muted);
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.test-suite-tree .tree-toggle:hover {
+    color: var(--pro-text-primary);
+}
+
+.test-suite-tree .tree-node.expanded .tree-toggle {
+    transform: rotate(0deg);
+}
+
+.test-suite-tree .tree-node:not(.expanded) .tree-toggle {
+    transform: rotate(-90deg);
+}
+
+.test-suite-tree .tree-toggle-placeholder {
+    width: 16px;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+/* Node icon (folder/file) */
+.test-suite-tree .tree-node-icon {
+    width: 16px;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.test-suite-tree .tree-node-label {
+    font-size: 0.8125rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Test count badge */
+.test-suite-tree .tree-node-count {
+    font-size: 0.6875rem;
+    color: var(--pro-text-muted);
+    background: var(--pro-bg-tertiary);
+    padding: 0.125rem 0.375rem;
+    border-radius: 10px;
+    font-family: var(--pro-font-mono);
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Children container */
+.test-suite-tree .tree-children {
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+}
+
+.test-suite-tree .tree-children.collapsed {
+    display: none;
+}
+
+/* Suite status indicators */
+.test-suite-tree .tree-node[data-status="passed"] .tree-node-icon {
+    color: var(--pro-accent-success);
+}
+
+.test-suite-tree .tree-node[data-status="passed"] .tree-node-count {
+    background: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.15));
+    color: var(--pro-accent-success);
+}
+
+.test-suite-tree .tree-node[data-status="failed"] .tree-node-icon {
+    color: var(--pro-accent-danger);
+}
+
+.test-suite-tree .tree-node[data-status="failed"] .tree-node-count {
+    background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.15));
+    color: var(--pro-accent-danger);
+}
+
+.test-suite-tree .tree-node[data-status="running"] .tree-node-icon {
+    color: var(--pro-accent-primary);
+    animation: pulse 1s infinite;
+}
+
+.test-suite-tree .tree-node[data-status="running"] .tree-node-count {
+    background: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+    color: var(--pro-accent-primary);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   FUNKY TREEVIEW INTEGRATION
+   Styles for when using Funky.TreeView component
+   ============================================ */
+
+/* Container styling */
+.test-suite-tree .tree-view-container {
+    padding: 0;
+}
+
+/* Row styling during test runs */
+.test-suite-tree .tree-view-row.running .tree-view-icon {
+    color: var(--pro-accent-primary);
+    animation: pulse 1s infinite;
+}
+
+.test-suite-tree .tree-view-row.passed .tree-view-icon {
+    color: var(--pro-accent-success);
+}
+
+.test-suite-tree .tree-view-row.failed .tree-view-icon {
+    color: var(--pro-accent-danger);
+}
+
+/* Badge styling based on status */
+.test-suite-tree [data-status="running"] .tree-view-badge {
+    background: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+    color: var(--pro-accent-primary);
+}
+
+.test-suite-tree [data-status="passed"] .tree-view-badge {
+    background: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.15));
+    color: var(--pro-accent-success);
+}
+
+.test-suite-tree [data-status="failed"] .tree-view-badge {
+    background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.15));
+    color: var(--pro-accent-danger);
+}
+
+/* Override TreeView badge for mixed pass/fail display */
+.test-suite-tree .tree-view-badge.badge-success {
+    background: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.15));
+    color: var(--pro-accent-success);
+}
+
+.test-suite-tree .tree-view-badge.badge-danger {
+    background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.15));
+    color: var(--pro-accent-danger);
+}
+
+/* Tag badges on TreeView rows */
+.test-suite-tree .tree-view-row .test-tag-new {
+    margin-left: auto;
+}
+
+.test-suite-tree .tree-view-row .btn-tag-add {
+    margin-left: auto;
+    opacity: 0;
+}
+
+.test-suite-tree .tree-view-row:hover .btn-tag-add {
+    opacity: 0.5;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .test-runner {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        min-height: calc(100vh - 60px); /* Maintain full height on mobile */
+    }
+
+    .test-runner-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--pro-border-color);
+        max-height: 250px;
+    }
+
+    .test-runner-stats {
+        gap: 1rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .test-runner-stats .stat-value {
+        font-size: 1.25rem;
+    }
+
+    .test-error-panel {
+        width: 100%;
+    }
+
+    .test-item {
+        padding-left: 1rem;
+    }
+}
+
+/* ============================================
+   TEST SANDBOX IFRAME
+   ============================================ */
+
+.test-sandbox-container {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+}
+
+.test-sandbox-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .test-error-panel,
+    .progress-fill,
+    .test-suite-header .suite-icon {
+        transition: none;
+    }
+}
+
+/* ============================================
+   TEST TAGGING (NEW test badges)
+   ============================================ */
+
+/* "NEW" badge on tagged test files */
+.test-tag-new {
+    display: inline-flex;
+    align-items: center;
+    background: var(--pro-accent-warning);
+    color: #000;
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    margin-left: 0.375rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.15s ease;
+    vertical-align: middle;
+}
+
+.test-tag-new:hover {
+    background: var(--pro-accent-danger);
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* "+" button to tag a test file */
+.btn-tag-add {
+    opacity: 0;
+    background: transparent;
+    border: none;
+    color: var(--pro-accent-success);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0 0.25rem;
+    margin-left: 0.25rem;
+    transition: all 0.15s ease;
+    vertical-align: middle;
+}
+
+.test-suite-tree .tree-node:hover .btn-tag-add {
+    opacity: 0.5;
+}
+
+.btn-tag-add:hover {
+    opacity: 1 !important;
+    transform: scale(1.2);
+}
+
+/* Warning button style for Clear New button */
+.btn-funky-warning {
+    background: linear-gradient(135deg, var(--pro-accent-warning), #e6a700);
+    color: #000;
+    border: none;
+}
+
+.btn-funky-warning:hover {
+    background: linear-gradient(135deg, #e6a700, var(--pro-accent-warning));
+    color: #000;
+}
+
+/* ============================================
+   FIXED TEST INDICATOR (-1 badge)
+   Shows when a previously failed test passes on rerun
+   ============================================ */
+
+.stat-fixed-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pro-accent-success);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    margin-left: 0.375rem;
+    font-family: var(--pro-font-mono);
+    animation: fixedPop 0.4s ease-out, fixedFade 0.5s ease-out 1.5s forwards;
+    vertical-align: middle;
+}
+
+@keyframes fixedPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fixedFade {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-5px);
+    }
+}
+
+/* ============================================
+   ASSERTION DETAILS PANEL
+   Shows individual assertion results per test
+   ============================================ */
+
+/* Assertion summary badge (clickable) */
+.test-assertion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-family: var(--pro-font-mono);
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.test-assertion-badge.all-passed {
+    background: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.15));
+    color: var(--pro-accent-success);
+}
+
+.test-assertion-badge.has-failures {
+    background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.15));
+    color: var(--pro-accent-danger);
+}
+
+.test-assertion-badge:hover {
+    transform: scale(1.05);
+}
+
+.test-assertion-badge.expanded {
+    box-shadow: 0 0 0 2px var(--pro-accent-primary);
+}
+
+.test-assertion-badge .badge-count {
+    font-weight: 700;
+    background: transparent;
+    color: inherit;
+    min-width: auto;
+    height: auto;
+    padding: 0;
+}
+
+/* Assertion details expandable panel */
+.test-assertion-details {
+    background: var(--pro-bg-primary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: 6px;
+    margin: 0.5rem 1rem 0.75rem 2.5rem;
+    overflow: hidden;
+}
+
+.test-assertion-details.hidden {
+    display: none;
+}
+
+/* Section headers */
+.assertion-section-header {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--pro-text-secondary);
+    padding: 0.5rem 0.75rem;
+    background: var(--pro-bg-tertiary);
+    border-bottom: 1px solid var(--pro-border-muted);
+}
+
+/* Source code section */
+.assertion-source-section {
+    border-bottom: 1px solid var(--pro-border-muted);
+}
+
+.assertion-source-container {
+    max-height: 200px;
+    overflow: auto;
+}
+
+.assertion-source-fallback {
+    margin: 0;
+    padding: 0.75rem;
+    font-family: var(--pro-font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    background: transparent;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.assertion-source-fallback code {
+    color: var(--pro-text-primary);
+}
+
+/* Assertion list section */
+.assertion-list-section {
+    /* No border needed - handled by section-header */
+}
+
+.assertion-list-section .selectable-list__empty-text,
+.assertion-empty {
+    padding: 0.5rem 1rem;
+    color: var(--pro-text-muted);
+    font-style: italic;
+}
+
+.assertion-list {
+    outline: none;
+    padding: 0.25rem 0;
+}
+
+.assertion-list:focus {
+    box-shadow: inset 0 0 0 2px var(--pro-accent-primary);
+}
+
+/* Individual assertion item */
+.assertion-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--pro-border-muted);
+    transition: background 0.15s ease;
+    cursor: default;
+}
+
+.assertion-item:last-child {
+    border-bottom: none;
+}
+
+.assertion-item:hover,
+.assertion-item[aria-selected="true"] {
+    background: var(--pro-bg-tertiary);
+}
+
+.assertion-item[aria-selected="true"] {
+    outline: 2px solid var(--pro-accent-primary);
+    outline-offset: -2px;
+}
+
+/* Assertion icon */
+.assertion-icon {
+    width: 16px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    padding-top: 2px;
+}
+
+.assertion-item.passed .assertion-icon {
+    color: var(--pro-accent-success);
+}
+
+.assertion-item.failed .assertion-icon {
+    color: var(--pro-accent-danger);
+}
+
+/* Matcher name (e.g., toBe, toEqual) */
+.assertion-matcher {
+    font-family: var(--pro-font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--pro-accent-info);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+/* Values container */
+.assertion-values {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-family: var(--pro-font-mono);
+    font-size: 0.75rem;
+}
+
+.assertion-actual,
+.assertion-expected {
+    display: flex;
+    gap: 0.25rem;
+    color: var(--pro-text-secondary);
+}
+
+.assertion-actual span,
+.assertion-expected span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+/* Value type styling */
+.value-undefined {
+    color: var(--pro-text-muted);
+    font-style: italic;
+}
+
+.value-null {
+    color: var(--pro-accent-warning);
+}
+
+.value-string {
+    color: var(--pro-accent-success);
+}
+
+.value-number {
+    color: var(--pro-accent-info);
+}
+
+.value-boolean {
+    color: var(--pro-accent-warning);
+}
+
+.value-function {
+    color: var(--pro-accent-primary);
+    font-style: italic;
+}
+
+.value-element {
+    color: var(--pro-accent-danger);
+}
+
+.value-regex {
+    color: var(--pro-accent-danger);
+}
+
+.value-error {
+    color: var(--pro-accent-danger);
+}
+
+.value-symbol {
+    color: var(--pro-accent-primary);
+}
+
+.value-array,
+.value-object {
+    color: var(--pro-text-secondary);
+}
+
+.value-other {
+    color: var(--pro-text-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .test-assertion-details {
+        margin: 0.5rem 0.5rem 0.75rem 0.5rem;
+    }
+
+    .assertion-values {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .assertion-actual span,
+    .assertion-expected span {
+        max-width: 100%;
+    }
+
+    .assertion-matcher {
+        min-width: 80px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOUR BUTTON & SPOTLIGHT
+   ═══════════════════════════════════════════════════════════ */
+
+/* Tour button in stats bar (top right) */
+.test-runner-tour-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.test-runner-tour-btn:hover {
+    opacity: 1;
+}
+
+.test-runner-tour-btn i {
+    font-size: 1rem;
+}
+
+/* Ensure spotlighted elements are visible during tour */
+.funky-tour-active .test-assertion-badge,
+.funky-tour-active .test-assertion-details,
+.funky-tour-active .assertion-list,
+.funky-tour-active .assertion-source-container {
+    position: relative;
+    z-index: 10001;
+}
+
+/* Keep controls visible during tour */
+.funky-tour-active .test-runner-controls,
+.funky-tour-active .test-runner-filter,
+.funky-tour-active .test-runner-stats,
+.funky-tour-active #suiteTree,
+.funky-tour-active #testResults {
+    position: relative;
+    z-index: 10001;
+}
+
+/* ============================================
+   HIGHLIGHT FLASH (for tree navigation)
+   ============================================ */
+
+.test-suite-header.highlight-flash {
+    animation: highlightFlash 1s ease-out;
+}
+
+@keyframes highlightFlash {
+    0% {
+        background: var(--pro-accent-primary);
+        box-shadow: 0 0 0 3px var(--pro-accent-primary);
+    }
+    100% {
+        background: var(--pro-bg-tertiary);
+        box-shadow: none;
+    }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+    .test-runner-sidebar {
+        border-right-width: 2px;
+    }
+
+    .test-runner-controls {
+        border-bottom-width: 2px;
+    }
+
+    .test-runner-filter {
+        border-bottom-width: 2px;
+    }
+
+    .test-runner-filter input {
+        border-width: 2px;
+    }
+
+    .test-runner-filter input:focus {
+        outline: 3px solid;
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+
+    .test-runner-stats {
+        border-bottom-width: 2px;
+    }
+
+    .progress-bar {
+        border: 2px solid currentColor;
+    }
+
+    .current-test-panel {
+        background: var(--pro-bg-secondary);
+        border-bottom-width: 3px;
+    }
+
+    .test-suite-header {
+        border-bottom-width: 2px;
+    }
+
+    .test-suite-header:focus-visible {
+        outline: 3px solid;
+        outline-offset: 2px;
+    }
+
+    .test-suite-tests {
+        border-bottom-width: 2px;
+    }
+
+    .test-item {
+        border-bottom-width: 2px;
+    }
+
+    .test-item .test-error-btn {
+        border: 2px solid currentColor;
+    }
+
+    .test-item .test-error-btn:focus-visible {
+        outline: 3px solid;
+        outline-offset: 2px;
+    }
+
+    .test-error-panel {
+        border-left-width: 3px;
+        box-shadow: none;
+    }
+
+    .error-panel-header {
+        border-bottom-width: 2px;
+    }
+
+    .error-panel-header .btn-close:focus-visible {
+        outline: 3px solid;
+        outline-offset: 2px;
+    }
+
+    .error-section pre {
+        border-width: 2px;
+    }
+
+    .test-suite-tree .tree-node:focus-visible {
+        outline: 3px solid;
+        outline-offset: 2px;
+    }
+
+    .test-assertion-badge {
+        border: 2px solid currentColor;
+    }
+
+    .test-assertion-badge:focus-visible {
+        outline: 3px solid;
+        outline-offset: 2px;
+    }
+
+    .test-assertion-details {
+        border-width: 2px;
+    }
+
+    .assertion-section-header {
+        border-bottom-width: 2px;
+    }
+
+    .assertion-item {
+        border-bottom-width: 2px;
+    }
+
+    .test-runner-tour-btn:focus-visible {
+        outline: 3px solid;
+        outline-offset: 2px;
+    }
+
+    /* Disable animations */
+    @keyframes pulse,
+    @keyframes fixedPop,
+    @keyframes fixedFade,
+    @keyframes highlightFlash {
+        0%, 100% { opacity: 1; transform: none; }
+    }
+}
+
+/* ============================================
+   HIGH CONTRAST THEME (Manual Selection)
+   ============================================ */
+
+[data-theme="high-contrast"] .test-runner-sidebar {
+    border-right: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-runner-controls {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-runner-filter {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-runner-filter input {
+    border: 2px solid #ffffff;
+    background: #000000;
+    color: #ffffff;
+}
+
+[data-theme="high-contrast"] .test-runner-filter input:focus {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+    box-shadow: none;
+    border-color: #ffff00;
+}
+
+[data-theme="high-contrast"] .test-runner-stats {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-runner-stats .stat-value {
+    color: var(--pro-accent-primary);
+}
+
+[data-theme="high-contrast"] .progress-bar {
+    border: 2px solid currentColor;
+}
+
+[data-theme="high-contrast"] .current-test-panel {
+    background: var(--pro-bg-secondary);
+    border-bottom: 3px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-suite-header {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-suite-header:focus-visible {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .test-suite-tests {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-item {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-item.pass .test-name::before {
+    color: #00ff00;
+}
+
+[data-theme="high-contrast"] .test-item.fail .test-name::before {
+    color: #ff0000;
+}
+
+[data-theme="high-contrast"] .test-item.skip .test-name::before {
+    color: #ffaa00;
+}
+
+[data-theme="high-contrast"] .test-item .test-error-btn {
+    border: 2px solid currentColor;
+}
+
+[data-theme="high-contrast"] .test-item .test-error-btn:focus-visible {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .test-error-panel {
+    border-left: 3px solid #ff0000;
+    box-shadow: none;
+}
+
+[data-theme="high-contrast"] .error-panel-header {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .error-panel-header .btn-close:focus-visible {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .error-section pre {
+    border: 2px solid #ffffff;
+    background: #0a0a0a;
+}
+
+[data-theme="high-contrast"] .test-suite-tree .tree-node:focus-visible {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .test-assertion-badge {
+    border: 2px solid currentColor;
+}
+
+[data-theme="high-contrast"] .test-assertion-badge:focus-visible {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .test-assertion-details {
+    border: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .assertion-section-header {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .assertion-item {
+    border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .test-runner-tour-btn:focus-visible {
+    outline: 3px solid #ffff00;
+    outline-offset: 2px;
+}

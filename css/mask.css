@@ -1,0 +1,602 @@
+/**
+ * Funky.Mask Component Styles
+ *
+ * CSS for input masking and redact mode components.
+ * Uses --pro-* CSS custom properties for theming.
+ *
+ * @module Funky.Mask
+ * @version 1.0.0
+ * @requires Bootstrap 5 (optional, for form-control integration)
+ */
+
+/* =========================================================================
+   CSS Custom Properties
+   ========================================================================= */
+
+:root {
+  /* Mask input styling */
+  --pro-mask-font: var(--pro-font-mono, 'SF Mono', 'Monaco', 'Consolas', 'Liberation Mono', monospace);
+  --pro-mask-placeholder-color: var(--pro-text-muted, #6c757d);
+  --pro-mask-focus-ring: var(--pro-focus-ring, 0 0 0 0.25rem rgba(13, 110, 253, 0.25));
+  --pro-mask-border-color: var(--pro-border-color, #ced4da);
+  --pro-mask-bg: var(--pro-bg-primary, #ffffff);
+  --pro-mask-text: var(--pro-text-primary, #212529);
+
+  /* Validation states */
+  --pro-mask-valid-color: var(--pro-success, #198754);
+  --pro-mask-valid-border: var(--pro-success, #198754);
+  --pro-mask-valid-bg: var(--pro-success-subtle, rgba(25, 135, 84, 0.1));
+  --pro-mask-valid-ring: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+
+  --pro-mask-invalid-color: var(--pro-danger, #dc3545);
+  --pro-mask-invalid-border: var(--pro-danger, #dc3545);
+  --pro-mask-invalid-bg: var(--pro-danger-subtle, rgba(220, 53, 69, 0.1));
+  --pro-mask-invalid-ring: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+
+  /* Redact styling */
+  --pro-redact-char-color: var(--pro-text-secondary, #6c757d);
+  --pro-redact-revealed-color: var(--pro-text-primary, #212529);
+  --pro-redact-hover-bg: var(--pro-hover-bg, rgba(0, 0, 0, 0.05));
+  --pro-redact-transition: all 0.2s ease;
+
+  /* Toggle button */
+  --pro-redact-toggle-size: 1.5rem;
+  --pro-redact-toggle-color: var(--pro-text-secondary, #6c757d);
+  --pro-redact-toggle-hover: var(--pro-primary, #0d6efd);
+}
+
+/* =========================================================================
+   Input Mask Base
+   ========================================================================= */
+
+/**
+ * Masked input element
+ */
+[data-mask] {
+  font-family: var(--pro-mask-font);
+  letter-spacing: 0.05em;
+  background-color: var(--pro-mask-bg);
+  color: var(--pro-mask-text);
+  border-color: var(--pro-mask-border-color);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/**
+ * Placeholder mask characters
+ */
+[data-mask]::placeholder {
+  color: var(--pro-mask-placeholder-color);
+  opacity: 0.7;
+}
+
+/**
+ * Focused state
+ */
+[data-mask]:focus,
+[data-mask].funky-mask-focused,
+[data-mask-initialized]:focus,
+[data-mask-initialized].funky-mask-focused {
+  outline: none;
+  box-shadow: var(--pro-mask-focus-ring);
+  border-color: var(--pro-primary, #0d6efd);
+}
+
+/**
+ * Disabled state
+ */
+[data-mask]:disabled,
+[data-mask][readonly],
+[data-mask-initialized]:disabled,
+[data-mask-initialized][readonly] {
+  background-color: var(--pro-bg-secondary, #e9ecef);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* =========================================================================
+   Validation States
+   ========================================================================= */
+
+/**
+ * Valid state
+ * High specificity selectors to override Bootstrap form-control
+ */
+input.form-control.funky-mask-valid,
+[data-mask].funky-mask-valid,
+[data-mask-initialized].funky-mask-valid {
+  border-color: var(--pro-mask-valid-border) !important;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+input.form-control.funky-mask-valid:focus,
+[data-mask].funky-mask-valid:focus,
+[data-mask-initialized].funky-mask-valid:focus {
+  border-color: var(--pro-mask-valid-border) !important;
+  box-shadow: var(--pro-mask-valid-ring);
+}
+
+/**
+ * Invalid state
+ * High specificity selectors to override Bootstrap form-control
+ */
+input.form-control.funky-mask-invalid,
+[data-mask].funky-mask-invalid,
+[data-mask-initialized].funky-mask-invalid {
+  border-color: var(--pro-mask-invalid-border) !important;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+input.form-control.funky-mask-invalid:focus,
+[data-mask].funky-mask-invalid:focus,
+[data-mask-initialized].funky-mask-invalid:focus {
+  border-color: var(--pro-mask-invalid-border) !important;
+  box-shadow: var(--pro-mask-invalid-ring);
+}
+
+/**
+ * Error message
+ */
+.funky-mask-error {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: var(--pro-mask-invalid-color);
+}
+
+.funky-mask-error[hidden] {
+  display: none;
+}
+
+/* =========================================================================
+   Completion States
+   ========================================================================= */
+
+/**
+ * Complete but not validated
+ */
+[data-mask].funky-mask-complete:not(.funky-mask-valid):not(.funky-mask-invalid),
+[data-mask-initialized].funky-mask-complete:not(.funky-mask-valid):not(.funky-mask-invalid) {
+  border-color: var(--pro-primary, #0d6efd);
+}
+
+/**
+ * Incomplete state (optional visual hint)
+ */
+[data-mask].funky-mask-incomplete,
+[data-mask-initialized].funky-mask-incomplete {
+  border-style: dashed;
+}
+
+/* =========================================================================
+   Format Hints
+   ========================================================================= */
+
+/**
+ * Visible format hint
+ */
+.funky-mask-hint:not(.visually-hidden) {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: var(--pro-text-muted, #6c757d);
+}
+
+/**
+ * Inline hint (inside input wrapper)
+ */
+.funky-mask-hint-inline {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75em;
+  color: var(--pro-text-muted, #6c757d);
+  pointer-events: none;
+}
+
+/* =========================================================================
+   Redact Mode
+   ========================================================================= */
+
+/**
+ * Redacted element container
+ */
+[data-redact] {
+  font-family: var(--pro-mask-font);
+  letter-spacing: 0.1em;
+  transition: var(--pro-redact-transition);
+}
+
+/**
+ * Hidden (redacted) state
+ */
+[data-redact].funky-redact-hidden {
+  color: var(--pro-redact-char-color);
+}
+
+/**
+ * Revealed state
+ */
+[data-redact].funky-redact-revealed {
+  color: var(--pro-redact-revealed-color);
+}
+
+/**
+ * Clickable redact (click-to-reveal)
+ */
+[data-redact][data-redact-reveal="click"],
+[data-redact][tabindex="0"] {
+  cursor: pointer;
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--pro-border-radius-sm, 0.25rem);
+  transition: var(--pro-redact-transition);
+}
+
+[data-redact][data-redact-reveal="click"]:hover,
+[data-redact][tabindex="0"]:hover {
+  background-color: var(--pro-redact-hover-bg);
+}
+
+[data-redact][data-redact-reveal="click"]:focus,
+[data-redact][tabindex="0"]:focus {
+  outline: 2px solid var(--pro-primary, #0d6efd);
+  outline-offset: 2px;
+}
+
+/**
+ * Reveal animation
+ */
+[data-redact].funky-redact-revealing {
+  animation: funky-redact-reveal 0.3s ease;
+}
+
+@keyframes funky-redact-reveal {
+  0% {
+    opacity: 0.5;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* =========================================================================
+   Redact Toggle Button
+   ========================================================================= */
+
+/**
+ * Toggle button for redact
+ */
+.funky-redact-toggle,
+[data-redact-toggle] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pro-redact-toggle-size);
+  height: var(--pro-redact-toggle-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--pro-redact-toggle-color);
+  cursor: pointer;
+  border-radius: var(--pro-border-radius, 0.375rem);
+  transition: var(--pro-redact-transition);
+}
+
+.funky-redact-toggle:hover,
+[data-redact-toggle]:hover {
+  color: var(--pro-redact-toggle-hover);
+  background-color: var(--pro-redact-hover-bg);
+}
+
+.funky-redact-toggle:focus,
+[data-redact-toggle]:focus {
+  outline: 2px solid var(--pro-primary, #0d6efd);
+  outline-offset: 2px;
+}
+
+/**
+ * Icon inside toggle
+ */
+.funky-redact-toggle i,
+.funky-redact-toggle svg,
+[data-redact-toggle] i,
+[data-redact-toggle] svg {
+  width: 1em;
+  height: 1em;
+}
+
+/**
+ * Pressed state
+ */
+.funky-redact-toggle[aria-pressed="true"],
+[data-redact-toggle][aria-pressed="true"] {
+  color: var(--pro-primary, #0d6efd);
+}
+
+/* =========================================================================
+   Redact Field Group
+   ========================================================================= */
+
+/**
+ * Container for redact + button
+ */
+.funky-redact-group,
+.redact-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/**
+ * With label
+ */
+.funky-redact-group .label,
+.redact-field .label {
+  font-weight: 500;
+  color: var(--pro-text-secondary, #6c757d);
+}
+
+/* =========================================================================
+   Credit Card Mask
+   ========================================================================= */
+
+/**
+ * Card type indicator
+ */
+[data-mask="credit-card"],
+[data-mask="credit-card-flexible"] {
+  padding-left: 2.5rem;
+  background-position: 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5rem auto;
+}
+
+/**
+ * Card type icons (when detected)
+ * Using simplified inline SVG placeholders
+ */
+[data-mask][data-card-type="visa"] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a1f71'%3e%3cpath d='M9.112 8.262L5.97 15.758H3.92L2.374 9.775c-.094-.368-.175-.503-.461-.658C1.447 8.864.677 8.627 0 8.479l.046-.217h3.3c.42 0 .798.278.893.763l.818 4.344 2.018-5.107h2.037zm8.033 5.041c.008-1.979-2.736-2.088-2.716-2.972.007-.269.262-.555.822-.628.278-.036 1.044-.064 1.912.335l.34-1.59A5.21 5.21 0 0015.697 8c-1.917 0-3.266 1.02-3.278 2.481-.013 1.08.963 1.683 1.698 2.041.756.367 1.01.602 1.006.93-.005.502-.603.724-1.16.733-.974.015-1.54-.263-1.99-.473l-.352 1.646c.453.208 1.289.39 2.156.398 2.163 0 3.577-1.068 3.584-2.653zm5.372 2.455L20.794 8.262h-1.678c-.379 0-.698.22-.84.558l-2.962 7.078h2.08l.411-1.141h2.537l.238 1.141h1.937zM19.318 11.9l1.042-2.873.6 2.873h-1.642z'/%3e%3c/svg%3e");
+}
+
+[data-mask][data-card-type="mastercard"] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3ccircle cx='9' cy='12' r='7' fill='%23eb001b'/%3e%3ccircle cx='15' cy='12' r='7' fill='%23f79e1b'/%3e%3cpath d='M12 6.5a7 7 0 010 11 7 7 0 010-11z' fill='%23ff5f00'/%3e%3c/svg%3e");
+}
+
+[data-mask][data-card-type="amex"] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23006fcf'%3e%3cpath d='M22.5 4.5h-21A1.5 1.5 0 000 6v12a1.5 1.5 0 001.5 1.5h21A1.5 1.5 0 0024 18V6a1.5 1.5 0 00-1.5-1.5zM12 15.5L9 11h2l1.5 2.5L14 11h2l-3 4.5H12z'/%3e%3c/svg%3e");
+}
+
+[data-mask][data-card-type="discover"] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3crect fill='%23fff' width='24' height='24' rx='2'/%3e%3ccircle cx='14' cy='12' r='5' fill='%23f68121'/%3e%3c/svg%3e");
+}
+
+/* =========================================================================
+   Reduced Motion
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-mask],
+  [data-redact],
+  .funky-redact-toggle,
+  [data-redact-toggle] {
+    transition: none !important;
+  }
+
+  [data-redact].funky-redact-revealing {
+    animation: none !important;
+  }
+}
+
+/* =========================================================================
+   High Contrast Mode
+   ========================================================================= */
+
+@media (forced-colors: active) {
+  [data-mask].funky-mask-valid,
+  [data-mask-initialized].funky-mask-valid {
+    border-color: Highlight;
+    border-width: 2px;
+  }
+
+  [data-mask].funky-mask-invalid,
+  [data-mask-initialized].funky-mask-invalid {
+    border-color: Mark;
+    border-width: 2px;
+  }
+
+  [data-redact] {
+    border: 1px solid ButtonText;
+  }
+
+  .funky-redact-toggle,
+  [data-redact-toggle] {
+    border: 1px solid ButtonText;
+  }
+
+  .funky-redact-toggle:focus,
+  [data-redact-toggle]:focus {
+    outline: 2px solid Highlight;
+  }
+
+  [data-mask].funky-mask-complete:not(.funky-mask-valid):not(.funky-mask-invalid),
+  [data-mask-initialized].funky-mask-complete:not(.funky-mask-valid):not(.funky-mask-invalid) {
+    border-color: Highlight;
+  }
+}
+
+/* =========================================================================
+   Dark Mode
+   ========================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pro-mask-placeholder-color: var(--pro-text-muted-dark, #9ca3af);
+    --pro-mask-bg: var(--pro-bg-primary-dark, #1f2937);
+    --pro-mask-text: var(--pro-text-primary-dark, #f3f4f6);
+    --pro-redact-char-color: var(--pro-text-secondary-dark, #9ca3af);
+    --pro-redact-revealed-color: var(--pro-text-primary-dark, #f3f4f6);
+    --pro-redact-hover-bg: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Theme class override */
+.dark-theme,
+[data-theme="dark"] {
+  --pro-mask-placeholder-color: var(--pro-text-muted-dark, #9ca3af);
+  --pro-mask-bg: var(--pro-bg-primary-dark, #1f2937);
+  --pro-mask-text: var(--pro-text-primary-dark, #f3f4f6);
+  --pro-redact-char-color: var(--pro-text-secondary-dark, #9ca3af);
+  --pro-redact-revealed-color: var(--pro-text-primary-dark, #f3f4f6);
+  --pro-redact-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================================================
+   Density Modes
+   ========================================================================= */
+
+/* Compact mode */
+[data-density="compact"] [data-mask],
+.density-compact [data-mask] {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+[data-density="compact"] [data-redact],
+.density-compact [data-redact] {
+  font-size: 0.875rem;
+}
+
+[data-density="compact"] .funky-redact-toggle,
+.density-compact .funky-redact-toggle,
+[data-density="compact"] [data-redact-toggle],
+.density-compact [data-redact-toggle] {
+  --pro-redact-toggle-size: 1.25rem;
+}
+
+[data-density="compact"] .funky-mask-hint,
+.density-compact .funky-mask-hint {
+  font-size: 0.75em;
+}
+
+[data-density="compact"] .funky-mask-error,
+.density-compact .funky-mask-error {
+  font-size: 0.75em;
+}
+
+/* Comfortable mode (default) */
+[data-density="comfortable"] [data-mask],
+.density-comfortable [data-mask] {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+}
+
+/* Spacious mode */
+[data-density="spacious"] [data-mask],
+.density-spacious [data-mask] {
+  padding: 0.75rem 1rem;
+  font-size: 1.125rem;
+}
+
+[data-density="spacious"] [data-redact],
+.density-spacious [data-redact] {
+  font-size: 1.125rem;
+}
+
+[data-density="spacious"] .funky-redact-toggle,
+.density-spacious .funky-redact-toggle,
+[data-density="spacious"] [data-redact-toggle],
+.density-spacious [data-redact-toggle] {
+  --pro-redact-toggle-size: 1.75rem;
+}
+
+[data-density="spacious"] .funky-mask-hint,
+.density-spacious .funky-mask-hint {
+  font-size: 1em;
+}
+
+/* =========================================================================
+   Mask Input Wrapper (optional container)
+   ========================================================================= */
+
+.funky-mask-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.funky-mask-wrapper [data-mask] {
+  width: 100%;
+}
+
+/* =========================================================================
+   Input Group Integration (Bootstrap-compatible)
+   ========================================================================= */
+
+.input-group [data-mask] {
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+}
+
+.input-group [data-mask]:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group [data-mask]:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group [data-mask]:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+/* =========================================================================
+   Password/Sensitive Field Mask
+   ========================================================================= */
+
+/**
+ * SSN, password, and other sensitive masks
+ */
+[data-mask="ssn"],
+[data-mask="password"] {
+  -webkit-text-security: disc;
+  font-family: text-security-disc, var(--pro-mask-font);
+}
+
+[data-mask="ssn"].funky-mask-revealed,
+[data-mask="password"].funky-mask-revealed {
+  -webkit-text-security: none;
+  font-family: var(--pro-mask-font);
+}
+
+/* =========================================================================
+   Print Styles
+   ========================================================================= */
+
+@media print {
+  [data-redact] {
+    color: var(--pro-redact-char-color) !important;
+  }
+
+  [data-redact].funky-redact-revealed {
+    color: inherit !important;
+  }
+
+  .funky-redact-toggle,
+  [data-redact-toggle] {
+    display: none !important;
+  }
+}

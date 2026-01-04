@@ -1,0 +1,405 @@
+/* ==========================================================================
+   FUNKY HIGHLIGHT COMPONENT
+   Text highlighting for search terms and keywords
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BASE STYLES
+   -------------------------------------------------------------------------- */
+
+.funky-highlight {
+  background-color: var(--pro-accent-warning-bg, rgba(255, 193, 7, 0.25));
+  color: inherit;
+  padding: 0 0.125rem;
+  border-radius: 0.125rem;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Current/focused highlight */
+.funky-highlight-current {
+  background-color: var(--pro-accent-warning, #ffc107);
+  color: var(--pro-text-on-warning, #212529);
+  outline: 2px solid var(--pro-accent-warning-dark, #e0a800);
+  outline-offset: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   MULTIPLE TERM COLORS
+   Each term gets a different highlight color
+   -------------------------------------------------------------------------- */
+
+.funky-highlight[data-term-index="0"] { 
+  background-color: var(--pro-accent-warning-bg, rgba(255, 193, 7, 0.25)); 
+}
+
+.funky-highlight[data-term-index="1"] { 
+  background-color: var(--pro-accent-info-bg, rgba(23, 162, 184, 0.25)); 
+}
+
+.funky-highlight[data-term-index="2"] { 
+  background-color: var(--pro-accent-success-bg, rgba(40, 167, 69, 0.25)); 
+}
+
+.funky-highlight[data-term-index="3"] { 
+  background-color: var(--pro-accent-primary-bg, rgba(0, 123, 255, 0.25)); 
+}
+
+.funky-highlight[data-term-index="4"] { 
+  background-color: var(--pro-accent-danger-bg, rgba(220, 53, 69, 0.25)); 
+}
+
+/* Current states for each term color */
+.funky-highlight-current[data-term-index="0"] { 
+  background-color: var(--pro-accent-warning, #ffc107);
+  color: var(--pro-text-on-warning, #212529);
+  outline-color: var(--pro-accent-warning-dark, #e0a800);
+}
+
+.funky-highlight-current[data-term-index="1"] { 
+  background-color: var(--pro-accent-info, #17a2b8);
+  color: #fff;
+  outline-color: #138496;
+}
+
+.funky-highlight-current[data-term-index="2"] { 
+  background-color: var(--pro-accent-success, #28a745);
+  color: #fff;
+  outline-color: #1e7e34;
+}
+
+.funky-highlight-current[data-term-index="3"] { 
+  background-color: var(--pro-accent-primary, #007bff);
+  color: #fff;
+  outline-color: #0056b3;
+}
+
+.funky-highlight-current[data-term-index="4"] { 
+  background-color: var(--pro-accent-danger, #dc3545);
+  color: #fff;
+  outline-color: #bd2130;
+}
+
+/* --------------------------------------------------------------------------
+   ANIMATION
+   -------------------------------------------------------------------------- */
+
+.funky-highlight.animate {
+  animation: funky-highlight-fade 0.3s ease-out;
+}
+
+@keyframes funky-highlight-fade {
+  from {
+    background-color: transparent;
+  }
+}
+
+/* Pulse animation for current highlight */
+.funky-highlight-current.animate {
+  animation: funky-highlight-pulse 0.4s ease-out;
+}
+
+@keyframes funky-highlight-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   DENSITY OVERRIDES
+   -------------------------------------------------------------------------- */
+
+[data-density="compact"] .funky-highlight {
+  padding: 0 0.0625rem;
+  border-radius: 0.0625rem;
+}
+
+[data-density="compact"] .funky-highlight-current {
+  outline-width: 1px;
+}
+
+[data-density="spacious"] .funky-highlight {
+  padding: 0.0625rem 0.1875rem;
+  border-radius: 0.1875rem;
+}
+
+[data-density="spacious"] .funky-highlight-current {
+  outline-width: 3px;
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   DARK THEME ADJUSTMENTS
+   -------------------------------------------------------------------------- */
+
+[data-theme="dark"] .funky-highlight {
+  background-color: rgba(255, 193, 7, 0.35);
+}
+
+[data-theme="dark"] .funky-highlight[data-term-index="1"] {
+  background-color: rgba(23, 162, 184, 0.35);
+}
+
+[data-theme="dark"] .funky-highlight[data-term-index="2"] {
+  background-color: rgba(40, 167, 69, 0.35);
+}
+
+[data-theme="dark"] .funky-highlight[data-term-index="3"] {
+  background-color: rgba(0, 123, 255, 0.35);
+}
+
+[data-theme="dark"] .funky-highlight[data-term-index="4"] {
+  background-color: rgba(220, 53, 69, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   EVEN FUNKYER THEME
+   -------------------------------------------------------------------------- */
+
+.even-funkyer .funky-highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.3),
+    rgba(255, 193, 7, 0.3)
+  );
+  border-radius: 0.25rem;
+}
+
+.even-funkyer .funky-highlight[data-term-index="1"] {
+  background: linear-gradient(
+    135deg,
+    rgba(84, 160, 255, 0.3),
+    rgba(23, 162, 184, 0.3)
+  );
+}
+
+.even-funkyer .funky-highlight[data-term-index="2"] {
+  background: linear-gradient(
+    135deg,
+    rgba(40, 167, 69, 0.3),
+    rgba(46, 204, 113, 0.3)
+  );
+}
+
+.even-funkyer .funky-highlight-current {
+  background: linear-gradient(
+    135deg,
+    var(--funky-primary, #ff6b6b),
+    var(--funky-accent, #feca57)
+  );
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   MATCH COUNTER BADGE
+   Optional UI element for showing match count
+   -------------------------------------------------------------------------- */
+
+.funky-highlight-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--pro-text-muted);
+  padding: 0.25rem 0.5rem;
+  background: var(--pro-bg-secondary, #f8f9fa);
+  border-radius: 0.25rem;
+  border: 1px solid var(--pro-border-color, #dee2e6);
+}
+
+.funky-highlight-counter .current {
+  font-weight: 600;
+  color: var(--pro-text-primary);
+}
+
+[data-theme="dark"] .funky-highlight-counter {
+  background: var(--pro-bg-tertiary, #2d2d2d);
+}
+
+[data-density="compact"] .funky-highlight-counter {
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.375rem;
+}
+
+[data-density="spacious"] .funky-highlight-counter {
+  font-size: 0.8125rem;
+  padding: 0.375rem 0.625rem;
+}
+
+/* --------------------------------------------------------------------------
+   NAVIGATION BUTTONS
+   Optional UI element for navigating between matches
+   -------------------------------------------------------------------------- */
+
+.funky-highlight-nav {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.funky-highlight-nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid var(--pro-border-color, #dee2e6);
+  background: var(--pro-bg-primary, #fff);
+  color: var(--pro-text-secondary);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.funky-highlight-nav button:hover:not(:disabled) {
+  background: var(--pro-bg-secondary, #f8f9fa);
+  color: var(--pro-text-primary);
+  border-color: var(--pro-accent-primary);
+}
+
+.funky-highlight-nav button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--pro-accent-primary-bg, rgba(0, 123, 255, 0.25));
+}
+
+.funky-highlight-nav button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .funky-highlight-nav button {
+  background: var(--pro-bg-secondary, #2d2d2d);
+  border-color: var(--pro-border-color, #444);
+}
+
+[data-density="compact"] .funky-highlight-nav button {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
+
+[data-density="spacious"] .funky-highlight-nav button {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1rem;
+}
+
+.even-funkyer .funky-highlight-nav button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--funky-primary), var(--funky-accent));
+  color: #fff;
+  border-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   HIGH CONTRAST MODE
+   -------------------------------------------------------------------------- */
+
+@media (prefers-contrast: high) {
+  .funky-highlight {
+    background-color: transparent;
+    border: 2px solid currentColor;
+    font-weight: 700;
+  }
+
+  .funky-highlight-current {
+    outline-width: 3px;
+    outline-offset: 2px;
+    font-weight: 700;
+  }
+
+  /* All term indices use the same high contrast style */
+  .funky-highlight[data-term-index="0"],
+  .funky-highlight[data-term-index="1"],
+  .funky-highlight[data-term-index="2"],
+  .funky-highlight[data-term-index="3"],
+  .funky-highlight[data-term-index="4"] {
+    background-color: transparent;
+    border: 2px solid currentColor;
+  }
+
+  /* Current highlight states - solid background */
+  .funky-highlight-current[data-term-index="0"],
+  .funky-highlight-current[data-term-index="1"],
+  .funky-highlight-current[data-term-index="2"],
+  .funky-highlight-current[data-term-index="3"],
+  .funky-highlight-current[data-term-index="4"] {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+
+  /* Disable animations */
+  .funky-highlight.animate,
+  .funky-highlight-current.animate {
+    animation: none;
+  }
+
+  /* Counter badge */
+  .funky-highlight-counter {
+    border-width: 2px;
+    font-weight: 600;
+  }
+
+  /* Navigation buttons */
+  .funky-highlight-nav button {
+    border-width: 2px;
+  }
+
+  .funky-highlight-nav button:focus {
+    outline: 3px solid;
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
+  .funky-highlight-nav button:hover:not(:disabled) {
+    border-width: 2px;
+  }
+
+  /* Override even funkyer for high contrast */
+  .even-funkyer .funky-highlight,
+  .even-funkyer .funky-highlight[data-term-index="1"],
+  .even-funkyer .funky-highlight[data-term-index="2"] {
+    background: transparent;
+    border: 2px solid currentColor;
+  }
+
+  .even-funkyer .funky-highlight-current {
+    background: none;
+    border: 3px solid currentColor;
+    box-shadow: none;
+    text-shadow: none;
+  }
+
+  .even-funkyer .funky-highlight-nav button:hover:not(:disabled) {
+    background: none;
+    border-width: 2px;
+  }
+}
+
+/* ============================================
+   CODE BLOCK THEME OVERRIDES
+   Using --pro-* variables for theme consistency
+   ============================================ */
+
+code {
+  color: var(--pro-accent-danger);
+}
+
+pre {
+  background-color: var(--pro-bg-tertiary);
+  color: var(--pro-text-primary);
+  border: 1px solid var(--pro-border);
+}
+
+kbd {
+  background-color: var(--pro-bg-tertiary);
+  color: var(--pro-text-primary);
+}
+
+mark,
+.mark {
+  background-color: var(--pro-accent-warning-bg);
+  color: var(--pro-text-primary);
+}

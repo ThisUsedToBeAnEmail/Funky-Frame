@@ -1,0 +1,130 @@
+/**
+ * Funky.Wysimark Styles
+ * 
+ * Minimal base styles - customize as needed.
+ * 
+ * Valid --pro-* variables:
+ * - --pro-bg-primary, --pro-bg-elevated
+ * - --pro-text-primary, --pro-text-secondary, --pro-text-muted
+ * - --pro-border-color
+ * - --pro-accent-primary
+ */
+
+/* Container */
+.funky-wysimark {
+  position: relative;
+  border: 1px solid var(--pro-border-color, #dee2e6);
+  border-radius: 6px;
+  background: var(--pro-bg-primary, #ffffff);
+  overflow: hidden;
+}
+
+.funky-wysimark:focus-within {
+  border-color: var(--pro-accent-primary, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.funky-wysimark--readonly {
+  background: var(--pro-bg-elevated, #f9fafb);
+  pointer-events: none;
+}
+
+.funky-wysimark--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Editor wrapper */
+.funky-wysimark .funky-wysimark-editor {
+  background: var(--pro-bg-primary, #ffffff);
+  color: var(--pro-text-primary, #1f2937);
+  font-family: inherit;
+}
+
+/* ==========================================================================
+   Wysimark Internal Elements
+   ========================================================================== */
+
+/* Toolbar buttons */
+.funky-wysimark .css-17nv7lr {
+  padding: 0 0.2em !important;
+}
+
+/* Main content area */
+.funky-wysimark .css-1gzrj0n {
+  background: var(--pro-bg-primary, #ffffff);
+  color: var(--pro-text-primary, #1f2937);
+  border: 1px solid var(--pro-border-color, #dee2e6);
+  border-bottom: none !important;
+}
+
+.funky-wysimark .css-1gzrj0n.--focused {
+  outline: none !important;
+  border-bottom: none !important;
+}
+
+/* Header nav / toolbar */
+.funky-wysimark .css-hnubqc {
+  background: var(--pro-bg-elevated, #f8f9fa);
+  border: 1px solid var(--pro-border-color, #dee2e6);
+  border-bottom: none;
+}
+
+/* Context menu container */
+.funky-wysimark .css-1rcsakw {
+  background: var(--pro-bg-elevated, #f8f9fa);
+  border: 1px solid var(--pro-border-color, #dee2e6);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Context menu item */
+.funky-wysimark .css-dirhzp {
+  background: var(--pro-bg-elevated, #f8f9fa);
+  color: var(--pro-text-primary, #1f2937);
+}
+
+.funky-wysimark .css-dirhzp .--title {
+  color: var(--pro-text-primary, #1f2937) !important;
+}
+
+/* Popup/modal background */
+.funky-wysimark .css-7rwo4q {
+  background: var(--pro-bg-primary, #ffffff);
+  color: var(--pro-text-primary, #1f2937) !important;
+}
+
+/* Text elements */
+.funky-wysimark .css-4neq0z {
+  color: var(--pro-text-primary, #1f2937) !important;
+}
+
+/* Input fields */
+.funky-wysimark input.css-12txn8k {
+  background: var(--pro-bg-primary, #ffffff);
+  border-color: var(--pro-border-color, #dee2e6);
+  color: var(--pro-text-primary, #1f2937);
+}
+
+/* Button/action element */
+.funky-wysimark .css-sqdd0v {
+  background: var(--pro-accent-primary, #3b82f6);
+  color: #ffffff;
+}
+
+/* Panel background */
+.funky-wysimark .css-1fvy88t {
+  background: var(--pro-bg-primary, #ffffff) !important;
+}
+
+/* Container with border */
+.funky-wysimark .css-1yjzzpz {
+  background: var(--pro-bg-primary, #ffffff);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Dark background element */
+.funky-wysimark .css-47xvf7 {
+  background: var(--pro-bg-elevated, #f8f9fa);
+}
+

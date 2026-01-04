@@ -1,0 +1,376 @@
+<div data-page="component-tabbed" class="component-demo">
+  <h2>Tabbed</h2>
+  <p class="text-muted">Composable tab container for organizing content with support for CRUD, DataTable, Form, and Custom tab types.</p>
+
+  <section class="demo-section" aria-labelledby="tabbed-basic-heading">
+    <h3 id="tabbed-basic-heading">Basic Custom Tabs</h3>
+    <p class="text-muted small">Simple tabs with custom content. Configure via props panel.</p>
+    <div class="demo-area">
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs" id="basicTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-funky-tab="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+            <i class="fas fa-info-circle me-1" aria-hidden="true"></i>Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="details-tab" data-funky-tab="#details" type="button" role="tab" aria-controls="details" aria-selected="false">
+            <i class="fas fa-list me-1" aria-hidden="true"></i>Details
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="history-tab" data-funky-tab="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+            <i class="fas fa-history me-1" aria-hidden="true"></i>History
+          </button>
+        </li>
+      </ul>
+      <!-- Tab Content -->
+      <div class="tab-content tabbed-demo__content" id="basicTabsContent">
+        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <div class="tabbed-demo__pane">
+            <h5>Overview</h5>
+            <p>This is the overview tab content. It provides a high-level summary of the information.</p>
+            <p class="text-muted small">Tab ID: overview</p>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
+          <div class="tabbed-demo__pane">
+            <h5>Details</h5>
+            <p>Detailed information and settings are displayed here. This tab can contain forms, tables, or any custom content.</p>
+            <p class="text-muted small">Tab ID: details</p>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+          <div class="tabbed-demo__pane">
+            <h5>History</h5>
+            <p>Historical data and changes are tracked in this tab. View past activities and modifications.</p>
+            <p class="text-muted small">Tab ID: history</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tabbed-api-heading">
+    <h3 id="tabbed-api-heading">API Methods</h3>
+    <p class="text-muted small">Control tabs programmatically.</p>
+    <div class="demo-area tabbed-demo__button-grid" role="group" aria-label="Tab control buttons">
+      <button class="btn btn-primary" id="tabbed-switch-overview" type="button">
+        <i class="fas fa-info-circle me-1" aria-hidden="true"></i>Switch to Overview
+      </button>
+      <button class="btn btn-primary" id="tabbed-switch-details" type="button">
+        <i class="fas fa-list me-1" aria-hidden="true"></i>Switch to Details
+      </button>
+      <button class="btn btn-primary" id="tabbed-switch-history" type="button">
+        <i class="fas fa-history me-1" aria-hidden="true"></i>Switch to History
+      </button>
+      <button class="btn btn-outline-info" id="tabbed-get-active" type="button">
+        <i class="fas fa-eye me-1" aria-hidden="true"></i>Get Active Tab
+      </button>
+      <button class="btn btn-outline-secondary" id="tabbed-refresh" type="button">
+        <i class="fas fa-sync me-1" aria-hidden="true"></i>Refresh
+      </button>
+      <button class="btn btn-outline-warning" id="tabbed-get-instance" type="button">
+        <i class="fas fa-cube me-1" aria-hidden="true"></i>Get Tab Instance
+      </button>
+      <button class="btn btn-outline-danger" id="tabbed-set-data" type="button">
+        <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i>Swap Tabs
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tabbed-pills-heading">
+    <h3 id="tabbed-pills-heading">Pills Style</h3>
+    <p class="text-muted small">Tabs with pill styling variant.</p>
+    <div class="demo-area">
+      <ul class="nav nav-pills mb-3" id="pillTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="pill-home-tab" data-funky-tab="#pill-home" type="button" role="tab" aria-controls="pill-home" aria-selected="true">
+            <i class="fas fa-home me-1" aria-hidden="true"></i>Home
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pill-profile-tab" data-funky-tab="#pill-profile" type="button" role="tab" aria-controls="pill-profile" aria-selected="false">
+            <i class="fas fa-user me-1" aria-hidden="true"></i>Profile
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pill-contact-tab" data-funky-tab="#pill-contact" type="button" role="tab" aria-controls="pill-contact" aria-selected="false">
+            <i class="fas fa-envelope me-1" aria-hidden="true"></i>Contact
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content tabbed-demo__content" id="pillTabsContent">
+        <div class="tab-pane fade show active" id="pill-home" role="tabpanel" aria-labelledby="pill-home-tab">
+          <div class="tabbed-demo__pane">
+            <h5>Home</h5>
+            <p>Welcome to the home tab with pill styling.</p>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="pill-profile" role="tabpanel" aria-labelledby="pill-profile-tab">
+          <div class="tabbed-demo__pane">
+            <h5>Profile</h5>
+            <p>Your profile information goes here.</p>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="pill-contact" role="tabpanel" aria-labelledby="pill-contact-tab">
+          <div class="tabbed-demo__pane">
+            <h5>Contact</h5>
+            <p>Contact information and form.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tabbed-state-heading">
+    <h3 id="tabbed-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time state information from the tabbed container.</p>
+    <div class="demo-area">
+      <pre id="tabbed-state" class="tabbed-demo__log" aria-live="polite" aria-label="Tabbed state">No tabs initialized</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tabbed-log-heading">
+    <h3 id="tabbed-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="tabbed-log" class="tabbed-demo__log" aria-live="polite" aria-label="Tabbed event log">Interact with tabs to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var tabbedInstance = null;
+  var pillTabsInstance = null;
+  var logs = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('tabbed-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('tabbed-state');
+    if (!stateEl) return;
+
+    if (tabbedInstance) {
+      var data = tabbedInstance.getData();
+      stateEl.textContent = JSON.stringify({
+        activeTabId: data.activeTabId,
+        tabOrder: data.tabOrder,
+        initializedTabs: data.initializedTabs
+      }, null, 2);
+    } else {
+      stateEl.textContent = 'No tabs initialized';
+    }
+  }
+
+  Funky.Pages.register('component-tabbed', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+
+      var defaultTab = props.activeTab || 'overview';
+      var rememberTab = props.rememberTab !== false;
+
+      log('Init with defaultTab=' + defaultTab + ', rememberTab=' + rememberTab);
+      emit('event', { event: 'tabbed:init', payload: { defaultTab: defaultTab } });
+
+      if (!Funky.Tabbed) {
+        log('Error: Funky.Tabbed not available');
+        return;
+      }
+
+      // Initialize Funky.Tabs on the tab container first (required for SPA-loaded content)
+      if (Funky.Tabs) {
+        Funky.Tabs.getOrCreateInstance('#basicTabs');
+      }
+
+      // Initialize basic tabs
+      tabbedInstance = Funky.Tabbed.init({
+        containerId: 'basicTabs',
+        contentContainerId: 'basicTabsContent',
+        tabs: [
+          {
+            id: 'overview',
+            label: 'Overview',
+            type: 'custom',
+            onInit: function(container) {
+              log('Overview tab initialized');
+            },
+            onShow: function(container) {
+              log('Overview tab shown');
+              emit('event', { event: 'tabbed:show', payload: { tab: 'overview' } });
+              updateState();
+            },
+            onHide: function(container) {
+              log('Overview tab hidden');
+              emit('event', { event: 'tabbed:hide', payload: { tab: 'overview' } });
+            }
+          },
+          {
+            id: 'details',
+            label: 'Details',
+            type: 'custom',
+            onInit: function(container) {
+              log('Details tab initialized');
+            },
+            onShow: function(container) {
+              log('Details tab shown');
+              emit('event', { event: 'tabbed:show', payload: { tab: 'details' } });
+              updateState();
+            },
+            onHide: function(container) {
+              log('Details tab hidden');
+              emit('event', { event: 'tabbed:hide', payload: { tab: 'details' } });
+            }
+          },
+          {
+            id: 'history',
+            label: 'History',
+            type: 'custom',
+            onInit: function(container) {
+              log('History tab initialized');
+            },
+            onShow: function(container) {
+              log('History tab shown');
+              emit('event', { event: 'tabbed:show', payload: { tab: 'history' } });
+              updateState();
+            },
+            onHide: function(container) {
+              log('History tab hidden');
+              emit('event', { event: 'tabbed:hide', payload: { tab: 'history' } });
+            }
+          }
+        ],
+        defaultTab: defaultTab,
+        rememberTab: rememberTab
+      });
+
+      log('Basic tabs initialized');
+      updateState();
+
+      // Initialize pill tabs (simpler, just for visual demo using Funky.Tabs directly)
+      if (Funky.Tabs) {
+        pillTabsInstance = Funky.Tabs.getOrCreateInstance('#pillTabs');
+        log('Pill tabs initialized');
+
+        // Listen for pill tab changes
+        var pillTabsContainer = document.getElementById('pillTabs');
+        if (pillTabsContainer) {
+          pillTabsContainer.addEventListener('funky.tabs.shown', function(e) {
+            var tabId = e.detail.tabId;
+            log('Pill tab changed to: ' + tabId);
+            emit('event', { event: 'tabbed:change', payload: { tab: tabId, style: 'pills' } });
+          });
+        }
+      }
+
+      // API control buttons
+      document.getElementById('tabbed-switch-overview').onclick = function() {
+        if (tabbedInstance) {
+          tabbedInstance.switchTab('overview');
+          log('Switched to overview via API');
+          emit('event', { event: 'tabbed:switch', payload: { tab: 'overview' } });
+        }
+      };
+
+      document.getElementById('tabbed-switch-details').onclick = function() {
+        if (tabbedInstance) {
+          tabbedInstance.switchTab('details');
+          log('Switched to details via API');
+          emit('event', { event: 'tabbed:switch', payload: { tab: 'details' } });
+        }
+      };
+
+      document.getElementById('tabbed-switch-history').onclick = function() {
+        if (tabbedInstance) {
+          tabbedInstance.switchTab('history');
+          log('Switched to history via API');
+          emit('event', { event: 'tabbed:switch', payload: { tab: 'history' } });
+        }
+      };
+
+      document.getElementById('tabbed-get-active').onclick = function() {
+        if (tabbedInstance) {
+          var activeTab = tabbedInstance.getActiveTab();
+          log('Active tab: ' + activeTab);
+          emit('event', { event: 'tabbed:getActive', payload: { activeTab: activeTab } });
+          Funky.Toast.info('Active tab: ' + activeTab);
+        }
+      };
+
+      document.getElementById('tabbed-refresh').onclick = function() {
+        if (tabbedInstance) {
+          tabbedInstance.refresh();
+          log('Tabs refreshed');
+          emit('event', { event: 'tabbed:refresh', payload: {} });
+          Funky.Toast.success('Tabs refreshed');
+        }
+      };
+
+      document.getElementById('tabbed-get-instance').onclick = function() {
+        if (tabbedInstance) {
+          var activeTab = tabbedInstance.getActiveTab();
+          var instance = tabbedInstance.getTabInstance(activeTab);
+          log('Tab instance for "' + activeTab + '": ' + (instance ? 'found' : 'null'));
+          emit('event', { event: 'tabbed:getInstance', payload: { tab: activeTab, hasInstance: !!instance } });
+          if (instance) {
+            Funky.Toast.info('Got instance for tab: ' + activeTab);
+          }
+        }
+      };
+
+      // Track whether we've swapped tabs (for toggle behavior)
+      var tabsSwapped = false;
+      document.getElementById('tabbed-set-data').onclick = function() {
+        if (tabbedInstance) {
+          var newTabs;
+          if (!tabsSwapped) {
+            // Swap to alternate set of tabs
+            newTabs = [
+              { id: 'settings', label: 'Settings', type: 'custom', onShow: function() { log('Settings shown'); updateState(); } },
+              { id: 'profile', label: 'Profile', type: 'custom', onShow: function() { log('Profile shown'); updateState(); } },
+              { id: 'security', label: 'Security', type: 'custom', onShow: function() { log('Security shown'); updateState(); } }
+            ];
+          } else {
+            // Swap back to original tabs
+            newTabs = [
+              { id: 'overview', label: 'Overview', type: 'custom', onShow: function() { log('Overview shown'); updateState(); } },
+              { id: 'details', label: 'Details', type: 'custom', onShow: function() { log('Details shown'); updateState(); } },
+              { id: 'history', label: 'History', type: 'custom', onShow: function() { log('History shown'); updateState(); } }
+            ];
+          }
+          tabbedInstance.setData(newTabs);
+          tabsSwapped = !tabsSwapped;
+          log('Tabs swapped via setData()');
+          emit('event', { event: 'tabbed:setData', payload: { tabs: newTabs.map(function(t) { return t.id; }) } });
+          Funky.Toast.success('Tab configuration swapped');
+          updateState();
+        }
+      };
+    },
+
+    destroy: function() {
+      if (tabbedInstance) {
+        tabbedInstance.destroy();
+        tabbedInstance = null;
+      }
+      // Dispose Funky.Tabs instances
+      if (Funky.Tabs) {
+        Funky.Tabs.destroy('#basicTabs');
+        Funky.Tabs.destroy('#pillTabs');
+      }
+      pillTabsInstance = null;
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

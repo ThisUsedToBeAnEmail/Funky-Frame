@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable" data-animations="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4361ee">
+  <title>Funky Frame - Test Runner</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Prevent flash of wrong theme -->
+  <script src="../js/theme-init.js"></script>
+
+  <!-- Vendor CSS: Bootstrap first, then FontAwesome -->
+  <link href="../vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <!-- Funky CSS: Component styles first, themes.css MUST be last -->
+  <link href="../css/layout.css" rel="stylesheet">
+  <link href="../css/navigation.css" rel="stylesheet">
+  <link href="../css/cards.css" rel="stylesheet">
+  <link href="../css/forms.css" rel="stylesheet">
+  <link href="../css/buttons.css" rel="stylesheet">
+  <link href="../css/modals.css" rel="stylesheet">
+  <link href="../css/toasts.css" rel="stylesheet">
+  <link href="../css/sidenav.css" rel="stylesheet">
+  <link href="../css/playground.css" rel="stylesheet">
+  <link href="../css/code-preview.css" rel="stylesheet">
+  <link href="../css/command-palette.css" rel="stylesheet">
+  <link href="../css/selectable-list.css" rel="stylesheet">
+  <link href="../css/keyboard.css" rel="stylesheet">
+  <link href="../css/skip-links.css" rel="stylesheet">
+  <link href="../css/splash.css" rel="stylesheet">
+  <link href="../css/animate.css" rel="stylesheet">
+  <link href="../css/skeleton.css" rel="stylesheet">
+  <link href="../css/tree-view.css" rel="stylesheet">
+  <link href="../css/tables.css" rel="stylesheet">
+  <link href="../css/markdown.css" rel="stylesheet">
+  <link href="../css/docs.css" rel="stylesheet">
+  <link href="../css/test-runner.css" rel="stylesheet">
+  <link href="../css/morph.css" rel="stylesheet">
+  <link href="../css/tour.css" rel="stylesheet">
+  <!-- themes.css MUST load last -->
+  <link href="../css/themes.css" rel="stylesheet">
+</head>
+<body data-theme="dark" data-nav-position="top">
+
+  <!-- Skip Links Container (must be first focusable element) -->
+  <nav id="skip-links" class="skip-links" aria-label="Skip links"></nav>
+
+  <!-- Live Region for Announcements -->
+  <div id="spa-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo">
+        <span class="sidebar-logo-text">Funky Frame</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- About -->
+      <li class="nav-standalone">
+        <a href="/about/" class="nav-link" data-tooltip="About">
+          <span class="nav-icon"><i class="fas fa-home"></i></span>
+          <span class="nav-text">About</span>
+        </a>
+      </li>
+
+      <!-- Documentation -->
+      <li class="nav-standalone">
+        <a href="/docs/" class="nav-link" data-tooltip="Documentation">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          <span class="nav-text">Docs</span>
+        </a>
+      </li>
+
+      <!-- Playground -->
+      <li class="nav-standalone">
+        <a href="/playground/" class="nav-link" data-tooltip="Playground">
+          <span class="nav-icon"><i class="fas fa-flask"></i></span>
+          <span class="nav-text">Playground</span>
+        </a>
+      </li>
+
+      <!-- Test Runner -->
+      <li class="nav-standalone">
+        <a href="/test-runner/" class="nav-link active" data-tooltip="Test Runner">
+          <span class="nav-icon"><i class="fas fa-vial"></i></span>
+          <span class="nav-text">Test Runner</span>
+        </a>
+      </li>
+    </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+      <span class="toggle-icon">&#9664;</span>
+    </button>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <h1 class="page-title">Test Runner</h1>
+      </div>
+
+      <div class="header-right">
+        <a href="https://github.com/ThisUsedToBeAnEmail/Funky-Frame" class="btn btn-funky btn-sm" target="_blank">
+          <i class="fab fa-github"></i>
+          <span class="d-none d-sm-inline ms-1">GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="spaContent" class="main-content" data-page="test-runner" data-breadcrumb-title="Test Runner" data-skip-target="main" data-skip-label="main content">
+
+      <div class="test-runner" id="testRunner">
+        <!-- Left Panel: Test Suite Tree -->
+        <aside class="test-runner-sidebar">
+          <div class="test-runner-controls" data-nav-region="controls" data-nav-order="0">
+            <button class="btn-funky btn-funky-primary btn-sm" id="runAllBtn">
+              <i class="fas fa-play me-1"></i>Run All
+            </button>
+            <button class="btn-funky btn-funky-danger btn-sm" id="stopBtn" disabled style="display: none;">
+              <i class="fas fa-stop me-1"></i>Stop
+            </button>
+            <button class="btn-funky btn-funky-secondary btn-sm" id="runFailedBtn" disabled>
+              <i class="fas fa-redo me-1"></i>Run Failed
+            </button>
+            <button class="btn-funky btn-funky-warning btn-sm" id="clearNewBtn" style="display: none;" title="Clear all 'new' tags">
+              <i class="fas fa-times me-1"></i>Clear New
+            </button>
+          </div>
+
+          <div class="test-runner-filter" data-nav-region="filter" data-nav-order="1">
+            <input type="search" id="testFilter" class="form-control form-control-sm"
+                   placeholder="Filter tests... (or #new)" aria-label="Filter tests"
+                   data-filter-input enterkeyhint="search">
+          </div>
+
+          <div id="suiteTree" class="test-suite-tree" data-nav-region="tree" data-nav-order="2" tabindex="0"></div>
+        </aside>
+
+        <!-- Main Panel: Test Results -->
+        <main class="test-runner-main">
+          <!-- Stats Bar -->
+          <div class="test-runner-stats" id="statsBar">
+            <div class="stat stat-total">
+              <span class="stat-value" id="statTotal">0</span>
+              <span class="stat-label">Total</span>
+            </div>
+            <div class="stat stat-passed">
+              <span class="stat-value" id="statPassed">0</span>
+              <span class="stat-label">Passed</span>
+            </div>
+            <div class="stat stat-failed">
+              <span class="stat-value" id="statFailed">0</span>
+              <span class="stat-label">Failed</span>
+            </div>
+            <div class="stat stat-skipped">
+              <span class="stat-value" id="statSkipped">0</span>
+              <span class="stat-label">Skipped</span>
+            </div>
+            <div class="stat stat-duration">
+              <span class="stat-value" id="statDuration">0.00s</span>
+              <span class="stat-label">Duration</span>
+            </div>
+            <div class="stat stat-progress">
+              <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <span class="progress-text" id="progressText">Ready</span>
+            </div>
+            <button class="btn-funky btn-funky-outline btn-sm" id="tourBtn" title="Take a tour (Shift+?)" onclick="if(typeof FunkyTour!=='undefined')FunkyTour.start()">
+              <i class="fas fa-question-circle"></i>
+            </button>
+          </div>
+
+          <!-- Currently Running Test -->
+          <div id="currentTestPanel" class="current-test-panel hidden">
+            <div class="current-test-header">
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              <span class="current-test-label">Running:</span>
+            </div>
+            <div class="current-test-info">
+              <div class="current-test-suite" id="currentSuiteName"></div>
+              <div class="current-test-name" id="currentTestName"></div>
+            </div>
+          </div>
+
+          <!-- Test Results List -->
+          <div id="testResults" class="test-results" data-nav-region="results" data-nav-order="3">
+            <div class="test-results-empty" id="emptyState">
+              <i class="fas fa-flask fa-3x mb-3"></i>
+              <h3>Ready to Run Tests</h3>
+              <p>Click "Run All" to execute the test suite</p>
+            </div>
+          </div>
+        </main>
+
+        <!-- Error Detail Panel -->
+        <div id="errorPanel" class="test-error-panel hidden" data-nav-region="error" data-nav-order="4">
+          <div class="error-panel-header">
+            <h3 id="errorTestName">Test Name</h3>
+            <button class="btn-close" id="closeErrorPanel" aria-label="Close error panel">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="error-panel-content">
+            <div class="error-section">
+              <h4>Error Message</h4>
+              <pre id="errorMessage"></pre>
+            </div>
+            <div class="error-section">
+              <h4>Stack Trace</h4>
+              <pre id="errorStack" class="error-stack"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden iframe container for isolated test execution -->
+      <div id="sandboxContainer" class="test-sandbox-container"></div>
+
+      <!-- Page Registration (must be inside #spaContent for SPA navigation) -->
+      <script>
+        (function() {
+          function initTestRunner() {
+            // Use Funky.TestRunner (registered) or fallback to window.FunkyTestRunner
+            var TestRunner = (typeof Funky !== 'undefined' && Funky.TestRunner) || window.FunkyTestRunner;
+            if (TestRunner && TestRunner.init) {
+              TestRunner.init();
+            }
+          }
+
+          if (typeof Funky !== 'undefined' && Funky.Pages) {
+            Funky.Pages.register('test-runner', {
+              init: function(state) {
+                console.log('[Test Runner] Page initialized via SPA');
+                initTestRunner();
+              },
+              destroy: function() {
+                console.log('[Test Runner] Page destroyed via SPA');
+                var TestRunner = (typeof Funky !== 'undefined' && Funky.TestRunner) || window.FunkyTestRunner;
+                if (TestRunner && TestRunner.destroy) {
+                  TestRunner.destroy();
+                }
+                return {};
+              }
+            });
+          } else {
+            // Direct page load - init on DOMContentLoaded
+            if (document.readyState !== 'loading') {
+              initTestRunner();
+            } else {
+              document.addEventListener('DOMContentLoaded', initTestRunner);
+            }
+          }
+        })();
+      </script>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- Core Scripts -->
+  <script src="../js/core/namespace.js"></script>
+  <script src="../js/core/registry.js"></script>
+  <script src="../js/core/util.js"></script>
+  <script src="../js/core/dom.js"></script>
+  <script src="../js/core/events.js"></script>
+  <script src="../js/core/pubsub.js"></script>
+  <script src="../js/core/storage.js"></script>
+  <script src="../js/core/vdom.js"></script>
+  <script src="../js/core/keyboard.js"></script>
+  <script src="../js/core/tooltip.js"></script>
+  <script src="../js/core/announce.js"></script>
+  <script src="../js/core/a11y-enhancer.js"></script>
+  <script src="../js/core/fuzzy-search.js"></script>
+  <script src="../js/core/selectable-list.js"></script>
+  <script src="../js/core/animate.js"></script>
+  <script src="../js/core/modal.js"></script>
+  <script src="../js/core/navigation.js"></script>
+  <script src="../js/core/spa.js"></script>
+  <script src="../js/core/pages.js"></script>
+
+  <!-- Service Worker Client Module -->
+  <script src="../js/core/service-worker.js"></script>
+
+  <!-- Components used by shell and test runner -->
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/sidenav.js"></script>
+  <script src="../js/components/clock.js"></script>
+  <script src="../js/components/morph.js"></script>
+  <script src="../js/components/tour.js"></script>
+  <script src="../js/components/code-preview.js"></script>
+  <script src="../js/components/command-palette.js"></script>
+  <script src="../js/components/skip-link.js"></script>
+  <script src="../js/components/page-animate.js"></script>
+  <script src="../js/components/skeleton.js"></script>
+  <script src="../js/components/tree-view.js"></script>
+  <script src="../js/components/scroll-tracker.js"></script>
+  <script src="../js/components/table.js"></script>
+  <script src="../js/components/markdown.js"></script>
+  <script src="../js/components/iframe.js"></script>
+
+  <!-- Mock API (for component demos) -->
+  <script src="/mock-api.js"></script>
+
+  <!-- Playground Component -->
+  <script src="../js/components/playground.js"></script>
+
+  <!-- Test Runner -->
+  <script src="../js/dev/test-manifest.js"></script>
+  <script src="../js/dev/test-runner-ui.js"></script>
+
+  <!-- Shared App Logic -->
+  <script src="../js/app.js"></script>
+
+  <!-- Cross-Page Tour -->
+  <script src="../js/funky-tour.js"></script>
+
+</body>
+</html>

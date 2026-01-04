@@ -1,0 +1,352 @@
+<div data-page="component-fuzzy-search" class="component-demo">
+  <h2>FuzzySearch</h2>
+  <p class="text-muted">Fuzzy string matching engine with scoring and highlighting</p>
+
+  <section class="demo-section" aria-labelledby="fuzzy-live-heading">
+    <h3 id="fuzzy-live-heading">Live Search</h3>
+    <p class="text-muted small">Type to search through sample data with fuzzy matching</p>
+    <div class="demo-area">
+      <div class="fuzzy-demo__search-box">
+        <label for="fuzzy-input" class="visually-hidden">Search</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
+          <input type="text" id="fuzzy-input" class="form-control" placeholder="Try: 'dshbrd', 'usr stgs', 'anlytcs'..." autocomplete="off">
+          <button type="button" id="fuzzy-clear" class="btn btn-outline-secondary" aria-label="Clear search">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="fuzzy-demo__results" id="fuzzy-results" role="listbox" aria-label="Search results">
+        <div class="fuzzy-demo__empty">Type to search...</div>
+      </div>
+      <div class="fuzzy-demo__stats" id="fuzzy-stats"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="fuzzy-match-heading">
+    <h3 id="fuzzy-match-heading">Single String Match</h3>
+    <p class="text-muted small">Test fuzzy matching against a single string</p>
+    <div class="demo-area">
+      <div class="fuzzy-demo__match-inputs">
+        <div class="fuzzy-demo__match-field">
+          <label for="fuzzy-query">Query</label>
+          <input type="text" id="fuzzy-query" class="form-control" value="hlo" placeholder="Enter query...">
+        </div>
+        <div class="fuzzy-demo__match-field">
+          <label for="fuzzy-text">Text</label>
+          <input type="text" id="fuzzy-text" class="form-control" value="Hello World" placeholder="Enter text to match...">
+        </div>
+        <button type="button" id="fuzzy-match-btn" class="btn btn-primary">
+          <i class="fas fa-check" aria-hidden="true"></i> Match
+        </button>
+      </div>
+      <div class="fuzzy-demo__match-result" id="fuzzy-match-result">
+        <div class="fuzzy-demo__match-output">
+          <span class="fuzzy-demo__match-label">Result:</span>
+          <span class="fuzzy-demo__match-highlighted" id="fuzzy-highlighted">-</span>
+        </div>
+        <div class="fuzzy-demo__match-score">
+          <span class="fuzzy-demo__match-label">Score:</span>
+          <span id="fuzzy-score">-</span>
+        </div>
+        <div class="fuzzy-demo__match-positions">
+          <span class="fuzzy-demo__match-label">Matched positions:</span>
+          <code id="fuzzy-positions">-</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="fuzzy-options-heading">
+    <h3 id="fuzzy-options-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="fuzzy-demo__settings" id="fuzzy-settings">
+        <div class="fuzzy-demo__setting">
+          <span class="fuzzy-demo__setting-label">Threshold:</span>
+          <span class="fuzzy-demo__setting-value" id="setting-threshold">0.3</span>
+        </div>
+        <div class="fuzzy-demo__setting">
+          <span class="fuzzy-demo__setting-label">Case Sensitive:</span>
+          <span class="fuzzy-demo__setting-value" id="setting-case">No</span>
+        </div>
+        <div class="fuzzy-demo__setting">
+          <span class="fuzzy-demo__setting-label">Tokenize:</span>
+          <span class="fuzzy-demo__setting-value" id="setting-tokenize">No</span>
+        </div>
+        <div class="fuzzy-demo__setting">
+          <span class="fuzzy-demo__setting-label">Match All Tokens:</span>
+          <span class="fuzzy-demo__setting-value" id="setting-all-tokens">No</span>
+        </div>
+        <div class="fuzzy-demo__setting">
+          <span class="fuzzy-demo__setting-label">Limit:</span>
+          <span class="fuzzy-demo__setting-value" id="setting-limit">10</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="fuzzy-log-heading">
+    <h3 id="fuzzy-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="fuzzy-log" class="fuzzy-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var logs = [];
+  var debounceTimer = null;
+
+  // Sample data for searching
+  var sampleData = [
+    { title: 'Dashboard', hint: 'Main overview and stats', icon: 'fa-tachometer-alt' },
+    { title: 'User Settings', hint: 'Manage your profile', icon: 'fa-user-cog' },
+    { title: 'Analytics', hint: 'View detailed reports', icon: 'fa-chart-line' },
+    { title: 'Notifications', hint: 'Alerts and messages', icon: 'fa-bell' },
+    { title: 'File Manager', hint: 'Upload and organize files', icon: 'fa-folder-open' },
+    { title: 'Team Members', hint: 'Manage your team', icon: 'fa-users' },
+    { title: 'Calendar', hint: 'Schedule and events', icon: 'fa-calendar' },
+    { title: 'Projects', hint: 'Active project list', icon: 'fa-project-diagram' },
+    { title: 'Reports', hint: 'Generate reports', icon: 'fa-file-alt' },
+    { title: 'Integrations', hint: 'Connect third-party apps', icon: 'fa-plug' },
+    { title: 'Security', hint: 'Privacy and permissions', icon: 'fa-shield-alt' },
+    { title: 'Billing', hint: 'Invoices and payments', icon: 'fa-credit-card' }
+  ];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('fuzzy-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      threshold: props.threshold !== undefined ? props.threshold : 0.3,
+      caseSensitive: props.caseSensitive || false,
+      tokenize: props.tokenize || false,
+      matchAllTokens: props.matchAllTokens || false,
+      limit: props.limit || 10
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+    var el;
+
+    el = document.getElementById('setting-threshold');
+    if (el) el.textContent = opts.threshold.toFixed(1);
+
+    el = document.getElementById('setting-case');
+    if (el) el.textContent = opts.caseSensitive ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-tokenize');
+    if (el) el.textContent = opts.tokenize ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-all-tokens');
+    if (el) el.textContent = opts.matchAllTokens ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-limit');
+    if (el) el.textContent = opts.limit;
+  }
+
+  function highlightMatches(text, matches) {
+    if (!matches || matches.length === 0) return text;
+
+    var result = '';
+    var lastIndex = 0;
+
+    for (var i = 0; i < matches.length; i++) {
+      var start = matches[i][0];
+      var end = matches[i][1];
+
+      result += text.substring(lastIndex, start);
+      result += '<mark class="fuzzy-demo__highlight">' + text.substring(start, end + 1) + '</mark>';
+      lastIndex = end + 1;
+    }
+
+    result += text.substring(lastIndex);
+    return result;
+  }
+
+  function performSearch(query) {
+    var resultsEl = document.getElementById('fuzzy-results');
+    var statsEl = document.getElementById('fuzzy-stats');
+
+    if (!resultsEl) return;
+
+    if (!query || query.trim().length === 0) {
+      resultsEl.innerHTML = '<div class="fuzzy-demo__empty">Type to search...</div>';
+      if (statsEl) statsEl.textContent = '';
+      return;
+    }
+
+    var opts = getOptions();
+    var startTime = performance.now();
+
+    var results = Funky.FuzzySearch.search(query, sampleData, {
+      keys: ['title', 'hint'],
+      threshold: opts.threshold,
+      caseSensitive: opts.caseSensitive,
+      tokenize: opts.tokenize,
+      matchAllTokens: opts.matchAllTokens,
+      limit: opts.limit
+    });
+
+    var duration = (performance.now() - startTime).toFixed(2);
+
+    if (results.length === 0) {
+      resultsEl.innerHTML = '<div class="fuzzy-demo__empty">No matches found</div>';
+      if (statsEl) statsEl.textContent = 'No results (' + duration + 'ms)';
+      log('Search "' + query + '": No matches');
+      emit('event', { event: 'fuzzy:search', payload: { query: query, count: 0 } });
+      return;
+    }
+
+    var html = '';
+    for (var i = 0; i < results.length; i++) {
+      var r = results[i];
+      var item = r.item;
+      var titleHtml = r.key === 'title' ? highlightMatches(item.title, r.matches) : item.title;
+      var hintHtml = r.key === 'hint' ? highlightMatches(item.hint, r.matches) : item.hint;
+
+      html += '<div class="fuzzy-demo__result-item" role="option">';
+      html += '<div class="fuzzy-demo__result-icon"><i class="fas ' + item.icon + '" aria-hidden="true"></i></div>';
+      html += '<div class="fuzzy-demo__result-content">';
+      html += '<div class="fuzzy-demo__result-title">' + titleHtml + '</div>';
+      html += '<div class="fuzzy-demo__result-hint">' + hintHtml + '</div>';
+      html += '</div>';
+      html += '<div class="fuzzy-demo__result-score">' + (r.score * 100).toFixed(0) + '%</div>';
+      html += '</div>';
+    }
+
+    resultsEl.innerHTML = html;
+    if (statsEl) statsEl.textContent = results.length + ' result' + (results.length === 1 ? '' : 's') + ' (' + duration + 'ms)';
+
+    log('Search "' + query + '": ' + results.length + ' matches in ' + duration + 'ms');
+    emit('event', { event: 'fuzzy:search', payload: { query: query, count: results.length, duration: duration } });
+  }
+
+  function performMatch() {
+    var queryEl = document.getElementById('fuzzy-query');
+    var textEl = document.getElementById('fuzzy-text');
+    var highlightedEl = document.getElementById('fuzzy-highlighted');
+    var scoreEl = document.getElementById('fuzzy-score');
+    var positionsEl = document.getElementById('fuzzy-positions');
+
+    if (!queryEl || !textEl) return;
+
+    var query = queryEl.value;
+    var text = textEl.value;
+    var opts = getOptions();
+
+    var result = Funky.FuzzySearch.match(query, text, {
+      caseSensitive: opts.caseSensitive
+    });
+
+    if (!result) {
+      if (highlightedEl) highlightedEl.innerHTML = '<span class="text-danger">No match</span>';
+      if (scoreEl) scoreEl.textContent = '0';
+      if (positionsEl) positionsEl.textContent = '[]';
+      log('Match "' + query + '" vs "' + text + '": No match');
+      emit('event', { event: 'fuzzy:match', payload: { query: query, text: text, matched: false } });
+      return;
+    }
+
+    if (highlightedEl) highlightedEl.innerHTML = highlightMatches(text, result.matches);
+    if (scoreEl) scoreEl.textContent = (result.score * 100).toFixed(1) + '%';
+    if (positionsEl) positionsEl.textContent = JSON.stringify(result.matches);
+
+    log('Match "' + query + '" vs "' + text + '": Score ' + (result.score * 100).toFixed(1) + '%');
+    emit('event', { event: 'fuzzy:match', payload: { query: query, text: text, score: result.score, matched: true } });
+  }
+
+  function setupEventListeners() {
+    var inputEl = document.getElementById('fuzzy-input');
+    var clearEl = document.getElementById('fuzzy-clear');
+    var matchBtn = document.getElementById('fuzzy-match-btn');
+    var queryEl = document.getElementById('fuzzy-query');
+    var textEl = document.getElementById('fuzzy-text');
+
+    if (inputEl) {
+      inputEl.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+          performSearch(inputEl.value);
+        }, 150);
+      });
+    }
+
+    if (clearEl) {
+      clearEl.addEventListener('click', function() {
+        if (inputEl) {
+          inputEl.value = '';
+          inputEl.focus();
+          performSearch('');
+        }
+      });
+    }
+
+    if (matchBtn) {
+      matchBtn.addEventListener('click', performMatch);
+    }
+
+    // Auto-match on input change
+    if (queryEl) {
+      queryEl.addEventListener('input', performMatch);
+    }
+    if (textEl) {
+      textEl.addEventListener('input', performMatch);
+    }
+  }
+
+  Funky.Pages.register('component-fuzzy-search', {
+    init: function(state) {
+      var props = getProps();
+
+      updateSettingsDisplay();
+      setupEventListeners();
+
+      // Initial match demo
+      performMatch();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          // Re-run search with new settings
+          var inputEl = document.getElementById('fuzzy-input');
+          if (inputEl && inputEl.value) {
+            performSearch(inputEl.value);
+          }
+          performMatch();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      log('FuzzySearch demo initialized');
+      emit('event', { event: 'fuzzy:init', payload: { threshold: props.threshold, limit: props.limit } });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      clearTimeout(debounceTimer);
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

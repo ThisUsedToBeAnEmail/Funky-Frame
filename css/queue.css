@@ -1,0 +1,361 @@
+/* ============================================
+   QUEUE.CSS - Queue Page Styles
+   Queue stats, tabs, bulk actions
+   ============================================ */
+
+/* Queue Stats Row - Compact Badge Design */
+.queue-stats-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--funky-primary) transparent;
+}
+
+.queue-stats-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.queue-stats-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.queue-stats-row::-webkit-scrollbar-thumb {
+  background: var(--funky-primary);
+  border-radius: 2px;
+}
+
+/* Queue Page Redesign */
+.queue-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.queue-title-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.queue-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--pro-text-primary);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.queue-title-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.queue-subtitle {
+  color: var(--pro-text-secondary);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.queue-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: flex-end;
+}
+
+/* Compact Stats Bar */
+.queue-stats-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--funky-primary) transparent;
+}
+
+.queue-stats-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.queue-stats-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.queue-stats-bar::-webkit-scrollbar-thumb {
+  background: var(--funky-primary);
+  border-radius: 2px;
+}
+
+.queue-stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--pro-bg-elevated);
+  border: 2px solid var(--pro-border-color);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  min-width: 150px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.queue-stat-badge.active {
+  border-color: var(--funky-primary);
+  box-shadow: 0 0 0 3px rgba(255, 115, 0, 0.2);
+  background: linear-gradient(135deg, var(--pro-bg-elevated) 0%, rgba(255, 115, 0, 0.05) 100%);
+}
+
+.queue-stat-badge.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--funky-primary);
+  border-radius: 3px;
+}
+
+.queue-stat-badge:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 115, 0, 0.15);
+  border-color: var(--funky-primary);
+}
+
+.queue-stat-badge:active {
+  transform: translateY(-1px);
+}
+
+.queue-stat-icon {
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.queue-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.queue-stat-label {
+  font-size: 0.75rem;
+  color: var(--pro-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.queue-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--funky-primary);
+  line-height: 1;
+}
+
+/* Status-specific colors */
+.queue-stat-pending { border-left: 4px solid #f59e0b; }
+.queue-stat-queued { border-left: 4px solid #3b82f6; }
+.queue-stat-sent { border-left: 4px solid #10b981; }
+.queue-stat-rejected { border-left: 4px solid #ef4444; }
+.queue-stat-cancelled { border-left: 4px solid #6b7280; }
+
+/* Bulk Actions Banner */
+.queue-bulk-banner {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bulk-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+}
+
+.bulk-banner-icon {
+  font-size: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.bulk-banner-text {
+  font-size: 1rem;
+  color: white;
+}
+
+/* Queue Card Styling */
+.queue-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Enhanced Tabs */
+.queue-tabs {
+  border-bottom: 2px solid var(--pro-border-color);
+  padding: 0 1rem;
+  background: var(--pro-bg-secondary);
+  margin: 0 !important;
+}
+
+.queue-tabs .nav-link {
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--pro-text-secondary);
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.queue-tabs .nav-link:hover {
+  color: var(--funky-primary);
+  background: var(--pro-bg-elevated);
+}
+
+.queue-tabs .nav-link.active {
+  color: var(--funky-primary);
+  border-bottom-color: var(--funky-primary);
+  background: var(--pro-bg-elevated);
+}
+
+.queue-tabs .tab-icon {
+  font-size: 1.2rem;
+}
+
+.queue-tabs .badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .queue-header {
+    flex-direction: column;
+  }
+  
+  .queue-actions {
+    width: 100%;
+  }
+  
+  .queue-actions > * {
+    flex: 1;
+  }
+  
+  .queue-stat-badge {
+    min-width: 130px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .queue-stat-icon {
+    font-size: 1.5rem;
+  }
+  
+  .queue-stat-value {
+    font-size: 1.25rem;
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .queue-stat-badge {
+    border-width: 3px;
+    box-shadow: none;
+  }
+
+  .queue-stat-badge.active {
+    box-shadow: none;
+    outline: 3px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .queue-stat-badge:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .queue-stat-pending,
+  .queue-stat-queued,
+  .queue-stat-sent,
+  .queue-stat-rejected,
+  .queue-stat-cancelled {
+    border-left-width: 6px;
+  }
+
+  .queue-bulk-banner {
+    background: var(--pro-accent-warning);
+    box-shadow: none;
+  }
+
+  .queue-card {
+    border: 2px solid currentColor;
+    box-shadow: none;
+  }
+
+  .queue-tabs {
+    border-bottom-width: 3px;
+  }
+
+  .queue-tabs .nav-link {
+    border-bottom-width: 4px;
+  }
+
+  .queue-tabs .nav-link:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+  }
+
+  /* Disable animations */
+  @keyframes slideInDown {
+    from { opacity: 1; transform: none; }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+  }
+}

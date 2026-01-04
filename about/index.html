@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable" data-animations="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4361ee">
+  <title>Funky Frame - About</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Prevent flash of wrong theme -->
+  <script src="../js/theme-init.js"></script>
+
+  <!-- Vendor CSS: Bootstrap first, then FontAwesome -->
+  <link href="../vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <!-- Funky CSS: Component styles first, themes.css MUST be last -->
+  <link href="../css/layout.css" rel="stylesheet">
+  <link href="../css/navigation.css" rel="stylesheet">
+  <link href="../css/cards.css" rel="stylesheet">
+  <link href="../css/forms.css" rel="stylesheet">
+  <link href="../css/buttons.css" rel="stylesheet">
+  <link href="../css/modals.css" rel="stylesheet">
+  <link href="../css/toasts.css" rel="stylesheet">
+  <link href="../css/sidenav.css" rel="stylesheet">
+  <link href="../css/playground.css" rel="stylesheet">
+  <link href="../css/code-preview.css" rel="stylesheet">
+  <link href="../css/command-palette.css" rel="stylesheet">
+  <link href="../css/selectable-list.css" rel="stylesheet">
+  <link href="../css/keyboard.css" rel="stylesheet">
+  <link href="../css/skip-links.css" rel="stylesheet">
+  <link href="../css/splash.css" rel="stylesheet">
+  <link href="../css/animate.css" rel="stylesheet">
+  <link href="../css/skeleton.css" rel="stylesheet">
+  <link href="../css/tree-view.css" rel="stylesheet">
+  <link href="../css/tables.css" rel="stylesheet">
+  <link href="../css/markdown.css" rel="stylesheet">
+  <link href="../css/docs.css" rel="stylesheet">
+  <link href="../css/test-runner.css" rel="stylesheet">
+  <link href="../css/morph.css" rel="stylesheet">
+  <link href="../css/tour.css" rel="stylesheet">
+  <!-- themes.css MUST load last -->
+  <link href="../css/themes.css" rel="stylesheet">
+</head>
+<body data-theme="dark" data-nav-position="top">
+
+  <!-- Skip Links Container (must be first focusable element) -->
+  <nav id="skip-links" class="skip-links" aria-label="Skip links"></nav>
+
+  <!-- Live Region for Announcements -->
+  <div id="spa-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo">
+        <span class="sidebar-logo-text">Funky Frame</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- About -->
+      <li class="nav-standalone">
+        <a href="/about" class="nav-link active" data-tooltip="About">
+          <span class="nav-icon"><i class="fas fa-home"></i></span>
+          <span class="nav-text">About</span>
+        </a>
+      </li>
+
+      <!-- Documentation -->
+      <li class="nav-standalone">
+        <a href="/docs" class="nav-link" data-tooltip="Documentation">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          <span class="nav-text">Docs</span>
+        </a>
+      </li>
+
+      <!-- Playground -->
+      <li class="nav-standalone">
+        <a href="/playground" class="nav-link" data-tooltip="Playground">
+          <span class="nav-icon"><i class="fas fa-flask"></i></span>
+          <span class="nav-text">Playground</span>
+        </a>
+      </li>
+
+      <!-- Test Runner -->
+      <li class="nav-standalone">
+        <a href="/test-runner" class="nav-link" data-tooltip="Test Runner">
+          <span class="nav-icon"><i class="fas fa-vial"></i></span>
+          <span class="nav-text">Test Runner</span>
+        </a>
+      </li>
+    </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+      <span class="toggle-icon">◀</span>
+    </button>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <h1 class="page-title">About</h1>
+      </div>
+
+      <div class="header-right">
+        <a href="https://github.com/ThisUsedToBeAnEmail/Funky-Frame" class="btn btn-funky btn-sm" target="_blank">
+          <i class="fab fa-github"></i>
+          <span class="d-none d-sm-inline ms-1">GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="spaContent" class="main-content" data-page="about" data-breadcrumb-title="About" data-skip-target="main" data-skip-label="main content">
+      <div class="about-content container-fluid py-4">
+
+        <header class="splash-hero" id="about-content" data-skip-target="intro" data-skip-label="introduction" data-skip-order="1">
+          <h1>Funky Frame</h1>
+          <p class="tagline">The PSPWA JavaScript Framework</p>
+          <p class="tagline-sub">Building modern, secure, real-time web applications with vanilla JavaScript.</p>
+        </header>
+
+        <nav class="about-toc" aria-label="Table of Contents">
+          <h2>Contents</h2>
+          <ul class="about-toc-list" data-animate="fade-in" data-animate-trigger="in-view" data-animate-once="true" data-animate-duration="700" data-animate-stagger="80">
+            <li data-animate="fade-in"><a href="#credits">The Fine Print</a></li>
+            <li data-animate="fade-in"><a href="#pspwa">What is a PSPWA?</a></li>
+            <li data-animate="fade-in"><a href="#philosophy">Philosophy</a></li>
+            <li data-animate="fade-in"><a href="#architecture">Architecture Overview</a></li>
+            <li data-animate="fade-in"><a href="#frontend">The Frontend: FunkyJS</a></li>
+            <li data-animate="fade-in"><a href="#security">Security First</a></li>
+            <li data-animate="fade-in"><a href="#accessibility">Accessibility</a></li>
+            <li data-animate="fade-in"><a href="#realtime">Real-Time Everything</a></li>
+            <li data-animate="fade-in"><a href="#offline-queue">Offline Queue</a></li>
+            <li data-animate="fade-in"><a href="#pages">The Page System</a></li>
+            <li data-animate="fade-in"><a href="#push">Push Notifications</a></li>
+            <li data-animate="fade-in"><a href="#theming">Theming System</a></li>
+            <li data-animate="fade-in"><a href="#testing">Testing Framework</a></li>
+            <li data-animate="fade-in"><a href="#why">Why Funky?</a></li>
+          </ul>
+        </nav>
+
+        <section id="credits" class="splash-section" role="region" aria-labelledby="credits-heading" data-animate-children="in-view">
+          <h2 id="credits-heading">The Fine Print</h2>
+          <p>This framework was built by a human developer and Claude Opus—sometimes seven of them depending on the task. Genius one minute, confidently wrong and clueless the next.</p>
+
+          <div class="about-comparison" data-animate-stagger="150">
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>Zero Dependencies</h4>
+              <p>No jQuery, no React, no framework tax. Just modern JavaScript using native browser APIs that didn't exist when jQuery was essential.</p>
+            </div>
+
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>No Build Step</h4>
+              <p>No Webpack. No Vite. No Babel. No "npm install" downloading half the internet. Edit a file, refresh the browser. Revolutionary.</p>
+            </div>
+
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>80+ Components</h4>
+              <p>Comprehensive UI component library: tables, forms, modals, toasts, wizards, trees, kanban boards, and much more.</p>
+            </div>
+
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>12,000+ Browser Tests</h4>
+              <p>"You can't test vanilla JavaScript" said nobody who actually tried. Our test runner executes in real browsers, not Node.js pretending to be one.</p>
+            </div>
+
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>LLM Pair Programming</h4>
+              <p>Claude debugged keyboard navigation until 3am. Seven Claudes wrote tests. Another spent a day fixing them. Claude also suggested deleting everything once.</p>
+            </div>
+
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>Standalone or Integrated</h4>
+              <p>Use as a complete framework or cherry-pick individual components. Works with any backend—originally extracted from a Perl/Mojolicious application.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="pspwa" class="splash-section" role="region" aria-labelledby="pspwa-heading" data-skip-target="pspwa" data-skip-label="What is a PSPWA?" data-skip-order="2">
+          <h2 id="pspwa-heading">What is a PSPWA?</h2>
+          <p><strong>PSPWA</strong> stands for <strong>Progressive Single Page Web Application</strong>. It's what happens when a PWA and an SPA have a baby, and that baby really cares about user experience.</p>
+
+          <p>The pattern of combining PWA capabilities with SPA architecture has been around for years. Gmail does it. Twitter does it. Most modern web apps worth their salt do it. We just gave it a name that's easier to Google.</p>
+
+          <div class="about-principle">
+            <h3>The Family Tree</h3>
+            <figure class="splash-diagram">
+              <figcaption class="visually-hidden">Diagram showing PSPWA evolution</figcaption>
+              <pre aria-hidden="true">Traditional Website (1990s)
+       ↓
+Single Page Application (2010s) — One page, JavaScript handles everything
+       ↓
+Progressive Web App (2015+) — Installable, offline, push notifications
+       ↓
+PSPWA (Now) — The obvious combination that everyone was already doing</pre>
+            </figure>
+          </div>
+
+          <div class="about-comparison" data-animate-stagger="150">
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>PWA Brings</h4>
+              <ul>
+                <li>Offline support via Service Workers</li>
+                <li>Install to home screen</li>
+                <li>Push notifications</li>
+                <li>Background sync</li>
+              </ul>
+            </div>
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>SPA Brings</h4>
+              <ul>
+                <li>No full page reloads</li>
+                <li>Smooth transitions</li>
+                <li>Client-side routing</li>
+                <li>Persistent state</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="about-principle" data-animate="fade-in" data-animate-trigger="in-view" data-animate-once="true" data-animate-duration="700">
+            <h3>Together They're Unstoppable</h3>
+            <table class="splash-table">
+              <caption class="visually-hidden">Feature comparison between PWA Only, SPA Only, and PSPWA</caption>
+              <thead>
+                <tr><th scope="col">Feature</th><th scope="col">PWA Only</th><th scope="col">SPA Only</th><th scope="col">PSPWA</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Works offline</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                <tr><td>Instant navigation</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                <tr><td>Installable</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                <tr><td>No page flicker</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                <tr><td>Push notifications</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                <tr><td>Background updates</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                <tr><td>State persistence</td><td>✗</td><td>✓</td><td>✓</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="about-principle" data-animate="fade-in" data-animate-trigger="in-view" data-animate-once="true" data-animate-duration="700">
+            <h3>Progressive Caching</h3>
+            <p>Offline support is <strong>progressive</strong>—pages and API data are cached as you visit them. The more you explore, the more works offline.</p>
+            <figure class="splash-diagram">
+              <figcaption class="visually-hidden">Diagram showing progressive caching flow</figcaption>
+              <pre aria-hidden="true">First visit to /documentation → Fetched from network → Cached by service worker
+       ↓
+Go offline
+       ↓
+Visit /documentation again → Served instantly from cache ✓
+Visit /some-new-page → Shows friendly offline page (not cached yet)</pre>
+            </figure>
+            <p><em>Pro tip: Wander around while you have WiFi. Your future offline self will thank you.</em></p>
+          </div>
+        </section>
+
+        <section id="philosophy" class="splash-section" role="region" aria-labelledby="philosophy-heading" data-animate-children="in-view" data-skip-target="philosophy" data-skip-label="Philosophy" data-skip-order="3">
+          <h2 id="philosophy-heading">Philosophy</h2>
+          <p>Funky Frame is built on a set of core principles that guide every architectural decision:</p>
+
+          <div class="about-principles">
+            <div class="about-principle">
+              <h3>1. Progressive Enhancement</h3>
+              <p>The application works without JavaScript first. SPA behaviour is a <em>layer</em>, not a requirement. If JavaScript fails, users still have a fully functional application. This isn't just about graceful degradation—it's about <strong>resilience</strong>.</p>
+              <figure class="splash-diagram">
+                <figcaption class="visually-hidden">Diagram showing progressive enhancement</figcaption>
+                <pre aria-hidden="true">Traditional Request → Server renders HTML → Browser displays
+       ↓
+    Add JavaScript
+       ↓
+SPA intercepts links → AJAX loads content → DOM updates smoothly</pre>
+              </figure>
+            </div>
+
+            <div class="about-principle">
+              <h3>2. Modular Independence</h3>
+              <p>Every component is a self-contained unit:</p>
+              <ul data-animate-stagger="80">
+                <li data-animate="fade-in"><strong>No tight coupling</strong> — Components communicate through events, not direct references</li>
+                <li data-animate="fade-in"><strong>No global pollution</strong> — Everything lives under the <code>Funky</code> namespace</li>
+                <li data-animate="fade-in"><strong>No dependency chains</strong> — Each module can be loaded independently</li>
+              </ul>
+              <div class="about-comparison" data-animate-stagger="150">
+                <div class="about-comparison-box bad" data-animate="scale-fade-in">
+                  <h4>Bad: Tight coupling</h4>
+                  <code>TradesPage.table.reload();</code>
+                </div>
+                <div class="about-comparison-box good" data-animate="scale-fade-in">
+                  <h4>Good: Event-based</h4>
+                  <code>Funky.PubSub.emit('funky:data:refresh', { entity: 'trades' });</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="about-principle">
+              <h3>3. Convention Over Configuration</h3>
+              <p>Predictable patterns reduce cognitive load and accelerate development:</p>
+              <table class="splash-table">
+                <caption class="visually-hidden">Funky framework conventions</caption>
+                <thead>
+                  <tr><th scope="col">Pattern</th><th scope="col">Convention</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Page IDs</td><td>Derived from URL: <code>/trades</code> → <code>trades</code></td></tr>
+                  <tr><td>Entity types</td><td>Match API resource names: <code>trade</code>, <code>client</code></td></tr>
+                  <tr><td>API endpoints</td><td>Consistent: <code>GET/POST/PUT/DELETE /api/{entity}</code></td></tr>
+                  <tr><td>Lifecycle methods</td><td>Always: <code>init()</code>, <code>destroy()</code>, <code>update()</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="about-principle">
+              <h3>4. Cache-First Navigation</h3>
+              <p>Once you've visited a page, returning to it is <strong>instant</strong>:</p>
+              <figure class="splash-diagram">
+                <figcaption class="visually-hidden">Diagram showing cache-first navigation</figcaption>
+                <pre aria-hidden="true">First Visit:
+User clicks /trades → Fetch from server (200ms) → Cache HTML + state
+
+Repeat Visit:
+User clicks /trades → Restore from cache (&lt;5ms) → Already done</pre>
+              </figure>
+              <p>The cache is automatically invalidated when TTL expires, WebSocket signals an entity change, or user action modifies data.</p>
+            </div>
+
+            <div class="about-principle">
+              <h3>5. Security by Default</h3>
+              <p>Security isn't an afterthought—it's baked into every layer:</p>
+              <ul data-animate-stagger="80">
+                <li data-animate="fade-in">CSRF protection on every state-changing request</li>
+                <li data-animate="fade-in">XSS prevention through input sanitization</li>
+                <li data-animate="fade-in">Secure module registration with Object.freeze</li>
+                <li data-animate="fade-in">Content Security Policy ready</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="architecture" class="splash-section" role="region" aria-labelledby="architecture-heading" data-animate-children="in-view" data-skip-target="architecture" data-skip-label="Architecture" data-skip-order="4">
+          <h2 id="architecture-heading">Architecture Overview</h2>
+          <figure class="splash-diagram">
+            <figcaption class="visually-hidden">Client-side architecture diagram showing FunkyJS core modules, components, and communication with any backend</figcaption>
+            <pre aria-hidden="true">┌─────────────────────────────────────────────────────────────────────┐
+│                          CLIENT (Browser)                           │
+├─────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │  FunkyJS    │  │   Tables    │  │  Form Modal │  │   Themes    │ │
+│  │  Core       │  │  Component  │  │  Component  │  │   System    │ │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └─────────────┘ │
+│         └────────────────┼────────────────┘                         │
+│                          ▼                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐│
+│  │                    Funky.Api (HTTP Client)                      ││
+│  │              CSRF tokens, error handling, retries               ││
+│  └─────────────────────────────────────────────────────────────────┘│
+│                          │                                          │
+│         ┌────────────────┴───────────────┐                          │
+│         ▼                                ▼                          │
+│  ┌─────────────────┐              ┌─────────────────┐               │
+│  │   REST API      │              │   WebSocket     │               │
+│  │   /api/*        │              │   /ws/realtime  │               │
+│  └────────┬────────┘              └────────┬────────┘               │
+└───────────┼────────────────────────────────┼────────────────────────┘
+            │                                │
+            ▼                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    YOUR BACKEND (Any Language)                      │
+│         Node.js, Python, Ruby, Go, Perl, PHP, .NET, etc.            │
+└─────────────────────────────────────────────────────────────────────┘</pre>
+          </figure>
+        </section>
+
+        <section id="frontend" class="splash-section" role="region" aria-labelledby="frontend-heading" data-animate-children="in-view" data-skip-target="frontend" data-skip-label="Frontend" data-skip-order="5">
+          <h2 id="frontend-heading">The Frontend: FunkyJS</h2>
+
+          <h3>The Namespace</h3>
+          <p>All JavaScript lives under the <code>Funky</code> global namespace:</p>
+          <pre class="splash-pre"><code>window.Funky = {
+    <span class="code-comment">// Core</span>
+    Api:        <span class="code-comment">/* HTTP client */</span>,
+    Events:     <span class="code-comment">/* DOM event utilities */</span>,
+    PubSub:     <span class="code-comment">/* Application pub/sub messaging */</span>,
+    Pages:      <span class="code-comment">/* Page lifecycle */</span>,
+    SPA:        <span class="code-comment">/* Navigation */</span>,
+    Storage:    <span class="code-comment">/* LocalStorage */</span>,
+    WebSocket:  <span class="code-comment">/* Real-time connection */</span>,
+
+    <span class="code-comment">// Components</span>
+    DataTables: <span class="code-comment">/* Smart table wrapper */</span>,
+    FormModal:  <span class="code-comment">/* JSON Schema forms */</span>,
+    Toast:      <span class="code-comment">/* Notifications */</span>,
+    Wizard:     <span class="code-comment">/* Multi-step forms */</span>,
+
+    <span class="code-comment">// Utilities</span>
+    register:   <span class="code-comment">/* Module registration */</span>,
+    has:        <span class="code-comment">/* Check if registered */</span>,
+};</code></pre>
+
+          <h3>Secure Registration</h3>
+          <p>Modules are locked after registration—they cannot be overwritten:</p>
+          <pre class="splash-pre"><code>Funky.<span class="code-function">register</span> = <span class="code-keyword">function</span>(name, module) {
+    <span class="code-keyword">if</span> (Funky.<span class="code-function">has</span>(name)) {
+        console.<span class="code-function">warn</span>(<span class="code-string">'[Funky] Module already registered:'</span>, name);
+        <span class="code-keyword">return false</span>;
+    }
+
+    Object.<span class="code-function">defineProperty</span>(Funky, name, {
+        value: Object.<span class="code-function">freeze</span>(module),
+        writable: <span class="code-keyword">false</span>,
+        configurable: <span class="code-keyword">false</span>
+    });
+
+    <span class="code-keyword">return true</span>;
+};</code></pre>
+          <p>This prevents malicious scripts from hijacking core modules.</p>
+
+          <h3>Component Pattern</h3>
+          <p>Every component follows the same structure:</p>
+          <pre class="splash-pre"><code>(<span class="code-keyword">function</span>() {
+    <span class="code-string">'use strict'</span>;
+
+    <span class="code-keyword">if</span> (Funky.<span class="code-function">has</span>(<span class="code-string">'MyComponent'</span>)) <span class="code-keyword">return</span>;
+
+    <span class="code-keyword">var</span> MyComponent = {
+        <span class="code-comment">// Configuration</span>
+        config: { defaultOption: <span class="code-keyword">true</span> },
+
+        <span class="code-comment">// Initialization</span>
+        <span class="code-function">init</span>: <span class="code-keyword">function</span>(options) {
+            <span class="code-keyword">this</span>.config = Object.<span class="code-function">assign</span>({}, <span class="code-keyword">this</span>.config, options);
+            <span class="code-keyword">this</span>.<span class="code-function">bindEvents</span>();
+        },
+
+        <span class="code-comment">// Cleanup</span>
+        <span class="code-function">destroy</span>: <span class="code-keyword">function</span>() {
+            <span class="code-keyword">this</span>.<span class="code-function">unbindEvents</span>();
+        }
+    };
+
+    Funky.<span class="code-function">register</span>(<span class="code-string">'MyComponent'</span>, MyComponent);
+})();</code></pre>
+        </section>
+
+        <section id="security" class="splash-section" role="region" aria-labelledby="security-heading" data-animate-children="in-view">
+          <h2 id="security-heading">Security First</h2>
+
+          <h3>CSRF Protection</h3>
+          <p>Every state-changing request requires a CSRF token:</p>
+          <pre class="splash-pre"><code><span class="code-comment">// Funky.Api automatically handles this</span>
+Funky.Api.<span class="code-function">post</span>(<span class="code-string">'/api/trades'</span>, tradeData);
+
+<span class="code-comment">// Under the hood:</span>
+<span class="code-comment">// 1. Reads token from csrf_token cookie</span>
+<span class="code-comment">// 2. Adds X-CSRF-Token header</span>
+<span class="code-comment">// 3. Server validates header matches cookie</span>
+<span class="code-comment">// 4. Server rotates token after use</span></code></pre>
+
+          <h3>Module Protection</h3>
+          <p>Core modules cannot be overwritten after registration:</p>
+          <pre class="splash-pre"><code><span class="code-comment">// First registration succeeds</span>
+Funky.<span class="code-function">register</span>(<span class="code-string">'Api'</span>, myApiModule); <span class="code-comment">// → true</span>
+
+<span class="code-comment">// Subsequent attempts fail silently</span>
+Funky.<span class="code-function">register</span>(<span class="code-string">'Api'</span>, maliciousModule); <span class="code-comment">// → false</span>
+<span class="code-comment">// Console: [Funky] Module already registered: Api</span></code></pre>
+
+          <h3>XSS Prevention</h3>
+          <p>Text content is escaped by default in DOM utilities:</p>
+          <pre class="splash-pre"><code><span class="code-comment">// Safe - text is escaped</span>
+D.<span class="code-function">create</span>(<span class="code-string">'div'</span>).<span class="code-function">text</span>(userInput);
+
+<span class="code-comment">// Only use html() with sanitized content</span>
+D.<span class="code-function">create</span>(<span class="code-string">'div'</span>).<span class="code-function">html</span>(sanitizedHtml);</code></pre>
+        </section>
+
+        <section id="accessibility" class="splash-section" role="region" aria-labelledby="accessibility-heading" data-animate-children="in-view" data-skip-target="accessibility" data-skip-label="Accessibility" data-skip-order="6">
+          <h2 id="accessibility-heading">Accessibility</h2>
+          <p>Every component is keyboard navigable, screen reader friendly, and respects motion preferences. We won't claim WCAG perfection—compliance is a moving target. But we've done the work, and we keep improving.</p>
+
+          <p><strong>Try it now:</strong> Press <kbd>Tab</kbd> to navigate, or press <kbd>F1</kbd> to see the keyboard shortcuts panel.</p>
+
+          <div class="about-principle" data-animate="fade-in" data-animate-trigger="in-view" data-animate-once="true" data-animate-duration="700">
+            <h3>What We Actually Do</h3>
+            <ul data-animate-stagger="80">
+              <li data-animate="fade-in-left"><strong>Keyboard Navigation</strong> — Tab through everything, arrow keys in complex widgets, Esc to close modals. Focus trapped where it should be.</li>
+              <li data-animate="fade-in-left"><strong>Keyboard Shortcut Manager</strong> — Centralized registry via <code>Funky.Keyboard</code>. Register shortcuts and they appear in the F1 panel automatically.</li>
+              <li data-animate="fade-in-left"><strong>Semantic HTML</strong> — Proper &lt;nav&gt;, &lt;main&gt;, &lt;section&gt;, &lt;aside&gt;. Landmarks that screen readers can actually find.</li>
+              <li data-animate="fade-in-left"><strong>ARIA Labels</strong> — Icon buttons have labels. Live regions announce toasts. Modals are properly marked as dialogs.</li>
+              <li data-animate="fade-in-left"><strong>Focus Indicators</strong> — Clear 2px outlines using :focus-visible. No more "where did my focus go?"</li>
+              <li data-animate="fade-in-left"><strong>Reduced Motion</strong> — Respects prefers-reduced-motion AND has a manual toggle. Animations go to 0ms, not just "slower."</li>
+            </ul>
+          </div>
+
+          <div class="about-comparison" data-animate-stagger="150">
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>What Works Well</h4>
+              <ul>
+                <li>Keyboard-only navigation</li>
+                <li>Modal focus management</li>
+                <li>Form labels on everything</li>
+                <li>Theme contrast options</li>
+              </ul>
+            </div>
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>Still Wrestling With</h4>
+              <ul>
+                <li>Complex data tables</li>
+                <li>Screen reader edge cases</li>
+                <li>Every ARIA role ever</li>
+              </ul>
+            </div>
+          </div>
+
+          <p><strong>Accessibility is built in, not bolted on.</strong> File an issue if something doesn't work with your assistive tech.</p>
+        </section>
+
+        <section id="realtime" class="splash-section" role="region" aria-labelledby="realtime-heading" data-animate-children="in-view">
+          <h2 id="realtime-heading">Real-Time Everything</h2>
+
+          <h3>WebSocket Connection</h3>
+          <p>A persistent connection delivers updates instantly:</p>
+          <pre class="splash-pre"><code><span class="code-comment">// Automatic connection and reconnection</span>
+Funky.WebSocket.<span class="code-function">connect</span>();
+
+<span class="code-comment">// Subscribe to entity updates</span>
+Funky.PubSub.<span class="code-function">on</span>(<span class="code-string">'ws:entity_change'</span>, <span class="code-keyword">function</span>(data) {
+    <span class="code-keyword">if</span> (data.entity === <span class="code-string">'trades'</span> && data.action === <span class="code-string">'created'</span>) {
+        Funky.Toast.<span class="code-function">success</span>(<span class="code-string">'New trade created!'</span>);
+    }
+});</code></pre>
+
+          <h3>Server → Client Flow</h3>
+          <figure class="splash-diagram">
+            <figcaption class="visually-hidden">Real-time data flow diagram</figcaption>
+            <pre aria-hidden="true">Data Updated (Server)
+        ↓
+Server broadcasts to WebSocket
+        ↓
+Client receives: { entity: 'trades', action: 'updated', id: 123 }
+        ↓
+Page.update() called OR cache invalidated</pre>
+          </figure>
+
+          <h3>Smart Updates</h3>
+          <p>Pages declare which entities they care about:</p>
+          <pre class="splash-pre"><code><span class="code-keyword">var</span> TradesPage = {
+    id: <span class="code-string">'trades'</span>,
+    entities: [<span class="code-string">'trades'</span>, <span class="code-string">'trade_allocations'</span>],  <span class="code-comment">// Watch these</span>
+
+    <span class="code-function">update</span>: <span class="code-keyword">function</span>(entity, id, action) {
+        <span class="code-comment">// Called when WebSocket announces a change</span>
+        <span class="code-keyword">this</span>.table.ajax.<span class="code-function">reload</span>(<span class="code-keyword">null</span>, <span class="code-keyword">false</span>);
+    }
+};</code></pre>
+        </section>
+
+        <section id="offline-queue" class="splash-section" role="region" aria-labelledby="offline-queue-heading" data-animate-children="in-view">
+          <h2 id="offline-queue-heading">Offline Queue</h2>
+
+          <p>Work offline with confidence. The queue system captures actions when disconnected and syncs automatically when connectivity returns.</p>
+
+          <h3>How It Works</h3>
+          <p>User actions (creates, updates, deletes) are queued locally when offline. On reconnect, the queue processes automatically with retry logic and conflict resolution.</p>
+
+          <div class="about-comparison" data-animate-stagger="150">
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>JobQueue</h4>
+              <ul>
+                <li>Generic async job processor</li>
+                <li>IndexedDB persistence</li>
+                <li>Priority-based ordering</li>
+                <li>Exponential backoff retry</li>
+              </ul>
+            </div>
+            <div class="about-comparison-box" data-animate="scale-fade-in">
+              <h4>RequestQueue</h4>
+              <ul>
+                <li>HTTP-specific layer</li>
+                <li>Wraps Funky.Api transparently</li>
+                <li>Online/offline detection</li>
+                <li>Conflict resolution strategies</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Conflict Resolution</h3>
+          <p>When offline edits conflict with server changes (HTTP 409), the system supports multiple resolution strategies:</p>
+          <ul>
+            <li><strong>server-wins</strong> — Discard local changes</li>
+            <li><strong>client-wins</strong> — Force local changes with override header</li>
+            <li><strong>merge</strong> — Combine server and client data</li>
+            <li><strong>prompt</strong> — Ask the user to decide</li>
+          </ul>
+        </section>
+
+        <section id="pages" class="splash-section" role="region" aria-labelledby="pages-heading" data-animate-children="in-view">
+          <h2 id="pages-heading">The Page System</h2>
+
+          <h3>Lifecycle</h3>
+          <figure class="splash-diagram">
+            <figcaption class="visually-hidden">Page lifecycle diagram showing states</figcaption>
+            <pre aria-hidden="true">┌──────────────────────────────────────────────────────────────┐
+│                        Page Lifecycle                        │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ┌─────────┐                                                │
+│   │ DORMANT │ ← Page is defined but not active               │
+│   └────┬────┘                                                │
+│        │ User navigates to page                              │
+│        ▼                                                     │
+│   ┌──────────┐                                               │
+│   │ MOUNTING │ ← init() called, state restored               │
+│   └────┬─────┘                                               │
+│        ▼                                                     │
+│   ┌──────────┐                                               │
+│   │  ACTIVE  │ ← Page is visible, WebSocket updates work     │
+│   └────┬─────┘                                               │
+│        │ User navigates away                                 │
+│        ▼                                                     │
+│   ┌───────────┐                                              │
+│   │ UNMOUNTING│ ← destroy() called, state saved              │
+│   └─────┬─────┘                                              │
+│         ▼                                                    │
+│   ┌──────────┐                                               │
+│   │  CACHED  │ ← HTML + state preserved in memory            │
+│   └──────────┘                                               │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘</pre>
+          </figure>
+
+          <h3>Example Page</h3>
+          <pre class="splash-pre"><code><span class="code-keyword">var</span> ClientsPage = {
+    id: <span class="code-string">'clients'</span>,
+    entities: [<span class="code-string">'clients'</span>, <span class="code-string">'client_relationships'</span>],
+
+    <span class="code-function">init</span>: <span class="code-keyword">function</span>(state) {
+        <span class="code-comment">// Called when page becomes visible</span>
+        <span class="code-keyword">this</span>.<span class="code-function">initDataTable</span>();
+        <span class="code-keyword">this</span>.<span class="code-function">bindEvents</span>();
+
+        <span class="code-comment">// Restore scroll position from cached state</span>
+        <span class="code-keyword">if</span> (state && state.scrollY) {
+            window.<span class="code-function">scrollTo</span>(0, state.scrollY);
+        }
+    },
+
+    <span class="code-function">destroy</span>: <span class="code-keyword">function</span>() {
+        <span class="code-comment">// Called before navigating away</span>
+        <span class="code-keyword">if</span> (<span class="code-keyword">this</span>.table) {
+            <span class="code-keyword">this</span>.table.<span class="code-function">destroy</span>();
+        }
+
+        <span class="code-comment">// Return state to be cached</span>
+        <span class="code-keyword">return</span> { scrollY: window.scrollY };
+    },
+
+    <span class="code-function">update</span>: <span class="code-keyword">function</span>(entity, id, action) {
+        <span class="code-comment">// Called when WebSocket signals change</span>
+        <span class="code-keyword">if</span> (<span class="code-keyword">this</span>.table) {
+            <span class="code-keyword">this</span>.table.ajax.<span class="code-function">reload</span>(<span class="code-keyword">null</span>, <span class="code-keyword">false</span>);
+        }
+    }
+};
+
+Funky.Pages.<span class="code-function">register</span>(ClientsPage);</code></pre>
+        </section>
+
+        <section id="push" class="splash-section" role="region" aria-labelledby="push-heading" data-animate-children="in-view">
+          <h2 id="push-heading">Push Notifications</h2>
+
+          <h3>Browser Push with Service Worker</h3>
+          <p>Funky supports native browser push notifications:</p>
+          <pre class="splash-pre"><code><span class="code-comment">// Subscribe the user</span>
+Funky.Push.<span class="code-function">subscribe</span>().<span class="code-function">then</span>(<span class="code-keyword">function</span>(subscription) {
+    console.<span class="code-function">log</span>(<span class="code-string">'Push subscription active'</span>);
+});</code></pre>
+
+          <h3>Service Worker Handling</h3>
+          <p>Notifications work even when the app is closed:</p>
+          <pre class="splash-pre"><code><span class="code-comment">// In service worker</span>
+self.<span class="code-function">addEventListener</span>(<span class="code-string">'push'</span>, <span class="code-keyword">function</span>(event) {
+    <span class="code-keyword">const</span> data = event.data.<span class="code-function">json</span>();
+    event.<span class="code-function">waitUntil</span>(
+        self.registration.<span class="code-function">showNotification</span>(data.title, {
+            body: data.body,
+            icon: data.icon,
+            data: data.data
+        })
+    );
+});
+
+<span class="code-comment">// Click handler</span>
+self.<span class="code-function">addEventListener</span>(<span class="code-string">'notificationclick'</span>, <span class="code-keyword">function</span>(event) {
+    event.notification.<span class="code-function">close</span>();
+    event.<span class="code-function">waitUntil</span>(
+        clients.<span class="code-function">openWindow</span>(<span class="code-string">'/trades/'</span> + event.notification.data.trade_id)
+    );
+});</code></pre>
+        </section>
+
+        <section id="theming" class="splash-section" role="region" aria-labelledby="theming-heading" data-animate-children="in-view">
+          <h2 id="theming-heading">Theming System</h2>
+
+          <h3>Three Built-in Themes</h3>
+          <table class="splash-table">
+            <caption class="visually-hidden">Available theme options</caption>
+            <thead>
+              <tr><th scope="col">Theme</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Dark</strong> (default)</td><td>Bloomberg/GitHub dark style — professional, easy on eyes</td></tr>
+              <tr><td><strong>Light</strong></td><td>Clean, bright — traditional enterprise feel</td></tr>
+              <tr><td><strong>Even Funkier</strong></td><td>Neon cyberpunk — because why not?</td></tr>
+            </tbody>
+          </table>
+
+          <h3>CSS Variables</h3>
+          <p>All theming uses CSS custom properties:</p>
+          <pre class="splash-pre"><code><span class="code-keyword">:root</span> {
+    --pro-bg-primary: <span class="code-string">#0d1117</span>;
+    --pro-bg-secondary: <span class="code-string">#161b22</span>;
+    --pro-text-primary: <span class="code-string">#e6edf3</span>;
+    --pro-accent-primary: <span class="code-string">#2f81f7</span>;
+    <span class="code-comment">/* ... 50+ variables ... */</span>
+}
+
+[data-theme=<span class="code-string">"light"</span>] {
+    --pro-bg-primary: <span class="code-string">#ffffff</span>;
+    --pro-text-primary: <span class="code-string">#1f2328</span>;
+}
+
+[data-theme=<span class="code-string">"even-funkyer"</span>] {
+    --pro-bg-primary: <span class="code-string">#0a0015</span>;
+    --pro-accent-primary: <span class="code-string">#ff00ff</span>;
+    --pro-accent-secondary: <span class="code-string">#00ffff</span>;
+}</code></pre>
+
+          <h3>User Customization</h3>
+          <pre class="splash-pre"><code>Funky.Storage.<span class="code-function">set</span>(<span class="code-string">'user_preferences'</span>, {
+    theme: <span class="code-string">'dark'</span>,
+    font_scale: 1.1,
+    accent_color: <span class="code-string">'#ff6b35'</span>,
+    compact_mode: <span class="code-keyword">true</span>
+});</code></pre>
+        </section>
+
+        <section id="testing" class="splash-section" role="region" aria-labelledby="testing-heading" data-animate-children="in-view" data-skip-target="testing" data-skip-label="Testing Framework" data-skip-order="7">
+          <h2 id="testing-heading">Testing Framework</h2>
+          <p>Funky includes a built-in JavaScript test runner that executes directly in the browser. No build tools, no Node.js dependency—just pure browser-based testing with real-time feedback.</p>
+
+          <div class="about-principle" data-animate="fade-in" data-animate-trigger="in-view" data-animate-once="true" data-animate-duration="700">
+            <h3>Key Features</h3>
+            <ul data-animate-stagger="80">
+              <li data-animate="fade-in-left"><strong>Browser-Native</strong> — Tests run in the actual DOM environment, not a simulation</li>
+              <li data-animate="fade-in-left"><strong>Zero Dependencies</strong> — No npm, no bundlers, no transpilers required</li>
+              <li data-animate="fade-in-left"><strong>Real-Time Results</strong> — Watch tests pass/fail as they execute</li>
+              <li data-animate="fade-in-left"><strong>Component Isolation</strong> — Each test runs in a sandboxed iframe</li>
+              <li data-animate="fade-in-left"><strong>Async Support</strong> — Full Promise and callback support built-in</li>
+            </ul>
+          </div>
+
+          <h3>Writing Tests</h3>
+          <p>Tests are defined using a simple, readable API:</p>
+          <pre class="splash-pre"><code>Funky.Test.<span class="code-function">describe</span>(<span class="code-string">'Button Component'</span>, <span class="code-keyword">function</span>(it) {
+  it(<span class="code-string">'should emit click event'</span>, <span class="code-keyword">function</span>(assert, done) {
+    <span class="code-keyword">var</span> btn = D.<span class="code-function">create</span>(<span class="code-string">'button'</span>).<span class="code-function">text</span>(<span class="code-string">'Click Me'</span>);
+
+    E.<span class="code-function">on</span>(btn.el, <span class="code-string">'click'</span>, <span class="code-keyword">function</span>() {
+      assert.<span class="code-function">ok</span>(<span class="code-keyword">true</span>, <span class="code-string">'Click event fired'</span>);
+      done();
+    });
+
+    btn.el.<span class="code-function">click</span>();
+  });
+
+  it(<span class="code-string">'should add active class on focus'</span>, <span class="code-keyword">function</span>(assert) {
+    <span class="code-keyword">var</span> btn = D.<span class="code-function">one</span>(<span class="code-string">'.test-button'</span>);
+    btn.el.<span class="code-function">focus</span>();
+    assert.<span class="code-function">ok</span>(btn.<span class="code-function">hasClass</span>(<span class="code-string">'active'</span>), <span class="code-string">'Has active class'</span>);
+  });
+});</code></pre>
+        </section>
+
+        <section id="why" class="splash-section" role="region" aria-labelledby="why-heading" data-animate-children="in-view" data-skip-target="why" data-skip-label="Why Funky?" data-skip-order="8">
+          <h2 id="why-heading">Why Funky?</h2>
+
+          <h3>Compared to React/Vue/Angular</h3>
+          <table class="splash-table">
+            <caption class="visually-hidden">Funky compared to modern SPA frameworks</caption>
+            <thead>
+              <tr><th scope="col">Aspect</th><th scope="col">Funky</th><th scope="col">Modern SPA Frameworks</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Bundle size</strong></td><td>~50KB JS</td><td>200KB+ minimum</td></tr>
+              <tr><td><strong>Build step</strong></td><td>None required</td><td>Webpack/Vite/etc</td></tr>
+              <tr><td><strong>Learning curve</strong></td><td>Vanilla JS patterns</td><td>Framework-specific concepts</td></tr>
+              <tr><td><strong>WebSocket</strong></td><td>Built-in, automatic</td><td>Additional library needed</td></tr>
+              <tr><td><strong>Offline support</strong></td><td>Built-in queue system</td><td>Manual implementation</td></tr>
+              <tr><td><strong>Test runner</strong></td><td>Built-in browser tests</td><td>Jest/Vitest setup required</td></tr>
+            </tbody>
+          </table>
+
+          <h3>When to Use Funky</h3>
+          <div class="splash-callout success">
+            <p><strong>Good fit:</strong> Enterprise/internal applications, data-heavy dashboards, real-time collaborative tools, teams who prefer vanilla JS</p>
+          </div>
+          <div class="splash-callout warning">
+            <p><strong>Consider alternatives:</strong> Public-facing marketing sites (static generators), mobile-first applications (React Native, Flutter), micro-frontends architecture</p>
+          </div>
+        </section>
+
+        <footer class="splash-footer">
+          <p class="quote">"Write less code. Ship more features. Sleep better at night."</p>
+          <p>Funky Frame eliminates boilerplate by providing sensible defaults while remaining flexible enough for complex requirements. Real-time updates, offline support, and accessibility come built-in—you just build your features.</p>
+        </footer>
+
+      </div>
+
+      <!-- Page Registration (must be inside #spaContent for SPA navigation) -->
+      <script>
+        (function() {
+          if (typeof Funky !== 'undefined' && Funky.Pages) {
+            Funky.Pages.register('about', {
+              init: function(state) {
+                console.log('[About] Page initialized');
+              },
+              destroy: function() {
+                console.log('[About] Page destroyed');
+                return {};
+              }
+            });
+          }
+        })();
+      </script>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- Core Scripts -->
+  <script src="../js/core/namespace.js"></script>
+  <script src="../js/core/registry.js"></script>
+  <script src="../js/core/util.js"></script>
+  <script src="../js/core/dom.js"></script>
+  <script src="../js/core/events.js"></script>
+  <script src="../js/core/pubsub.js"></script>
+  <script src="../js/core/storage.js"></script>
+  <script src="../js/core/vdom.js"></script>
+  <script src="../js/core/keyboard.js"></script>
+  <script src="../js/core/tooltip.js"></script>
+  <script src="../js/core/announce.js"></script>
+  <script src="../js/core/a11y-enhancer.js"></script>
+  <script src="../js/core/fuzzy-search.js"></script>
+  <script src="../js/core/selectable-list.js"></script>
+  <script src="../js/core/spa.js"></script>
+  <script src="../js/core/animate.js"></script>
+  <script src="../js/core/modal.js"></script>
+  <script src="../js/core/navigation.js"></script>
+  <script src="../js/core/pages.js"></script>
+
+  <!-- Service Worker Client Module -->
+  <script src="../js/core/service-worker.js"></script>
+
+  <!-- Components used by shell -->
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/sidenav.js"></script>
+  <script src="../js/components/clock.js"></script>
+  <script src="../js/components/morph.js"></script>
+  <script src="../js/components/tour.js"></script>
+  <script src="../js/components/code-preview.js"></script>
+  <script src="../js/components/command-palette.js"></script>
+  <script src="../js/components/skip-link.js"></script>
+  <script src="../js/components/page-animate.js"></script>
+  <script src="../js/components/skeleton.js"></script>
+  <script src="../js/components/tree-view.js"></script>
+  <script src="../js/components/scroll-tracker.js"></script>
+  <script src="../js/components/table.js"></script>
+  <script src="../js/components/markdown.js"></script>
+  <script src="../js/components/iframe.js"></script>
+
+  <!-- Mock API (for component demos) -->
+  <script src="/mock-api.js"></script>
+
+  <!-- Playground Component -->
+  <script src="../js/components/playground.js"></script>
+
+  <!-- Test Runner -->
+  <script src="../js/dev/test-manifest.js"></script>
+  <script src="../js/dev/test-runner-ui.js"></script>
+
+  <!-- Shared App Logic -->
+  <script src="../js/app.js"></script>
+
+  <!-- Cross-Page Tour -->
+  <script src="../js/funky-tour.js"></script>
+
+</body>
+</html>

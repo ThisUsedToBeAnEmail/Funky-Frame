@@ -1,0 +1,529 @@
+<div data-page="component-popover" class="component-demo">
+  <h2>Popover</h2>
+  <p class="text-muted">Rich popovers with title and content, click-outside dismissal</p>
+
+  <!-- Interactive Demo -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">This popover uses all props from the sidebar panel</p>
+
+    <div class="demo-area">
+      <div class="popover-demo__interactive">
+        <button type="button" id="main-popover-btn" class="btn btn-primary btn-lg">
+          <i class="fas fa-message me-2" aria-hidden="true"></i>
+          <span id="main-btn-text">Click for Popover</span>
+        </button>
+      </div>
+      <div class="popover-demo__interactive-info">
+        <span class="badge bg-primary" id="main-placement-badge">top</span>
+        <span class="badge bg-success" id="main-trigger-badge">click</span>
+        <span class="badge bg-info" id="main-html-badge">text</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls for Interactive Demo -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Control the Interactive Demo popover programmatically</p>
+
+    <div class="demo-area">
+      <div class="popover-demo__controls">
+        <button type="button" class="btn btn-sm btn-success" data-api="show">
+          <i class="fas fa-eye me-1" aria-hidden="true"></i> show()
+        </button>
+        <button type="button" class="btn btn-sm btn-danger" data-api="hide">
+          <i class="fas fa-eye-slash me-1" aria-hidden="true"></i> hide()
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" data-api="toggle">
+          <i class="fas fa-toggle-on me-1" aria-hidden="true"></i> toggle()
+        </button>
+        <button type="button" class="btn btn-sm btn-warning" data-api="dispose">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> dispose()
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" data-api="recreate">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> recreate
+        </button>
+      </div>
+      <div class="popover-demo__result" id="api-result">
+        <span class="popover-demo__result-empty">Click an API button to see the result</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Placements -->
+  <section class="demo-section" aria-labelledby="placements-heading">
+    <h3 id="placements-heading">Placements</h3>
+    <p class="text-muted small">Popovers can be positioned on any side of the trigger</p>
+
+    <div class="demo-area">
+      <div class="popover-demo__placements">
+        <button type="button" class="btn btn-outline-secondary popover-demo__placement-btn popover-demo__placement-btn--top" data-placement="top">
+          <i class="fas fa-arrow-up me-1" aria-hidden="true"></i> Top
+        </button>
+        <div class="popover-demo__placements-row">
+          <button type="button" class="btn btn-outline-secondary popover-demo__placement-btn popover-demo__placement-btn--left" data-placement="left">
+            <i class="fas fa-arrow-left me-1" aria-hidden="true"></i> Left
+          </button>
+          <div class="popover-demo__placements-center">
+            <i class="fas fa-crosshairs" aria-hidden="true"></i>
+          </div>
+          <button type="button" class="btn btn-outline-secondary popover-demo__placement-btn popover-demo__placement-btn--right" data-placement="right">
+            Right <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button type="button" class="btn btn-outline-secondary popover-demo__placement-btn popover-demo__placement-btn--bottom" data-placement="bottom">
+          <i class="fas fa-arrow-down me-1" aria-hidden="true"></i> Bottom
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trigger Types -->
+  <section class="demo-section" aria-labelledby="triggers-heading">
+    <h3 id="triggers-heading">Trigger Types</h3>
+    <p class="text-muted small">Different ways to show/hide popovers</p>
+
+    <div class="demo-area">
+      <div class="popover-demo__triggers">
+        <button type="button" class="btn btn-outline-primary popover-demo__trigger-btn" id="trigger-click">
+          <i class="fas fa-mouse-pointer me-2" aria-hidden="true"></i> Click
+        </button>
+        <button type="button" class="btn btn-outline-success popover-demo__trigger-btn" id="trigger-hover">
+          <i class="fas fa-hand-pointer me-2" aria-hidden="true"></i> Hover
+        </button>
+        <button type="button" class="btn btn-outline-warning popover-demo__trigger-btn" id="trigger-focus">
+          <i class="fas fa-bullseye me-2" aria-hidden="true"></i> Focus
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HTML Content -->
+  <section class="demo-section" aria-labelledby="html-heading">
+    <h3 id="html-heading">HTML Content</h3>
+    <p class="text-muted small">Popovers can render rich HTML content</p>
+
+    <div class="demo-area">
+      <div class="popover-demo__html-demo">
+        <button type="button" class="btn btn-info" id="html-popover-btn">
+          <i class="fas fa-code me-2" aria-hidden="true"></i> Rich HTML Popover
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Content -->
+  <section class="demo-section" aria-labelledby="dynamic-heading">
+    <h3 id="dynamic-heading">Dynamic Content</h3>
+    <p class="text-muted small">Update popover content programmatically with setContent()</p>
+
+    <div class="demo-area">
+      <div class="popover-demo__dynamic">
+        <button type="button" class="btn btn-secondary" id="dynamic-popover-btn">
+          <i class="fas fa-sync me-2" aria-hidden="true"></i> Dynamic Popover
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="update-content-btn">
+          <i class="fas fa-refresh me-2" aria-hidden="true"></i> Update Content
+        </button>
+      </div>
+      <div class="popover-demo__dynamic-info">
+        <span class="badge bg-secondary">Updates: <strong id="update-count">0</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="popover-demo__settings">
+        <span class="badge bg-secondary">demo: <strong id="setting-demo">placements</strong></span>
+        <span class="badge bg-secondary">placement: <strong id="setting-placement">top</strong></span>
+        <span class="badge bg-secondary">trigger: <strong id="setting-trigger">click</strong></span>
+        <span class="badge bg-secondary">title: <strong id="setting-title">Popover Title</strong></span>
+        <span class="badge bg-secondary">content: <strong id="setting-content">...</strong></span>
+        <span class="badge bg-secondary">html: <strong id="setting-html">false</strong></span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var mainPopover = null;
+  var placementPopovers = [];
+  var triggerPopovers = {};
+  var htmlPopover = null;
+  var dynamicPopover = null;
+  var propsChangedHandler = null;
+  var updateCount = 0;
+
+  function log(message, type) {
+    console.log('[Popover Demo]', message);
+    emit('event', { event: 'popover:' + (type || 'info'), payload: { message: message } });
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      demo: props.demo || 'placements',
+      placement: props.placement || 'top',
+      trigger: props.trigger || 'click',
+      title: props.title || 'Popover Title',
+      content: props.content || 'This is the popover content.',
+      html: props.html === true
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+    var el = function(id) { return document.getElementById(id); };
+
+    // Current Settings section
+    if (el('setting-demo')) el('setting-demo').textContent = opts.demo;
+    if (el('setting-placement')) el('setting-placement').textContent = opts.placement;
+    if (el('setting-trigger')) el('setting-trigger').textContent = opts.trigger;
+    if (el('setting-title')) el('setting-title').textContent = opts.title;
+    if (el('setting-content')) {
+      var contentPreview = opts.content.length > 30 ? opts.content.substring(0, 30) + '...' : opts.content;
+      el('setting-content').textContent = contentPreview;
+    }
+    if (el('setting-html')) el('setting-html').textContent = String(opts.html);
+
+    // Interactive Demo badges
+    if (el('main-placement-badge')) el('main-placement-badge').textContent = opts.placement;
+    if (el('main-trigger-badge')) el('main-trigger-badge').textContent = opts.trigger;
+    if (el('main-html-badge')) el('main-html-badge').textContent = opts.html ? 'html' : 'text';
+  }
+
+  function showApiResult(method, result) {
+    var resultEl = document.getElementById('api-result');
+    if (!resultEl) return;
+
+    var typeStr = typeof result;
+    var valueStr = result === undefined ? 'void' : JSON.stringify(result);
+
+    resultEl.innerHTML = '<div class="popover-demo__result-content">' +
+      '<span class="popover-demo__result-method">' + method + '</span>' +
+      '<span class="popover-demo__result-arrow">&rarr;</span>' +
+      '<span class="popover-demo__result-value popover-demo__result-value--' + typeStr + '">' + valueStr + '</span>' +
+      '</div>';
+
+    log(method + ' called', 'api');
+  }
+
+  function updateMainButtonText() {
+    var opts = getOptions();
+    var btnText = document.getElementById('main-btn-text');
+    if (btnText) {
+      var triggerText = opts.trigger === 'hover' ? 'Hover' : opts.trigger === 'focus' ? 'Focus' : 'Click';
+      btnText.textContent = triggerText + ' for Popover';
+    }
+  }
+
+  function createMainPopover() {
+    var opts = getOptions();
+    var btn = document.getElementById('main-popover-btn');
+    if (!btn) return;
+
+    // Dispose existing
+    if (mainPopover) {
+      mainPopover.dispose();
+      mainPopover = null;
+    }
+
+    // Re-get the button after dispose (it replaces the element)
+    btn = document.getElementById('main-popover-btn');
+    if (!btn) return;
+
+    mainPopover = new Funky.Popover(btn, {
+      title: opts.title,
+      content: opts.content,
+      placement: opts.placement,
+      trigger: opts.trigger,
+      html: opts.html
+    });
+
+    updateMainButtonText();
+    log('Main popover created with placement=' + opts.placement + ', trigger=' + opts.trigger, 'init');
+  }
+
+  function createPlacementPopovers() {
+    // Dispose existing
+    placementPopovers.forEach(function(p) {
+      if (p && p.dispose) p.dispose();
+    });
+    placementPopovers = [];
+
+    var placements = ['top', 'bottom', 'left', 'right'];
+    placements.forEach(function(placement) {
+      var btn = document.querySelector('.popover-demo__placement-btn--' + placement);
+      if (!btn) return;
+
+      // Re-query after potential dispose
+      btn = document.querySelector('.popover-demo__placement-btn--' + placement);
+      if (!btn) return;
+
+      var popover = new Funky.Popover(btn, {
+        title: placement.charAt(0).toUpperCase() + placement.slice(1) + ' Popover',
+        content: 'This popover appears on the ' + placement + ' side.',
+        placement: placement,
+        trigger: 'click'
+      });
+      placementPopovers.push(popover);
+    });
+  }
+
+  function createTriggerPopovers() {
+    // Dispose existing
+    Object.keys(triggerPopovers).forEach(function(key) {
+      if (triggerPopovers[key] && triggerPopovers[key].dispose) {
+        triggerPopovers[key].dispose();
+      }
+    });
+    triggerPopovers = {};
+
+    var triggers = [
+      { id: 'trigger-click', trigger: 'click', desc: 'Click to toggle this popover' },
+      { id: 'trigger-hover', trigger: 'hover', desc: 'Appears on hover, hides on leave' },
+      { id: 'trigger-focus', trigger: 'focus', desc: 'Appears on focus, hides on blur' }
+    ];
+
+    triggers.forEach(function(t) {
+      var btn = document.getElementById(t.id);
+      if (!btn) return;
+
+      // Re-query after potential dispose
+      btn = document.getElementById(t.id);
+      if (!btn) return;
+
+      triggerPopovers[t.trigger] = new Funky.Popover(btn, {
+        title: t.trigger.charAt(0).toUpperCase() + t.trigger.slice(1) + ' Trigger',
+        content: t.desc,
+        placement: 'top',
+        trigger: t.trigger
+      });
+    });
+  }
+
+  function createHtmlPopover() {
+    if (htmlPopover) {
+      htmlPopover.dispose();
+      htmlPopover = null;
+    }
+
+    var btn = document.getElementById('html-popover-btn');
+    if (!btn) return;
+
+    // Re-query
+    btn = document.getElementById('html-popover-btn');
+    if (!btn) return;
+
+    var htmlContent = '<div>' +
+      '<p><strong>Rich HTML Content</strong></p>' +
+      '<p>Supports <em>formatting</em>, <a href="#" onclick="return false;">links</a>, and more.</p>' +
+      '<div class="mt-2">' +
+      '<span class="badge bg-primary me-1">Badge</span>' +
+      '<span class="badge bg-success me-1">Tags</span>' +
+      '<span class="badge bg-warning">Work</span>' +
+      '</div>' +
+      '</div>';
+
+    htmlPopover = new Funky.Popover(btn, {
+      title: '<i class="fas fa-code me-1"></i> HTML Popover',
+      content: htmlContent,
+      placement: 'bottom',
+      trigger: 'click',
+      html: true
+    });
+  }
+
+  function createDynamicPopover() {
+    if (dynamicPopover) {
+      dynamicPopover.dispose();
+      dynamicPopover = null;
+    }
+
+    var btn = document.getElementById('dynamic-popover-btn');
+    if (!btn) return;
+
+    // Re-query
+    btn = document.getElementById('dynamic-popover-btn');
+    if (!btn) return;
+
+    updateCount = 0;
+    updateCountDisplay();
+
+    dynamicPopover = new Funky.Popover(btn, {
+      title: 'Dynamic Content',
+      content: 'Click "Update Content" to change this text.',
+      placement: 'right',
+      trigger: 'click'
+    });
+  }
+
+  function updateCountDisplay() {
+    var el = document.getElementById('update-count');
+    if (el) el.textContent = updateCount;
+  }
+
+  function setupUpdateContentButton() {
+    var btn = document.getElementById('update-content-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function() {
+      if (!dynamicPopover) {
+        log('Dynamic popover not initialized', 'warn');
+        return;
+      }
+
+      updateCount++;
+      updateCountDisplay();
+
+      var now = new Date();
+      var timeStr = now.toLocaleTimeString();
+
+      dynamicPopover.setContent(
+        'Updated #' + updateCount,
+        'Content updated at ' + timeStr + '. Click again to update.'
+      );
+
+      // Show the popover if not visible
+      if (!dynamicPopover.isShown) {
+        dynamicPopover.show();
+      }
+
+      log('setContent() called, update #' + updateCount, 'setContent');
+      emit('event', { event: 'popover:setContent', payload: { count: updateCount, time: timeStr } });
+    });
+  }
+
+  function setupApiControls() {
+    var btns = document.querySelectorAll('[data-api]');
+
+    btns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var method = btn.dataset.api;
+
+        if (method === 'recreate') {
+          createMainPopover();
+          showApiResult('recreate()', 'Popover recreated');
+          return;
+        }
+
+        if (!mainPopover) {
+          showApiResult(method + '()', 'No popover instance');
+          return;
+        }
+
+        switch (method) {
+          case 'show':
+            mainPopover.show();
+            showApiResult('show()', undefined);
+            emit('event', { event: 'popover:show', payload: {} });
+            break;
+          case 'hide':
+            mainPopover.hide();
+            showApiResult('hide()', undefined);
+            emit('event', { event: 'popover:hide', payload: {} });
+            break;
+          case 'toggle':
+            mainPopover.toggle();
+            showApiResult('toggle()', undefined);
+            emit('event', { event: 'popover:toggle', payload: {} });
+            break;
+          case 'dispose':
+            mainPopover.dispose();
+            mainPopover = null;
+            showApiResult('dispose()', undefined);
+            emit('event', { event: 'popover:dispose', payload: {} });
+            break;
+        }
+      });
+    });
+  }
+
+  function initAllPopovers() {
+    createMainPopover();
+    createPlacementPopovers();
+    createTriggerPopovers();
+    createHtmlPopover();
+    createDynamicPopover();
+  }
+
+  function destroyAllPopovers() {
+    if (mainPopover) {
+      mainPopover.dispose();
+      mainPopover = null;
+    }
+
+    placementPopovers.forEach(function(p) {
+      if (p && p.dispose) p.dispose();
+    });
+    placementPopovers = [];
+
+    Object.keys(triggerPopovers).forEach(function(key) {
+      if (triggerPopovers[key] && triggerPopovers[key].dispose) {
+        triggerPopovers[key].dispose();
+      }
+    });
+    triggerPopovers = {};
+
+    if (htmlPopover) {
+      htmlPopover.dispose();
+      htmlPopover = null;
+    }
+
+    if (dynamicPopover) {
+      dynamicPopover.dispose();
+      dynamicPopover = null;
+    }
+  }
+
+  Funky.Pages.register('component-popover', {
+    init: function(state) {
+      updateSettingsDisplay();
+
+      // Small delay to ensure DOM is ready after potential SPA navigation
+      setTimeout(function() {
+        initAllPopovers();
+        setupUpdateContentButton();
+        setupApiControls();
+      }, 50);
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          // Recreate main popover with new props
+          createMainPopover();
+          log('Props changed, main popover recreated', 'props');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'popover:init', payload: getOptions() });
+      log('Demo initialized', 'init');
+
+      return {};
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      destroyAllPopovers();
+      updateCount = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

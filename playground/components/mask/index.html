@@ -1,0 +1,594 @@
+<div data-page="component-mask" class="component-demo">
+  <h2>Input Mask</h2>
+  <p class="text-muted">Format input fields with patterns for phone numbers, dates, credit cards, and custom formats. Includes redact mode for sensitive data display.</p>
+
+  <section class="demo-section" aria-labelledby="mask-input-heading">
+    <h3 id="mask-input-heading">Masked Input</h3>
+    <p class="text-muted small">Type in the field below. The mask pattern is controlled by the props panel.</p>
+    <div class="demo-area">
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="mask-main" class="form-label">
+            <span id="mask-label">Phone Number</span>
+            <span id="mask-pattern-badge" class="badge bg-secondary ms-2 font-monospace">phone</span>
+          </label>
+          <input type="text" class="form-control" id="mask-main" aria-label="Masked input field">
+          <div class="form-text" id="mask-hint">Format: (___) ___-____</div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-header py-2">
+              <strong class="small">Current Values</strong>
+            </div>
+            <div class="card-body py-2">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small text-muted">Raw:</span>
+                <code id="value-raw" class="small">-</code>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small text-muted">Formatted:</span>
+                <code id="value-formatted" class="small">-</code>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="small text-muted">Complete:</span>
+                <span id="value-complete" class="badge bg-secondary">No</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-wrap gap-2" role="group" aria-label="API control buttons">
+        <button class="btn btn-primary btn-sm" id="btn-set-value" type="button">
+          <i class="fas fa-edit me-1" aria-hidden="true"></i>Set Value
+        </button>
+        <button class="btn btn-success btn-sm" id="btn-get-raw" type="button">
+          <i class="fas fa-code me-1" aria-hidden="true"></i>Get Raw
+        </button>
+        <button class="btn btn-info btn-sm" id="btn-validate" type="button">
+          <i class="fas fa-check-circle me-1" aria-hidden="true"></i>Validate
+        </button>
+        <button class="btn btn-warning btn-sm" id="btn-clear" type="button">
+          <i class="fas fa-eraser me-1" aria-hidden="true"></i>Clear
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-detect-card" type="button">
+          <i class="fas fa-search me-1" aria-hidden="true"></i>Detect Card Type
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="mask-presets-heading">
+    <h3 id="mask-presets-heading">Pattern Presets</h3>
+    <p class="text-muted small">Common mask patterns. Click a button to apply and test.</p>
+    <div class="demo-area">
+      <div class="d-flex flex-wrap gap-2 mb-3" role="group" aria-label="Pattern preset buttons">
+        <button class="btn btn-outline-primary btn-sm" data-pattern="phone" type="button">
+          <i class="fas fa-phone me-1" aria-hidden="true"></i>Phone
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="credit-card" type="button">
+          <i class="fas fa-credit-card me-1" aria-hidden="true"></i>Credit Card
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="ssn" type="button">
+          <i class="fas fa-id-card me-1" aria-hidden="true"></i>SSN
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="date" type="button">
+          <i class="fas fa-calendar me-1" aria-hidden="true"></i>Date (US)
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="date-iso" type="button">
+          <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>Date (ISO)
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="time" type="button">
+          <i class="fas fa-clock me-1" aria-hidden="true"></i>Time 24h
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="zip" type="button">
+          <i class="fas fa-map-marker-alt me-1" aria-hidden="true"></i>ZIP
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-pattern="expiry" type="button">
+          <i class="fas fa-calendar-check me-1" aria-hidden="true"></i>Expiry
+        </button>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label for="test-phone" class="form-label small">Phone</label>
+          <input type="tel" class="form-control form-control-sm" id="test-phone" data-mask="phone" placeholder="(___) ___-____">
+        </div>
+        <div class="col-md-4">
+          <label for="test-cc" class="form-label small">Credit Card</label>
+          <input type="text" class="form-control form-control-sm" id="test-cc" data-mask="credit-card" placeholder="____ ____ ____ ____">
+        </div>
+        <div class="col-md-4">
+          <label for="test-date" class="form-label small">Date</label>
+          <input type="text" class="form-control form-control-sm" id="test-date" data-mask="date" placeholder="__/__/____">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="redact-section" class="demo-section" aria-labelledby="mask-redact-heading">
+    <h3 id="mask-redact-heading">Redact Mode</h3>
+    <p class="text-muted small">Display sensitive data with partial masking. Reveal mode and visible characters are controlled by props.</p>
+    <div class="demo-area">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <span class="small"><i id="redact-icon" class="fas fa-credit-card me-2" aria-hidden="true"></i><span id="redact-label">Card Number</span></span>
+              <button id="redact-toggle" class="btn btn-sm btn-outline-secondary" type="button" aria-label="Toggle visibility">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="card-body text-center py-3">
+              <span id="redact-value" class="font-monospace fs-5" data-field="Card Number">
+                •••• •••• •••• 1234
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex flex-column gap-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="small text-muted">Pattern:</span>
+              <span id="redact-pattern-display" class="badge bg-info">credit-card</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="small text-muted">Show Last:</span>
+              <span id="redact-showlast-display" class="badge bg-info">4</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="small text-muted">Reveal Mode:</span>
+              <span id="redact-mode-display" class="badge bg-info">click</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="small text-muted">State:</span>
+              <span id="redact-state" class="badge bg-secondary">Hidden</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="mask-config-heading">
+    <h3 id="mask-config-heading">Configuration</h3>
+    <p class="text-muted small">Current configuration from props panel.</p>
+    <div class="demo-area">
+      <div class="d-flex flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">Pattern:</span>
+          <span id="config-pattern" class="badge bg-primary">phone</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">Transform:</span>
+          <span id="config-transform" class="badge bg-secondary">none</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">Show Redact:</span>
+          <span id="config-redact" class="badge bg-success">Yes</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="mask-log-heading">
+    <h3 id="mask-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="mask-log" class="border rounded p-3 small font-monospace bg-body-tertiary" aria-live="polite" aria-label="Event log">Type in masked fields to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var propsChangedHandler = null;
+  var mainMask = null;
+  var redactInstance = null;
+  var testMasks = [];
+
+  // Pattern display names, hints, example values, and icons
+  var PATTERN_INFO = {
+    'phone': { label: 'Phone Number', hint: 'Format: (###) ###-####', example: '5551234567', icon: 'fa-phone' },
+    'phone-intl': { label: 'International Phone', hint: 'Format: +# (###) ###-####', example: '15551234567', icon: 'fa-phone' },
+    'credit-card': { label: 'Credit Card', hint: 'Format: #### #### #### ####', example: '4111111111111111', icon: 'fa-credit-card' },
+    'ssn': { label: 'SSN', hint: 'Format: ###-##-####', example: '123456789', icon: 'fa-id-card' },
+    'date': { label: 'Date (US)', hint: 'Format: MM/DD/YYYY', example: '12252024', icon: 'fa-calendar' },
+    'date-iso': { label: 'Date (ISO)', hint: 'Format: YYYY-MM-DD', example: '20241225', icon: 'fa-calendar-alt' },
+    'date-eu': { label: 'Date (EU)', hint: 'Format: DD/MM/YYYY', example: '25122024', icon: 'fa-calendar' },
+    'time': { label: 'Time (24h)', hint: 'Format: HH:MM', example: '1430', icon: 'fa-clock' },
+    'time-12': { label: 'Time (12h)', hint: 'Format: HH:MM AM', example: '0230PM', icon: 'fa-clock' },
+    'zip': { label: 'ZIP Code', hint: 'Format: #####', example: '90210', icon: 'fa-map-marker-alt' },
+    'zip-plus4': { label: 'ZIP+4', hint: 'Format: #####-####', example: '902101234', icon: 'fa-map-marker-alt' },
+    'expiry': { label: 'Card Expiry', hint: 'Format: MM/YY', example: '1228', icon: 'fa-calendar-check' },
+    'cvv': { label: 'CVV', hint: 'Format: ### or ####', example: '123', icon: 'fa-lock' },
+    'ip': { label: 'IP Address', hint: 'Format: ###.###.###.###', example: '192168001001', icon: 'fa-network-wired' },
+    'currency': { label: 'Currency', hint: 'Format: $#,###,###.##', example: '123456', icon: 'fa-dollar-sign' },
+    'percent': { label: 'Percentage', hint: 'Format: ###%', example: '50', icon: 'fa-percent' }
+  };
+
+  // Current active pattern (track for Set Value button)
+  var currentPattern = 'phone';
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('mask-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateValueDisplay() {
+    if (!mainMask) return;
+
+    var rawEl = document.getElementById('value-raw');
+    var formattedEl = document.getElementById('value-formatted');
+    var completeEl = document.getElementById('value-complete');
+
+    if (rawEl) rawEl.textContent = mainMask.getRaw() || '-';
+    if (formattedEl) formattedEl.textContent = mainMask.getFormatted() || '-';
+    if (completeEl) {
+      var isComplete = mainMask.isComplete();
+      completeEl.textContent = isComplete ? 'Yes' : 'No';
+      completeEl.className = 'badge ' + (isComplete ? 'bg-success' : 'bg-secondary');
+    }
+  }
+
+  function updateConfigDisplay(props) {
+    var patternEl = document.getElementById('config-pattern');
+    var transformEl = document.getElementById('config-transform');
+    var redactEl = document.getElementById('config-redact');
+
+    if (patternEl) patternEl.textContent = props.pattern || 'phone';
+    if (transformEl) transformEl.textContent = props.transform || 'none';
+    if (redactEl) {
+      var showRedact = props.showRedact !== false;
+      redactEl.textContent = showRedact ? 'Yes' : 'No';
+      redactEl.className = 'badge ' + (showRedact ? 'bg-success' : 'bg-secondary');
+    }
+
+    // Update redact display
+    var redactPatternEl = document.getElementById('redact-pattern-display');
+    var redactShowLastEl = document.getElementById('redact-showlast-display');
+    var redactModeEl = document.getElementById('redact-mode-display');
+
+    if (redactPatternEl) redactPatternEl.textContent = props.redactPattern || 'credit-card';
+    if (redactShowLastEl) redactShowLastEl.textContent = props.showLast || 4;
+    if (redactModeEl) redactModeEl.textContent = props.revealMode || 'click';
+  }
+
+  function updateMaskUI(pattern) {
+    var info = PATTERN_INFO[pattern] || { label: pattern, hint: 'Custom pattern' };
+
+    var labelEl = document.getElementById('mask-label');
+    var badgeEl = document.getElementById('mask-pattern-badge');
+    var hintEl = document.getElementById('mask-hint');
+
+    if (labelEl) labelEl.textContent = info.label;
+    if (badgeEl) badgeEl.textContent = pattern;
+    if (hintEl) hintEl.textContent = info.hint;
+  }
+
+  // Event handler references for cleanup
+  var maskInputHandler = null;
+  var maskCompleteHandler = null;
+  var maskValidHandler = null;
+  var nativeInputHandler = null;
+  var pubsubInputHandler = null;
+
+  function initMainMask(props) {
+    var input = document.getElementById('mask-main');
+    if (!input || !Funky.Mask) return;
+
+    // Remove existing event listeners
+    if (maskInputHandler) input.removeEventListener('funky:mask:input', maskInputHandler);
+    if (maskCompleteHandler) input.removeEventListener('funky:mask:complete', maskCompleteHandler);
+    if (maskValidHandler) input.removeEventListener('funky:mask:valid', maskValidHandler);
+    if (nativeInputHandler) input.removeEventListener('input', nativeInputHandler);
+    if (pubsubInputHandler && Funky.PubSub) Funky.PubSub.off('funky:mask:input', pubsubInputHandler);
+
+    // Destroy existing mask
+    if (mainMask) {
+      mainMask.destroy();
+      mainMask = null;
+    }
+
+    // Clear the input value when pattern changes
+    input.value = '';
+
+    var pattern = props.pattern || 'phone';
+    var transform = props.transform || null;
+
+    // Track current pattern for Set Value button
+    currentPattern = pattern;
+
+    // Create new mask
+    mainMask = new Funky.Mask(input, {
+      pattern: pattern,
+      transform: transform,
+      showMask: true
+    });
+
+    // Update UI
+    updateMaskUI(pattern);
+    updateValueDisplay();
+
+    // Create event handlers
+    maskInputHandler = function(e) {
+      updateValueDisplay();
+      log('Input: raw="' + e.detail.raw + '", formatted="' + e.detail.formatted + '"');
+      emit('event', { event: 'mask:input', payload: e.detail });
+    };
+
+    maskCompleteHandler = function(e) {
+      log('Complete: ' + e.detail.formatted);
+      emit('event', { event: 'mask:complete', payload: e.detail });
+    };
+
+    maskValidHandler = function(e) {
+      log('Validation: ' + (e.detail.valid ? 'Valid' : 'Invalid - ' + e.detail.error));
+      emit('event', { event: 'mask:valid', payload: e.detail });
+    };
+
+    // Native input handler as fallback
+    nativeInputHandler = function() {
+      updateValueDisplay();
+    };
+
+    // Attach DOM event listeners (using standard funky:mask: prefix)
+    input.addEventListener('funky:mask:input', maskInputHandler);
+    input.addEventListener('funky:mask:complete', maskCompleteHandler);
+    input.addEventListener('funky:mask:valid', maskValidHandler);
+    input.addEventListener('input', nativeInputHandler);
+
+    // Also subscribe via PubSub
+    if (Funky.PubSub) {
+      pubsubInputHandler = function(detail) {
+        updateValueDisplay();
+      };
+      Funky.PubSub.on('funky:mask:input', pubsubInputHandler);
+    }
+
+    log('Mask initialized: pattern=' + pattern + ', transform=' + (transform || 'none'));
+  }
+
+  function initRedact(props) {
+    var valueEl = document.getElementById('redact-value');
+    var toggleBtn = document.getElementById('redact-toggle');
+    var stateEl = document.getElementById('redact-state');
+    var section = document.getElementById('redact-section');
+    var labelEl = document.getElementById('redact-label');
+    var iconEl = document.getElementById('redact-icon');
+
+    if (!valueEl || !Funky.Mask) return;
+
+    // Show/hide section based on props
+    if (section) {
+      section.style.display = props.showRedact !== false ? '' : 'none';
+    }
+
+    if (props.showRedact === false) return;
+
+    // Update label and icon based on redact pattern
+    var redactPattern = props.redactPattern || 'credit-card';
+    var patternInfo = PATTERN_INFO[redactPattern] || { label: redactPattern, icon: 'fa-mask' };
+    if (labelEl) labelEl.textContent = patternInfo.label;
+    if (iconEl) iconEl.className = 'fas ' + patternInfo.icon + ' me-2';
+
+    // Destroy existing
+    if (redactInstance) {
+      redactInstance.destroy();
+      redactInstance = null;
+    }
+
+    // Create redact instance
+    redactInstance = Funky.Mask.redact(valueEl, {
+      value: props.redactValue || '4111111111111234',
+      pattern: redactPattern,
+      showLast: props.showLast || 4,
+      reveal: props.revealMode || 'click',
+      onReveal: function() {
+        if (stateEl) {
+          stateEl.textContent = 'Revealed';
+          stateEl.className = 'badge bg-success';
+        }
+        if (toggleBtn) {
+          var icon = toggleBtn.querySelector('i');
+          if (icon) icon.className = 'fas fa-eye-slash';
+        }
+        log('Redact: Revealed');
+        emit('event', { event: 'mask:reveal', payload: {} });
+      },
+      onHide: function() {
+        if (stateEl) {
+          stateEl.textContent = 'Hidden';
+          stateEl.className = 'badge bg-secondary';
+        }
+        if (toggleBtn) {
+          var icon = toggleBtn.querySelector('i');
+          if (icon) icon.className = 'fas fa-eye';
+        }
+        log('Redact: Hidden');
+        emit('event', { event: 'mask:hide', payload: {} });
+      }
+    });
+
+    // Toggle button for button mode
+    if (props.revealMode === 'button' && toggleBtn) {
+      toggleBtn.onclick = function() {
+        if (redactInstance) redactInstance.toggle();
+      };
+    }
+  }
+
+  function initTestMasks() {
+    if (!Funky.Mask) return;
+
+    // Clean up existing
+    testMasks.forEach(function(m) {
+      if (m && m.destroy) m.destroy();
+    });
+    testMasks = [];
+
+    // Initialize test masks
+    var testPhone = document.getElementById('test-phone');
+    var testCC = document.getElementById('test-cc');
+    var testDate = document.getElementById('test-date');
+
+    if (testPhone) {
+      testMasks.push(new Funky.Mask(testPhone, { pattern: 'phone' }));
+    }
+    if (testCC) {
+      testMasks.push(new Funky.Mask(testCC, { pattern: 'credit-card' }));
+    }
+    if (testDate) {
+      testMasks.push(new Funky.Mask(testDate, { pattern: 'date' }));
+    }
+  }
+
+  function initDemo(props) {
+    updateConfigDisplay(props);
+    initMainMask(props);
+    initRedact(props);
+  }
+
+  Funky.Pages.register('component-mask', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+
+      log('Init with pattern=' + (props.pattern || 'phone'));
+      emit('event', { event: 'mask:init', payload: props });
+
+      // Initialize demo
+      initDemo(props);
+      initTestMasks();
+
+      // Preset buttons
+      document.querySelectorAll('[data-pattern]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var pattern = this.getAttribute('data-pattern');
+          if (mainMask) {
+            mainMask.destroy();
+          }
+          currentPattern = pattern;
+          var newProps = Object.assign({}, getProps(), { pattern: pattern });
+          initMainMask(newProps);
+          updateConfigDisplay(newProps);
+          log('Pattern changed to: ' + pattern);
+          emit('event', { event: 'mask:pattern-change', payload: { pattern: pattern } });
+          Funky.Toast.info('Pattern: ' + pattern);
+        });
+      });
+
+      // API buttons
+      document.getElementById('btn-set-value').addEventListener('click', function() {
+        if (mainMask) {
+          // Get example value for current pattern
+          var patternInfo = PATTERN_INFO[currentPattern];
+          var testValue = patternInfo ? patternInfo.example : '1234567890';
+          mainMask.setValue(testValue);
+          updateValueDisplay();
+          log('setValue("' + testValue + '") for pattern "' + currentPattern + '"');
+          emit('event', { event: 'mask:api-set', payload: { value: testValue, pattern: currentPattern } });
+          Funky.Toast.success('Set example: ' + (patternInfo ? patternInfo.label : currentPattern));
+        }
+      });
+
+      document.getElementById('btn-get-raw').addEventListener('click', function() {
+        if (mainMask) {
+          var raw = mainMask.getRaw();
+          log('getRaw() = "' + raw + '"');
+          emit('event', { event: 'mask:api-raw', payload: { raw: raw } });
+          Funky.Toast.info('Raw: ' + (raw || '(empty)'));
+        }
+      });
+
+      document.getElementById('btn-validate').addEventListener('click', function() {
+        if (mainMask) {
+          var result = mainMask.validate();
+          log('validate() = ' + JSON.stringify(result));
+          emit('event', { event: 'mask:api-validate', payload: result });
+          if (result.valid) {
+            Funky.Toast.success('Valid!');
+          } else {
+            Funky.Toast.warning(result.error || 'Invalid');
+          }
+        }
+      });
+
+      document.getElementById('btn-clear').addEventListener('click', function() {
+        if (mainMask) {
+          mainMask.clear();
+          updateValueDisplay();
+          log('clear()');
+          emit('event', { event: 'mask:api-clear', payload: {} });
+          Funky.Toast.info('Cleared');
+        }
+      });
+
+      document.getElementById('btn-detect-card').addEventListener('click', function() {
+        if (mainMask && Funky.Mask.detectCardType) {
+          var raw = mainMask.getRaw();
+          var cardType = Funky.Mask.detectCardType(raw);
+          log('detectCardType("' + raw + '") = ' + (cardType || 'unknown'));
+          emit('event', { event: 'mask:api-detect', payload: { type: cardType } });
+          Funky.Toast.info('Card type: ' + (cardType || 'unknown'));
+        }
+      });
+
+      // Listen for props changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - reinitializing');
+          initDemo(newProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Remove mask event listeners
+      var input = document.getElementById('mask-main');
+      if (input) {
+        if (maskInputHandler) input.removeEventListener('funky:mask:input', maskInputHandler);
+        if (maskCompleteHandler) input.removeEventListener('funky:mask:complete', maskCompleteHandler);
+        if (maskValidHandler) input.removeEventListener('funky:mask:valid', maskValidHandler);
+        if (nativeInputHandler) input.removeEventListener('input', nativeInputHandler);
+      }
+      if (pubsubInputHandler && Funky.PubSub) {
+        Funky.PubSub.off('funky:mask:input', pubsubInputHandler);
+      }
+      maskInputHandler = null;
+      maskCompleteHandler = null;
+      maskValidHandler = null;
+      nativeInputHandler = null;
+
+      // Destroy masks
+      if (mainMask) {
+        mainMask.destroy();
+        mainMask = null;
+      }
+
+      if (redactInstance) {
+        redactInstance.destroy();
+        redactInstance = null;
+      }
+
+      testMasks.forEach(function(m) {
+        if (m && m.destroy) m.destroy();
+      });
+      testMasks = [];
+
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

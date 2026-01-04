@@ -1,0 +1,441 @@
+/**
+ * Funky Context Menu Component
+ * Right-click context menus with submenus and keyboard navigation
+ * @version 1.0.0
+ */
+
+/* ==========================================================================
+   CSS VARIABLES
+   ========================================================================== */
+:root {
+  /* Timing */
+  --contextmenu-animation-duration: 0.15s;
+  
+  /* Sizing */
+  --contextmenu-min-width: 160px;
+  --contextmenu-max-width: 320px;
+  --contextmenu-item-height: 32px;
+  --contextmenu-icon-width: 24px;
+  
+  /* Spacing */
+  --contextmenu-padding: var(--pro-spacing-xs, 4px);
+  --contextmenu-item-padding-x: var(--pro-spacing-sm, 8px);
+  --contextmenu-item-padding-y: var(--pro-spacing-xs, 4px);
+  
+  /* Typography */
+  --contextmenu-font-size: var(--pro-font-size-sm, 13px);
+  --contextmenu-shortcut-font-size: var(--pro-font-size-xs, 11px);
+  --contextmenu-header-font-size: var(--pro-font-size-xs, 11px);
+}
+
+/* ==========================================================================
+   MAIN MENU CONTAINER
+   ========================================================================== */
+.funky-contextmenu {
+  position: fixed;
+  margin: 0;
+  padding: var(--contextmenu-padding);
+  min-width: var(--contextmenu-min-width);
+  max-width: var(--contextmenu-max-width);
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  list-style: none;
+  background-color: var(--pro-surface, #ffffff);
+  border: 1px solid var(--pro-border-color, #dee2e6);
+  border-radius: var(--pro-radius-md, 6px);
+  box-shadow: var(--pro-shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.15));
+  z-index: 10000;
+  
+  /* Animation */
+  opacity: 0;
+  transform: scale(0.95);
+  transform-origin: top left;
+  transition: 
+    opacity var(--contextmenu-animation-duration) ease-out,
+    transform var(--contextmenu-animation-duration) ease-out;
+  
+  /* Focus outline */
+  outline: none;
+}
+
+.funky-contextmenu.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Submenu positioning */
+.funky-contextmenu.is-submenu {
+  transform-origin: top left;
+}
+
+.funky-contextmenu.is-submenu.is-submenu-left {
+  transform-origin: top right;
+}
+
+/* ==========================================================================
+   MENU ITEMS
+   ========================================================================== */
+.funky-contextmenu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--pro-spacing-sm, 8px);
+  min-height: var(--contextmenu-item-height);
+  padding: var(--contextmenu-item-padding-y) var(--contextmenu-item-padding-x);
+  margin: 0;
+  border-radius: var(--pro-radius-sm, 4px);
+  font-size: var(--contextmenu-font-size);
+  color: var(--pro-text-primary, #212529);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.1s ease;
+}
+
+.funky-contextmenu-item:hover,
+.funky-contextmenu-item.is-focused {
+  background-color: var(--pro-surface-alt, #f8f9fa);
+}
+
+/* Disabled state */
+.funky-contextmenu-item.is-disabled {
+  color: var(--pro-text-secondary, #6c757d);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.funky-contextmenu-item.is-disabled:hover,
+.funky-contextmenu-item.is-disabled.is-focused {
+  background-color: transparent;
+}
+
+/* ==========================================================================
+   ITEM PARTS
+   ========================================================================== */
+
+/* Icon */
+.funky-contextmenu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--contextmenu-icon-width);
+  flex-shrink: 0;
+  color: var(--pro-text-secondary, #6c757d);
+  font-size: calc(var(--contextmenu-font-size) - 1px);
+}
+
+.funky-contextmenu-item:hover .funky-contextmenu-icon,
+.funky-contextmenu-item.is-focused .funky-contextmenu-icon {
+  color: var(--pro-text-primary, #212529);
+}
+
+/* Label */
+.funky-contextmenu-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Shortcut hint */
+.funky-contextmenu-shortcut {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: var(--pro-spacing-md, 16px);
+  font-size: var(--contextmenu-shortcut-font-size);
+  color: var(--pro-text-secondary, #6c757d);
+  opacity: 0.7;
+}
+
+/* Submenu arrow */
+.funky-contextmenu-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: var(--pro-spacing-sm, 8px);
+  color: var(--pro-text-secondary, #6c757d);
+  font-size: 10px;
+}
+
+.funky-contextmenu-item:hover .funky-contextmenu-arrow,
+.funky-contextmenu-item.is-focused .funky-contextmenu-arrow {
+  color: var(--pro-text-primary, #212529);
+}
+
+/* ==========================================================================
+   VARIANTS
+   ========================================================================== */
+
+/* Danger variant */
+.funky-contextmenu-item-danger {
+  color: var(--pro-error, #dc3545);
+}
+
+.funky-contextmenu-item-danger .funky-contextmenu-icon {
+  color: var(--pro-error, #dc3545);
+}
+
+.funky-contextmenu-item-danger:hover,
+.funky-contextmenu-item-danger.is-focused {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--pro-error, #dc3545);
+}
+
+.funky-contextmenu-item-danger:hover .funky-contextmenu-icon,
+.funky-contextmenu-item-danger.is-focused .funky-contextmenu-icon {
+  color: var(--pro-error, #dc3545);
+}
+
+/* ==========================================================================
+   DIVIDER
+   ========================================================================== */
+.funky-contextmenu-divider {
+  height: 1px;
+  margin: var(--contextmenu-padding) 0;
+  padding: 0;
+  background-color: var(--pro-border-color, #dee2e6);
+  list-style: none;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.funky-contextmenu-header {
+  padding: var(--pro-spacing-xs, 4px) var(--contextmenu-item-padding-x);
+  margin-top: var(--contextmenu-padding);
+  font-size: var(--contextmenu-header-font-size);
+  font-weight: 600;
+  color: var(--pro-text-secondary, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  list-style: none;
+}
+
+.funky-contextmenu-header:first-child {
+  margin-top: 0;
+}
+
+/* ==========================================================================
+   DENSITY VARIANTS
+   ========================================================================== */
+
+/* Compact */
+[data-density="compact"] .funky-contextmenu,
+.funky-contextmenu.is-compact {
+  --contextmenu-item-height: 28px;
+  --contextmenu-padding: 3px;
+  --contextmenu-item-padding-x: 6px;
+  --contextmenu-item-padding-y: 2px;
+  --contextmenu-font-size: 12px;
+  --contextmenu-icon-width: 20px;
+}
+
+/* Comfortable */
+[data-density="comfortable"] .funky-contextmenu,
+.funky-contextmenu.is-comfortable {
+  --contextmenu-item-height: 40px;
+  --contextmenu-padding: 6px;
+  --contextmenu-item-padding-x: 12px;
+  --contextmenu-item-padding-y: 8px;
+  --contextmenu-font-size: 14px;
+  --contextmenu-icon-width: 28px;
+}
+
+/* ==========================================================================
+   DARK THEME
+   ========================================================================== */
+[data-theme="dark"] .funky-contextmenu {
+  background-color: var(--pro-surface, #1e1e1e);
+  border-color: var(--pro-border-color, #3d3d3d);
+}
+
+[data-theme="dark"] .funky-contextmenu-item:hover,
+[data-theme="dark"] .funky-contextmenu-item.is-focused {
+  background-color: var(--pro-surface-alt, #2d2d2d);
+}
+
+[data-theme="dark"] .funky-contextmenu-item-danger:hover,
+[data-theme="dark"] .funky-contextmenu-item-danger.is-focused {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .funky-contextmenu {
+    transition: none;
+    transform: none;
+  }
+  
+  .funky-contextmenu.is-visible {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   SCROLLBAR STYLING
+   ========================================================================== */
+.funky-contextmenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.funky-contextmenu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.funky-contextmenu::-webkit-scrollbar-thumb {
+  background-color: var(--pro-border-color, #dee2e6);
+  border-radius: 3px;
+}
+
+.funky-contextmenu::-webkit-scrollbar-thumb:hover {
+  background-color: var(--pro-text-secondary, #6c757d);
+}
+
+/* Firefox scrollbar */
+.funky-contextmenu {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pro-border-color, #dee2e6) transparent;
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .funky-contextmenu {
+    border-width: 2px;
+    box-shadow: none !important;
+  }
+
+  .funky-contextmenu-item {
+    border: 1px solid transparent;
+  }
+
+  .funky-contextmenu-item:hover,
+  .funky-contextmenu-item.is-focused {
+    border-color: currentColor;
+  }
+
+  .funky-contextmenu-item:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+  }
+
+  .funky-contextmenu-divider {
+    border-top-width: 2px;
+  }
+
+  .funky-contextmenu-item.is-disabled {
+    border-style: dashed;
+  }
+}
+
+/* ============================================
+   BOOTSTRAP DROPDOWN THEME OVERRIDES
+   Using --pro-* variables for theme consistency
+   ============================================ */
+
+.dropdown-menu {
+  background-color: var(--pro-bg-secondary);
+  border-color: var(--pro-border);
+}
+
+.dropdown-item {
+  color: var(--pro-text-primary);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--pro-bg-tertiary);
+  color: var(--pro-text-primary);
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--pro-primary);
+  color: var(--pro-text-inverse);
+}
+
+.dropdown-divider {
+  border-color: var(--pro-border);
+}
+
+/* ============================================
+   BOOTSTRAP TOOLTIP THEME OVERRIDES
+   Using --pro-* variables for theme consistency
+   ============================================ */
+
+.tooltip-inner {
+  background-color: var(--pro-bg-tertiary);
+  color: var(--pro-text-primary);
+}
+
+/* ============================================
+   BOOTSTRAP POPOVER THEME OVERRIDES
+   Using --pro-* variables for theme consistency
+   ============================================ */
+
+.popover {
+  background-color: var(--pro-bg-secondary);
+  border-color: var(--pro-border);
+}
+
+.popover-header {
+  background-color: var(--pro-bg-tertiary);
+  border-bottom-color: var(--pro-border);
+  color: var(--pro-text-primary);
+}
+
+.popover-body {
+  color: var(--pro-text-primary);
+}
+
+/* Arrow colors for each direction */
+.bs-popover-top > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="top"] > .popover-arrow::before {
+  border-top-color: var(--pro-border-color);
+}
+
+.bs-popover-top > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="top"] > .popover-arrow::after {
+  border-top-color: var(--pro-bg-elevated);
+}
+
+.bs-popover-end > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::before {
+  border-right-color: var(--pro-border-color);
+}
+
+.bs-popover-end > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::after {
+  border-right-color: var(--pro-bg-elevated);
+}
+
+.bs-popover-bottom > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="bottom"] > .popover-arrow::before {
+  border-bottom-color: var(--pro-border-color);
+}
+
+.bs-popover-bottom > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="bottom"] > .popover-arrow::after {
+  border-bottom-color: var(--pro-bg-elevated);
+}
+
+.bs-popover-start > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::before {
+  border-left-color: var(--pro-border-color);
+}
+
+.bs-popover-start > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::after {
+  border-left-color: var(--pro-bg-elevated);
+}
+
+/* Popover header with arrow pointing down needs header bg on arrow */
+.bs-popover-bottom > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="bottom"] .popover-header ~ .popover-arrow::after {
+  border-bottom-color: var(--pro-bg-tertiary);
+}

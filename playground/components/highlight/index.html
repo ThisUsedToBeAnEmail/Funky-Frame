@@ -1,0 +1,465 @@
+<div data-page="component-highlight" class="component-demo">
+  <h2>Highlight</h2>
+  <p class="text-muted">Text highlighting for search terms with navigation, fuzzy matching, and multi-term support.</p>
+
+  <!-- Section 1: Basic Search Highlighting -->
+  <div class="demo-section">
+    <h3>Search Highlighting</h3>
+    <div class="demo-area">
+      <div class="highlight-demo__search-controls">
+        <input type="text" id="highlight-search" class="form-control" placeholder="Type to search..." aria-label="Search terms">
+        <div class="highlight-demo__options">
+          <label class="highlight-demo__checkbox">
+            <input type="checkbox" id="opt-case-sensitive">
+            <span>Case Sensitive</span>
+          </label>
+          <label class="highlight-demo__checkbox">
+            <input type="checkbox" id="opt-whole-word">
+            <span>Whole Word</span>
+          </label>
+        </div>
+      </div>
+      <div class="highlight-demo__nav-bar" id="nav-bar" style="display: none;">
+        <span class="highlight-demo__counter">
+          <span id="match-current">0</span> / <span id="match-total">0</span>
+        </span>
+        <div class="highlight-demo__nav-buttons">
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-prev" aria-label="Previous match">
+            <i class="fas fa-chevron-up"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-next" aria-label="Next match">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" id="btn-clear" aria-label="Clear highlights">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div id="highlight-content" class="highlight-demo__content" tabindex="0" aria-label="Searchable content">
+        <p>Funky is a lightweight ES5 component library designed for progressive enhancement. Unlike modern frameworks, Funky works without a build step and supports older browsers while remaining delightfully simple to use.</p>
+        <p>The Funky philosophy embraces vanilla JavaScript patterns. Each Funky component is self-contained, dependency-free, and follows consistent API conventions. Funky modules like Highlight, Toast, and Modal work together seamlessly.</p>
+        <p>Building with Funky means embracing simplicity. No transpilation, no bundlers, no node_modules - just drop in the Funky scripts and start building. The Funky way is the pragmatic way.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Multi-term Highlighting -->
+  <div class="demo-section">
+    <h3>Multi-term Highlighting</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Highlight multiple terms with different colors. Each term gets a unique highlight color.</p>
+      <div class="highlight-demo__multi-controls">
+        <div class="highlight-demo__term-inputs">
+          <input type="text" id="term-1" class="form-control" placeholder="Term 1" value="quick">
+          <input type="text" id="term-2" class="form-control" placeholder="Term 2" value="fox">
+          <input type="text" id="term-3" class="form-control" placeholder="Term 3" value="lazy">
+        </div>
+        <div class="highlight-demo__term-actions">
+          <button type="button" class="btn btn-primary" id="btn-highlight-all">
+            <i class="fas fa-highlighter me-1"></i> Highlight All
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="btn-clear-multi">
+            <i class="fas fa-eraser me-1"></i> Clear
+          </button>
+        </div>
+      </div>
+      <div id="highlight-multi" class="highlight-demo__content" tabindex="0">
+        <p>The quick brown fox jumps over the lazy dog. This classic pangram contains every letter of the English alphabet at least once.</p>
+        <p>A quick glance at the text reveals the fox and the dog, but the truly lazy reader might miss the quick movements of the brown fox as it gracefully jumps.</p>
+      </div>
+      <div class="highlight-demo__color-legend">
+        <span class="highlight-demo__legend-item" data-term="0">Term 1</span>
+        <span class="highlight-demo__legend-item" data-term="1">Term 2</span>
+        <span class="highlight-demo__legend-item" data-term="2">Term 3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Fuzzy Matching -->
+  <div class="demo-section">
+    <h3>Fuzzy Matching</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Fuzzy search highlights non-contiguous character matches (requires FuzzySearch module).</p>
+      <div class="highlight-demo__fuzzy-controls">
+        <input type="text" id="fuzzy-query" class="form-control" placeholder="Try 'jvscpt' for JavaScript..." value="">
+        <button type="button" class="btn btn-primary" id="btn-fuzzy-apply">
+          <i class="fas fa-search me-1"></i> Fuzzy Search
+        </button>
+      </div>
+      <div id="highlight-fuzzy" class="highlight-demo__content" tabindex="0">
+        <ul>
+          <li><strong>JavaScript</strong> - The language of the web</li>
+          <li><strong>TypeScript</strong> - JavaScript with type safety</li>
+          <li><strong>CoffeeScript</strong> - A cleaner syntax for JavaScript</li>
+          <li><strong>ActionScript</strong> - Flash programming language</li>
+          <li><strong>PureScript</strong> - Functional programming for JS</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Navigation Demo -->
+  <div class="demo-section">
+    <h3>Navigation API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Use the navigation API to move between matches programmatically.</p>
+      <div class="highlight-demo__api-controls">
+        <button type="button" class="btn btn-outline-primary" id="btn-scroll-first">
+          <i class="fas fa-angle-double-up me-1"></i> scrollToFirst()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-prev-nav">
+          <i class="fas fa-arrow-up me-1"></i> prev()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-next-nav">
+          <i class="fas fa-arrow-down me-1"></i> next()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-goto">
+          <i class="fas fa-crosshairs me-1"></i> goTo(5)
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-count">
+          <i class="fas fa-calculator me-1"></i> count()
+        </button>
+      </div>
+      <div id="highlight-nav-demo" class="highlight-demo__content highlight-demo__content--scrollable" tabindex="0">
+        <p>The Funky.Highlight module lets you navigate through matches. The navigation API cycles through each occurrence. The previous and next buttons move between matches. The goTo method jumps to a specific index. The scrollToFirst method resets to the first match.</p>
+        <p>The current match gets a distinct "current" highlight style, making it stand out from the others. The navigation wraps around - going next from the last match returns to the first, and going prev from the first goes to the last.</p>
+        <p>The count method returns the total number of matches for the UI. The hasHighlights method checks if any highlights are active. The clear method removes all highlights from the element.</p>
+      </div>
+      <div class="highlight-demo__nav-status">
+        <span id="nav-status">Matches: 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Static Marking (mark utility) -->
+  <div class="demo-section">
+    <h3>Static Mark Utility</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Use <code>Highlight.mark()</code> to generate highlighted HTML strings without DOM manipulation.</p>
+      <div class="highlight-demo__mark-controls">
+        <input type="text" id="mark-text" class="form-control" placeholder="Text to mark..." value="Funky components are lightweight and dependency-free">
+        <input type="text" id="mark-term" class="form-control" placeholder="Term to highlight..." value="Funky">
+        <button type="button" class="btn btn-primary" id="btn-mark">
+          <i class="fas fa-code me-1"></i> Generate HTML
+        </button>
+      </div>
+      <div class="highlight-demo__output">
+        <h5>Rendered Output</h5>
+        <div id="mark-rendered" class="highlight-demo__rendered"></div>
+        <h5>Raw HTML</h5>
+        <pre id="mark-raw" class="highlight-demo__raw"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Events Log -->
+  <div class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="highlight-log" class="highlight-demo__log">Waiting for events...</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = {};
+  var eventCleanups = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('highlight-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateNavUI(count, current) {
+    var navBar = document.getElementById('nav-bar');
+    var matchCurrent = document.getElementById('match-current');
+    var matchTotal = document.getElementById('match-total');
+
+    if (count > 0) {
+      navBar.style.display = 'flex';
+      matchTotal.textContent = count;
+      matchCurrent.textContent = current >= 0 ? current + 1 : 0;
+    } else {
+      navBar.style.display = 'none';
+    }
+  }
+
+  Funky.Pages.register('component-highlight', {
+    init: function(state) {
+      var props = getProps();
+      var Highlight = Funky.Highlight;
+
+      if (!Highlight) {
+        log('Error: Funky.Highlight not available');
+        return;
+      }
+
+      log('Highlight module initialized');
+
+      // =========================================================================
+      // Section 1: Basic Search Highlighting
+      // =========================================================================
+
+      var searchInput = document.getElementById('highlight-search');
+      var caseSensitiveOpt = document.getElementById('opt-case-sensitive');
+      var wholeWordOpt = document.getElementById('opt-whole-word');
+      var contentEl = document.getElementById('highlight-content');
+
+      // Set initial values from props
+      if (props.caseSensitive) caseSensitiveOpt.checked = true;
+      if (props.wholeWord) wholeWordOpt.checked = true;
+      if (props.searchTerm) searchInput.value = props.searchTerm;
+
+      function applySearch() {
+        var term = searchInput.value.trim();
+        if (term.length < 1) {
+          Highlight.clear(contentEl);
+          updateNavUI(0, -1);
+          return;
+        }
+
+        var instance = Highlight.apply(contentEl, term, {
+          caseSensitive: caseSensitiveOpt.checked,
+          wholeWord: wholeWordOpt.checked,
+          animate: props.animate !== false
+        });
+
+        instances.content = instance;
+        var count = instance ? instance.getCount() : 0;
+        updateNavUI(count, -1);
+        log('Search: "' + term + '" → ' + count + ' matches');
+        emit('event', { event: 'highlight:search', payload: { term: term, count: count } });
+      }
+
+      searchInput.addEventListener('input', applySearch);
+      caseSensitiveOpt.addEventListener('change', applySearch);
+      wholeWordOpt.addEventListener('change', applySearch);
+
+      // Navigation buttons
+      document.getElementById('btn-prev').addEventListener('click', function() {
+        if (instances.content) {
+          instances.content.prev();
+          updateNavUI(instances.content.getCount(), instances.content.getCurrentIndex());
+          log('Navigate: prev → match ' + (instances.content.getCurrentIndex() + 1));
+        }
+      });
+
+      document.getElementById('btn-next').addEventListener('click', function() {
+        if (instances.content) {
+          instances.content.next();
+          updateNavUI(instances.content.getCount(), instances.content.getCurrentIndex());
+          log('Navigate: next → match ' + (instances.content.getCurrentIndex() + 1));
+        }
+      });
+
+      document.getElementById('btn-clear').addEventListener('click', function() {
+        Highlight.clear(contentEl);
+        instances.content = null;
+        updateNavUI(0, -1);
+        searchInput.value = '';
+        log('Cleared search highlights');
+      });
+
+      // Initial search if term provided
+      if (searchInput.value) {
+        applySearch();
+      }
+
+      // Listen for highlight events
+      var highlightApplied = function(e) {
+        log('Event: highlight.applied → ' + e.detail.count + ' matches');
+      };
+      var highlightNavigate = function(e) {
+        log('Event: highlight.navigate → ' + (e.detail.index + 1) + '/' + e.detail.total);
+      };
+      contentEl.addEventListener('funky.highlight.applied', highlightApplied);
+      contentEl.addEventListener('funky.highlight.navigate', highlightNavigate);
+      eventCleanups.push(function() {
+        contentEl.removeEventListener('funky.highlight.applied', highlightApplied);
+        contentEl.removeEventListener('funky.highlight.navigate', highlightNavigate);
+      });
+
+      // =========================================================================
+      // Section 2: Multi-term Highlighting
+      // =========================================================================
+
+      var term1 = document.getElementById('term-1');
+      var term2 = document.getElementById('term-2');
+      var term3 = document.getElementById('term-3');
+      var multiEl = document.getElementById('highlight-multi');
+
+      document.getElementById('btn-highlight-all').addEventListener('click', function() {
+        var terms = [term1.value, term2.value, term3.value].filter(Boolean);
+        if (terms.length === 0) {
+          log('No terms entered');
+          return;
+        }
+
+        instances.multi = Highlight.apply(multiEl, terms, {
+          animate: true
+        });
+
+        var count = instances.multi ? instances.multi.getCount() : 0;
+        log('Multi-term: ' + terms.join(', ') + ' → ' + count + ' matches');
+        emit('event', { event: 'highlight:multi', payload: { terms: terms, count: count } });
+      });
+
+      document.getElementById('btn-clear-multi').addEventListener('click', function() {
+        Highlight.clear(multiEl);
+        instances.multi = null;
+        log('Cleared multi-term highlights');
+      });
+
+      // =========================================================================
+      // Section 3: Fuzzy Matching
+      // =========================================================================
+
+      var fuzzyInput = document.getElementById('fuzzy-query');
+      var fuzzyEl = document.getElementById('highlight-fuzzy');
+
+      document.getElementById('btn-fuzzy-apply').addEventListener('click', function() {
+        var query = fuzzyInput.value.trim();
+        if (!query) {
+          Highlight.clear(fuzzyEl);
+          log('Fuzzy: cleared');
+          return;
+        }
+
+        if (!Funky.FuzzySearch) {
+          log('Fuzzy: FuzzySearch module not loaded');
+          // Fall back to regular highlight
+          instances.fuzzy = Highlight.apply(fuzzyEl, query);
+          var count = instances.fuzzy ? instances.fuzzy.getCount() : 0;
+          log('Fuzzy (fallback): "' + query + '" → ' + count + ' matches');
+          return;
+        }
+
+        instances.fuzzy = Highlight.fuzzyApply(fuzzyEl, query, {
+          threshold: 0.3,
+          animate: true
+        });
+
+        var count = instances.fuzzy ? instances.fuzzy.getCount() : 0;
+        log('Fuzzy: "' + query + '" → ' + count + ' matches');
+        emit('event', { event: 'highlight:fuzzy', payload: { query: query, count: count } });
+      });
+
+      // =========================================================================
+      // Section 4: Navigation API Demo
+      // =========================================================================
+
+      var navDemoEl = document.getElementById('highlight-nav-demo');
+      var navStatus = document.getElementById('nav-status');
+
+      // Pre-apply highlights for navigation demo
+      instances.navDemo = Highlight.apply(navDemoEl, 'the', {
+        caseSensitive: false,
+        animate: true
+      });
+      var navCount = instances.navDemo ? instances.navDemo.getCount() : 0;
+      navStatus.textContent = 'Matches: ' + navCount;
+      log('Navigation demo: ' + navCount + ' matches for "the"');
+
+      document.getElementById('btn-scroll-first').addEventListener('click', function() {
+        if (instances.navDemo) {
+          instances.navDemo.scrollToFirst();
+          navStatus.textContent = 'Match: 1 / ' + instances.navDemo.getCount();
+          log('API: scrollToFirst()');
+        }
+      });
+
+      document.getElementById('btn-prev-nav').addEventListener('click', function() {
+        if (instances.navDemo) {
+          instances.navDemo.prev();
+          navStatus.textContent = 'Match: ' + (instances.navDemo.getCurrentIndex() + 1) + ' / ' + instances.navDemo.getCount();
+          log('API: prev() → ' + (instances.navDemo.getCurrentIndex() + 1));
+        }
+      });
+
+      document.getElementById('btn-next-nav').addEventListener('click', function() {
+        if (instances.navDemo) {
+          instances.navDemo.next();
+          navStatus.textContent = 'Match: ' + (instances.navDemo.getCurrentIndex() + 1) + ' / ' + instances.navDemo.getCount();
+          log('API: next() → ' + (instances.navDemo.getCurrentIndex() + 1));
+        }
+      });
+
+      document.getElementById('btn-goto').addEventListener('click', function() {
+        if (instances.navDemo) {
+          var targetIndex = Math.min(5, instances.navDemo.getCount() - 1);
+          instances.navDemo.goTo(targetIndex);
+          navStatus.textContent = 'Match: ' + (instances.navDemo.getCurrentIndex() + 1) + ' / ' + instances.navDemo.getCount();
+          log('API: goTo(' + targetIndex + ')');
+        }
+      });
+
+      document.getElementById('btn-count').addEventListener('click', function() {
+        var count = Highlight.count(navDemoEl);
+        log('API: count() → ' + count);
+        navStatus.textContent = 'Total matches: ' + count;
+      });
+
+      // =========================================================================
+      // Section 5: Static Mark Utility
+      // =========================================================================
+
+      var markTextInput = document.getElementById('mark-text');
+      var markTermInput = document.getElementById('mark-term');
+      var markRendered = document.getElementById('mark-rendered');
+      var markRaw = document.getElementById('mark-raw');
+
+      function updateMark() {
+        var text = markTextInput.value;
+        var term = markTermInput.value;
+
+        if (!text || !term) {
+          markRendered.innerHTML = '<em class="text-muted">Enter text and term above</em>';
+          markRaw.textContent = '';
+          return;
+        }
+
+        var html = Highlight.mark(text, term, {
+          caseSensitive: false
+        });
+
+        markRendered.innerHTML = html;
+        markRaw.textContent = html;
+        log('mark(): Generated HTML for "' + term + '"');
+      }
+
+      document.getElementById('btn-mark').addEventListener('click', updateMark);
+      markTextInput.addEventListener('input', updateMark);
+      markTermInput.addEventListener('input', updateMark);
+
+      // Initial render
+      updateMark();
+    },
+
+    destroy: function() {
+      // Clear all highlights
+      Object.keys(instances).forEach(function(key) {
+        var instance = instances[key];
+        if (instance && instance.clear) {
+          instance.clear();
+        }
+      });
+      instances = {};
+
+      // Cleanup event listeners
+      eventCleanups.forEach(function(cleanup) {
+        if (typeof cleanup === 'function') cleanup();
+      });
+      eventCleanups = [];
+
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

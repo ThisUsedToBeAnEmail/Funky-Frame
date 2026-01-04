@@ -1,0 +1,1304 @@
+/* ============================================
+   WIZARD.CSS - Wizard Components
+   Template wizard, trade wizard, clone wizard
+   ============================================ */
+
+/* ============================================
+   TEMPLATE WIZARD MODAL
+   ============================================ */
+#templateWizardModal .modal-dialog {
+  max-width: 900px;
+}
+
+#templateWizardModal .modal-content {
+  background: var(--pro-bg-elevated);
+  border: 2px solid var(--pro-border-color);
+  border-radius: 16px;
+  box-shadow: var(--pro-shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.5));
+  min-height: 600px;
+}
+
+#templateWizardModal .modal-header {
+  background: linear-gradient(135deg, var(--user-accent, var(--pro-accent-primary)), var(--primary-dark));
+  color: white;
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  padding: 20px 30px;
+}
+
+#templateWizardModal .modal-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: white;
+}
+
+#templateWizardModal .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+#templateWizardModal .btn-close:hover {
+  opacity: 1;
+}
+
+#templateWizardModal .modal-body {
+  background: var(--pro-bg-elevated);
+  padding: 30px;
+  min-height: 400px;
+}
+
+#templateWizardModal .modal-footer {
+  background: var(--pro-bg-secondary);
+  border-top: 1px solid var(--pro-border-color);
+  border-radius: 0 0 14px 14px;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#templateWizardModal .modal-footer .btn-funky {
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   WIZARD PROGRESS BAR
+   ============================================ */
+.wizard-progress {
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.wizard-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  position: relative;
+}
+
+.wizard-steps::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--pro-border-color);
+  z-index: 0;
+}
+
+.wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.wizard-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--pro-bg-secondary);
+  border: 2px solid var(--pro-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--pro-text-secondary);
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.wizard-step.active .wizard-step-number {
+  background: var(--user-accent, var(--pro-accent-primary));
+  border-color: var(--user-accent, var(--pro-accent-primary));
+  color: white;
+  box-shadow: 0 4px 12px var(--user-accent-muted, rgba(47, 129, 247, 0.4));
+  transform: scale(1.1);
+}
+
+.wizard-step.completed .wizard-step-number {
+  background: var(--pro-accent-success);
+  border-color: var(--pro-accent-success);
+  color: white;
+}
+
+/* Completed step shows fa-check icon via JS, no need for ::before */
+
+.wizard-step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pro-text-muted);
+  text-align: center;
+}
+
+.wizard-step.active .wizard-step-label {
+  color: var(--user-accent, var(--pro-accent-primary));
+}
+
+.wizard-step.completed .wizard-step-label {
+  color: var(--pro-accent-success);
+}
+
+/* ============================================
+   WIZARD STEP CONTENT
+   ============================================ */
+.wizard-content {
+  display: none;
+  animation: wizardFadeIn 0.3s ease-in;
+}
+
+.wizard-content.active {
+  display: block;
+}
+
+@keyframes wizardFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.wizard-content h6 {
+  color: var(--user-accent, var(--pro-accent-primary));
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.wizard-content .text-muted {
+  color: var(--pro-text-secondary) !important;
+  font-size: 0.9rem;
+}
+
+.wizard-content .alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.wizard-content .alert-info {
+  background: var(--pro-accent-info-muted);
+  border: 1px solid var(--pro-accent-info);
+  color: var(--pro-accent-info);
+}
+
+.wizard-content .alert-warning {
+  background: var(--pro-accent-warning-muted);
+  border: 1px solid var(--pro-accent-warning);
+  color: var(--pro-accent-warning);
+}
+
+/* ============================================
+   CLONE WIZARD PROGRESS
+   ============================================ */
+.clone-wizard-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  padding: 0 20px;
+}
+
+.clone-wizard-progress .wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  padding: 0 20px;
+}
+
+.wizard-step-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--pro-border-color);
+  max-width: 100px;
+  min-width: 40px;
+  margin-top: -20px;
+}
+
+.wizard-step.completed + .wizard-step-connector {
+  background: var(--pro-accent-success);
+}
+
+/* ============================================
+   WIZARD SEARCH BOX
+   ============================================ */
+.wizard-search-box {
+  position: relative;
+}
+
+.wizard-search-box input {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: var(--pro-text-primary);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.wizard-search-box input:focus {
+  border-color: var(--focus-ring-color);
+}
+
+.wizard-search-box input:focus-visible {
+  border-color: var(--focus-ring-color);
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.wizard-search-box input::placeholder {
+  color: var(--pro-text-secondary);
+}
+
+/* ============================================
+   WIZARD EDITOR CONTAINERS
+   ============================================ */
+#templateInfoEditor,
+#baseTradeEditor {
+  background: var(--pro-bg-elevated);
+  padding: 25px;
+  border-radius: 12px;
+  min-height: 350px;
+}
+
+/* Override bg-light for wizard forms */
+#templateInfoEditor .bg-light,
+#templateInfoEditor .je-object__container.bg-light,
+#templateInfoEditor .je-indented-panel.bg-light,
+#templateInfoEditor .form-group.bg-light,
+#templateInfoEditor .je-child-editor-holder.bg-light,
+#templateInfoEditor div.bg-light,
+#baseTradeEditor .bg-light,
+#baseTradeEditor .je-object__container.bg-light,
+#baseTradeEditor .je-indented-panel.bg-light,
+#baseTradeEditor .form-group.bg-light,
+#baseTradeEditor .je-child-editor-holder.bg-light,
+#baseTradeEditor div.bg-light {
+  background: transparent !important;
+}
+
+#templateInfoEditor .je-object__container,
+#templateInfoEditor .je-indented-panel,
+#baseTradeEditor .je-object__container,
+#baseTradeEditor .je-indented-panel {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Additional wizard form styling */
+#templateInfoEditor .je-form-input-label,
+#baseTradeEditor .je-form-input-label {
+  color: var(--pro-text-primary) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+#templateInfoEditor input.form-control,
+#templateInfoEditor textarea.form-control,
+#templateInfoEditor select.form-control,
+#baseTradeEditor input.form-control,
+#baseTradeEditor textarea.form-control,
+#baseTradeEditor select.form-control {
+  background: var(--pro-bg-secondary) !important;
+  border: 1px solid var(--pro-border-color) !important;
+  color: var(--pro-text-primary) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  width: 100% !important;
+}
+
+#templateInfoEditor input.form-control:focus,
+#templateInfoEditor textarea.form-control:focus,
+#templateInfoEditor select.form-control:focus,
+#baseTradeEditor input.form-control:focus,
+#baseTradeEditor textarea.form-control:focus,
+#baseTradeEditor select.form-control:focus {
+  border-color: var(--focus-ring-color) !important;
+}
+
+#templateInfoEditor input.form-control:focus-visible,
+#templateInfoEditor textarea.form-control:focus-visible,
+#templateInfoEditor select.form-control:focus-visible,
+#baseTradeEditor input.form-control:focus-visible,
+#baseTradeEditor textarea.form-control:focus-visible,
+#baseTradeEditor select.form-control:focus-visible {
+  border-color: var(--focus-ring-color) !important;
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color) !important;
+  outline-offset: var(--focus-ring-offset) !important;
+  box-shadow: var(--focus-ring-shadow) !important;
+}
+
+#templateInfoEditor .je-checkbox-control,
+#baseTradeEditor .je-checkbox-control {
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 0 !important;
+  background: transparent !important;
+}
+
+#templateInfoEditor input[type="checkbox"],
+#baseTradeEditor input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+  height: 20px !important;
+  border: 2px solid var(--pro-border-color);
+  border-radius: 4px;
+  background: var(--pro-bg-secondary) !important;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin: 0 10px 0 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+}
+
+#templateInfoEditor input[type="checkbox"]:checked,
+#baseTradeEditor input[type="checkbox"]:checked {
+  background: var(--user-accent, var(--pro-accent-primary)) !important;
+  border-color: var(--user-accent, var(--pro-accent-primary));
+}
+
+#templateInfoEditor input[type="checkbox"]:checked::after,
+#baseTradeEditor input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#templateInfoEditor label,
+#baseTradeEditor label {
+  color: var(--pro-text-primary) !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+}
+
+/* ============================================
+   CLEAR FIELDS GRID
+   ============================================ */
+#clearFieldsContainer,
+.clear-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  max-height: 450px;
+  overflow-y: auto;
+  padding: 15px;
+  background: var(--pro-bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--pro-border-color);
+}
+
+.clear-field-item {
+  background: var(--pro-bg-elevated);
+  border: 2px solid var(--pro-border-color);
+  border-radius: 8px;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: var(--pro-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+}
+
+.clear-field-item:hover {
+  border-color: var(--user-accent, var(--pro-accent-primary));
+  background: var(--pro-bg-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--user-accent-muted, rgba(47, 129, 247, 0.25));
+}
+
+.clear-field-item.selected {
+  border-color: var(--user-accent, var(--pro-accent-primary));
+  background: var(--user-accent-muted, rgba(47, 129, 247, 0.1));
+  box-shadow: 0 2px 8px var(--user-accent-muted, rgba(47, 129, 247, 0.2));
+}
+
+.clear-field-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+  height: 20px !important;
+  border: 2px solid var(--pro-border-color);
+  border-radius: 4px;
+  background: var(--pro-bg-secondary) !important;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin: 2px 0 0 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0;
+}
+
+.clear-field-item input[type="checkbox"]:checked {
+  background: var(--user-accent, var(--pro-accent-primary)) !important;
+  border-color: var(--user-accent, var(--pro-accent-primary));
+}
+
+.clear-field-item input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.clear-field-item input[type="checkbox"]:focus {
+  border-color: var(--focus-ring-color);
+}
+
+.clear-field-item input[type="checkbox"]:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.clear-field-item label {
+  flex: 1;
+  cursor: pointer;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--pro-text-primary) !important;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  user-select: none;
+}
+
+.clear-field-item label small,
+.clear-field-item small {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--pro-text-secondary) !important;
+  font-weight: 400;
+}
+
+/* ============================================
+   ACE EDITOR CONTAINER
+   ============================================ */
+#configEditor {
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+  border: 2px solid var(--pro-border-color);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* ============================================
+   WIZARD LOADING SPINNER
+   ============================================ */
+#wizardSaveSpinner.spinner-border {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+  margin-right: 8px;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--pro-spinner-track, rgba(255, 255, 255, 0.3));
+  border-radius: 50%;
+  border-top-color: white;
+  animation: wizardSpin 0.8s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes wizardSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   WIZARD NAVIGATION BUTTONS
+   ============================================ */
+.wizard-btn-prev,
+.wizard-btn-save {
+  display: none;
+}
+
+/* ============================================
+   WIZARD SCROLLBAR
+   ============================================ */
+#clearFieldsContainer::-webkit-scrollbar,
+#baseTradeEditor::-webkit-scrollbar {
+  width: 8px;
+}
+
+#clearFieldsContainer::-webkit-scrollbar-track,
+#baseTradeEditor::-webkit-scrollbar-track {
+  background: var(--pro-bg-secondary);
+  border-radius: 4px;
+}
+
+#clearFieldsContainer::-webkit-scrollbar-thumb,
+#baseTradeEditor::-webkit-scrollbar-thumb {
+  background: var(--pro-border-color);
+  border-radius: 4px;
+}
+
+#clearFieldsContainer::-webkit-scrollbar-thumb:hover,
+#baseTradeEditor::-webkit-scrollbar-thumb:hover {
+  background: var(--user-accent, var(--pro-accent-primary));
+}
+
+/* ============================================
+   TRADE WIZARD MODAL
+   ============================================ */
+#tradeWizardModal .modal-dialog {
+  max-width: 900px;
+}
+
+/* Full width for top/bottom slide directions */
+[data-modal-slide="top"] #tradeWizardModal .modal-dialog,
+[data-modal-slide="bottom"] #tradeWizardModal .modal-dialog {
+  max-width: 100%;
+  width: 100%;
+}
+
+#tradeWizardModal .modal-content {
+  background: var(--pro-bg-elevated);
+  border: 1px solid var(--pro-border-color);
+}
+
+#tradeWizardModal .modal-header {
+  background: var(--pro-bg-secondary);
+  border-bottom: 1px solid var(--pro-border-color);
+}
+
+#tradeWizardModal .modal-body {
+  padding: 2rem;
+  min-height: 400px;
+}
+
+#tradeWizardModal .modal-footer {
+  background: var(--pro-bg-secondary);
+  border-top: 1px solid var(--pro-border-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Wizard button vertical alignment */
+#tradeWizardModal .modal-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  vertical-align: middle;
+  line-height: 1;
+  height: var(--btn-height-md, 36px);
+  padding: var(--btn-padding-md, 0.5rem 1rem);
+}
+
+#tradeWizardModal .modal-footer .btn i,
+#tradeWizardModal .modal-footer .btn .bi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  line-height: 1;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* Trade Summary Cards */
+.trade-summary-container {
+  width: 100%;
+}
+
+.trade-summary-container .card {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  box-shadow: var(--pro-shadow-md, 0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+.trade-summary-container .card-header {
+  border-bottom: 1px solid var(--pro-border-color);
+  padding: 0.75rem 1rem;
+}
+
+.trade-summary-container .card-body {
+  padding: 1rem;
+}
+
+.trade-summary-container .table {
+  color: var(--pro-text-primary);
+  margin-bottom: 0;
+}
+
+.trade-summary-container .table td {
+  padding: 0.5rem 0.25rem;
+  vertical-align: top;
+}
+
+.trade-summary-container .text-muted {
+  color: var(--pro-text-secondary) !important;
+  width: 140px;
+}
+
+/* Alert styling in wizard */
+#tradeWizardModal .alert {
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+#tradeWizardModal .alert-info {
+  background: var(--pro-accent-info-bg, rgba(13, 202, 240, 0.1));
+  border-color: var(--pro-accent-info-border, rgba(13, 202, 240, 0.3));
+  color: var(--pro-accent-info);
+}
+
+/* Form styling in wizard */
+#tradeWizardModal .form-label {
+  color: var(--pro-text-primary);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+#tradeWizardModal .form-control,
+#tradeWizardModal .form-select {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  color: var(--pro-text-primary);
+  border-radius: 6px;
+}
+
+#tradeWizardModal .form-control:focus,
+#tradeWizardModal .form-select:focus {
+  background: var(--pro-bg-secondary);
+  border-color: var(--user-accent, var(--pro-accent-primary));
+  color: var(--pro-text-primary);
+  box-shadow: 0 0 0 0.2rem var(--user-accent-muted, rgba(47, 129, 247, 0.25));
+}
+
+#tradeWizardModal .form-select option {
+  background: var(--pro-bg-secondary);
+  color: var(--pro-text-primary);
+}
+
+#tradeWizardModal .text-danger {
+  color: var(--pro-accent-danger) !important;
+}
+
+/* ============================================
+   BULK ACTIONS MODAL
+   ============================================ */
+#bulkActionsModal .modal-header {
+  background: linear-gradient(135deg, var(--user-accent, var(--pro-accent-primary)), var(--pro-accent-info));
+  color: white;
+  border-bottom: none;
+}
+
+#bulkActionsModal .modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+#bulkActionsModal .modal-body {
+  background: var(--pro-bg-elevated);
+  color: var(--pro-text-primary);
+}
+
+#bulkActionsModal .table {
+  color: var(--pro-text-primary);
+  margin-bottom: 0;
+}
+
+#bulkActionsModal .table thead th {
+  background: var(--pro-bg-secondary) !important;
+  color: var(--pro-text-primary) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--user-accent, var(--pro-accent-primary));
+  padding: 0.75rem;
+}
+
+#bulkActionsModal .table tbody td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--pro-border-color);
+}
+
+#bulkActionsModal .table-hover tbody tr:hover {
+  background: linear-gradient(90deg, var(--user-accent-muted, rgba(47, 129, 247, 0.05)), var(--user-accent-muted, rgba(47, 129, 247, 0.05)));
+  cursor: pointer;
+  color: white;
+}
+
+#bulkActionsModal .alert-info {
+  background: var(--pro-accent-info-muted, rgba(59, 130, 246, 0.1));
+  border-color: var(--pro-accent-info-border, rgba(59, 130, 246, 0.3));
+  color: var(--pro-text-primary);
+}
+
+#bulkActionsModal .alert-warning {
+  background: var(--pro-accent-warning-muted, rgba(245, 158, 11, 0.1));
+  border-color: var(--pro-accent-warning-border, rgba(245, 158, 11, 0.3));
+  color: var(--pro-text-primary);
+}
+
+#bulkActionButtons {
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+#bulkActionButtons .btn-funky {
+  flex: 0 1 auto;
+  white-space: nowrap;
+}
+
+/* Trade List Page */
+#bulkActionsBtn {
+  display: none;
+}
+
+#tradesTable {
+  width: 100%;
+}
+
+#importProgress {
+  display: none;
+}
+
+#importProgress .progress-bar {
+  width: 100%;
+}
+
+#importErrorsContainer {
+  display: none;
+}
+
+#selectedTradesOverview {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* ============================================
+   RESPONSIVE WIZARD
+   ============================================ */
+@media (max-width: 992px) {
+  #tradeWizardModal .modal-dialog {
+    max-width: 720px;
+  }
+  
+  #tradeWizardModal .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .trade-summary-container .text-muted {
+    width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  #templateWizardModal .modal-dialog,
+  #tradeWizardModal .modal-dialog {
+    max-width: 95%;
+    margin: 10px auto;
+  }
+  
+  .wizard-steps {
+    padding: 0 10px;
+  }
+  
+  .wizard-step-label {
+    font-size: 10px;
+  }
+  
+  .wizard-step-number {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+  
+  #clearFieldsContainer {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    max-height: 300px;
+  }
+  
+  #configEditor {
+    height: 300px;
+  }
+  
+  .wizard-content h6 {
+    font-size: 1rem;
+  }
+  
+  #tradeWizardModal .modal-body {
+    padding: 1rem;
+    min-height: 300px;
+  }
+  
+  #tradeWizardModal .modal-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  #tradeWizardModal .modal-header h5 {
+    font-size: 1.1rem;
+  }
+  
+  #tradeWizardModal .modal-footer {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+  }
+  
+  #tradeWizardModal .modal-footer .btn {
+    flex: 1 1 auto;
+    min-width: 100px;
+    margin: 0.25rem;
+  }
+  
+  /* Stack summary cards vertically on mobile */
+  .trade-summary-container .row .col-md-6 {
+    margin-bottom: 1rem;
+  }
+  
+  .trade-summary-container .text-muted {
+    width: 100px;
+    font-size: 0.9rem;
+  }
+  
+  .trade-summary-container .table td {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.2rem;
+  }
+  
+  /* Compact form fields on mobile */
+  #tradeWizardModal .row .col-md-6,
+  #tradeWizardModal .row .col-12 {
+    margin-bottom: 1rem;
+  }
+  
+  #tradeWizardModal .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  #tradeWizardModal .form-control,
+  #tradeWizardModal .form-select {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+  
+  #tradeWizardModal h6 {
+    font-size: 1rem;
+  }
+  
+  #tradeWizardModal .alert {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #tradeWizardModal .modal-dialog {
+    max-width: 100%;
+    margin: 0.25rem;
+  }
+  
+  #tradeWizardModal .modal-body {
+    padding: 0.75rem;
+  }
+  
+  #tradeWizardModal .modal-header,
+  #tradeWizardModal .modal-footer {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  #tradeWizardModal .modal-header h5 {
+    font-size: 1rem;
+  }
+  
+  #tradeWizardModal .modal-footer .btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+  }
+  
+  .trade-summary-container .card-header h6 {
+    font-size: 0.95rem;
+  }
+  
+  .trade-summary-container .text-muted {
+    width: 90px;
+    font-size: 0.85rem;
+  }
+  
+  .trade-summary-container .table td {
+    font-size: 0.85rem;
+  }
+  
+  #tradeWizardModal .form-label {
+    font-size: 0.85rem;
+  }
+  
+  #tradeWizardModal .form-control,
+  #tradeWizardModal .form-select {
+    font-size: 0.85rem;
+    padding: 0.4rem;
+  }
+}
+
+/* ============================================
+   WIZARD BUTTONS - Responsive
+   ============================================ */
+.wizard-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wizard-buttons-right {
+  display: flex;
+  gap: 8px;
+}
+
+.wizard-buttons .btn-funky {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 480px) {
+  .wizard-buttons .btn-text {
+    display: none;
+  }
+
+  .wizard-buttons .btn-funky {
+    min-width: auto;
+    padding: 0 var(--pro-spacing-sm, 0.75rem);
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  #templateWizardModal .modal-content,
+  #tradeWizardModal .modal-content {
+    border-width: 3px;
+    box-shadow: none;
+  }
+
+  #templateWizardModal .modal-header,
+  #tradeWizardModal .modal-header {
+    background: var(--pro-bg-secondary);
+    border-bottom: 2px solid;
+  }
+
+  #templateWizardModal .modal-footer,
+  #tradeWizardModal .modal-footer {
+    border-top-width: 2px;
+  }
+
+  .wizard-steps::before {
+    height: 3px;
+  }
+
+  .wizard-step-number {
+    border-width: 3px;
+    box-shadow: none;
+  }
+
+  .wizard-step.active .wizard-step-number {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .wizard-step-connector {
+    height: 3px;
+  }
+
+  .wizard-search-box input:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+  }
+
+  #clearFieldsContainer,
+  .clear-fields-grid {
+    border-width: 2px;
+  }
+
+  .clear-field-item {
+    border-width: 2px;
+    box-shadow: none;
+  }
+
+  .clear-field-item:hover,
+  .clear-field-item.selected {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .clear-field-item input[type="checkbox"]:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+  }
+
+  #configEditor {
+    border-width: 3px;
+  }
+
+  .trade-summary-container .card {
+    border-width: 2px;
+    box-shadow: none;
+  }
+
+  /* Disable wizard animations */
+  @keyframes wizardFadeIn {
+    from { opacity: 1; transform: none; }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST THEME (Manual Selection)
+   ============================================ */
+
+[data-theme="high-contrast"] #templateWizardModal .modal-content,
+[data-theme="high-contrast"] #tradeWizardModal .modal-content {
+  border: 3px solid #ffffff;
+  box-shadow: none;
+}
+
+[data-theme="high-contrast"] #templateWizardModal .modal-header,
+[data-theme="high-contrast"] #tradeWizardModal .modal-header {
+  background: var(--pro-bg-secondary);
+  border-bottom: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] #templateWizardModal .modal-footer,
+[data-theme="high-contrast"] #tradeWizardModal .modal-footer {
+  border-top: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .wizard-steps::before {
+  height: 3px;
+  background: #ffffff;
+}
+
+[data-theme="high-contrast"] .wizard-step-number {
+  border: 3px solid #ffffff;
+  box-shadow: none;
+  background: transparent;
+  color: #ffffff;
+}
+
+[data-theme="high-contrast"] .wizard-step.active .wizard-step-number {
+  background: var(--pro-accent-primary);
+  border-color: var(--pro-accent-primary);
+  color: #000000;
+  box-shadow: none;
+  transform: none;
+}
+
+[data-theme="high-contrast"] .wizard-step.completed .wizard-step-number {
+  background: #00ff00;
+  border-color: #00ff00;
+  color: #000000;
+}
+
+[data-theme="high-contrast"] .wizard-step-label {
+  color: #ffffff;
+}
+
+[data-theme="high-contrast"] .wizard-step.active .wizard-step-label {
+  color: var(--pro-accent-primary);
+}
+
+[data-theme="high-contrast"] .wizard-step.completed .wizard-step-label {
+  color: #00ff00;
+}
+
+[data-theme="high-contrast"] .wizard-step-connector {
+  height: 3px;
+  background: #ffffff;
+}
+
+[data-theme="high-contrast"] .wizard-step.completed + .wizard-step-connector {
+  background: #00ff00;
+}
+
+[data-theme="high-contrast"] .wizard-search-box input:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+  border-color: var(--focus-ring-color);
+}
+
+[data-theme="high-contrast"] #clearFieldsContainer,
+[data-theme="high-contrast"] .clear-fields-grid {
+  border: 2px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .clear-field-item {
+  border: 2px solid #ffffff;
+  box-shadow: none;
+}
+
+[data-theme="high-contrast"] .clear-field-item:hover,
+[data-theme="high-contrast"] .clear-field-item.selected {
+  border-color: var(--pro-accent-primary);
+  box-shadow: none;
+  transform: none;
+}
+
+[data-theme="high-contrast"] .clear-field-item input[type="checkbox"]:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+[data-theme="high-contrast"] #configEditor {
+  border: 3px solid #ffffff;
+}
+
+[data-theme="high-contrast"] .trade-summary-container .card {
+  border: 2px solid #ffffff;
+  box-shadow: none;
+}
+
+[data-theme="high-contrast"] .wizard-content h6 {
+  color: var(--pro-accent-primary);
+}
+
+[data-theme="high-contrast"] .wizard-content .alert {
+  border: 2px solid currentColor;
+  background: transparent;
+}
+
+/* ============================================
+   WIZARD DEMO - Playground Demo Styles
+   ============================================ */
+
+.wizard-demo__button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.wizard-demo__log {
+  background: var(--pro-bg-tertiary, var(--pro-bg-secondary));
+  color: var(--pro-text-muted, var(--pro-text-secondary));
+  border: 1px solid var(--pro-border-color, var(--pro-border));
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.wizard-review-container .card {
+  background: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+}
+
+.wizard-review-container .card-header {
+  background: var(--pro-bg-tertiary);
+  border-bottom: 1px solid var(--pro-border-color);
+  color: var(--pro-text-primary);
+  padding: 0.75rem 1rem;
+}
+
+.wizard-review-container .card-body {
+  padding: 1rem;
+}
+
+.wizard-review-container dl {
+  color: var(--pro-text-primary);
+}
+
+.wizard-review-container dt {
+  color: var(--pro-text-muted);
+  font-weight: 500;
+}
+
+.wizard-review-container dd {
+  color: var(--pro-text-primary);
+}
+
+/* Demo modal overrides for playground */
+#demoWizardModal .modal-content {
+  background: var(--pro-bg-elevated, var(--pro-bg-secondary));
+  border: 1px solid var(--pro-border-color);
+}
+
+#demoWizardModal .modal-header {
+  background: var(--pro-bg-secondary);
+  border-bottom: 1px solid var(--pro-border-color);
+}
+
+#demoWizardModal .modal-title {
+  color: var(--pro-text-primary);
+}
+
+#demoWizardModal .modal-body {
+  background: var(--pro-bg-elevated, var(--pro-bg-secondary));
+  color: var(--pro-text-primary);
+  padding: 1.5rem;
+  min-height: 350px;
+}
+
+#demoWizardModal .modal-footer {
+  background: var(--pro-bg-secondary);
+  border-top: 1px solid var(--pro-border-color);
+}
+
+#demoWizardModal .wizard-content h6 {
+  color: var(--user-accent, var(--pro-accent-primary));
+  margin-bottom: 0.5rem;
+}
+
+#demoWizardModal .wizard-content .text-muted {
+  color: var(--pro-text-muted) !important;
+}
+
+/* Responsive wizard demo */
+@media (max-width: 768px) {
+  .wizard-demo__button-grid {
+    flex-direction: column;
+  }
+
+  .wizard-demo__button-grid .btn {
+    width: 100%;
+  }
+
+  .wizard-demo__log {
+    font-size: 0.75rem;
+    max-height: 150px;
+  }
+}

@@ -1,0 +1,494 @@
+/* ==========================================================================
+   FUNKY TYPEWRITER COMPONENT
+   Animated typing text effect with cursor
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CSS CUSTOM PROPERTIES
+   -------------------------------------------------------------------------- */
+:root {
+  --typewriter-speed: 50ms;
+  --typewriter-cursor-width: 2px;
+  --typewriter-cursor-color: var(--pro-accent-primary);
+  --typewriter-cursor-blink-speed: 530ms;
+  --typewriter-text-color: var(--pro-text-primary);
+  --typewriter-font-family: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   BASE STYLES
+   -------------------------------------------------------------------------- */
+.funky-typewriter {
+  display: inline;
+  position: relative;
+  font-family: var(--typewriter-font-family);
+  color: var(--typewriter-text-color);
+}
+
+.funky-typewriter-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   CURSOR STYLES
+   -------------------------------------------------------------------------- */
+.funky-typewriter-cursor {
+  display: inline-block;
+  margin-left: 1px;
+  animation: funky-typewriter-blink var(--typewriter-cursor-blink-speed) step-end infinite;
+}
+
+/* Bar cursor (default) */
+.funky-typewriter-cursor-bar {
+  width: var(--typewriter-cursor-width);
+  height: 1em;
+  background: var(--typewriter-cursor-color);
+  vertical-align: text-bottom;
+}
+
+/* Underscore cursor */
+.funky-typewriter-cursor-underscore {
+  width: 0.6em;
+  height: var(--typewriter-cursor-width);
+  background: var(--typewriter-cursor-color);
+  vertical-align: bottom;
+  position: relative;
+  top: 0.15em;
+}
+
+/* Block cursor */
+.funky-typewriter-cursor-block {
+  width: 0.6em;
+  height: 1.2em;
+  background: var(--typewriter-cursor-color);
+  opacity: 0.7;
+  vertical-align: text-bottom;
+}
+
+/* No blink modifier */
+.funky-typewriter-cursor-static {
+  animation: none;
+}
+
+/* Hidden cursor (typing complete, no loop) */
+.funky-typewriter-cursor-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Typing state - solid cursor while actively typing */
+.funky-typewriter.is-typing .funky-typewriter-cursor {
+  animation: none;
+  opacity: 1;
+}
+
+/* Deleting state */
+.funky-typewriter.is-deleting .funky-typewriter-cursor {
+  animation: none;
+  opacity: 1;
+}
+
+/* Paused state */
+.funky-typewriter.is-paused .funky-typewriter-cursor {
+  animation: none;
+  opacity: 0.5;
+}
+
+/* --------------------------------------------------------------------------
+   ANIMATION KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes funky-typewriter-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   SIZE VARIANTS
+   -------------------------------------------------------------------------- */
+.funky-typewriter-xs {
+  font-size: var(--pro-font-size-xs, 0.75rem);
+}
+
+.funky-typewriter-sm {
+  font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+.funky-typewriter-md {
+  font-size: var(--pro-font-size-base, 1rem);
+}
+
+.funky-typewriter-lg {
+  font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+.funky-typewriter-xl {
+  font-size: var(--pro-font-size-xl, 1.25rem);
+}
+
+.funky-typewriter-2xl {
+  font-size: var(--pro-font-size-2xl, 1.5rem);
+}
+
+.funky-typewriter-3xl {
+  font-size: var(--pro-font-size-3xl, 1.875rem);
+}
+
+.funky-typewriter-4xl {
+  font-size: var(--pro-font-size-4xl, 2.25rem);
+}
+
+/* --------------------------------------------------------------------------
+   DENSITY OVERRIDES
+   -------------------------------------------------------------------------- */
+[data-density="compact"] .funky-typewriter {
+  letter-spacing: -0.01em;
+}
+
+[data-density="spacious"] .funky-typewriter {
+  letter-spacing: 0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   MONOSPACE VARIANT
+   -------------------------------------------------------------------------- */
+.funky-typewriter-mono {
+  font-family: var(--pro-font-mono, 'SF Mono', 'Fira Code', 'Consolas', monospace);
+}
+
+/* --------------------------------------------------------------------------
+   REDUCED MOTION
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .funky-typewriter-cursor {
+    animation: none;
+  }
+
+  /* For reduced motion, text will be shown instantly by JS */
+  .funky-typewriter[data-reduced-motion="true"] .funky-typewriter-cursor {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   HIGH CONTRAST MODE
+   -------------------------------------------------------------------------- */
+
+@media (prefers-contrast: high) {
+  .funky-typewriter {
+    font-weight: 600;
+  }
+
+  /* Thicker, more visible cursor */
+  .funky-typewriter-cursor-bar {
+    width: 3px;
+  }
+
+  .funky-typewriter-cursor-underscore {
+    height: 3px;
+  }
+
+  .funky-typewriter-cursor-block {
+    opacity: 1;
+  }
+
+  /* Disable cursor animations in high contrast */
+  .funky-typewriter-cursor {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* Blink is still allowed but with a more visible pattern */
+  @keyframes funky-typewriter-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+}
+
+/* ==========================================================================
+   TYPEWRITER PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+.typewriter-demo {
+  padding: var(--pro-spacing-lg, 1.5rem);
+}
+
+.typewriter-demo__section {
+  margin-bottom: var(--pro-spacing-xl, 2rem);
+}
+
+.typewriter-demo__section h3 {
+  margin-bottom: var(--pro-spacing-sm, 0.5rem);
+  color: var(--pro-text-primary);
+  font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+.typewriter-demo__section h4 {
+  margin-bottom: var(--pro-spacing-xs, 0.25rem);
+  color: var(--pro-text-secondary);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* State Display */
+.typewriter-demo__state {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: var(--pro-spacing-md, 1rem);
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__state-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.typewriter-demo__state-label {
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  color: var(--pro-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.typewriter-demo__state-value {
+  font-size: var(--pro-font-size-base, 1rem);
+  color: var(--pro-text-primary);
+  font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* Hero Area */
+.typewriter-demo__hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: var(--pro-spacing-xl, 2rem);
+  background: linear-gradient(135deg, var(--pro-bg-secondary) 0%, var(--pro-bg-tertiary) 100%);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius-lg, 8px);
+}
+
+.typewriter-demo__hero-text {
+  text-align: center;
+  color: var(--pro-text-primary);
+}
+
+/* General Area */
+.typewriter-demo__area {
+  display: flex;
+  align-items: center;
+  min-height: 80px;
+  padding: var(--pro-spacing-lg, 1.5rem);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__loop-text {
+  color: var(--pro-text-primary);
+}
+
+/* Code Area */
+.typewriter-demo__code-area {
+  padding: var(--pro-spacing-lg, 1.5rem);
+  background-color: var(--pro-bg-tertiary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__code {
+  margin: 0;
+  padding: 0;
+  min-height: 120px;
+  font-family: var(--pro-font-mono, 'SF Mono', 'Fira Code', 'Consolas', monospace);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  color: var(--pro-text-primary);
+  background: transparent;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Controls */
+.typewriter-demo__controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--pro-spacing-lg, 1.5rem);
+}
+
+.typewriter-demo__control-group {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pro-spacing-xs, 0.25rem);
+  margin-top: var(--pro-spacing-sm, 0.5rem);
+}
+
+/* Slider Area */
+.typewriter-demo__slider-area {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pro-spacing-md, 1rem);
+}
+
+.typewriter-demo__slider-row > i {
+  color: var(--pro-text-secondary);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+.typewriter-demo__slider {
+  flex: 1;
+  height: 8px;
+  background-color: var(--pro-bg-tertiary);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.typewriter-demo__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background-color: var(--pro-accent-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.typewriter-demo__slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px var(--pro-accent-primary-muted);
+}
+
+.typewriter-demo__slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background-color: var(--pro-accent-primary);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.typewriter-demo__slider-value {
+  min-width: 50px;
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  font-weight: var(--pro-font-weight-semibold, 600);
+  color: var(--pro-accent-primary);
+  text-align: right;
+}
+
+/* Input Area */
+.typewriter-demo__input-area {
+  display: flex;
+  gap: var(--pro-spacing-sm, 0.5rem);
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__input {
+  flex: 1;
+}
+
+/* Info Box */
+.typewriter-demo__info {
+  padding: var(--pro-spacing-md, 1rem);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+}
+
+.typewriter-demo__info p {
+  margin-bottom: var(--pro-spacing-sm, 0.5rem);
+  color: var(--pro-text-primary);
+}
+
+.typewriter-demo__info ul {
+  margin: 0 0 var(--pro-spacing-sm, 0.5rem) 0;
+  padding-left: var(--pro-spacing-lg, 1.5rem);
+  color: var(--pro-text-secondary);
+}
+
+.typewriter-demo__info li {
+  margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+.typewriter-demo__info strong {
+  color: var(--pro-text-primary);
+}
+
+.typewriter-demo__info kbd {
+  display: inline-block;
+  padding: 0.15em 0.4em;
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  font-family: var(--pro-font-mono, monospace);
+  color: var(--pro-text-primary);
+  background-color: var(--pro-bg-tertiary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius-sm, 3px);
+  box-shadow: inset 0 -1px 0 var(--pro-border-color);
+}
+
+/* Event Log */
+.typewriter-demo__log-controls {
+  margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.typewriter-demo__log {
+  margin: 0;
+  padding: var(--pro-spacing-md, 1rem);
+  max-height: 200px;
+  overflow: auto;
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  font-family: var(--pro-font-mono, monospace);
+  color: var(--pro-text-secondary);
+  background-color: var(--pro-bg-secondary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 6px);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .typewriter-demo {
+    padding: var(--pro-spacing-md, 1rem);
+  }
+
+  .typewriter-demo__controls {
+    grid-template-columns: 1fr;
+  }
+
+  .typewriter-demo__state {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .typewriter-demo__hero {
+    min-height: 80px;
+    padding: var(--pro-spacing-lg, 1.5rem);
+  }
+
+  .typewriter-demo__input-area {
+    flex-direction: column;
+  }
+}

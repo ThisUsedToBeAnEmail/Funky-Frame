@@ -1,0 +1,581 @@
+<div data-page="component-morph" class="component-demo">
+  <h2>Morph</h2>
+  <p class="text-muted">FLIP-based animation engine for smooth element morphing, shared transitions, and list animations.</p>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current Configuration</h3>
+    <div class="demo-area">
+      <div class="morph-demo__state-display">
+        <div class="morph-demo__state-item">
+          <span class="text-muted">Demo Type:</span>
+          <span class="badge bg-primary" id="state-demoType">card-modal</span>
+        </div>
+        <div class="morph-demo__state-item">
+          <span class="text-muted">Preset:</span>
+          <span class="badge bg-secondary" id="state-preset">expand</span>
+        </div>
+        <div class="morph-demo__state-item">
+          <span class="text-muted">Duration:</span>
+          <span class="badge bg-secondary" id="state-duration">300ms</span>
+        </div>
+        <div class="morph-demo__state-item">
+          <span class="text-muted">Easing:</span>
+          <span class="badge bg-secondary" id="state-easing">standard</span>
+        </div>
+        <div class="morph-demo__state-item" id="state-overlay-container">
+          <span class="text-muted">Overlay:</span>
+          <span class="badge bg-secondary" id="state-showOverlay">true</span>
+        </div>
+        <div class="morph-demo__state-item morph-demo__state-item--list" hidden>
+          <span class="text-muted">Enter From:</span>
+          <span class="badge bg-secondary" id="state-enterFrom">right</span>
+        </div>
+        <div class="morph-demo__state-item morph-demo__state-item--list" hidden>
+          <span class="text-muted">Exit To:</span>
+          <span class="badge bg-secondary" id="state-exitTo">left</span>
+        </div>
+        <div class="morph-demo__state-item morph-demo__state-item--list" hidden>
+          <span class="text-muted">Stagger:</span>
+          <span class="badge bg-secondary" id="state-stagger">50ms</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Card to Modal Demo -->
+  <section class="demo-section morph-demo__section--card-modal" aria-labelledby="card-modal-heading">
+    <h3 id="card-modal-heading">Card to Modal</h3>
+    <p class="text-muted small">Click the card to morph it into a modal. Uses the <strong>preset</strong>, <strong>duration</strong>, <strong>easing</strong>, and <strong>showOverlay</strong> props.</p>
+
+    <div class="demo-area">
+      <div class="morph-demo__cards">
+        <div class="morph-demo__card" id="morph-card-1" tabindex="0" role="button" aria-label="Click to expand Product Alpha details">
+          <div class="morph-demo__card-image" data-morph-id="image-1">
+            <i class="fas fa-cube fa-3x" aria-hidden="true"></i>
+          </div>
+          <div class="morph-demo__card-content">
+            <h4 class="morph-demo__card-title" data-morph-id="title-1">Product Alpha</h4>
+            <p class="morph-demo__card-text text-muted" data-morph-id="desc-1">A revolutionary solution for modern teams.</p>
+          </div>
+        </div>
+
+        <div class="morph-demo__card" id="morph-card-2" tabindex="0" role="button" aria-label="Click to expand Product Beta details">
+          <div class="morph-demo__card-image" data-morph-id="image-2">
+            <i class="fas fa-rocket fa-3x" aria-hidden="true"></i>
+          </div>
+          <div class="morph-demo__card-content">
+            <h4 class="morph-demo__card-title" data-morph-id="title-2">Product Beta</h4>
+            <p class="morph-demo__card-text text-muted" data-morph-id="desc-2">Lightning fast performance at scale.</p>
+          </div>
+        </div>
+
+        <div class="morph-demo__card" id="morph-card-3" tabindex="0" role="button" aria-label="Click to expand Product Gamma details">
+          <div class="morph-demo__card-image" data-morph-id="image-3">
+            <i class="fas fa-shield-alt fa-3x" aria-hidden="true"></i>
+          </div>
+          <div class="morph-demo__card-content">
+            <h4 class="morph-demo__card-title" data-morph-id="title-3">Product Gamma</h4>
+            <p class="morph-demo__card-text text-muted" data-morph-id="desc-3">Enterprise-grade security built in.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overlay (hidden by default) -->
+      <div class="morph-demo__overlay" id="morph-overlay" hidden></div>
+
+      <!-- Modal (hidden by default) -->
+      <div class="morph-demo__modal" id="morph-modal" hidden aria-modal="true" role="dialog" aria-labelledby="modal-title">
+        <div class="morph-demo__modal-image" data-morph-id="modal-image">
+          <i class="fas fa-cube fa-4x" aria-hidden="true"></i>
+        </div>
+        <div class="morph-demo__modal-content">
+          <h3 class="morph-demo__modal-title" id="modal-title" data-morph-id="modal-title">Product Name</h3>
+          <p class="morph-demo__modal-desc" data-morph-id="modal-desc">Product description goes here.</p>
+          <div class="morph-demo__modal-details">
+            <p>This expanded view shows additional details about the product. The morph animation smoothly transitions from the card to this modal using the FLIP technique.</p>
+            <ul>
+              <li>Feature one with detailed explanation</li>
+              <li>Feature two with more information</li>
+              <li>Feature three highlighting capabilities</li>
+            </ul>
+          </div>
+          <button class="btn btn-secondary" id="modal-close" type="button">
+            <i class="fas fa-times me-1" aria-hidden="true"></i> Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- List Animations Demo -->
+  <section class="demo-section morph-demo__section--list-animations" aria-labelledby="list-heading" hidden>
+    <h3 id="list-heading">List Animations</h3>
+    <p class="text-muted small">Add, remove, and reorder items with smooth FLIP animations. Uses <strong>enterFrom</strong>, <strong>exitTo</strong>, and <strong>stagger</strong> props.</p>
+
+    <div class="demo-area">
+      <div class="morph-demo__list-controls">
+        <button class="btn btn-primary btn-sm" id="btn-add-item" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> Add Item
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-shuffle" type="button">
+          <i class="fas fa-random me-1" aria-hidden="true"></i> Shuffle
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-clear-list" type="button">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear All
+        </button>
+      </div>
+
+      <ul class="morph-demo__list" id="morph-list" role="list" aria-label="Animated list">
+        <li class="morph-demo__list-item" data-morph-item="item-1">
+          <span class="morph-demo__list-icon"><i class="fas fa-file-alt" aria-hidden="true"></i></span>
+          <span class="morph-demo__list-text">Document Alpha</span>
+          <button class="morph-demo__list-remove btn btn-sm" type="button" aria-label="Remove Document Alpha">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </li>
+        <li class="morph-demo__list-item" data-morph-item="item-2">
+          <span class="morph-demo__list-icon"><i class="fas fa-image" aria-hidden="true"></i></span>
+          <span class="morph-demo__list-text">Image Beta</span>
+          <button class="morph-demo__list-remove btn btn-sm" type="button" aria-label="Remove Image Beta">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </li>
+        <li class="morph-demo__list-item" data-morph-item="item-3">
+          <span class="morph-demo__list-icon"><i class="fas fa-video" aria-hidden="true"></i></span>
+          <span class="morph-demo__list-text">Video Gamma</span>
+          <button class="morph-demo__list-remove btn btn-sm" type="button" aria-label="Remove Video Gamma">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Shared Element Transitions Demo -->
+  <section class="demo-section morph-demo__section--shared-elements" aria-labelledby="shared-heading" hidden>
+    <h3 id="shared-heading">Shared Element Transitions</h3>
+    <p class="text-muted small">Elements with matching IDs animate together. Uses <strong>preset</strong>, <strong>duration</strong>, and <strong>easing</strong> props.</p>
+
+    <div class="demo-area">
+      <div class="morph-demo__shared-container">
+        <div class="morph-demo__shared-source" id="shared-source">
+          <div class="morph-demo__shared-thumb" data-morph-shared="shared-image">
+            <i class="fas fa-mountain fa-2x" aria-hidden="true"></i>
+          </div>
+          <div class="morph-demo__shared-info">
+            <span class="morph-demo__shared-title" data-morph-shared="shared-title">Mountain View</span>
+            <span class="morph-demo__shared-subtitle text-muted" data-morph-shared="shared-subtitle">Nature Photography</span>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btn-shared-expand" type="button">
+            <i class="fas fa-expand me-1" aria-hidden="true"></i> Expand
+          </button>
+        </div>
+
+        <div class="morph-demo__shared-target" id="shared-target" hidden>
+          <div class="morph-demo__shared-hero" data-morph-shared="shared-image">
+            <i class="fas fa-mountain fa-5x" aria-hidden="true"></i>
+          </div>
+          <div class="morph-demo__shared-details">
+            <h4 data-morph-shared="shared-title">Mountain View</h4>
+            <p data-morph-shared="shared-subtitle" class="text-muted">Nature Photography</p>
+            <p class="morph-demo__shared-body">
+              This stunning mountain landscape was captured during golden hour.
+              The shared element transition animates the image, title, and subtitle
+              from their source positions to their expanded layout.
+            </p>
+            <button class="btn btn-secondary" id="btn-shared-collapse" type="button">
+              <i class="fas fa-compress me-1" aria-hidden="true"></i> Collapse
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="morph-log" class="morph-demo__log" aria-live="polite">Interact with the demos above to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var morphList = null;
+  var propsChangedHandler = null;
+  var itemCounter = 4;
+  var currentMorphId = null;
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data) entry += ': ' + JSON.stringify(data);
+    logs.unshift(entry);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('morph-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay(props) {
+    document.getElementById('state-demoType').textContent = props.demoType || 'card-modal';
+    document.getElementById('state-preset').textContent = props.preset || 'expand';
+    document.getElementById('state-duration').textContent = (props.duration || 300) + 'ms';
+    document.getElementById('state-easing').textContent = props.easing || 'standard';
+    document.getElementById('state-showOverlay').textContent = props.showOverlay !== false ? 'true' : 'false';
+    document.getElementById('state-enterFrom').textContent = props.enterFrom || 'right';
+    document.getElementById('state-exitTo').textContent = props.exitTo || 'left';
+    document.getElementById('state-stagger').textContent = (props.stagger || 50) + 'ms';
+
+    // Show/hide contextual state items
+    var isListDemo = props.demoType === 'list-animations';
+    document.querySelectorAll('.morph-demo__state-item--list').forEach(function(el) {
+      el.hidden = !isListDemo;
+    });
+    document.getElementById('state-overlay-container').hidden = isListDemo;
+  }
+
+  function showDemoSection(demoType) {
+    // Hide all demo sections
+    document.querySelector('.morph-demo__section--card-modal').hidden = demoType !== 'card-modal';
+    document.querySelector('.morph-demo__section--list-animations').hidden = demoType !== 'list-animations';
+    document.querySelector('.morph-demo__section--shared-elements').hidden = demoType !== 'shared-elements';
+  }
+
+  function setupCardModal(props) {
+    var Morph = Funky.Morph;
+    if (!Morph) {
+      log('Funky.Morph not available');
+      return;
+    }
+
+    var cards = document.querySelectorAll('.morph-demo__card');
+    var modal = document.getElementById('morph-modal');
+    var overlay = document.getElementById('morph-overlay');
+    var closeBtn = document.getElementById('modal-close');
+
+    // Helper to close the modal
+    function closeModal() {
+      var currentProps = getProps();
+
+      // Hide overlay immediately
+      if (currentProps.showOverlay !== false) {
+        overlay.hidden = true;
+      }
+
+      Morph.reverse(modal, {
+        duration: currentProps.duration || 300,
+        easing: currentProps.easing || 'standard',
+        onComplete: function() {
+          modal.hidden = true;
+          log('Morph reversed');
+          emit('event', { event: 'funky:morph:reverse', payload: {} });
+        }
+      });
+    }
+
+    cards.forEach(function(card, index) {
+      card.onclick = function(e) {
+        // Don't trigger if modal is already open (prevents click-through from overlay)
+        if (!modal.hidden) {
+          return;
+        }
+
+        var currentProps = getProps();
+        var cardIndex = index + 1;
+
+        // Update modal content based on card
+        var icon = card.querySelector('.morph-demo__card-image i').className;
+        var title = card.querySelector('.morph-demo__card-title').textContent;
+        var desc = card.querySelector('.morph-demo__card-text').textContent;
+
+        modal.querySelector('.morph-demo__modal-image i').className = icon.replace('fa-3x', 'fa-4x');
+        modal.querySelector('.morph-demo__modal-title').textContent = title;
+        modal.querySelector('.morph-demo__modal-desc').textContent = desc;
+
+        // Show overlay if enabled
+        if (currentProps.showOverlay !== false) {
+          overlay.hidden = false;
+        }
+
+        // Show modal
+        modal.hidden = false;
+
+        // Perform morph
+        currentMorphId = Morph.to({
+          from: card,
+          to: modal,
+          preset: currentProps.preset || 'expand',
+          duration: currentProps.duration || 300,
+          easing: currentProps.easing || 'standard',
+          showOverlay: currentProps.showOverlay !== false,
+          onStart: function() {
+            log('Morph started', { preset: currentProps.preset, from: 'card-' + cardIndex });
+            emit('event', { event: 'funky:morph:start', payload: { from: 'card-' + cardIndex, to: 'modal' } });
+          },
+          onComplete: function() {
+            log('Morph complete');
+            emit('event', { event: 'funky:morph:complete', payload: {} });
+            // Focus close button for accessibility
+            closeBtn.focus();
+          }
+        });
+      };
+
+      // Keyboard support
+      card.onkeydown = function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      };
+    });
+
+    // Close button handler
+    closeBtn.onclick = closeModal;
+
+    // Overlay click to close
+    overlay.onclick = function(e) {
+      e.stopPropagation();
+      closeModal();
+    };
+
+    // Escape key to close
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !modal.hidden) {
+        closeModal();
+      }
+    });
+  }
+
+  function setupListAnimations(props) {
+    var Morph = Funky.Morph;
+    if (!Morph || !Morph.list) {
+      log('Funky.Morph.list not available');
+      return;
+    }
+
+    var listEl = document.getElementById('morph-list');
+    var currentProps = getProps();
+
+    // Initialize morph list
+    morphList = Morph.list(listEl, {
+      enterFrom: currentProps.enterFrom || 'right',
+      exitTo: currentProps.exitTo || 'left',
+      stagger: currentProps.stagger || 50,
+      duration: currentProps.duration || 300,
+      easing: currentProps.easing || 'standard',
+      itemAttribute: 'data-morph-item'
+    });
+
+    // Add item button
+    document.getElementById('btn-add-item').onclick = function() {
+      var currentProps = getProps();
+      var icons = ['fa-file-alt', 'fa-image', 'fa-video', 'fa-music', 'fa-code', 'fa-folder'];
+      var names = ['Document', 'Image', 'Video', 'Audio', 'Code', 'Folder'];
+      var randomIndex = Math.floor(Math.random() * icons.length);
+      var itemId = 'item-' + itemCounter++;
+      var itemName = names[randomIndex] + ' ' + itemCounter;
+
+      var html = '<li class="morph-demo__list-item" data-morph-item="' + itemId + '">' +
+        '<span class="morph-demo__list-icon"><i class="fas ' + icons[randomIndex] + '" aria-hidden="true"></i></span>' +
+        '<span class="morph-demo__list-text">' + itemName + '</span>' +
+        '<button class="morph-demo__list-remove btn btn-sm" type="button" aria-label="Remove ' + itemName + '">' +
+        '<i class="fas fa-times" aria-hidden="true"></i></button></li>';
+
+      morphList.add(html);
+      log('Item added', { id: itemId, enterFrom: currentProps.enterFrom });
+      emit('event', { event: 'funky:morph:list:add', payload: { id: itemId } });
+
+      // Bind remove handler for new item
+      bindRemoveHandlers();
+    };
+
+    // Shuffle button
+    document.getElementById('btn-shuffle').onclick = function() {
+      var items = listEl.querySelectorAll('[data-morph-item]');
+      var ids = [];
+      items.forEach(function(item) {
+        ids.push(item.getAttribute('data-morph-item'));
+      });
+
+      // Fisher-Yates shuffle
+      for (var i = ids.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = ids[i];
+        ids[i] = ids[j];
+        ids[j] = temp;
+      }
+
+      morphList.reorder(ids);
+      log('List shuffled', { order: ids });
+      emit('event', { event: 'funky:morph:list:reorder', payload: { order: ids } });
+    };
+
+    // Clear button
+    document.getElementById('btn-clear-list').onclick = function() {
+      var items = listEl.querySelectorAll('[data-morph-item]');
+      items.forEach(function(item, index) {
+        setTimeout(function() {
+          morphList.remove(item);
+        }, index * 100);
+      });
+      log('List cleared');
+      emit('event', { event: 'funky:morph:list:clear', payload: {} });
+    };
+
+    // Remove handlers
+    function bindRemoveHandlers() {
+      document.querySelectorAll('.morph-demo__list-remove').forEach(function(btn) {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          var item = btn.closest('[data-morph-item]');
+          var itemId = item.getAttribute('data-morph-item');
+          var currentProps = getProps();
+
+          morphList.remove(item);
+          log('Item removed', { id: itemId, exitTo: currentProps.exitTo });
+          emit('event', { event: 'funky:morph:list:remove', payload: { id: itemId } });
+        };
+      });
+    }
+
+    bindRemoveHandlers();
+  }
+
+  function setupSharedElements(props) {
+    var Morph = Funky.Morph;
+    if (!Morph || !Morph.shared) {
+      log('Funky.Morph.shared not available');
+      return;
+    }
+
+    var source = document.getElementById('shared-source');
+    var target = document.getElementById('shared-target');
+    var expandBtn = document.getElementById('btn-shared-expand');
+    var collapseBtn = document.getElementById('btn-shared-collapse');
+
+    expandBtn.onclick = function() {
+      var currentProps = getProps();
+
+      target.hidden = false;
+
+      Morph.shared({
+        from: source,
+        to: target,
+        children: ['shared-image', 'shared-title', 'shared-subtitle'],
+        preset: currentProps.preset || 'expand',
+        duration: currentProps.duration || 300,
+        easing: currentProps.easing || 'standard',
+        onStart: function() {
+          log('Shared morph started', { preset: currentProps.preset });
+          emit('event', { event: 'funky:morph:shared:start', payload: {} });
+        },
+        onComplete: function() {
+          source.hidden = true;
+          log('Shared morph complete');
+          emit('event', { event: 'funky:morph:shared:complete', payload: {} });
+          collapseBtn.focus();
+        }
+      });
+    };
+
+    collapseBtn.onclick = function() {
+      var currentProps = getProps();
+
+      source.hidden = false;
+
+      Morph.shared({
+        from: target,
+        to: source,
+        children: ['shared-image', 'shared-title', 'shared-subtitle'],
+        preset: currentProps.preset || 'expand',
+        duration: currentProps.duration || 300,
+        easing: currentProps.easing || 'standard',
+        onComplete: function() {
+          target.hidden = true;
+          log('Shared morph reversed');
+          emit('event', { event: 'funky:morph:shared:reverse', payload: {} });
+          expandBtn.focus();
+        }
+      });
+    };
+  }
+
+  Funky.Pages.register('component-morph', {
+    init: function(state) {
+      var props = getProps();
+
+      log('Morph demo initialized');
+      updateStateDisplay(props);
+      showDemoSection(props.demoType || 'card-modal');
+
+      // Setup all demos
+      setupCardModal(props);
+      setupListAnimations(props);
+      setupSharedElements(props);
+
+      // Clear log button
+      document.getElementById('btn-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('morph-log').textContent = 'Log cleared';
+      };
+
+      // Listen for props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          log('Props changed', newProps);
+
+          updateStateDisplay(currentProps);
+
+          // Switch demo type if changed
+          if (newProps.demoType !== undefined) {
+            showDemoSection(currentProps.demoType);
+          }
+
+          // Recreate list with new settings if list props changed
+          if (morphList && (newProps.enterFrom !== undefined || newProps.exitTo !== undefined || newProps.stagger !== undefined)) {
+            morphList.destroy();
+            setupListAnimations(currentProps);
+          }
+
+          emit('event', { event: 'funky:morph:propsChanged', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy morph list
+      if (morphList && morphList.destroy) {
+        morphList.destroy();
+        morphList = null;
+      }
+
+      // Reset state
+      logs = [];
+      itemCounter = 4;
+      currentMorphId = null;
+
+      return {};
+    }
+  });
+})();
+</script>

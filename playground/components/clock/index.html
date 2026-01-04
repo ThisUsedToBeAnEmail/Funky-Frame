@@ -1,0 +1,666 @@
+<div data-page="component-clock" class="clock-demo">
+  <!-- State Display -->
+  <section class="clock-demo__section" aria-labelledby="clock-state-heading">
+    <h3 id="clock-state-heading">State</h3>
+    <div class="clock-demo__state" role="status" aria-live="polite">
+      <div class="clock-demo__state-item">
+        <span class="clock-demo__state-label">Status</span>
+        <span id="state-status" class="clock-demo__state-value">running</span>
+      </div>
+      <div class="clock-demo__state-item">
+        <span class="clock-demo__state-label">Style</span>
+        <span id="state-style" class="clock-demo__state-value">both</span>
+      </div>
+      <div class="clock-demo__state-item">
+        <span class="clock-demo__state-label">Format</span>
+        <span id="state-format" class="clock-demo__state-value">24h</span>
+      </div>
+      <div class="clock-demo__state-item">
+        <span class="clock-demo__state-label">Timezone</span>
+        <span id="state-timezone" class="clock-demo__state-value">local</span>
+      </div>
+      <div class="clock-demo__state-item">
+        <span class="clock-demo__state-label">Instances</span>
+        <span id="state-instances" class="clock-demo__state-value">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Clock Display -->
+  <section class="clock-demo__section" aria-labelledby="clock-main-heading">
+    <h3 id="clock-main-heading">Main Clock</h3>
+    <h4>Uses props from playground panel</h4>
+    <div class="clock-demo__hero">
+      <div id="clock-main" class="clock-demo__main-clock" aria-label="Current time"></div>
+    </div>
+  </section>
+
+  <!-- Display Styles -->
+  <section class="clock-demo__section" aria-labelledby="clock-styles-heading">
+    <h3 id="clock-styles-heading">Display Styles</h3>
+    <div class="clock-demo__styles-grid">
+      <div class="clock-demo__style-card">
+        <h4>Digital</h4>
+        <div class="clock-demo__clock-container">
+          <span id="clock-digital" data-clock data-format="24h" data-seconds="true" class="clock-lg mono" aria-label="Digital clock"></span>
+        </div>
+      </div>
+      <div class="clock-demo__style-card">
+        <h4>Analog</h4>
+        <div class="clock-demo__clock-container">
+          <div id="clock-analog" data-clock data-style="analog" data-size="lg" aria-label="Analog clock"></div>
+        </div>
+      </div>
+      <div class="clock-demo__style-card">
+        <h4>Both</h4>
+        <div class="clock-demo__clock-container">
+          <div id="clock-both" data-clock data-style="both" data-size="md" aria-label="Combined analog and digital clock"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- World Clocks -->
+  <section class="clock-demo__section" aria-labelledby="clock-world-heading">
+    <h3 id="clock-world-heading">World Clocks</h3>
+    <div class="clock-demo__world-grid" role="list" aria-label="World clocks">
+      <div class="clock-demo__world-card" role="listitem">
+        <span class="clock-demo__world-label">New York</span>
+        <span id="clock-ny" data-clock data-timezone="America/New_York" data-format="12h" data-seconds="false" class="clock-demo__world-time" aria-label="Time in New York"></span>
+        <span class="clock-demo__world-offset">UTC-5</span>
+      </div>
+      <div class="clock-demo__world-card" role="listitem">
+        <span class="clock-demo__world-label">London</span>
+        <span id="clock-london" data-clock data-timezone="Europe/London" data-format="24h" data-seconds="false" class="clock-demo__world-time" aria-label="Time in London"></span>
+        <span class="clock-demo__world-offset">UTC+0</span>
+      </div>
+      <div class="clock-demo__world-card" role="listitem">
+        <span class="clock-demo__world-label">Tokyo</span>
+        <span id="clock-tokyo" data-clock data-timezone="Asia/Tokyo" data-format="24h" data-seconds="false" class="clock-demo__world-time" aria-label="Time in Tokyo"></span>
+        <span class="clock-demo__world-offset">UTC+9</span>
+      </div>
+      <div class="clock-demo__world-card" role="listitem">
+        <span class="clock-demo__world-label">Sydney</span>
+        <span id="clock-sydney" data-clock data-timezone="Australia/Sydney" data-format="24h" data-seconds="false" class="clock-demo__world-time" aria-label="Time in Sydney"></span>
+        <span class="clock-demo__world-offset">UTC+11</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Countdown Demo -->
+  <section class="clock-demo__section" aria-labelledby="clock-countdown-heading">
+    <h3 id="clock-countdown-heading">Countdown Timer</h3>
+    <div class="clock-demo__countdown-area">
+      <div class="clock-demo__countdown-display">
+        <span id="countdown-timer" class="clock-demo__countdown-value" aria-label="Countdown timer" role="timer">--:--</span>
+      </div>
+      <div class="clock-demo__countdown-controls">
+        <button type="button" class="btn btn-funky-primary btn-sm" data-action="countdown-1m" aria-label="Start 1 minute countdown">
+          <i class="fas fa-hourglass-start" aria-hidden="true"></i> 1 min
+        </button>
+        <button type="button" class="btn btn-funky-primary btn-sm" data-action="countdown-5m" aria-label="Start 5 minute countdown">
+          <i class="fas fa-hourglass-start" aria-hidden="true"></i> 5 min
+        </button>
+        <button type="button" class="btn btn-funky-secondary btn-sm" data-action="countdown-add" aria-label="Add 30 seconds to countdown">
+          <i class="fas fa-plus" aria-hidden="true"></i> +30s
+        </button>
+        <button type="button" class="btn btn-funky-danger btn-sm" data-action="countdown-reset" aria-label="Reset countdown">
+          <i class="fas fa-redo" aria-hidden="true"></i> Reset
+        </button>
+      </div>
+      <div class="clock-demo__countdown-remaining">
+        Remaining: <span id="countdown-remaining">0</span>ms
+      </div>
+    </div>
+  </section>
+
+  <!-- Stopwatch Demo -->
+  <section class="clock-demo__section" aria-labelledby="clock-stopwatch-heading">
+    <h3 id="clock-stopwatch-heading">Stopwatch</h3>
+    <div class="clock-demo__stopwatch-area">
+      <div class="clock-demo__stopwatch-display">
+        <span id="stopwatch-timer" class="clock-demo__stopwatch-value" aria-label="Stopwatch" role="timer">0:00.00s</span>
+      </div>
+      <div class="clock-demo__stopwatch-controls">
+        <button type="button" class="btn btn-funky-success btn-sm" data-action="stopwatch-start" aria-label="Start stopwatch">
+          <i class="fas fa-play" aria-hidden="true"></i> Start
+        </button>
+        <button type="button" class="btn btn-funky-warning btn-sm" data-action="stopwatch-pause" aria-label="Pause stopwatch">
+          <i class="fas fa-pause" aria-hidden="true"></i> Pause
+        </button>
+        <button type="button" class="btn btn-funky-secondary btn-sm" data-action="stopwatch-resume" aria-label="Resume stopwatch">
+          <i class="fas fa-play" aria-hidden="true"></i> Resume
+        </button>
+        <button type="button" class="btn btn-funky-danger btn-sm" data-action="stopwatch-reset" aria-label="Reset stopwatch">
+          <i class="fas fa-redo" aria-hidden="true"></i> Reset
+        </button>
+        <button type="button" class="btn btn-funky-primary btn-sm" data-action="stopwatch-stop" aria-label="Stop and get elapsed time">
+          <i class="fas fa-stop" aria-hidden="true"></i> Stop
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scheduling Demo -->
+  <section class="clock-demo__section" aria-labelledby="clock-schedule-heading">
+    <h3 id="clock-schedule-heading">Scheduling API</h3>
+    <div class="clock-demo__schedule-area">
+      <div class="clock-demo__schedule-controls">
+        <button type="button" class="btn btn-funky-primary btn-sm" data-action="schedule-5s" aria-label="Schedule action in 5 seconds">
+          <i class="fas fa-clock" aria-hidden="true"></i> After 5s
+        </button>
+        <button type="button" class="btn btn-funky-primary btn-sm" data-action="schedule-10s" aria-label="Schedule action in 10 seconds">
+          <i class="fas fa-clock" aria-hidden="true"></i> After 10s
+        </button>
+        <button type="button" class="btn btn-funky-secondary btn-sm" data-action="schedule-repeat" aria-label="Schedule repeating action every 3 seconds">
+          <i class="fas fa-redo" aria-hidden="true"></i> Every 3s
+        </button>
+        <button type="button" class="btn btn-funky-danger btn-sm" data-action="schedule-cancel" aria-label="Cancel all scheduled tasks">
+          <i class="fas fa-times" aria-hidden="true"></i> Cancel All
+        </button>
+      </div>
+      <div class="clock-demo__schedule-info">
+        Pending tasks: <span id="schedule-count">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <section class="clock-demo__section" aria-labelledby="clock-controls-heading">
+    <h3 id="clock-controls-heading">Controls</h3>
+    <div class="clock-demo__controls">
+      <div class="clock-demo__control-group">
+        <h4>Global Controls</h4>
+        <div class="clock-demo__buttons" role="group" aria-label="Clock control buttons">
+          <button type="button" class="btn btn-funky-warning btn-sm" data-action="pause" aria-label="Pause all clocks">
+            <i class="fas fa-pause" aria-hidden="true"></i> Pause All
+          </button>
+          <button type="button" class="btn btn-funky-success btn-sm" data-action="resume" aria-label="Resume all clocks">
+            <i class="fas fa-play" aria-hidden="true"></i> Resume All
+          </button>
+          <button type="button" class="btn btn-funky-secondary btn-sm" data-action="reinit" aria-label="Re-initialize clocks">
+            <i class="fas fa-sync" aria-hidden="true"></i> Re-init
+          </button>
+        </div>
+      </div>
+      <div class="clock-demo__control-group">
+        <h4>Display Options</h4>
+        <div class="clock-demo__buttons" role="group" aria-label="Display option buttons">
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="toggle-seconds" aria-label="Toggle seconds display">
+            <i class="fas fa-stopwatch" aria-hidden="true"></i> Toggle Seconds
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="toggle-format" aria-label="Toggle 12/24 hour format">
+            <i class="fas fa-clock" aria-hidden="true"></i> 12h/24h
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Info -->
+  <section class="clock-demo__section" aria-labelledby="clock-features-heading">
+    <h3 id="clock-features-heading">Features</h3>
+    <div class="clock-demo__info">
+      <p><strong>Funky.Clock</strong> provides real-time clock display with multiple capabilities:</p>
+      <ul>
+        <li><strong>Digital:</strong> Text-based time display with format options</li>
+        <li><strong>Analog:</strong> SVG clock face with hour, minute, second hands</li>
+        <li><strong>Both:</strong> Combined analog + digital display</li>
+        <li><strong>Timezones:</strong> Display time in any IANA timezone</li>
+        <li><strong>Countdown:</strong> Count down to a target time</li>
+        <li><strong>Stopwatch:</strong> Count up with millisecond precision</li>
+        <li><strong>Scheduling:</strong> Execute callbacks at specific times or intervals</li>
+      </ul>
+      <p>Use <kbd>data-clock</kbd> attribute with <kbd>data-style</kbd>, <kbd>data-format</kbd>, <kbd>data-timezone</kbd> options.</p>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="clock-demo__section" aria-labelledby="clock-log-heading">
+    <h3 id="clock-log-heading">Event Log</h3>
+    <div class="clock-demo__log-controls">
+      <button type="button" class="btn btn-funky-outline btn-sm" data-action="clear-log" aria-label="Clear event log">
+        <i class="fas fa-trash" aria-hidden="true"></i> Clear
+      </button>
+    </div>
+    <pre id="clock-log" class="clock-demo__log" aria-live="polite" aria-label="Event log"></pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var eventHandlers = [];
+  var pubsubHandler = null;
+  var stopwatchController = null;
+  var scheduledIds = [];
+  var currentOptions = {
+    style: 'both',
+    format: '24h',
+    showSeconds: true,
+    showDate: 'false',
+    timezone: '',
+    analogSize: 'lg',
+    showMultiple: true
+  };
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('clock-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function applyProps(props) {
+    if (!props) return;
+
+    if (props.style !== undefined) currentOptions.style = props.style;
+    if (props.format !== undefined) currentOptions.format = props.format;
+    if (props.showSeconds !== undefined) currentOptions.showSeconds = props.showSeconds;
+    if (props.showDate !== undefined) currentOptions.showDate = props.showDate;
+    if (props.timezone !== undefined) currentOptions.timezone = props.timezone;
+    if (props.analogSize !== undefined) currentOptions.analogSize = props.analogSize;
+    if (props.showMultiple !== undefined) currentOptions.showMultiple = props.showMultiple;
+  }
+
+  function updateStateDisplay() {
+    var statusEl = document.getElementById('state-status');
+    var styleEl = document.getElementById('state-style');
+    var formatEl = document.getElementById('state-format');
+    var timezoneEl = document.getElementById('state-timezone');
+    var instancesEl = document.getElementById('state-instances');
+
+    if (styleEl) styleEl.textContent = currentOptions.style;
+    if (formatEl) formatEl.textContent = currentOptions.format;
+    if (timezoneEl) timezoneEl.textContent = currentOptions.timezone || 'local';
+
+    if (Funky.Clock) {
+      if (statusEl) statusEl.textContent = Funky.Clock.isPaused() ? 'paused' : 'running';
+      if (instancesEl) instancesEl.textContent = Funky.Clock.getInstances().length;
+    }
+  }
+
+  function updateScheduleCount() {
+    var countEl = document.getElementById('schedule-count');
+    if (countEl && Funky.Clock) {
+      countEl.textContent = Funky.Clock.getScheduled().length;
+    }
+  }
+
+  function updateCountdownRemaining() {
+    var remainingEl = document.getElementById('countdown-remaining');
+    var timerEl = document.getElementById('countdown-timer');
+    if (remainingEl && Funky.Clock && timerEl) {
+      var remaining = Funky.Clock.getRemaining(timerEl);
+      remainingEl.textContent = remaining;
+    }
+  }
+
+  // Track our main clock element so we can remove it from instances
+  var mainClockEl = null;
+
+  function createMainClock() {
+    var container = document.getElementById('clock-main');
+    if (!container || !Funky.Clock) {
+      log('createMainClock: container or Funky.Clock missing');
+      return;
+    }
+
+    log('createMainClock: style=' + currentOptions.style + ', format=' + currentOptions.format);
+
+    // Remove old clock from instances array before destroying
+    if (mainClockEl) {
+      log('createMainClock: removing old clock from instances');
+      // Clean up the element so it gets removed from instances on next tick
+      delete mainClockEl._clock;
+      delete mainClockEl._clockSvg;
+      delete mainClockEl._clockBoth;
+      delete mainClockEl._clockCountdown;
+      delete mainClockEl._analogContainer;
+      delete mainClockEl._digitalContainer;
+      mainClockEl = null;
+    }
+
+    // Clear container
+    container.innerHTML = '';
+
+    var clockEl = document.createElement('div');
+    clockEl.setAttribute('data-clock', '');
+    clockEl.setAttribute('data-style', currentOptions.style);
+    clockEl.setAttribute('data-format', currentOptions.format);
+    clockEl.setAttribute('data-seconds', currentOptions.showSeconds ? 'true' : 'false');
+    clockEl.setAttribute('data-size', currentOptions.analogSize);
+
+    if (currentOptions.showDate !== 'false') {
+      clockEl.setAttribute('data-date', currentOptions.showDate);
+    }
+    if (currentOptions.timezone) {
+      clockEl.setAttribute('data-timezone', currentOptions.timezone);
+    }
+
+    container.appendChild(clockEl);
+
+    // Store reference to the new clock element
+    mainClockEl = clockEl;
+
+    var initCount = Funky.Clock.init(clockEl);
+    log('createMainClock: init returned ' + initCount + ', instances=' + Funky.Clock.getInstances().length);
+  }
+
+  function initClocks() {
+    if (!Funky.Clock) {
+      log('Funky.Clock not available');
+      return;
+    }
+
+    // Initialize the main configurable clock
+    createMainClock();
+
+    // Initialize all declarative clocks
+    Funky.Clock.init();
+
+    updateStateDisplay();
+    log('Clocks initialized');
+  }
+
+  function handleControlClick(e) {
+    var btn = e.target.closest('[data-action]');
+    if (!btn) return;
+
+    var action = btn.getAttribute('data-action');
+
+    switch (action) {
+      case 'pause':
+        if (Funky.Clock) {
+          Funky.Clock.pause();
+          log('All clocks paused');
+          updateStateDisplay();
+          emit('event', { event: 'clock:pause', payload: {} });
+        }
+        break;
+
+      case 'resume':
+        if (Funky.Clock) {
+          Funky.Clock.resume();
+          log('All clocks resumed');
+          updateStateDisplay();
+          emit('event', { event: 'clock:resume', payload: {} });
+        }
+        break;
+
+      case 'reinit':
+        if (Funky.Clock) {
+          var count = Funky.Clock.init();
+          log('Re-initialized ' + count + ' clocks');
+          updateStateDisplay();
+          emit('event', { event: 'clock:reinit', payload: { count: count } });
+        }
+        break;
+
+      case 'toggle-seconds':
+        currentOptions.showSeconds = !currentOptions.showSeconds;
+        createMainClock();
+        log('Seconds display: ' + (currentOptions.showSeconds ? 'on' : 'off'));
+        updateStateDisplay();
+        break;
+
+      case 'toggle-format':
+        currentOptions.format = currentOptions.format === '24h' ? '12h' : '24h';
+        createMainClock();
+        log('Format changed to: ' + currentOptions.format);
+        updateStateDisplay();
+        break;
+
+      case 'countdown-1m':
+        if (Funky.Clock) {
+          var timerEl = document.getElementById('countdown-timer');
+          Funky.Clock.countdown(timerEl, 60000);
+          log('Countdown started: 1 minute');
+          emit('event', { event: 'clock:countdown-start', payload: { duration: 60000 } });
+        }
+        break;
+
+      case 'countdown-5m':
+        if (Funky.Clock) {
+          var timerEl = document.getElementById('countdown-timer');
+          Funky.Clock.countdown(timerEl, 300000);
+          log('Countdown started: 5 minutes');
+          emit('event', { event: 'clock:countdown-start', payload: { duration: 300000 } });
+        }
+        break;
+
+      case 'countdown-add':
+        if (Funky.Clock) {
+          var timerEl = document.getElementById('countdown-timer');
+          Funky.Clock.addTime(timerEl, 30000);
+          log('Added 30 seconds to countdown');
+          emit('event', { event: 'clock:countdown-add', payload: { added: 30000 } });
+        }
+        break;
+
+      case 'countdown-reset':
+        var timerEl = document.getElementById('countdown-timer');
+        if (timerEl) {
+          timerEl.textContent = '--:--';
+          timerEl.classList.remove('countdown-complete', 'countdown-warning', 'countdown-danger');
+          delete timerEl._clockCountdown;
+          log('Countdown reset');
+          emit('event', { event: 'clock:countdown-reset', payload: {} });
+        }
+        break;
+
+      case 'stopwatch-start':
+        if (Funky.Clock) {
+          var swEl = document.getElementById('stopwatch-timer');
+          stopwatchController = Funky.Clock.stopwatch(swEl, {
+            showMs: true,
+            msDigits: 2,
+            onTick: function(elapsed, formatted) {
+              // Optional tick callback
+            },
+            onStop: function(elapsed, formatted) {
+              log('Stopwatch stopped at: ' + formatted);
+            }
+          });
+          log('Stopwatch started');
+          emit('event', { event: 'clock:stopwatch-start', payload: {} });
+        }
+        break;
+
+      case 'stopwatch-pause':
+        if (stopwatchController) {
+          stopwatchController.pause();
+          log('Stopwatch paused');
+          emit('event', { event: 'clock:stopwatch-pause', payload: {} });
+        }
+        break;
+
+      case 'stopwatch-resume':
+        if (stopwatchController) {
+          stopwatchController.resume();
+          log('Stopwatch resumed');
+          emit('event', { event: 'clock:stopwatch-resume', payload: {} });
+        }
+        break;
+
+      case 'stopwatch-reset':
+        if (stopwatchController) {
+          stopwatchController.reset();
+          log('Stopwatch reset');
+          emit('event', { event: 'clock:stopwatch-reset', payload: {} });
+        }
+        break;
+
+      case 'stopwatch-stop':
+        if (stopwatchController) {
+          var elapsed = stopwatchController.stop();
+          log('Stopwatch stopped: ' + elapsed + 'ms');
+          emit('event', { event: 'clock:stopwatch-stop', payload: { elapsed: elapsed } });
+        }
+        break;
+
+      case 'schedule-5s':
+        if (Funky.Clock) {
+          var id = Funky.Clock.after(5000, function(data) {
+            log('Scheduled task executed! (5s)');
+            emit('event', { event: 'clock:scheduled-triggered', payload: data });
+            updateScheduleCount();
+          });
+          scheduledIds.push(id);
+          log('Scheduled task in 5 seconds (ID: ' + id + ')');
+          updateScheduleCount();
+          emit('event', { event: 'clock:schedule', payload: { delay: 5000, id: id } });
+        }
+        break;
+
+      case 'schedule-10s':
+        if (Funky.Clock) {
+          var id = Funky.Clock.after(10000, function(data) {
+            log('Scheduled task executed! (10s)');
+            emit('event', { event: 'clock:scheduled-triggered', payload: data });
+            updateScheduleCount();
+          });
+          scheduledIds.push(id);
+          log('Scheduled task in 10 seconds (ID: ' + id + ')');
+          updateScheduleCount();
+          emit('event', { event: 'clock:schedule', payload: { delay: 10000, id: id } });
+        }
+        break;
+
+      case 'schedule-repeat':
+        if (Funky.Clock) {
+          var id = Funky.Clock.after(3000, function(data) {
+            log('Repeating task executed! (count: ' + data.count + ')');
+            emit('event', { event: 'clock:scheduled-repeat', payload: data });
+            updateScheduleCount();
+          }, { repeat: true });
+          scheduledIds.push(id);
+          log('Scheduled repeating task every 3 seconds (ID: ' + id + ')');
+          updateScheduleCount();
+          emit('event', { event: 'clock:schedule-repeat', payload: { interval: 3000, id: id } });
+        }
+        break;
+
+      case 'schedule-cancel':
+        if (Funky.Clock) {
+          scheduledIds.forEach(function(id) {
+            Funky.Clock.cancel(id);
+          });
+          scheduledIds = [];
+          log('All scheduled tasks cancelled');
+          updateScheduleCount();
+          emit('event', { event: 'clock:schedule-cancel-all', payload: {} });
+        }
+        break;
+
+      case 'clear-log':
+        logs = [];
+        document.getElementById('clock-log').textContent = '';
+        break;
+    }
+  }
+
+  // Setup event listeners for clock events
+  function setupClockEventListeners() {
+    var tickHandler = function(e) {
+      updateCountdownRemaining();
+      updateScheduleCount();
+    };
+
+    var countdownCompleteHandler = function(e) {
+      log('Countdown complete!');
+      emit('event', { event: 'clock:countdown-complete', payload: e.detail });
+    };
+
+    document.addEventListener('funky.clock.tick', tickHandler);
+    document.addEventListener('funky.clock.countdown-complete', countdownCompleteHandler);
+
+    eventHandlers.push({ event: 'funky.clock.tick', handler: tickHandler });
+    eventHandlers.push({ event: 'funky.clock.countdown-complete', handler: countdownCompleteHandler });
+  }
+
+  Funky.Pages.register('component-clock', {
+    init: function(state) {
+      log('Clock demo initializing...');
+
+      // Apply initial props from playground panel
+      var props = getProps();
+      applyProps(props);
+
+      // Setup event handlers
+      document.addEventListener('click', handleControlClick);
+      eventHandlers.push({ event: 'click', handler: handleControlClick, target: document });
+
+      setupClockEventListeners();
+
+      // Subscribe to prop changes from playground panel
+      if (Funky.PubSub) {
+        pubsubHandler = Funky.PubSub.on('playground:propsChanged', function(newProps) {
+          log('Props updated from panel: style=' + (newProps.style || 'unchanged'));
+          applyProps(newProps);
+          createMainClock();
+          updateStateDisplay();
+        });
+      }
+
+      // Initialize clocks
+      initClocks();
+
+      emit('event', { event: 'clock:init', payload: {} });
+    },
+
+    destroy: function() {
+      // Remove event handlers
+      eventHandlers.forEach(function(h) {
+        var target = h.target || document;
+        target.removeEventListener(h.event, h.handler);
+      });
+      eventHandlers = [];
+
+      // Unsubscribe from pubsub
+      if (pubsubHandler && Funky.PubSub) {
+        Funky.PubSub.off('playground:propsChanged', pubsubHandler);
+        pubsubHandler = null;
+      }
+
+      // Cancel scheduled tasks
+      if (Funky.Clock) {
+        scheduledIds.forEach(function(id) {
+          Funky.Clock.cancel(id);
+        });
+      }
+      scheduledIds = [];
+
+      // Stop stopwatch
+      if (stopwatchController) {
+        stopwatchController.stop();
+        stopwatchController = null;
+      }
+
+      // Clean up main clock reference
+      if (mainClockEl) {
+        delete mainClockEl._clock;
+        delete mainClockEl._clockSvg;
+        delete mainClockEl._clockBoth;
+        mainClockEl = null;
+      }
+
+      logs = [];
+      currentOptions = {
+        style: 'both',
+        format: '24h',
+        showSeconds: true,
+        showDate: 'false',
+        timezone: '',
+        analogSize: 'lg',
+        showMultiple: true
+      };
+
+      return {};
+    }
+  });
+})();
+</script>

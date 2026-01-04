@@ -1,0 +1,475 @@
+<div data-page="component-tour" class="tour-demo">
+  <!-- Current State -->
+  <section class="tour-demo__section">
+    <h3>Current State</h3>
+    <div class="tour-demo__state">
+      <div class="tour-demo__state-item">
+        <span class="tour-demo__state-label">Status:</span>
+        <span class="tour-demo__state-value" id="state-status">idle</span>
+      </div>
+      <div class="tour-demo__state-item">
+        <span class="tour-demo__state-label">Current Step:</span>
+        <span class="tour-demo__state-value" id="state-step">-</span>
+      </div>
+      <div class="tour-demo__state-item">
+        <span class="tour-demo__state-label">Total Steps:</span>
+        <span class="tour-demo__state-value" id="state-total">5</span>
+      </div>
+      <div class="tour-demo__state-item">
+        <span class="tour-demo__state-label">Overlay:</span>
+        <span class="tour-demo__state-value" id="state-overlay">on</span>
+      </div>
+      <div class="tour-demo__state-item">
+        <span class="tour-demo__state-label">Progress:</span>
+        <span class="tour-demo__state-value" id="state-progress">on</span>
+      </div>
+      <div class="tour-demo__state-item">
+        <span class="tour-demo__state-label">Completed:</span>
+        <span class="tour-demo__state-value" id="state-completed">no</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Interface -->
+  <section class="tour-demo__section">
+    <h3>Demo Interface</h3>
+    <div class="tour-demo__area">
+      <div class="tour-demo__interface">
+        <div class="tour-demo__header">
+          <h4 id="tour-target-title" class="tour-demo__title">Dashboard Overview</h4>
+          <div class="tour-demo__header-actions">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="tour-target-search" aria-label="Search">
+              <i class="fas fa-search"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="tour-target-settings" aria-label="Settings">
+              <i class="fas fa-cog"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="tour-target-notifications" aria-label="Notifications">
+              <i class="fas fa-bell"></i>
+              <span class="tour-demo__badge">3</span>
+            </button>
+          </div>
+        </div>
+        <div class="tour-demo__layout">
+          <nav id="tour-target-sidebar" class="tour-demo__sidebar" aria-label="Main navigation">
+            <div class="tour-demo__nav-item tour-demo__nav-item--active">
+              <i class="fas fa-home"></i> Home
+            </div>
+            <div class="tour-demo__nav-item">
+              <i class="fas fa-chart-bar"></i> Analytics
+            </div>
+            <div class="tour-demo__nav-item">
+              <i class="fas fa-users"></i> Users
+            </div>
+            <div class="tour-demo__nav-item">
+              <i class="fas fa-folder"></i> Projects
+            </div>
+          </nav>
+          <main id="tour-target-content" class="tour-demo__content">
+            <p>Welcome to your dashboard. This demo showcases the Tour component's step-by-step guidance capabilities.</p>
+            <div class="tour-demo__stats">
+              <div class="tour-demo__stat" id="tour-target-stat1">
+                <span class="tour-demo__stat-value">1,234</span>
+                <span class="tour-demo__stat-label">Total Users</span>
+              </div>
+              <div class="tour-demo__stat" id="tour-target-stat2">
+                <span class="tour-demo__stat-value">567</span>
+                <span class="tour-demo__stat-label">Active Now</span>
+              </div>
+              <div class="tour-demo__stat" id="tour-target-stat3">
+                <span class="tour-demo__stat-value">89%</span>
+                <span class="tour-demo__stat-label">Satisfaction</span>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tour Controls -->
+  <section class="tour-demo__section">
+    <h3>Controls</h3>
+    <div class="tour-demo__controls">
+      <div class="tour-demo__control-group">
+        <h4>Tour Actions</h4>
+        <div class="tour-demo__buttons">
+          <button type="button" class="btn btn-sm btn-primary" data-method="start">
+            <i class="fas fa-play"></i> Start Tour
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="reset">
+            <i class="fas fa-undo"></i> Reset Progress
+          </button>
+        </div>
+      </div>
+      <div class="tour-demo__control-group">
+        <h4>Start At Step</h4>
+        <div class="tour-demo__buttons">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="start-at-0">Step 1</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="start-at-1">Step 2</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="start-at-2">Step 3</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="start-at-3">Step 4</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="start-at-4">Step 5</button>
+        </div>
+      </div>
+      <div class="tour-demo__control-group">
+        <h4>Options (apply before starting)</h4>
+        <div class="tour-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-overlay">Toggle Overlay</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-progress">Toggle Progress</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-animate">Toggle Animate</button>
+        </div>
+      </div>
+      <div class="tour-demo__control-group">
+        <h4>API Inspection</h4>
+        <div class="tour-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="is-completed">isCompleted()</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Info -->
+  <section class="tour-demo__section">
+    <h3>Features</h3>
+    <div class="tour-demo__info">
+      <p>The Tour component provides interactive onboarding and feature discovery:</p>
+      <ul>
+        <li><strong>Step-by-step guidance:</strong> Highlight elements with tooltips</li>
+        <li><strong>Overlay support:</strong> Focus attention with backdrop dimming</li>
+        <li><strong>Progress tracking:</strong> Show current step and total steps</li>
+        <li><strong>Keyboard navigation:</strong> Use arrow keys, Escape to close</li>
+        <li><strong>Persistence:</strong> Remember completion state across sessions</li>
+        <li><strong>SPA integration:</strong> Works with Funky.Pages lifecycle</li>
+      </ul>
+      <p>Keyboard shortcuts:</p>
+      <ul>
+        <li><kbd>→</kbd> / <kbd>Enter</kbd> - Next step</li>
+        <li><kbd>←</kbd> - Previous step</li>
+        <li><kbd>Escape</kbd> - Close tour</li>
+        <li><kbd>Tab</kbd> - Navigate within tooltip</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="tour-demo__section">
+    <h3>Event Log</h3>
+    <div class="tour-demo__log-controls">
+      <button type="button" class="btn btn-sm btn-secondary" data-method="clear-log">Clear Log</button>
+    </div>
+    <pre id="tour-log" class="tour-demo__log">Waiting for events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var tourInstance = null;
+  var logs = [];
+  var eventHandlers = [];
+  var currentOptions = {
+    overlayEnabled: true,
+    showProgress: true,
+    animate: true
+  };
+
+  // Tour steps configuration
+  var tourSteps = [
+    {
+      target: '#tour-target-title',
+      title: 'Welcome to the Dashboard',
+      content: 'This is your main dashboard where you can monitor all your metrics and activities. Let\'s take a quick tour!',
+      position: 'bottom'
+    },
+    {
+      target: '#tour-target-sidebar',
+      title: 'Navigation Menu',
+      content: 'Use the sidebar to navigate between different sections of the application. The highlighted item shows your current location.',
+      position: 'right'
+    },
+    {
+      target: '#tour-target-content',
+      title: 'Main Content Area',
+      content: 'This is where your main content appears. You can interact with data, view reports, and manage your projects here.',
+      position: 'top'
+    },
+    {
+      target: '#tour-target-stat1',
+      title: 'Key Metrics',
+      content: 'Quick stats give you an at-a-glance view of important metrics. Click any stat card for detailed analytics.',
+      position: 'bottom'
+    },
+    {
+      target: '#tour-target-notifications',
+      title: 'Notifications',
+      content: 'Stay updated with real-time notifications. The badge shows unread items. Click to view all notifications.',
+      position: 'bottom'
+    }
+  ];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('tour-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay() {
+    var statusEl = document.getElementById('state-status');
+    var stepEl = document.getElementById('state-step');
+    var totalEl = document.getElementById('state-total');
+    var overlayEl = document.getElementById('state-overlay');
+    var progressEl = document.getElementById('state-progress');
+    var completedEl = document.getElementById('state-completed');
+
+    var isActive = tourInstance && tourInstance.isActive && tourInstance.isActive();
+    var currentStep = tourInstance && tourInstance.getCurrentStep ? tourInstance.getCurrentStep() : null;
+    var stepNumber = tourInstance && tourInstance.getCurrentStepNumber ? tourInstance.getCurrentStepNumber() : 0;
+    var totalSteps = tourInstance && tourInstance.getTotalSteps ? tourInstance.getTotalSteps() : tourSteps.length;
+    var isCompleted = Funky.Tour && Funky.Tour.isCompleted ? Funky.Tour.isCompleted('demo-tour') : false;
+
+    if (statusEl) statusEl.textContent = isActive ? 'active' : 'idle';
+    if (stepEl) stepEl.textContent = isActive ? (stepNumber + ' / ' + totalSteps) : '-';
+    if (totalEl) totalEl.textContent = totalSteps;
+    if (overlayEl) overlayEl.textContent = currentOptions.overlayEnabled ? 'on' : 'off';
+    if (progressEl) progressEl.textContent = currentOptions.showProgress ? 'on' : 'off';
+    if (completedEl) completedEl.textContent = isCompleted ? 'yes' : 'no';
+  }
+
+  function addEventHandler(event, handler) {
+    document.addEventListener(event, handler);
+    eventHandlers.push({ event: event, handler: handler });
+  }
+
+  function createTour() {
+    if (tourInstance && tourInstance.destroy) {
+      tourInstance.destroy();
+    }
+
+    var props = getProps();
+
+    tourInstance = Funky.Tour.create({
+      id: 'demo-tour',
+      steps: tourSteps,
+      autoStart: false,
+      persist: true,
+      showOnce: false,
+      overlayEnabled: currentOptions.overlayEnabled,
+      showProgress: currentOptions.showProgress,
+      showSkip: true,
+      showPrevious: true,
+      showClose: true,
+      closeOnOverlay: true,
+      closeOnEscape: true,
+      animate: currentOptions.animate,
+      scrollBehavior: props.scrollBehavior || 'smooth',
+
+      onStart: function(tour) {
+        log('Event: onStart');
+        updateStateDisplay();
+        emit('event', { event: 'tour:start', payload: { tourId: 'demo-tour' } });
+      },
+
+      onEnd: function(tour, result) {
+        log('Event: onEnd { completed: ' + result.completed + ', skipped: ' + result.skipped + ' }');
+        updateStateDisplay();
+        emit('event', { event: 'tour:end', payload: result });
+      },
+
+      onComplete: function(tour) {
+        log('Event: onComplete - Tour finished!');
+        updateStateDisplay();
+        if (Funky.Toast) {
+          Funky.Toast.success('Tour completed! You\'re all set.');
+        }
+        emit('event', { event: 'tour:complete', payload: {} });
+      },
+
+      onSkip: function(tour, stepIndex) {
+        log('Event: onSkip { stepIndex: ' + stepIndex + ' }');
+        emit('event', { event: 'tour:skip', payload: { stepIndex: stepIndex } });
+      },
+
+      onStepShow: function(step, tour) {
+        var index = tourInstance && tourInstance.getCurrentStepNumber ? tourInstance.getCurrentStepNumber() : 0;
+        log('Event: onStepShow { step: ' + index + ', title: "' + step.title + '" }');
+        updateStateDisplay();
+        emit('event', { event: 'tour:step-show', payload: { step: index, title: step.title } });
+      },
+
+      onStepHide: function(step, tour) {
+        var index = tourInstance && tourInstance.getCurrentStepNumber ? tourInstance.getCurrentStepNumber() : 0;
+        log('Event: onStepHide { step: ' + index + ' }');
+        emit('event', { event: 'tour:step-hide', payload: { step: index } });
+      }
+    });
+
+    return tourInstance;
+  }
+
+  function handleControlClick(e) {
+    var btn = e.target.closest('[data-method]');
+    if (!btn) return;
+
+    var method = btn.dataset.method;
+
+    switch (method) {
+      case 'start':
+        if (!tourInstance) {
+          createTour();
+        }
+        if (tourInstance && tourInstance.start) {
+          tourInstance.start();
+          log('API: start()');
+        }
+        break;
+
+      case 'reset':
+        if (Funky.Tour && Funky.Tour.reset) {
+          Funky.Tour.reset('demo-tour');
+          log('API: Funky.Tour.reset("demo-tour")');
+        }
+        updateStateDisplay();
+        break;
+
+      case 'start-at-0':
+      case 'start-at-1':
+      case 'start-at-2':
+      case 'start-at-3':
+      case 'start-at-4':
+        var stepIndex = parseInt(method.split('-')[2], 10);
+        if (!tourInstance) {
+          createTour();
+        }
+        if (tourInstance && tourInstance.start) {
+          tourInstance.start();
+          if (stepIndex > 0 && tourInstance.goTo) {
+            tourInstance.goTo(stepIndex);
+          }
+          log('API: start() then goTo(' + stepIndex + ') - showing step ' + (stepIndex + 1));
+        }
+        break;
+
+      case 'toggle-overlay':
+        currentOptions.overlayEnabled = !currentOptions.overlayEnabled;
+        log('Option: overlayEnabled = ' + currentOptions.overlayEnabled);
+        createTour();
+        updateStateDisplay();
+        break;
+
+      case 'toggle-progress':
+        currentOptions.showProgress = !currentOptions.showProgress;
+        log('Option: showProgress = ' + currentOptions.showProgress);
+        createTour();
+        updateStateDisplay();
+        break;
+
+      case 'toggle-animate':
+        currentOptions.animate = !currentOptions.animate;
+        log('Option: animate = ' + currentOptions.animate);
+        createTour();
+        break;
+
+      case 'is-completed':
+        if (Funky.Tour && Funky.Tour.isCompleted) {
+          var completed = Funky.Tour.isCompleted('demo-tour');
+          log('API: Funky.Tour.isCompleted("demo-tour") -> ' + completed);
+        }
+        break;
+
+      case 'clear-log':
+        logs = [];
+        var logEl = document.getElementById('tour-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+        break;
+    }
+  }
+
+  Funky.Pages.register('component-tour', {
+    init: function(state) {
+      var props = getProps();
+
+      log('Initializing Tour demo');
+      emit('event', { event: 'tour:init', payload: props });
+
+      // Apply props if provided
+      if (props.showOverlay !== undefined) currentOptions.overlayEnabled = props.showOverlay;
+      if (props.showProgress !== undefined) currentOptions.showProgress = props.showProgress;
+      if (props.animate !== undefined) currentOptions.animate = props.animate;
+
+      // Control button clicks
+      document.addEventListener('click', handleControlClick);
+      eventHandlers.push({ event: 'click', handler: handleControlClick });
+
+      if (!Funky.Tour) {
+        log('Error: Funky.Tour not available');
+        return;
+      }
+
+      // Create tour instance
+      createTour();
+      updateStateDisplay();
+
+      // Listen for prop changes from playground
+      if (Funky.PubSub) {
+        var propsHandler = function(data) {
+          if (data && data.props) {
+            var needsRecreate = false;
+            if (data.props.showOverlay !== undefined && data.props.showOverlay !== currentOptions.overlayEnabled) {
+              currentOptions.overlayEnabled = data.props.showOverlay;
+              needsRecreate = true;
+            }
+            if (data.props.showProgress !== undefined && data.props.showProgress !== currentOptions.showProgress) {
+              currentOptions.showProgress = data.props.showProgress;
+              needsRecreate = true;
+            }
+            if (data.props.animate !== undefined && data.props.animate !== currentOptions.animate) {
+              currentOptions.animate = data.props.animate;
+              needsRecreate = true;
+            }
+            if (needsRecreate) {
+              createTour();
+              updateStateDisplay();
+            }
+          }
+        };
+        Funky.PubSub.on('playground:propsChanged', propsHandler);
+        eventHandlers.push({ pubsub: true, event: 'playground:propsChanged', handler: propsHandler });
+      }
+
+      log('Tour demo ready');
+    },
+
+    destroy: function() {
+      // Clean up tour instance
+      if (tourInstance && tourInstance.destroy) {
+        tourInstance.destroy();
+      }
+      tourInstance = null;
+
+      // Remove event handlers
+      eventHandlers.forEach(function(h) {
+        if (h.pubsub && Funky.PubSub) {
+          Funky.PubSub.off(h.event, h.handler);
+        } else {
+          document.removeEventListener(h.event, h.handler);
+        }
+      });
+      eventHandlers = [];
+
+      // Reset state
+      logs = [];
+      currentOptions = {
+        overlayEnabled: true,
+        showProgress: true,
+        animate: true
+      };
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,418 @@
+<div data-page="component-date-picker" class="component-demo">
+  <h2>Date Picker</h2>
+  <p class="text-muted">Flexible date/time picker with range selection, presets, and localization support.</p>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current Configuration</h3>
+    <div class="demo-area">
+      <div class="datepicker-demo__state-display">
+        <div class="datepicker-demo__state-item">
+          <span class="badge bg-secondary">Mode</span>
+          <span id="state-mode">range</span>
+        </div>
+        <div class="datepicker-demo__state-item">
+          <span class="badge bg-secondary">Size</span>
+          <span id="state-size">default</span>
+        </div>
+        <div class="datepicker-demo__state-item">
+          <span class="badge bg-secondary">Format</span>
+          <span id="state-format">YYYY-MM-DD</span>
+        </div>
+        <div class="datepicker-demo__state-item">
+          <span class="badge bg-secondary">Time Picker</span>
+          <span id="state-timePicker">false</span>
+        </div>
+        <div class="datepicker-demo__state-item">
+          <span class="badge bg-secondary">Auto Apply</span>
+          <span id="state-autoApply">false</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Demo -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">All props from the props panel are applied to this date picker.</p>
+    <div class="demo-area">
+      <label class="form-label" for="picker-main-trigger">Select Date</label>
+      <div id="picker-main"></div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">API Controls</h3>
+    <p class="text-muted small">Test DatePicker methods programmatically.</p>
+    <div class="demo-area">
+      <div class="datepicker-demo__controls">
+        <button class="btn btn-primary btn-sm" id="btn-open" type="button">
+          <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i> Open
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-close" type="button">
+          <i class="fas fa-times me-1" aria-hidden="true"></i> Close
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-toggle" type="button">
+          <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i> Toggle
+        </button>
+        <button class="btn btn-danger btn-sm" id="btn-clear" type="button">
+          <i class="fas fa-eraser me-1" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+      <div class="datepicker-demo__controls datepicker-demo__controls--values">
+        <button class="btn btn-success btn-sm" id="btn-set-today" type="button">
+          <i class="fas fa-calendar-check me-1" aria-hidden="true"></i> Set Today
+        </button>
+        <button class="btn btn-info btn-sm" id="btn-get-value" type="button">
+          <i class="fas fa-info me-1" aria-hidden="true"></i> Get Value
+        </button>
+        <button class="btn btn-warning btn-sm" id="btn-set-range" type="button">
+          <i class="fas fa-arrows-alt-h me-1" aria-hidden="true"></i> Set Last 7 Days
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-refresh" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i> Refresh
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Selection -->
+  <section class="demo-section" aria-labelledby="selection-heading">
+    <h3 id="selection-heading">Current Selection</h3>
+    <div class="demo-area">
+      <pre id="picker-selection" class="datepicker-demo__selection" aria-live="polite">No selection</pre>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="picker-log" class="datepicker-demo__log" aria-live="polite">Interact with the date picker to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var pickerInstance = null;
+  var propsChangedHandler = null;
+  var logs = [];
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data !== undefined) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('picker-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateSelection(value) {
+    var selectionEl = document.getElementById('picker-selection');
+    if (selectionEl) {
+      if (value === null || value === undefined) {
+        selectionEl.textContent = 'No selection';
+      } else if (typeof value === 'object' && value.start !== undefined) {
+        // Range mode
+        selectionEl.textContent = JSON.stringify({
+          start: value.start ? value.start.toISOString().split('T')[0] : null,
+          end: value.end ? value.end.toISOString().split('T')[0] : null
+        }, null, 2);
+      } else if (value instanceof Date) {
+        selectionEl.textContent = value.toISOString().split('T')[0];
+      } else {
+        selectionEl.textContent = JSON.stringify(value, null, 2);
+      }
+    }
+  }
+
+  function updateStateDisplay(props) {
+    var stateMode = document.getElementById('state-mode');
+    var stateSize = document.getElementById('state-size');
+    var stateFormat = document.getElementById('state-format');
+    var stateTimePicker = document.getElementById('state-timePicker');
+    var stateAutoApply = document.getElementById('state-autoApply');
+
+    if (stateMode) stateMode.textContent = props.mode || 'range';
+    if (stateSize) stateSize.textContent = props.size || 'default';
+    if (stateFormat) stateFormat.textContent = props.format || 'YYYY-MM-DD';
+    if (stateTimePicker) stateTimePicker.textContent = String(props.timePicker === true);
+    if (stateAutoApply) stateAutoApply.textContent = String(props.autoApply === true);
+  }
+
+  function createDatePicker(props) {
+    // Destroy existing instance
+    if (pickerInstance && pickerInstance.destroy) {
+      pickerInstance.destroy();
+      pickerInstance = null;
+    }
+
+    var container = document.getElementById('picker-main');
+    if (!container || !Funky.DatePicker) {
+      log('DatePicker not available');
+      return;
+    }
+
+    // Clear container and create input element
+    container.innerHTML = '';
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'picker-main-input';
+    input.className = 'form-control';
+    input.placeholder = props.placeholder || 'Select date range...';
+    container.appendChild(input);
+
+    // Build range presets if ranges prop is enabled
+    var presets = null;
+    if (props.ranges !== false && props.mode === 'range') {
+      var now = new Date();
+      var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      presets = [
+        { label: 'Today', value: [today, today] },
+        { label: 'Yesterday', value: [new Date(today.getTime() - 86400000), new Date(today.getTime() - 86400000)] },
+        { label: 'Last 7 Days', value: [new Date(today.getTime() - 7 * 86400000), today] },
+        { label: 'Last 30 Days', value: [new Date(today.getTime() - 30 * 86400000), today] },
+        { label: 'This Month', value: [new Date(now.getFullYear(), now.getMonth(), 1), today] }
+      ];
+    }
+
+    // Build config from ALL props
+    var config = {
+      mode: props.mode || 'range',
+      size: props.size || 'default',
+      format: props.format || 'YYYY-MM-DD',
+      placeholder: props.placeholder || 'Select date range...',
+      showWeekNumbers: props.showWeekNumbers === true,
+      showDropdowns: props.showDropdowns !== false,
+      autoApply: props.autoApply === true,
+      timePicker: props.timePicker === true,
+      timePicker24Hour: props.timePicker24Hour !== false,
+      clearable: true
+    };
+
+    // Add presets if available
+    if (presets) {
+      config.presets = presets;
+    }
+
+    // Min/max date constraints
+    if (props.minDate) {
+      config.minDate = new Date(props.minDate);
+    }
+    if (props.maxDate) {
+      config.maxDate = new Date(props.maxDate);
+    }
+
+    // Event handlers
+    config.onChange = function(value) {
+      updateSelection(value);
+      log('change', value instanceof Date ? value.toISOString() : value);
+      emit('event', { event: 'funky:datepicker:change', payload: { value: value } });
+    };
+
+    config.onOpen = function() {
+      log('open');
+      emit('event', { event: 'funky:datepicker:open' });
+    };
+
+    config.onClose = function() {
+      log('close');
+      emit('event', { event: 'funky:datepicker:close' });
+    };
+
+    config.onClear = function() {
+      updateSelection(null);
+      log('clear');
+      emit('event', { event: 'funky:datepicker:clear' });
+    };
+
+    // Initialize on the input element, not the container
+    pickerInstance = Funky.DatePicker.init(input, config);
+
+    log('initialized', { mode: config.mode, timePicker: config.timePicker, autoApply: config.autoApply });
+    emit('event', { event: 'funky:datepicker:init', payload: { mode: config.mode } });
+  }
+
+  function setupControls() {
+    // Open
+    var btnOpen = document.getElementById('btn-open');
+    if (btnOpen) {
+      btnOpen.onclick = function() {
+        if (pickerInstance && pickerInstance.open) {
+          pickerInstance.open();
+          log('API: open()');
+        }
+      };
+    }
+
+    // Close
+    var btnClose = document.getElementById('btn-close');
+    if (btnClose) {
+      btnClose.onclick = function() {
+        if (pickerInstance && pickerInstance.close) {
+          pickerInstance.close();
+          log('API: close()');
+        }
+      };
+    }
+
+    // Toggle
+    var btnToggle = document.getElementById('btn-toggle');
+    if (btnToggle) {
+      btnToggle.onclick = function() {
+        if (pickerInstance && pickerInstance.toggle) {
+          pickerInstance.toggle();
+          log('API: toggle()');
+        }
+      };
+    }
+
+    // Clear
+    var btnClear = document.getElementById('btn-clear');
+    if (btnClear) {
+      btnClear.onclick = function() {
+        if (pickerInstance && pickerInstance.setValue) {
+          var props = getProps();
+          if (props.mode === 'range' && pickerInstance.setRange) {
+            pickerInstance.setRange(null, null);
+          } else {
+            pickerInstance.setValue(null);
+          }
+          updateSelection(null);
+          log('API: clear()');
+        }
+      };
+    }
+
+    // Set Today
+    var btnSetToday = document.getElementById('btn-set-today');
+    if (btnSetToday) {
+      btnSetToday.onclick = function() {
+        if (pickerInstance && pickerInstance.setValue) {
+          var today = new Date();
+          var props = getProps();
+          if (props.mode === 'range' && pickerInstance.setRange) {
+            pickerInstance.setRange(today, today);
+            log('API: setRange(today, today)');
+          } else {
+            pickerInstance.setValue(today);
+            log('API: setValue(today)');
+          }
+        }
+      };
+    }
+
+    // Get Value
+    var btnGetValue = document.getElementById('btn-get-value');
+    if (btnGetValue) {
+      btnGetValue.onclick = function() {
+        if (pickerInstance && pickerInstance.getValue) {
+          var value = pickerInstance.getValue();
+          updateSelection(value);
+          log('API: getValue()', value);
+        }
+      };
+    }
+
+    // Set Last 7 Days (for range mode)
+    var btnSetRange = document.getElementById('btn-set-range');
+    if (btnSetRange) {
+      btnSetRange.onclick = function() {
+        if (pickerInstance) {
+          var props = getProps();
+          var today = new Date();
+          var weekAgo = new Date(today.getTime() - 7 * 86400000);
+
+          if (props.mode === 'range' && pickerInstance.setRange) {
+            pickerInstance.setRange(weekAgo, today);
+            log('API: setRange(last7Days)');
+          } else if (pickerInstance.setValue) {
+            pickerInstance.setValue(today);
+            log('API: setValue(today) - range not available in single mode');
+          }
+        }
+      };
+    }
+
+    // Refresh
+    var btnRefresh = document.getElementById('btn-refresh');
+    if (btnRefresh) {
+      btnRefresh.onclick = function() {
+        if (pickerInstance && pickerInstance.refresh) {
+          pickerInstance.refresh();
+          log('API: refresh()');
+        }
+      };
+    }
+
+    // Clear Log
+    var btnClearLog = document.getElementById('btn-clear-log');
+    if (btnClearLog) {
+      btnClearLog.onclick = function() {
+        logs = [];
+        var logEl = document.getElementById('picker-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+      };
+    }
+  }
+
+  Funky.Pages.register('component-date-picker', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Create date picker with current props
+      createDatePicker(props);
+
+      // Setup control buttons
+      setupControls();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          // Recreate date picker with new props
+          createDatePicker(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return {};
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy picker instance
+      if (pickerInstance && pickerInstance.destroy) {
+        pickerInstance.destroy();
+        pickerInstance = null;
+      }
+
+      // Reset state
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

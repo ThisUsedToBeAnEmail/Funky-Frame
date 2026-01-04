@@ -1,0 +1,1336 @@
+/**
+ * Funky.Markdown - Themed Markdown Styles
+ * Uses --pro-* CSS variables for theming
+ * BEM naming convention
+ */
+
+/* ==========================================================================
+   CSS Variables
+   ========================================================================== */
+
+.funky-markdown {
+    /* Typography */
+    --markdown-font-family: var(--pro-font-family);
+    --markdown-font-mono: var(--pro-font-mono, 'Consolas', 'Monaco', 'Courier New', monospace);
+    --markdown-font-size: var(--pro-font-size-base);
+    --markdown-line-height: 1.7;
+    
+    /* Spacing */
+    --markdown-spacing: var(--pro-spacing-md);
+    --markdown-heading-margin: var(--pro-spacing-lg);
+    
+    /* Colors */
+    --markdown-text-color: var(--pro-text-primary);
+    --markdown-text-muted: var(--pro-text-secondary);
+    --markdown-link-color: var(--pro-accent-primary);
+    --markdown-link-hover: var(--pro-accent-primary-hover);
+    
+    /* Code */
+    --markdown-code-bg: var(--pro-bg-tertiary);
+    --markdown-code-color: var(--pro-accent-danger);
+    --markdown-pre-bg: var(--pro-bg-elevated);
+    --markdown-code-header-bg: var(--pro-bg-tertiary);
+    --markdown-code-header-color: var(--pro-text-secondary);
+    
+    /* Blockquote */
+    --markdown-blockquote-border: var(--pro-accent-primary);
+    --markdown-blockquote-bg: var(--pro-bg-secondary);
+    
+    /* Horizontal rule */
+    --markdown-hr-color: var(--pro-border-color);
+    
+    /* Tables */
+    --markdown-table-border: var(--pro-border-color);
+    --markdown-table-stripe: var(--pro-bg-secondary);
+    --markdown-table-header-bg: var(--pro-bg-tertiary);
+}
+
+/* ==========================================================================
+   Base Container
+   ========================================================================== */
+
+.funky-markdown {
+    font-family: var(--markdown-font-family);
+    font-size: var(--markdown-font-size);
+    line-height: var(--markdown-line-height);
+    color: var(--markdown-text-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.funky-markdown > *:first-child {
+    margin-top: 0;
+}
+
+.funky-markdown > *:last-child {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Headings
+   ========================================================================== */
+
+.funky-markdown__h1,
+.funky-markdown__h2,
+.funky-markdown__h3,
+.funky-markdown__h4,
+.funky-markdown__h5,
+.funky-markdown__h6 {
+    margin-top: var(--markdown-heading-margin);
+    margin-bottom: var(--markdown-spacing);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--markdown-text-color);
+}
+
+.funky-markdown__h1 {
+    font-size: 2rem;
+    padding-bottom: var(--pro-spacing-sm);
+    border-bottom: 1px solid var(--pro-border-color);
+    margin-top: 0;
+}
+
+.funky-markdown__h2 {
+    font-size: 1.5rem;
+    padding-bottom: var(--pro-spacing-xs);
+    border-bottom: 1px solid var(--pro-border-muted);
+}
+
+.funky-markdown__h3 {
+    font-size: 1.25rem;
+}
+
+.funky-markdown__h4 {
+    font-size: 1.125rem;
+}
+
+.funky-markdown__h5 {
+    font-size: 1rem;
+}
+
+.funky-markdown__h6 {
+    font-size: 0.875rem;
+    color: var(--markdown-text-muted);
+}
+
+/* Heading anchor links */
+.funky-markdown__anchor {
+    opacity: 0;
+    margin-left: var(--pro-spacing-xs);
+    color: var(--markdown-link-color);
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.funky-markdown__h1:hover .funky-markdown__anchor,
+.funky-markdown__h2:hover .funky-markdown__anchor,
+.funky-markdown__h3:hover .funky-markdown__anchor,
+.funky-markdown__h4:hover .funky-markdown__anchor,
+.funky-markdown__h5:hover .funky-markdown__anchor,
+.funky-markdown__h6:hover .funky-markdown__anchor {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Paragraphs & Text
+   ========================================================================== */
+
+.funky-markdown__p {
+    margin: 0 0 var(--markdown-spacing) 0;
+}
+
+.funky-markdown strong {
+    font-weight: 600;
+}
+
+.funky-markdown em {
+    font-style: italic;
+}
+
+.funky-markdown del {
+    text-decoration: line-through;
+    color: var(--markdown-text-muted);
+}
+
+/* Abbreviations (with tooltip) */
+.funky-markdown__abbr {
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    cursor: help;
+}
+
+.funky-markdown__abbr:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+.funky-markdown a {
+    color: var(--markdown-link-color);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.funky-markdown a:hover {
+    color: var(--markdown-link-hover);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Images
+   ========================================================================== */
+
+.funky-markdown__img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--pro-border-radius);
+}
+
+/* ==========================================================================
+   Inline Code
+   ========================================================================== */
+
+.funky-markdown__code {
+    padding: 0.125rem 0.375rem;
+    font-family: var(--markdown-font-mono);
+    font-size: 0.875em;
+    background-color: var(--markdown-code-bg);
+    color: var(--markdown-code-color);
+    border-radius: var(--pro-border-radius-sm);
+    word-break: break-word;
+}
+
+/* ==========================================================================
+   Code Blocks
+   ========================================================================== */
+
+/* Code block wrapper */
+.funky-markdown__pre-wrapper {
+    position: relative;
+    margin: var(--markdown-spacing) 0;
+}
+
+.funky-markdown__pre-wrapper--collapsible {
+    position: relative;
+}
+
+/* Code header */
+.funky-markdown__code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+    background: var(--markdown-code-header-bg);
+    border: 1px solid var(--pro-border-color);
+    border-bottom: none;
+    border-radius: var(--pro-border-radius) var(--pro-border-radius) 0 0;
+    gap: var(--pro-spacing-sm);
+}
+
+.funky-markdown__code-lang {
+    font-family: var(--markdown-font-mono);
+    font-size: var(--pro-font-size-xs);
+    color: var(--markdown-code-header-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.funky-markdown__code-lines {
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-muted);
+}
+
+/* Copy button */
+.funky-markdown__copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--pro-text-secondary);
+    cursor: pointer;
+    border-radius: var(--pro-border-radius-sm);
+    transition: color 0.15s, background-color 0.15s;
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-left: auto;
+}
+
+.funky-markdown__copy-btn:hover {
+    color: var(--pro-text-primary);
+    background: var(--pro-bg-hover);
+}
+
+.funky-markdown__copy-btn--success {
+    color: var(--pro-accent-success);
+}
+
+.funky-markdown__copy-btn--error {
+    color: var(--pro-accent-danger);
+}
+
+/* Pre element */
+.funky-markdown__pre {
+    margin: var(--markdown-spacing) 0;
+    padding: var(--pro-spacing-md);
+    background: var(--markdown-pre-bg);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Pre with header */
+.funky-markdown__pre--with-header {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+/* Collapsed code block */
+.funky-markdown__pre--collapsed {
+    overflow: hidden;
+}
+
+/* Line numbers */
+.funky-markdown__pre--line-numbers {
+    display: flex;
+    padding: 0;
+}
+
+.funky-markdown__line-numbers {
+    display: flex;
+    flex-direction: column;
+    padding: var(--pro-spacing-md);
+    padding-right: var(--pro-spacing-md);
+    background: var(--pro-bg-tertiary);
+    border-right: 1px solid var(--pro-border-color);
+    color: var(--pro-text-muted);
+    font-family: var(--markdown-font-mono);
+    font-size: var(--pro-font-size-sm);
+    line-height: 1.5;
+    text-align: right;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.funky-markdown__pre--line-numbers .funky-markdown__code-block {
+    padding: var(--pro-spacing-md);
+    flex: 1;
+    overflow-x: auto;
+}
+
+.funky-markdown__code-block {
+    display: block;
+    font-family: var(--markdown-font-mono);
+    font-size: var(--pro-font-size-sm);
+    line-height: 1.5;
+    color: var(--markdown-text-color);
+    background: transparent;
+    padding: 0;
+    white-space: pre;
+    word-break: normal;
+    word-wrap: normal;
+    tab-size: 4;
+}
+
+/* Syntax highlighting - matches code-preview.css */
+.funky-markdown .syntax-keyword { color: var(--pro-accent-primary); font-weight: 500; }
+.funky-markdown .syntax-string { color: var(--pro-accent-success); }
+.funky-markdown .syntax-number { color: var(--pro-accent-info); }
+.funky-markdown .syntax-comment { color: var(--pro-text-muted); font-style: italic; }
+.funky-markdown .syntax-builtin { color: var(--pro-accent-warning); }
+.funky-markdown .syntax-function { color: var(--syntax-function, #dcdcaa); }
+.funky-markdown .syntax-tag { color: var(--pro-accent-danger); }
+.funky-markdown .syntax-attribute { color: var(--pro-accent-info); }
+.funky-markdown .syntax-selector { color: var(--pro-accent-warning); }
+.funky-markdown .syntax-property { color: var(--pro-accent-info); }
+.funky-markdown .syntax-value { color: var(--pro-accent-success); }
+.funky-markdown .syntax-boolean { color: var(--pro-accent-warning); }
+.funky-markdown .syntax-operator { color: var(--pro-text-secondary); }
+.funky-markdown .syntax-punctuation { color: var(--pro-text-secondary); }
+
+/* ==========================================================================
+   Blockquotes
+   ========================================================================== */
+
+.funky-markdown__blockquote {
+    margin: var(--markdown-spacing) 0;
+    padding: var(--pro-spacing-sm) var(--pro-spacing-md);
+    border-left: 4px solid var(--markdown-blockquote-border);
+    background: var(--markdown-blockquote-bg);
+    color: var(--markdown-text-muted);
+    border-radius: 0 var(--pro-border-radius) var(--pro-border-radius) 0;
+}
+
+.funky-markdown__blockquote > *:first-child {
+    margin-top: 0;
+}
+
+.funky-markdown__blockquote > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Nested blockquotes */
+.funky-markdown__blockquote .funky-markdown__blockquote {
+    margin-left: var(--pro-spacing-sm);
+    border-left-color: var(--pro-border-color);
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+.funky-markdown__ul,
+.funky-markdown__ol {
+    margin: var(--markdown-spacing) 0;
+    padding-left: 1.5rem;
+}
+
+.funky-markdown__li {
+    margin: var(--pro-spacing-xs) 0;
+}
+
+/* Nested lists */
+.funky-markdown__li > .funky-markdown__ul,
+.funky-markdown__li > .funky-markdown__ol {
+    margin: var(--pro-spacing-xs) 0;
+}
+
+/* ==========================================================================
+   Horizontal Rule
+   ========================================================================== */
+
+.funky-markdown__hr {
+    margin: var(--markdown-heading-margin) 0;
+    border: none;
+    border-top: 1px solid var(--markdown-hr-color);
+}
+
+/* ==========================================================================
+   Table of Contents
+   ========================================================================== */
+
+.funky-markdown__toc {
+    padding: var(--pro-spacing-md);
+    background: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius);
+}
+
+.funky-markdown__toc-title {
+    margin: 0 0 var(--pro-spacing-sm) 0;
+    font-weight: 600;
+    font-size: var(--pro-font-size-sm);
+    color: var(--markdown-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.funky-markdown__toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.funky-markdown__toc-item {
+    margin: var(--pro-spacing-xs) 0;
+}
+
+.funky-markdown__toc-item--level-2 {
+    padding-left: var(--pro-spacing-md);
+}
+
+.funky-markdown__toc-item--level-3 {
+    padding-left: calc(var(--pro-spacing-md) * 2);
+}
+
+.funky-markdown__toc-item--level-4 {
+    padding-left: calc(var(--pro-spacing-md) * 3);
+}
+
+.funky-markdown__toc-link {
+    color: var(--markdown-text-color);
+    text-decoration: none;
+    font-size: var(--pro-font-size-sm);
+    transition: color 0.15s;
+}
+
+.funky-markdown__toc-link:hover {
+    color: var(--markdown-link-color);
+}
+
+.funky-markdown__toc-link--active {
+    color: var(--markdown-link-color);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.funky-markdown__table-wrapper {
+    margin: var(--markdown-spacing) 0;
+    overflow-x: auto;
+}
+
+.funky-markdown__table-wrapper--interactive {
+    /* Funky.Table container - inherits DataTables styling */
+    position: relative;
+}
+
+.funky-markdown__table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--pro-border-color);
+    font-size: var(--pro-font-size-sm);
+}
+
+.funky-markdown__table th,
+.funky-markdown__table td {
+    padding: var(--pro-spacing-sm) var(--pro-spacing-md);
+    border: 1px solid var(--pro-border-color);
+    text-align: left;
+    vertical-align: top;
+}
+
+.funky-markdown__table th {
+    background-color: var(--pro-bg-tertiary);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.funky-markdown__table tbody tr:nth-child(even) {
+    background-color: var(--pro-bg-secondary);
+}
+
+.funky-markdown__table tbody tr:hover {
+    background-color: var(--pro-bg-hover);
+}
+
+/* Table cell code styling */
+.funky-markdown__table code {
+    font-size: 0.9em;
+    padding: 0.125em 0.25em;
+    background-color: var(--markdown-code-bg);
+    border-radius: var(--pro-border-radius-sm);
+}
+
+/* ==========================================================================
+   Task Lists
+   ========================================================================== */
+
+.funky-markdown__task-list {
+    list-style: none;
+    padding-left: 0;
+    margin: var(--markdown-spacing) 0;
+}
+
+.funky-markdown__task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--pro-spacing-sm);
+    padding: var(--pro-spacing-xs) 0;
+}
+
+.funky-markdown__task-checkbox {
+    margin-top: 0.3em;
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--pro-accent-primary);
+    cursor: default;
+}
+
+.funky-markdown__task-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.funky-markdown__task-item--checked .funky-markdown__task-text {
+    text-decoration: line-through;
+    color: var(--pro-text-muted);
+}
+
+/* ==========================================================================
+   Autolinks
+   ========================================================================== */
+
+.funky-markdown__link--auto,
+.funky-markdown__link--email {
+    word-break: break-all;
+}
+
+/* Strikethrough */
+.funky-markdown del {
+    text-decoration: line-through;
+    color: var(--pro-text-muted);
+}
+
+/* =========================================================================
+   LOADING STATES
+   ========================================================================= */
+
+.funky-markdown--loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.funky-markdown__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-xl, 2rem);
+    min-height: 200px;
+}
+
+/* Fallback spinner */
+.funky-markdown__spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--pro-border-color, #e5e7eb);
+    border-radius: 50%;
+    border-top-color: var(--pro-primary, #3b82f6);
+    animation: funky-markdown-spin 0.8s linear infinite;
+}
+
+@keyframes funky-markdown-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.funky-markdown__loading-text {
+    color: var(--pro-text-muted, #6b7280);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+/* =========================================================================
+   ERROR STATES
+   ========================================================================= */
+
+.funky-markdown--error {
+    min-height: 150px;
+}
+
+.funky-markdown__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+    padding: var(--pro-spacing-xl, 2rem);
+    text-align: center;
+}
+
+.funky-markdown__error-icon {
+    font-size: 2.5rem;
+    color: var(--pro-danger, #ef4444);
+}
+
+.funky-markdown__error-title {
+    margin: 0;
+    font-size: var(--pro-font-size-lg, 1.125rem);
+    font-weight: 600;
+    color: var(--pro-text-primary, #111827);
+}
+
+.funky-markdown__error-message {
+    margin: 0;
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-muted, #6b7280);
+}
+
+.funky-markdown__retry-btn {
+    margin-top: var(--pro-spacing-sm, 0.5rem);
+    padding: var(--pro-spacing-xs, 0.25rem) var(--pro-spacing-md, 1rem);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: 500;
+    color: var(--pro-primary, #3b82f6);
+    background: transparent;
+    border: 1px solid var(--pro-primary, #3b82f6);
+    border-radius: var(--pro-border-radius, 0.375rem);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.funky-markdown__retry-btn:hover {
+    color: #fff;
+    background-color: var(--pro-primary, #3b82f6);
+}
+
+.funky-markdown__retry-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pro-primary-alpha-20, rgba(59, 130, 246, 0.2));
+}
+
+/* =========================================================================
+   QUICK NAV STYLES
+   ========================================================================= */
+
+.funky-markdown__quicknav {
+    position: fixed;
+    top: 50%;
+    right: var(--pro-spacing-md, 1rem);
+    transform: translateY(-50%);
+    z-index: 100;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: var(--pro-spacing-sm, 0.5rem);
+    background: var(--pro-bg-primary, #fff);
+    border: 1px solid var(--pro-border-color, #e5e7eb);
+    border-radius: var(--pro-border-radius, 0.375rem);
+    box-shadow: var(--pro-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+.funky-markdown__quicknav-item {
+    display: block;
+    padding: var(--pro-spacing-xs, 0.25rem) var(--pro-spacing-sm, 0.5rem);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary, #4b5563);
+    text-decoration: none;
+    border-radius: var(--pro-border-radius-sm, 0.25rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.funky-markdown__quicknav-item:hover {
+    color: var(--pro-primary, #3b82f6);
+    background: var(--pro-bg-hover, #f3f4f6);
+}
+
+.funky-markdown__quicknav-item--active {
+    color: var(--pro-primary, #3b82f6);
+    background: var(--pro-primary-alpha-10, rgba(59, 130, 246, 0.1));
+}
+
+.funky-markdown__quicknav-item--h3,
+.funky-markdown__quicknav-item--h4 {
+    padding-left: var(--pro-spacing-md, 1rem);
+    font-size: var(--pro-font-size-xs, 0.75rem);
+}
+
+/* Hide quicknav on small screens */
+@media (max-width: 1024px) {
+    .funky-markdown__quicknav {
+        display: none;
+    }
+}
+
+/* =========================================================================
+   CODE EXPAND BUTTON
+   ========================================================================= */
+
+.funky-markdown__pre--collapsed .funky-markdown__code-block {
+    max-height: calc(20 * 1.5 * var(--pro-font-size-sm, 0.875rem));
+    overflow: hidden;
+}
+
+.funky-markdown__pre--collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    background: linear-gradient(transparent, var(--markdown-pre-bg));
+    pointer-events: none;
+}
+
+.funky-markdown__code-expand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: var(--pro-spacing-sm);
+    border: none;
+    border-top: 1px solid var(--pro-border-color);
+    background: var(--pro-bg-tertiary);
+    color: var(--pro-accent-primary);
+    font-size: var(--pro-font-size-sm);
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.funky-markdown__code-expand:hover {
+    background: var(--pro-bg-hover);
+}
+
+.funky-markdown__code-expand:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--pro-accent-primary);
+}
+
+/* =========================================================================
+   DENSITY MODES
+   ========================================================================= */
+
+/* Compact density - tighter spacing for dense content */
+.funky-markdown--compact {
+    --markdown-spacing: var(--pro-spacing-sm);
+    --markdown-heading-margin: var(--pro-spacing-md);
+    --markdown-line-height: 1.5;
+    font-size: var(--pro-font-size-sm);
+}
+
+.funky-markdown--compact .funky-markdown__h1 {
+    font-size: 1.5rem;
+}
+
+.funky-markdown--compact .funky-markdown__h2 {
+    font-size: 1.25rem;
+}
+
+.funky-markdown--compact .funky-markdown__h3 {
+    font-size: 1.125rem;
+}
+
+.funky-markdown--compact .funky-markdown__h4 {
+    font-size: 1rem;
+}
+
+.funky-markdown--compact .funky-markdown__h5,
+.funky-markdown--compact .funky-markdown__h6 {
+    font-size: 0.875rem;
+}
+
+.funky-markdown--compact .funky-markdown__pre {
+    padding: var(--pro-spacing-sm);
+}
+
+.funky-markdown--compact .funky-markdown__blockquote {
+    padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+}
+
+.funky-markdown--compact .funky-markdown__table th,
+.funky-markdown--compact .funky-markdown__table td {
+    padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+}
+
+.funky-markdown--compact .funky-markdown__toc {
+    padding: var(--pro-spacing-sm);
+}
+
+/* Comfortable density - more generous spacing for reading */
+.funky-markdown--comfortable {
+    --markdown-spacing: var(--pro-spacing-lg);
+    --markdown-heading-margin: var(--pro-spacing-xl);
+    --markdown-line-height: 1.8;
+}
+
+.funky-markdown--comfortable .funky-markdown__p {
+    max-width: 75ch;  /* Optimal reading line length */
+}
+
+.funky-markdown--comfortable .funky-markdown__h1 {
+    font-size: 2.25rem;
+}
+
+.funky-markdown--comfortable .funky-markdown__h2 {
+    font-size: 1.75rem;
+}
+
+.funky-markdown--comfortable .funky-markdown__h3 {
+    font-size: 1.375rem;
+}
+
+.funky-markdown--comfortable .funky-markdown__pre {
+    padding: var(--pro-spacing-lg);
+}
+
+.funky-markdown--comfortable .funky-markdown__blockquote {
+    padding: var(--pro-spacing-md) var(--pro-spacing-lg);
+}
+
+/* =========================================================================
+   FOCUS MODE
+   ========================================================================= */
+
+.funky-markdown--focus-mode ~ .funky-quick-nav,
+.funky-markdown--focus-mode ~ .funky-markdown__quicknav {
+    opacity: 0.3;
+    transition: opacity 0.3s;
+}
+
+.funky-markdown--focus-mode ~ .funky-quick-nav:hover,
+.funky-markdown--focus-mode ~ .funky-markdown__quicknav:hover {
+    opacity: 1;
+}
+
+/* =========================================================================
+   RESPONSIVE STYLES
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    .funky-markdown__h1 {
+        font-size: 1.75rem;
+    }
+    
+    .funky-markdown__h2 {
+        font-size: 1.375rem;
+    }
+    
+    .funky-markdown__h3 {
+        font-size: 1.125rem;
+    }
+    
+    /* Code blocks extend to edges on mobile */
+    .funky-markdown__pre-wrapper {
+        margin-left: calc(var(--markdown-spacing) * -1);
+        margin-right: calc(var(--markdown-spacing) * -1);
+    }
+    
+    .funky-markdown__code-header {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .funky-markdown__pre {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    /* Tables extend to edges on mobile */
+    .funky-markdown__table-wrapper {
+        margin-left: calc(var(--markdown-spacing) * -1);
+        margin-right: calc(var(--markdown-spacing) * -1);
+    }
+    
+    .funky-markdown__table {
+        border-left: none;
+        border-right: none;
+    }
+    
+    /* Blockquotes full width */
+    .funky-markdown__blockquote {
+        margin-left: calc(var(--markdown-spacing) * -1);
+        margin-right: calc(var(--markdown-spacing) * -1);
+        border-radius: 0;
+    }
+    
+    /* Hide anchor links on mobile */
+    .funky-markdown__anchor {
+        display: none;
+    }
+}
+
+/* =========================================================================
+   ENHANCED PRINT STYLES
+   ========================================================================= */
+
+@media print {
+    .funky-markdown {
+        color: #000;
+        background: #fff;
+        font-size: 11pt;
+        line-height: 1.5;
+    }
+    
+    .funky-markdown a {
+        color: #000;
+        text-decoration: underline;
+    }
+    
+    /* Show link URLs for external links */
+    .funky-markdown a[href^="http"]::after {
+        content: ' (' attr(href) ')';
+        font-size: 0.8em;
+        color: #666;
+    }
+    
+    /* Don't show URLs for internal links */
+    .funky-markdown a[href^="#"]::after {
+        content: none;
+    }
+    
+    .funky-markdown__pre {
+        background: #f5f5f5 !important;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    
+    .funky-markdown__blockquote {
+        border-left-color: #666;
+        background: #f9f9f9;
+    }
+    
+    /* Hide interactive elements */
+    .funky-markdown__copy-btn,
+    .funky-markdown__code-expand,
+    .funky-markdown__anchor,
+    .funky-markdown__quicknav,
+    .funky-quick-nav {
+        display: none !important;
+    }
+    
+    /* Expand collapsed code blocks for print */
+    .funky-markdown__pre--collapsed .funky-markdown__code-block {
+        max-height: none;
+        overflow: visible;
+    }
+    
+    .funky-markdown__pre--collapsed::after {
+        display: none;
+    }
+    
+    /* Tables */
+    .funky-markdown__table {
+        page-break-inside: avoid;
+    }
+    
+    .funky-markdown__table th,
+    .funky-markdown__table td {
+        border-color: #999;
+    }
+    
+    /* Abbreviations - show full text */
+    .funky-markdown__abbr {
+        text-decoration: none;
+    }
+    
+    .funky-markdown__abbr[title]::after {
+        content: ' (' attr(title) ')';
+        font-size: 0.85em;
+        color: #666;
+    }
+    
+    /* Headings avoid page breaks after */
+    .funky-markdown__h1,
+    .funky-markdown__h2,
+    .funky-markdown__h3,
+    .funky-markdown__h4,
+    .funky-markdown__h5,
+    .funky-markdown__h6 {
+        page-break-after: avoid;
+    }
+    
+    /* Images */
+    .funky-markdown__img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+    
+    /* Task lists - print checkboxes as text */
+    .funky-markdown__task-checkbox {
+        -webkit-appearance: none;
+        appearance: none;
+        width: auto;
+        height: auto;
+    }
+    
+    .funky-markdown__task-checkbox::before {
+        content: '[ ]';
+        font-family: monospace;
+    }
+    
+    .funky-markdown__task-checkbox:checked::before {
+        content: '[x]';
+    }
+    
+    /* TOC - print keyboard shortcut legend */
+    .funky-markdown__toc::after {
+        content: 'Keyboard: j/k (navigate), g g (top), G (bottom), / (search)';
+        display: block;
+        margin-top: var(--pro-spacing-md);
+        font-size: 9pt;
+        color: #666;
+        font-style: italic;
+    }
+}
+
+/* ==========================================================================
+   TOC PANEL (Uses modal-slide-panel from modals.css)
+   ========================================================================== */
+
+/* Container with TOC panel enabled */
+.funky-markdown--has-toc-panel {
+	position: relative;
+}
+
+/* TOC Toggle Button - positioned within container */
+.funky-markdown__toc-toggle {
+	position: absolute;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	gap: var(--pro-spacing-xs);
+	padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+	border: 1px solid var(--pro-border-color);
+	background: var(--pro-bg-secondary);
+	color: var(--pro-text-primary);
+	cursor: pointer;
+	border-radius: 6px;
+	font-size: var(--pro-font-size-xs);
+	box-shadow: var(--pro-shadow-sm);
+	transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.funky-markdown__toc-toggle:hover {
+	background: var(--pro-bg-tertiary);
+	box-shadow: var(--pro-shadow-md);
+}
+
+.funky-markdown__toc-toggle:focus-visible {
+	outline: 2px solid var(--pro-accent-primary);
+	outline-offset: 2px;
+}
+
+.funky-markdown__toc-toggle i {
+	font-size: 0.875em;
+}
+
+.funky-markdown__toc-toggle-text {
+	font-weight: var(--pro-font-weight-medium);
+}
+
+/* Position variants */
+.funky-markdown__toc-toggle--top-left {
+	top: var(--pro-spacing-sm);
+	left: var(--pro-spacing-sm);
+}
+
+.funky-markdown__toc-toggle--top-right {
+	top: var(--pro-spacing-sm);
+	right: var(--pro-spacing-sm);
+	left: auto;
+}
+
+.funky-markdown__toc-toggle--bottom-left {
+	bottom: var(--pro-spacing-sm);
+	left: var(--pro-spacing-sm);
+	top: auto;
+}
+
+.funky-markdown__toc-toggle--bottom-right {
+	bottom: var(--pro-spacing-sm);
+	right: var(--pro-spacing-sm);
+	top: auto;
+	left: auto;
+}
+
+/* Sticky variant - fixed position on screen, below header */
+.funky-markdown__toc-toggle--sticky {
+	position: fixed;
+	z-index: 100; /* Below modal backdrop (1040) but above content */
+	top: calc(var(--header-height, 60px) + var(--pro-spacing-md));
+	right: var(--pro-spacing-md);
+}
+
+/* Sticky position variants */
+.funky-markdown__toc-toggle--sticky.funky-markdown__toc-toggle--top-left {
+	left: var(--pro-spacing-md);
+	right: auto;
+}
+
+.funky-markdown__toc-toggle--sticky.funky-markdown__toc-toggle--bottom-left {
+	top: auto;
+	bottom: var(--pro-spacing-md);
+	left: var(--pro-spacing-md);
+	right: auto;
+}
+
+.funky-markdown__toc-toggle--sticky.funky-markdown__toc-toggle--bottom-right {
+	top: auto;
+	bottom: var(--pro-spacing-md);
+}
+
+/* TOC Fallback List (when TreeView not available) */
+.funky-markdown__toc-list ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.funky-markdown__toc-item {
+	margin-bottom: 2px;
+}
+
+.funky-markdown__toc-item--level-2 {
+	padding-left: var(--pro-spacing-md);
+}
+
+.funky-markdown__toc-item--level-3 {
+	padding-left: calc(var(--pro-spacing-md) * 2);
+}
+
+.funky-markdown__toc-item--level-4 {
+	padding-left: calc(var(--pro-spacing-md) * 3);
+}
+
+.funky-markdown__toc-link {
+	display: block;
+	padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+	color: var(--pro-text-secondary);
+	text-decoration: none;
+	border-radius: 4px;
+	font-size: var(--pro-font-size-xs);
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.funky-markdown__toc-link:hover {
+	background: var(--pro-bg-elevated);
+	color: var(--pro-text-primary);
+}
+
+/* ==========================================================================
+   MARKDOWN PLAYGROUND DEMO
+   ========================================================================== */
+
+/* Main container */
+.markdown-demo__container {
+  position: relative;
+  min-height: 400px;
+}
+
+/* Content wrapper */
+.markdown-demo__wrapper {
+  position: relative;
+  height: 100%;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* Markdown content area */
+.markdown-demo__content {
+  padding: 1.5rem;
+  background: var(--pro-bg-secondary, #252525);
+  border: 1px solid var(--pro-border-color, #333);
+  border-radius: var(--pro-radius-md, 8px);
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.markdown-demo__content:focus {
+  outline: 2px solid var(--pro-accent-primary, #2f81f7);
+  outline-offset: 2px;
+}
+
+/* Source display */
+.markdown-demo__source-wrapper {
+  position: relative;
+}
+
+.markdown-demo__copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+.markdown-demo__source {
+  margin: 0;
+  padding: 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border: 1px solid var(--pro-border-color, #333);
+  border-radius: var(--pro-radius-sm, 6px);
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--pro-text-secondary, #aaa);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Actions */
+.markdown-demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Settings display */
+.markdown-demo__settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.markdown-demo__setting {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+}
+
+.markdown-demo__setting-label {
+  font-size: 0.8125rem;
+  color: var(--pro-text-secondary, #888);
+}
+
+.markdown-demo__setting-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--pro-accent-primary, #2f81f7);
+}
+
+/* Event log */
+.markdown-demo__log {
+  margin: 0;
+  padding: 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border: 1px solid var(--pro-border-color, #333);
+  border-radius: var(--pro-radius-sm, 6px);
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--pro-text-secondary, #aaa);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Light theme */
+[data-theme="light"] .markdown-demo__content {
+  background: var(--pro-bg-secondary, #fff);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .markdown-demo__source,
+[data-theme="light"] .markdown-demo__setting,
+[data-theme="light"] .markdown-demo__log {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .markdown-demo__preview-container {
+    flex-direction: column;
+  }
+
+  .markdown-demo__toc-sidebar {
+    width: 100%;
+  }
+
+  .markdown-demo__actions {
+    flex-direction: column;
+  }
+
+  .markdown-demo__actions .btn {
+    width: 100%;
+  }
+
+  .markdown-demo__settings {
+    flex-direction: column;
+  }
+}

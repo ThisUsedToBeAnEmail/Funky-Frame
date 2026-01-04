@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Sandbox</title>
+
+  <!-- Bootstrap CSS (required for utility classes like position-fixed) -->
+  <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+
+  <!-- All Funky CSS -->
+  <link rel="stylesheet" href="../../css/fonts.css">
+  <link rel="stylesheet" href="../../css/datatables-funky.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/animate.css">
+  <link rel="stylesheet" href="../../css/cards.css">
+  <link rel="stylesheet" href="../../css/forms.css">
+  <link rel="stylesheet" href="../../css/buttons.css">
+  <link rel="stylesheet" href="../../css/stats.css">
+  <link rel="stylesheet" href="../../css/breadcrumbs.css">
+  <link rel="stylesheet" href="../../css/page-header.css">
+  <link rel="stylesheet" href="../../css/modals.css">
+  <link rel="stylesheet" href="../../css/navigation.css">
+  <link rel="stylesheet" href="../../css/tables.css">
+  <link rel="stylesheet" href="../../css/wizard.css">
+  <link rel="stylesheet" href="../../css/api-docs.css">
+  <link rel="stylesheet" href="../../css/docs.css">
+  <link rel="stylesheet" href="../../css/filters.css">
+  <link rel="stylesheet" href="../../css/toasts.css">
+  <link rel="stylesheet" href="../../css/queue.css">
+  <link rel="stylesheet" href="../../css/files.css">
+  <link rel="stylesheet" href="../../css/column-profiles.css">
+  <link rel="stylesheet" href="../../css/report-format.css">
+  <link rel="stylesheet" href="../../css/audit.css">
+  <link rel="stylesheet" href="../../css/sidenav.css">
+  <link rel="stylesheet" href="../../css/playground.css">
+  <link rel="stylesheet" href="../../css/video.css">
+  <link rel="stylesheet" href="../../css/kanban.css">
+  <link rel="stylesheet" href="../../css/tree-view.css">
+  <link rel="stylesheet" href="../../css/virtualised-list.css">
+  <link rel="stylesheet" href="../../css/typewriter.css">
+  <link rel="stylesheet" href="../../css/empty-state.css">
+  <link rel="stylesheet" href="../../css/truncate.css">
+  <link rel="stylesheet" href="../../css/highlight.css">
+  <link rel="stylesheet" href="../../css/clipboard.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/spinner.css">
+  <link rel="stylesheet" href="../../css/diff.css">
+  <link rel="stylesheet" href="../../css/context-menu.css">
+  <link rel="stylesheet" href="../../css/keyboard.css">
+  <link rel="stylesheet" href="../../css/skip-links.css">
+  <link rel="stylesheet" href="../../css/action-bar.css">
+  <link rel="stylesheet" href="../../css/inline-edit.css">
+  <link rel="stylesheet" href="../../css/relative-time.css">
+  <link rel="stylesheet" href="../../css/clock.css">
+  <link rel="stylesheet" href="../../css/zero-click.css">
+  <link rel="stylesheet" href="../../css/calendar.css">
+  <link rel="stylesheet" href="../../css/date-picker.css">
+  <link rel="stylesheet" href="../../css/badge.css">
+  <link rel="stylesheet" href="../../css/queue-status.css">
+  <link rel="stylesheet" href="../../css/iframe.css">
+  <link rel="stylesheet" href="../../css/dashboard-grid.css">
+  <link rel="stylesheet" href="../../css/widget-catalog.css">
+  <link rel="stylesheet" href="../../css/widget-palette.css">
+  <link rel="stylesheet" href="../../css/quick-nav.css">
+  <link rel="stylesheet" href="../../css/tour.css">
+  <link rel="stylesheet" href="../../css/carousel.css">
+  <link rel="stylesheet" href="../../css/code-preview.css">
+  <link rel="stylesheet" href="../../css/command-palette.css">
+  <link rel="stylesheet" href="../../css/selectable-list.css">
+  <link rel="stylesheet" href="../../css/combobox.css">
+  <link rel="stylesheet" href="../../css/notification-center.css">
+  <link rel="stylesheet" href="../../css/morph.css">
+  <link rel="stylesheet" href="../../css/morph-panel.css">
+  <link rel="stylesheet" href="../../css/markdown.css">
+  <link rel="stylesheet" href="../../css/form.css">
+  <link rel="stylesheet" href="../../css/signature.css">
+  <link rel="stylesheet" href="../../css/accordion.css">
+  <link rel="stylesheet" href="../../css/card-grid.css">
+  <link rel="stylesheet" href="../../css/channel.css">
+  <link rel="stylesheet" href="../../css/timeline.css">
+  <link rel="stylesheet" href="../../css/typing-indicator.css">
+  <link rel="stylesheet" href="../../css/presence.css">
+  <link rel="stylesheet" href="../../css/slide-panel.css">
+  <link rel="stylesheet" href="../../css/tabbed.css">
+  <link rel="stylesheet" href="../../css/popover.css">
+  <link rel="stylesheet" href="../../css/tooltip.css">
+  <!-- Dev Tools -->
+  <link rel="stylesheet" href="../../css/dev/debug.css">
+  <!-- high-contrast.css provides shared high contrast styles -->
+  <link rel="stylesheet" href="../../css/high-contrast.css">
+  <!-- themes.css MUST be last -->
+  <link rel="stylesheet" href="../../css/themes.css">
+
+  <!-- Disable preferences API in test sandbox -->
+  <script>window.FUNKY_PREFERENCES_CONFIG = { autoLoad: false, skipApi: true };</script>
+
+  <!-- Disable PWA auto-init in test sandbox (tests can call PWAManager.init() manually) -->
+  <script>window.FUNKY_PWA_SKIP_INIT = true;</script>
+
+  <!-- Prevent iframe navigation in test sandbox -->
+  <script>
+  (function() {
+    'use strict';
+    window.FUNKY_TEST_SANDBOX = true;
+  })();
+  </script>
+
+  <!-- Mock fetch for API calls in test sandbox -->
+  <script>
+  (function() {
+    'use strict';
+    var originalFetch = window.fetch;
+
+    // Default mock responses for common API endpoints
+    var mockResponses = {
+      '/api/saved_filters': { data: [], success: true },
+      '/api/preferences': { data: {}, success: true },
+      '/api/user': { data: { id: 1, name: 'Test User' }, success: true }
+    };
+
+    window.fetch = function(url, options) {
+      // Check if this is an API call we should mock
+      var urlStr = typeof url === 'string' ? url : url.toString();
+      var isApiCall = urlStr.indexOf('/api/') !== -1;
+
+      if (isApiCall) {
+        // Find matching mock response
+        var mockKey = Object.keys(mockResponses).find(function(key) {
+          return urlStr.indexOf(key) !== -1;
+        });
+
+        if (mockKey) {
+          // Return mock response
+          return Promise.resolve(new Response(JSON.stringify(mockResponses[mockKey]), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+
+        // For unmocked API calls, return empty success response
+        console.log('[Test Sandbox] Mocking unmapped API call:', urlStr);
+        return Promise.resolve(new Response(JSON.stringify({ data: [], success: true }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }));
+      }
+
+      // Pass through non-API calls (assets, etc.)
+      return originalFetch.apply(this, arguments);
+    };
+
+    // Allow tests to add custom mock responses
+    window.FUNKY_TEST_MOCKS = {
+      addResponse: function(url, response) {
+        mockResponses[url] = response;
+      },
+      clearResponses: function() {
+        mockResponses = {
+          '/api/saved_filters': { data: [], success: true },
+          '/api/preferences': { data: {}, success: true },
+          '/api/user': { data: { id: 1, name: 'Test User' }, success: true }
+        };
+      },
+      getOriginalFetch: function() {
+        return originalFetch;
+      }
+    };
+  })();
+  </script>
+
+  <!-- Additional CSS for test fixture visibility -->
+  <style>
+    body {
+      margin: 0;
+      padding: 1rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    #test-fixture {
+      /* Visible for debugging DOM tests */
+      border: 1px dashed #444;
+      padding: 1rem;
+      margin-top: 1rem;
+      min-height: 100px;
+    }
+    .sandbox-status {
+      padding: 0.5rem;
+      background: #2d2d44;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+    /* Ensure visually-hidden class is available */
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="sandbox-status" id="sandboxStatus">Initializing test sandbox...</div>
+
+  <!-- Test fixture container for DOM tests -->
+  <div id="test-fixture"></div>
+
+  <!-- Toast container for E2E tests -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- ARIA Live Regions for announcements -->
+  <div id="spa-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true" role="status"></div>
+  <div id="alert-announcer" class="visually-hidden" aria-live="assertive" aria-atomic="true" role="alert"></div>
+
+  <!-- Skip Links container for accessibility -->
+  <div id="skip-links" class="skip-links"></div>
+
+  <!-- Core Funky modules -->
+  <script src="../../js/core/namespace.js"></script>
+  <script src="../../js/core/registry.js"></script>
+  <script src="../../js/components/schema.js"></script>
+  <script src="../../js/core/csrf.js"></script>
+  <script src="../../js/core/util.js"></script>
+  <script src="../../js/core/dom.js"></script>
+  <script src="../../js/core/vdom.js"></script>
+  <script src="../../js/core/timing.js"></script>
+  <script src="../../js/core/storage.js"></script>
+  <script src="../../js/core/history.js"></script>
+  <script src="../../js/core/focus-manager.js"></script>
+  <script src="../../js/core/idle-detector.js"></script>
+  <script src="../../js/core/pointer-tracker.js"></script>
+  <script src="../../js/core/pubsub.js"></script>
+  <script src="../../js/core/media-query.js"></script>
+  <script src="../../js/core/events.js"></script>
+  <script src="../../js/core/animate.js"></script>
+  <script src="../../js/core/keyboard.js"></script>
+  <script src="../../js/core/selectable-list.js"></script>
+  <script src="../../js/core/announce.js"></script>
+  <script src="../../js/core/forms.js"></script>
+  <script src="../../js/core/validator.js"></script>
+  <script src="../../js/core/schema-adapter.js"></script>
+  <script src="../../js/core/form-field-registry.js"></script>
+  <script src="../../js/core/form.js"></script>
+  <script src="../../js/core/api.js"></script>
+  <script src="../../js/core/timezone.js"></script>
+  <script src="../../js/core/navigation.js"></script>
+  <script src="../../js/core/pages.js"></script>
+  <script src="../../js/core/live-binding.js"></script>
+  <script src="../../js/core/modal.js"></script>
+  <script src="../../js/core/tabs.js"></script>
+  <script src="../../js/core/tooltip.js"></script>
+  <script src="../../js/core/popover.js"></script>
+  <script src="../../js/core/cache.js"></script>
+  <script src="../../js/core/websocket.js"></script>
+  <script src="../../js/core/cache-sync.js"></script>
+  <script src="../../js/core/service-worker.js"></script>
+  <script src="../../js/core/job-queue.js"></script>
+  <script src="../../js/core/request-queue.js"></script>
+  <script src="../../js/core/fuzzy-search.js"></script>
+  <script src="../../js/core/a11y-enhancer.js"></script>
+  <script src="../../js/core/nav-position.js"></script>
+  <script src="../../js/core/spa.js"></script>
+
+  <!-- All Components -->
+  <script src="../../js/components/action-bar.js"></script>
+  <script src="../../js/components/inline-edit.js"></script>
+  <script src="../../js/components/relative-time.js"></script>
+  <script src="../../js/components/clock.js"></script>
+  <script src="../../js/components/zero-click.js"></script>
+  <script src="../../js/components/toast.js"></script>
+  <script src="../../js/components/audio.js"></script>
+  <script src="../../js/components/video.js"></script>
+  <script src="../../js/components/preferences.js"></script>
+  <script src="../../js/components/formatting.js"></script>
+  <script src="../../js/components/table.js"></script>
+  <script src="../../js/components/datatables.js"></script>
+  <script src="../../js/components/bulk-actions.js"></script>
+  <script src="../../js/components/filter-toolbar.js"></script>
+  <script src="../../js/components/wizard.js"></script>
+  <script src="../../js/components/charts.js"></script>
+  <script src="../../js/components/plotly-wrapper.js"></script>
+  <script src="../../js/components/breadcrumb.js"></script>
+  <script src="../../js/components/aggregations.js"></script>
+  <script src="../../js/components/conditional-formatting.js"></script>
+  <script src="../../js/components/column-profiles.js"></script>
+  <script src="../../js/components/column-renderers.js"></script>
+  <script src="../../js/components/slide-panel.js"></script>
+  <script src="../../js/components/sticky-header.js"></script>
+  <script src="../../js/components/slider.js"></script>
+  <script src="../../js/components/format-builder.js"></script>
+  <script src="../../js/components/advanced-filter.js"></script>
+  <script src="../../js/components/trade-wizard.js"></script>
+  <script src="../../js/components/audit-viewer.js"></script>
+  <script src="../../js/components/file-manager.js"></script>
+  <script src="../../js/components/wip-overlay.js"></script>
+  <script src="../../js/components/even-funkyer.js"></script>
+  <script src="../../js/components/stats-bar.js"></script>
+  <script src="../../js/components/view-modal.js"></script>
+  <script src="../../js/components/form-modal.js"></script>
+  <script src="../../js/components/import.js"></script>
+  <script src="../../js/components/crud.js"></script>
+  <script src="../../js/components/tabbed.js"></script>
+  <script src="../../js/components/sidenav.js"></script>
+  <script src="../../js/components/sidenav-panel.js"></script>
+  <script src="../../js/components/playground.js"></script>
+  <script src="../../js/components/kanban.js"></script>
+  <script src="../../js/components/empty-state.js"></script>
+  <script src="../../js/components/truncate.js"></script>
+  <script src="../../js/components/highlight.js"></script>
+  <script src="../../js/components/clipboard.js"></script>
+  <script src="../../js/components/skeleton.js"></script>
+  <script src="../../js/components/spinner.js"></script>
+  <script src="../../js/components/diff.js"></script>
+  <script src="../../js/components/action-registry.js"></script>
+  <script src="../../js/components/scroll-tracker.js"></script>
+  <script src="../../js/components/gesture-tracker.js"></script>
+  <script src="../../js/components/context-menu.js"></script>
+  <script src="../../js/components/wysimark.js"></script>
+  <script src="../../js/components/skip-link.js"></script>
+  <script src="../../js/components/tree-view.js"></script>
+  <script src="../../js/components/virtualised-list.js"></script>
+  <script src="../../js/components/iframe.js"></script>
+  <script src="../../js/components/typewriter.js"></script>
+  <script src="../../js/components/badge.js"></script>
+  <script src="../../js/components/quick-nav.js"></script>
+  <script src="../../js/components/queue-status.js"></script>
+  <script src="../../js/components/page-animate.js"></script>
+  <script src="../../js/components/tour.js"></script>
+  <script src="../../js/core/date.js"></script>
+  <script src="../../js/components/date-picker.js"></script>
+  <script src="../../js/components/calendar.js"></script>
+  <script src="../../js/components/timeline.js"></script>
+  <script src="../../js/components/dashboard-grid.js"></script>
+  <script src="../../js/components/widget-catalog.js"></script>
+  <script src="../../js/components/widget-palette.js"></script>
+  <script src="../../js/components/carousel.js"></script>
+  <script src="../../js/components/command-palette.js"></script>
+  <script src="../../js/components/combobox.js"></script>
+  <script src="../../js/components/code-preview.js"></script>
+  <script src="../../js/components/notification-center.js"></script>
+  <script src="../../js/components/morph.js"></script>
+  <script src="../../js/components/morph-panel.js"></script>
+  <script src="../../js/components/markdown.js"></script>
+  <script src="../../js/components/channel.js"></script>
+  <script src="../../js/components/typing-indicator.js"></script>
+  <script src="../../js/components/presence.js"></script>
+  <script src="../../js/components/signature.js"></script>
+  <script src="../../js/components/accordion.js"></script>
+  <script src="../../js/components/card-grid.js"></script>
+  <script src="../../js/components/push-notification.js"></script>
+  <script src="../../js/components/mask.js"></script>
+
+  <!-- PWA Sub-modules -->
+  <script src="../../js/core/pwa/badging.js"></script>
+  <script src="../../js/core/pwa/share.js"></script>
+  <script src="../../js/core/pwa/wake-lock.js"></script>
+  <script src="../../js/core/pwa/storage.js"></script>
+  <script src="../../js/core/pwa/network.js"></script>
+  <script src="../../js/core/pwa/device.js"></script>
+  <script src="../../js/core/pwa/visibility.js"></script>
+  <script src="../../js/core/pwa/display-mode.js"></script>
+  <script src="../../js/core/pwa/periodic-sync.js"></script>
+
+  <!-- Dev Tools -->
+  <script src="../../js/dev/debug.js"></script>
+
+  <!-- Test Framework -->
+  <script src="../../js/dev/test-framework.js"></script>
+
+  <!-- Test Manifest (single source of truth for test files) -->
+  <script src="../../js/dev/test-manifest.js"></script>
+
+  <script>
+  (function() {
+    'use strict';
+
+    // Debug: Check if test framework loaded - log to parent window too
+    var frameworkLoaded = typeof FunkyTests !== 'undefined';
+    var describeLoaded = typeof describe !== 'undefined';
+    console.log('[Sandbox] FunkyTests available:', frameworkLoaded);
+    console.log('[Sandbox] describe available:', describeLoaded);
+
+    // Also send to parent for visibility
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({
+        action: 'debug',
+        data: {
+          funkyTestsLoaded: frameworkLoaded,
+          describeLoaded: describeLoaded
+        }
+      }), window.location.origin);
+    }
+
+    var statusEl = document.getElementById('sandboxStatus');
+    var parentOrigin = window.location.origin;
+    var testsLoaded = false;
+    var testsRunning = false;
+
+    /**
+     * Send message to parent window
+     */
+    function sendToParent(action, data) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(JSON.stringify({
+          action: action,
+          data: data
+        }), parentOrigin);
+      }
+    }
+
+    /**
+     * Serialize a value for postMessage (handles non-cloneable values)
+     */
+    function serializeValue(value) {
+      if (value === undefined) {
+        return { type: 'undefined' };
+      }
+      if (value === null) {
+        return { type: 'null', value: null };
+      }
+      if (typeof value === 'function') {
+        return { type: 'function', name: value.name || 'anonymous' };
+      }
+      if (value instanceof Element) {
+        return {
+          type: 'element',
+          tag: value.tagName.toLowerCase(),
+          id: value.id || null,
+          classes: value.className || null
+        };
+      }
+      if (value instanceof RegExp) {
+        return { type: 'regex', value: value.toString() };
+      }
+      if (value instanceof Error) {
+        return { type: 'error', message: value.message, name: value.name };
+      }
+      if (typeof value === 'symbol') {
+        return { type: 'symbol', value: value.toString() };
+      }
+      // Try to serialize as JSON (handles primitives, arrays, plain objects)
+      try {
+        var json = JSON.stringify(value);
+        // Check if it's a simple value or can be parsed back
+        if (json !== undefined) {
+          return { type: 'value', value: JSON.parse(json) };
+        }
+      } catch (e) {
+        // JSON serialization failed, return string representation
+      }
+      // Fallback: return string representation
+      try {
+        return { type: 'object', value: String(value) };
+      } catch (e) {
+        // Object cannot be converted to string (e.g., null prototype objects)
+        return { type: 'object', value: '[Object: cannot stringify]' };
+      }
+    }
+
+    /**
+     * Convert error to string message
+     */
+    function errorToString(err) {
+      if (!err) return 'Unknown error';
+      if (typeof err === 'string') return err;
+      if (err.message) return err.message;
+      if (err.name) return err.name;
+      try {
+        var str = JSON.stringify(err);
+        return str !== '{}' ? str : String(err);
+      } catch (e) {
+        return String(err);
+      }
+    }
+
+    /**
+     * Check if error should be silenced (expected in sandbox)
+     */
+    function isExpectedSandboxError(msg) {
+      if (!msg) return false;
+
+      // Clipboard errors are expected in sandboxed iframes
+      if (msg.indexOf('Copy command failed') !== -1 ||
+          msg.indexOf('clipboard') !== -1 ||
+          msg.indexOf('Clipboard') !== -1) {
+        return true;
+      }
+
+      // API test errors (intentional 4xx/5xx responses in tests)
+      if (msg.indexOf('"success":false') !== -1 ||
+          msg.indexOf('"status":4') !== -1 ||
+          msg.indexOf('"status":5') !== -1) {
+        return true;
+      }
+
+      // Component cleanup errors during tests (accessing destroyed elements)
+      if (msg.indexOf('contentWindow') !== -1 ||
+          msg.indexOf("reading 'el'") !== -1 ||
+          msg.indexOf('Cannot read properties of null') !== -1 ||
+          msg.indexOf('Cannot read properties of undefined') !== -1) {
+        return true;
+      }
+
+      // User-initiated abort errors (from stop button)
+      if (msg.indexOf('aborted by user') !== -1) {
+        return true;
+      }
+
+      return false;
+    }
+
+    // Catch unhandled promise rejections
+    window.addEventListener('unhandledrejection', function(event) {
+      var message = errorToString(event.reason);
+      // Silence expected sandbox errors
+      if (isExpectedSandboxError(message)) {
+        event.preventDefault();
+        return;
+      }
+      console.error('[Sandbox] Unhandled rejection:', event.reason);
+      sendToParent('error', { message: message });
+    });
+
+    // Catch uncaught errors
+    window.addEventListener('error', function(event) {
+      var message = event.error ? event.error.message : event.message;
+      // Silence expected sandbox errors
+      if (isExpectedSandboxError(message)) {
+        event.preventDefault();
+        return;
+      }
+      console.error('[Sandbox] Uncaught error:', event.error);
+      sendToParent('error', { message: message || 'Unknown error' });
+    });
+
+    /**
+     * Update status display
+     */
+    function updateStatus(text) {
+      if (statusEl) {
+        statusEl.textContent = text;
+      }
+    }
+
+    /**
+     * Serialize suites for postMessage (removes circular references)
+     * Extracts nested suites from tests array into children array
+     */
+    function serializeSuites(suites) {
+      return suites.map(function(suite) {
+        var tests = [];
+        var children = [];
+
+        // Separate tests from nested suites
+        (suite.tests || []).forEach(function(item) {
+          if (item.type === 'suite' && item.suite) {
+            // Nested suite - add to children
+            children.push(item.suite);
+          } else {
+            // Regular test - include skip status
+            tests.push({
+              type: item.type,
+              name: item.name,
+              skip: item.skip || false
+            });
+          }
+        });
+
+        return {
+          name: suite.name,
+          tests: tests,
+          children: children.length > 0 ? serializeSuites(children) : [],
+          skip: suite.skip || false  // Include suite skip status
+        };
+      });
+    }
+
+    /**
+     * Load test files dynamically
+     */
+    function loadTestFiles(files) {
+      return new Promise(function(resolve) {
+        if (!files || files.length === 0) {
+          resolve();
+          return;
+        }
+
+        var loaded = 0;
+        var total = files.length;
+
+        function loadNext(index) {
+          if (index >= files.length) {
+            resolve();
+            return;
+          }
+
+          var file = files[index];
+          var script = document.createElement('script');
+          script.src = file;
+
+          script.onload = function() {
+            loaded++;
+            updateStatus('Loading tests: ' + loaded + '/' + total);
+            sendToParent('loadProgress', { loaded: loaded, total: total });
+            loadNext(index + 1);
+          };
+
+          script.onerror = function() {
+            console.warn('[Sandbox] Failed to load:', file);
+            loaded++;
+            loadNext(index + 1);
+          };
+
+          document.body.appendChild(script);
+        }
+
+        loadNext(0);
+      });
+    }
+
+    /**
+     * Configure test framework for sandbox environment
+     */
+    function configureTestEnvironment() {
+      // Set reasonable timeout for complex E2E tests
+      if (typeof FunkyTests !== 'undefined') {
+        FunkyTests.configure({ timeout: 10000 });
+      }
+
+      // Configure E2E utilities with reasonable timeouts
+      if (typeof FunkyTests !== 'undefined' && FunkyTests.E2E) {
+        FunkyTests.E2E.configure({
+          defaultTimeout: 5000,
+          retryInterval: 50
+        });
+      }
+    }
+
+    /**
+     * Setup reporter to forward events to parent
+     */
+    function setupReporter() {
+      if (typeof FunkyTests === 'undefined') {
+        console.error('[Sandbox] FunkyTests not found');
+        sendToParent('error', { message: 'FunkyTests not found' });
+        return;
+      }
+
+      configureTestEnvironment();
+
+      FunkyTests.setReporter({
+        start: function() {
+          sendToParent('testsStart', {});
+        },
+
+        suiteStart: function(suite, indent) {
+          sendToParent('suiteStart', {
+            name: suite.name,
+            indent: indent
+          });
+        },
+
+        suiteEnd: function(suite, indent) {
+          sendToParent('suiteEnd', {
+            name: suite.name,
+            indent: indent
+          });
+        },
+
+        testStart: function(test, suite, indent) {
+          sendToParent('testStart', {
+            name: test.name,
+            suite: suite.name,
+            indent: indent
+          });
+        },
+
+        testPass: function(test, duration, indent) {
+          sendToParent('testPass', {
+            name: test.name,
+            duration: duration,
+            indent: indent
+          });
+        },
+
+        testFail: function(test, error, duration, indent) {
+          sendToParent('testFail', {
+            name: test.name,
+            duration: duration,
+            indent: indent,
+            error: {
+              message: error ? error.message : 'Unknown error',
+              stack: error ? error.stack : ''
+            }
+          });
+        },
+
+        testSkip: function(test, indent) {
+          sendToParent('testSkip', {
+            name: test.name,
+            indent: indent
+          });
+        },
+
+        testComplete: function(test, result, indent) {
+          // Serialize assertion results for postMessage
+          var serializedAssertions = (result.assertions || []).map(function(a) {
+            return {
+              type: a.type,
+              passed: a.passed,
+              actual: serializeValue(a.actual),
+              expected: serializeValue(a.expected),
+              message: a.message,
+              negated: a.negated
+            };
+          });
+
+          sendToParent('testComplete', {
+            name: test.name,
+            passed: result.passed,
+            duration: result.duration,
+            assertions: serializedAssertions,
+            source: result.source,
+            error: result.error ? {
+              message: result.error.message,
+              stack: result.error.stack
+            } : null
+          });
+        },
+
+        end: function(results) {
+          testsRunning = false; // Allow running again
+          sendToParent('testsEnd', {
+            passed: results.passed,
+            failed: results.failed,
+            skipped: results.skipped,
+            total: results.total,
+            startTime: results.startTime,
+            endTime: results.endTime
+          });
+        }
+      });
+    }
+
+    /**
+     * Run tests with optional filter
+     */
+    function runTests(filter) {
+      updateStatus('Running tests...');
+
+      var opts = {};
+      if (filter) {
+        opts.filter = new RegExp(filter, 'i');
+      }
+
+      FunkyTests.runAll(opts).catch(function(error) {
+        testsRunning = false; // Allow running again after error
+        console.error('[Sandbox] Test run error:', error);
+        sendToParent('error', { message: error.message || 'Test run failed' });
+      });
+    }
+
+    /**
+     * Handle messages from parent
+     */
+    window.addEventListener('message', function(event) {
+      // Validate origin
+      if (event.origin !== parentOrigin) {
+        return;
+      }
+
+      var message;
+      try {
+        message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      } catch (e) {
+        return;
+      }
+
+      if (!message || !message.action) {
+        return;
+      }
+
+      switch (message.action) {
+        case 'loadTests':
+          // Guard against duplicate load calls
+          if (testsLoaded) {
+            console.log('[Sandbox] Tests already loaded, ignoring duplicate');
+            return;
+          }
+          testsLoaded = true;
+
+          // Dev mode: load test files dynamically
+          loadTestFiles(message.data.files).then(function() {
+            setupReporter();
+
+            // Small delay to ensure all synchronous describe/it calls have executed
+            setTimeout(function() {
+              // Get suites info and serialize (removes circular refs)
+              var rawSuites = FunkyTests.getSuites ? FunkyTests.getSuites() : [];
+              var suites = serializeSuites(rawSuites);
+              sendToParent('ready', { suites: suites });
+              updateStatus('Ready - ' + suites.length + ' test suites loaded');
+            }, 50);
+          });
+          break;
+
+        case 'runTests':
+          // Guard against duplicate run calls
+          if (testsRunning) {
+            console.log('[Sandbox] Tests already running, ignoring duplicate');
+            return;
+          }
+          testsRunning = true;
+
+          runTests(message.data ? message.data.filter : null);
+          break;
+
+        case 'stopTests':
+          if (typeof FunkyTests !== 'undefined' && FunkyTests.stop) {
+            console.log('[Sandbox] Stopping tests...');
+            FunkyTests.stop();
+          }
+          break;
+
+        case 'ping':
+          sendToParent('pong', {});
+          break;
+      }
+    });
+
+    // Signal that sandbox is ready to receive commands
+    updateStatus('Sandbox ready, waiting for test files...');
+    sendToParent('sandboxReady', {});
+
+    /**
+     * Global Escape handler to return focus to parent window
+     */
+    function setupEscapeToParent() {
+      // Wait for Funky.Keyboard to be available
+      if (typeof Funky === 'undefined' || !Funky.Keyboard) {
+        setTimeout(setupEscapeToParent, 100);
+        return;
+      }
+
+      Funky.Keyboard.register({
+        key: 'escape',
+        scope: 'global',
+        priority: 1,
+        preventDefault: false,
+        handler: function(e) {
+          if (e.defaultPrevented) {
+            return;
+          }
+
+          var hasOpenModal = document.querySelector('.modal.show, .modal[aria-hidden="false"]');
+          var hasOpenPopover = document.querySelector('.popover.show, [data-popover-open="true"]');
+          var hasOpenDropdown = document.querySelector('.dropdown-menu.show');
+          var hasOpenCommandPalette = document.querySelector('.command-palette.show, .command-palette--open');
+
+          if (hasOpenModal || hasOpenPopover || hasOpenDropdown || hasOpenCommandPalette) {
+            return;
+          }
+
+          console.log('[Sandbox] Escape pressed - returning focus to parent');
+          sendToParent('focusParent', {});
+
+          if (document.activeElement && document.activeElement !== document.body) {
+            document.activeElement.blur();
+          }
+        },
+        description: 'Return focus to parent window',
+        group: 'Navigation'
+      });
+
+      console.log('[Sandbox] Escape-to-parent handler registered');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupEscapeToParent);
+    } else {
+      setupEscapeToParent();
+    }
+
+    /**
+     * Auto-run tests when ?autorun=1 is in URL
+     */
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+
+      if (params.get('autorun') !== '1') {
+        return;
+      }
+
+      var filter = params.get('filter');
+
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          if (typeof FunkyTests === 'undefined') {
+            console.error('[Autorun] FunkyTests not available');
+            return;
+          }
+
+          var testFiles = (window.TEST_FILES || []).map(function(entry) {
+            return typeof entry === 'string' ? entry : entry.file;
+          });
+
+          if (testFiles.length === 0) {
+            console.error('[Autorun] No test files found in TEST_FILES manifest');
+            return;
+          }
+
+          console.log('[Autorun] Loading ' + testFiles.length + ' test files...');
+
+          loadTestFiles(testFiles).then(function() {
+            setupReporter();
+
+            setTimeout(function() {
+              updateStatus('Auto-running tests...');
+
+              var opts = {};
+              if (filter) {
+                opts.filter = new RegExp(filter, 'i');
+              }
+
+              FunkyTests.runAll(opts).then(function() {
+                updateStatus('Tests complete');
+              }).catch(function(error) {
+                console.error('[Autorun] Test error:', error);
+              });
+            }, 100);
+          });
+        }, 200);
+      });
+    })();
+
+  })();
+  </script>
+</body>
+</html>

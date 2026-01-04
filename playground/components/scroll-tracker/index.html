@@ -1,0 +1,700 @@
+<div data-page="component-scroll-tracker" class="component-demo">
+  <h2>ScrollTracker</h2>
+  <p class="text-muted">Scroll tracking with rAF throttling, direction detection, velocity calculation, and threshold callbacks.</p>
+
+  <!-- Section 1: Live Scroll Monitor -->
+  <section class="demo-section" aria-labelledby="monitor-heading">
+    <h3 id="monitor-heading">Live Scroll Monitor</h3>
+    <p class="text-muted small">Real-time display of scroll position, direction, and velocity. Scroll this container to see updates.</p>
+
+    <div class="demo-area">
+      <div class="scroll-tracker-demo__monitor">
+        <div class="scroll-tracker-demo__stat-card">
+          <div class="scroll-tracker-demo__stat-label">Scroll Y</div>
+          <div class="scroll-tracker-demo__stat-value" id="monitor-scroll-y">0</div>
+          <div class="scroll-tracker-demo__stat-unit">px</div>
+        </div>
+        <div class="scroll-tracker-demo__stat-card">
+          <div class="scroll-tracker-demo__stat-label">Scroll X</div>
+          <div class="scroll-tracker-demo__stat-value" id="monitor-scroll-x">0</div>
+          <div class="scroll-tracker-demo__stat-unit">px</div>
+        </div>
+        <div class="scroll-tracker-demo__stat-card">
+          <div class="scroll-tracker-demo__stat-label">Direction</div>
+          <div class="scroll-tracker-demo__stat-value scroll-tracker-demo__stat-value--direction" id="monitor-direction">—</div>
+        </div>
+        <div class="scroll-tracker-demo__stat-card">
+          <div class="scroll-tracker-demo__stat-label">Velocity</div>
+          <div class="scroll-tracker-demo__stat-value" id="monitor-velocity">0</div>
+          <div class="scroll-tracker-demo__stat-unit">px/s</div>
+        </div>
+        <div class="scroll-tracker-demo__stat-card">
+          <div class="scroll-tracker-demo__stat-label">Delta Y</div>
+          <div class="scroll-tracker-demo__stat-value" id="monitor-delta-y">0</div>
+          <div class="scroll-tracker-demo__stat-unit">px</div>
+        </div>
+        <div class="scroll-tracker-demo__stat-card">
+          <div class="scroll-tracker-demo__stat-label">Active</div>
+          <div class="scroll-tracker-demo__stat-value scroll-tracker-demo__stat-value--status" id="monitor-active">Yes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Scrollable Container Demo -->
+  <section class="demo-section" aria-labelledby="container-heading">
+    <h3 id="container-heading">Container Scroll Tracking</h3>
+    <p class="text-muted small">Track scroll on a specific container element instead of window.</p>
+
+    <div class="demo-area">
+      <div class="scroll-tracker-demo__container-wrapper">
+        <div class="scroll-tracker-demo__scrollable" id="scroll-container" tabindex="0" role="region" aria-label="Scrollable demo area">
+          <div class="scroll-tracker-demo__scroll-content">
+            <div class="scroll-tracker-demo__section-marker" data-position="0">Start (0px)</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="100">100px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="200">200px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="300">300px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="400">400px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="500">500px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="600">600px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="700">700px</div>
+            <div class="scroll-tracker-demo__section-marker" data-position="800">800px</div>
+            <div class="scroll-tracker-demo__scroll-end">End</div>
+          </div>
+        </div>
+        <div class="scroll-tracker-demo__container-stats">
+          <div class="scroll-tracker-demo__mini-stat">
+            <span class="scroll-tracker-demo__mini-label">Position:</span>
+            <span class="scroll-tracker-demo__mini-value" id="container-position">0px</span>
+          </div>
+          <div class="scroll-tracker-demo__mini-stat">
+            <span class="scroll-tracker-demo__mini-label">Direction:</span>
+            <span class="scroll-tracker-demo__mini-value" id="container-direction">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Threshold Indicators -->
+  <section class="demo-section" aria-labelledby="threshold-heading">
+    <h3 id="threshold-heading">Threshold Indicators</h3>
+    <p class="text-muted small">Visual indicators that activate when scroll crosses defined thresholds.</p>
+
+    <div class="demo-area">
+      <div class="scroll-tracker-demo__threshold-form">
+        <div class="scroll-tracker-demo__input-group">
+          <label for="threshold-values">Thresholds (comma-separated)</label>
+          <input type="text" id="threshold-values" class="form-control" value="100, 300, 500" placeholder="100, 300, 500">
+        </div>
+      </div>
+
+      <div class="scroll-tracker-demo__button-row">
+        <button type="button" class="btn btn-primary" id="threshold-update">
+          <i class="fas fa-sync-alt" aria-hidden="true"></i> Update Thresholds
+        </button>
+        <button type="button" class="btn btn-secondary" id="threshold-reset">
+          <i class="fas fa-undo" aria-hidden="true"></i> Reset
+        </button>
+      </div>
+
+      <div class="scroll-tracker-demo__threshold-indicators" id="threshold-indicators" aria-live="polite">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="scroll-tracker-demo__threshold-history" id="threshold-history" aria-label="Threshold crossing history">
+        <div class="scroll-tracker-demo__history-empty">Scroll in the container above to trigger threshold crossings.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Tracker Controls -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">Tracker Controls</h3>
+    <p class="text-muted small">Start, stop, and manage tracker instances.</p>
+
+    <div class="demo-area">
+      <div class="scroll-tracker-demo__control-panel">
+        <div class="scroll-tracker-demo__control-group">
+          <h4>Window Tracker</h4>
+          <div class="scroll-tracker-demo__button-row">
+            <button type="button" class="btn btn-success" id="window-start">
+              <i class="fas fa-play" aria-hidden="true"></i> Start
+            </button>
+            <button type="button" class="btn btn-warning" id="window-stop">
+              <i class="fas fa-pause" aria-hidden="true"></i> Stop
+            </button>
+            <button type="button" class="btn btn-secondary" id="window-state">
+              <i class="fas fa-info-circle" aria-hidden="true"></i> Get State
+            </button>
+          </div>
+        </div>
+        <div class="scroll-tracker-demo__control-group">
+          <h4>Container Tracker</h4>
+          <div class="scroll-tracker-demo__button-row">
+            <button type="button" class="btn btn-success" id="container-start">
+              <i class="fas fa-play" aria-hidden="true"></i> Start
+            </button>
+            <button type="button" class="btn btn-warning" id="container-stop">
+              <i class="fas fa-pause" aria-hidden="true"></i> Stop
+            </button>
+            <button type="button" class="btn btn-secondary" id="container-state">
+              <i class="fas fa-info-circle" aria-hidden="true"></i> Get State
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="controls-result" class="scroll-tracker-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 5: Configuration -->
+  <section class="demo-section" aria-labelledby="config-heading">
+    <h3 id="config-heading">Configuration Options</h3>
+    <p class="text-muted small">Configure tracker behavior with different options.</p>
+
+    <div class="demo-area">
+      <div class="scroll-tracker-demo__config-form">
+        <div class="scroll-tracker-demo__input-group">
+          <label for="config-throttle">Throttle Mode</label>
+          <select id="config-throttle" class="form-control">
+            <option value="raf" selected>rAF (requestAnimationFrame)</option>
+            <option value="16">16ms (~60fps)</option>
+            <option value="32">32ms (~30fps)</option>
+            <option value="50">50ms (20fps)</option>
+            <option value="100">100ms (10fps)</option>
+          </select>
+        </div>
+        <div class="scroll-tracker-demo__input-group">
+          <label for="config-direction">
+            <input type="checkbox" id="config-direction" checked> Track Direction
+          </label>
+        </div>
+        <div class="scroll-tracker-demo__input-group">
+          <label for="config-velocity">
+            <input type="checkbox" id="config-velocity" checked> Track Velocity
+          </label>
+        </div>
+        <div class="scroll-tracker-demo__input-group">
+          <label for="config-horizontal">
+            <input type="checkbox" id="config-horizontal"> Track Horizontal
+          </label>
+        </div>
+      </div>
+
+      <div class="scroll-tracker-demo__button-row">
+        <button type="button" class="btn btn-primary" id="config-apply">
+          <i class="fas fa-cog" aria-hidden="true"></i> Apply & Recreate Tracker
+        </button>
+      </div>
+
+      <div id="config-result" class="scroll-tracker-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 6: Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Real-time log of scroll and threshold events.</p>
+
+    <div class="demo-area">
+      <div class="scroll-tracker-demo__log-controls">
+        <label for="log-scroll-events">
+          <input type="checkbox" id="log-scroll-events"> Log scroll events (may be verbose)
+        </label>
+      </div>
+
+      <div class="scroll-tracker-demo__event-log" id="event-log" aria-live="polite" aria-label="Scroll event log">
+        <div class="scroll-tracker-demo__log-empty">No events yet. Scroll to see events.</div>
+      </div>
+
+      <div class="scroll-tracker-demo__button-row">
+        <button type="button" class="btn btn-outline-secondary" id="log-clear">
+          <i class="fas fa-trash-alt" aria-hidden="true"></i> Clear Log
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var windowTracker = null;
+  var containerTracker = null;
+  var eventLog = [];
+  var thresholdHistory = [];
+  var logScrollEvents = false;
+  var propsChangedHandler = null;
+
+  // =========================================================================
+  // Logging Utilities
+  // =========================================================================
+
+  function logEvent(eventName, data) {
+    var now = new Date();
+    var timestamp = now.toLocaleTimeString();
+
+    var entry = {
+      timestamp: timestamp,
+      event: eventName,
+      data: data
+    };
+    eventLog.unshift(entry);
+
+    // Keep last 100 entries
+    if (eventLog.length > 100) {
+      eventLog.pop();
+    }
+
+    renderEventLog();
+    emit('event', { event: eventName, payload: entry });
+  }
+
+  function renderEventLog() {
+    var logContainer = document.getElementById('event-log');
+    if (!logContainer) return;
+
+    if (eventLog.length === 0) {
+      logContainer.innerHTML = '<div class="scroll-tracker-demo__log-empty">No events yet. Scroll to see events.</div>';
+      return;
+    }
+
+    var html = eventLog.slice(0, 50).map(function(entry) {
+      var dataStr = '';
+      try {
+        dataStr = JSON.stringify(entry.data, null, 2);
+      } catch (e) {
+        dataStr = String(entry.data);
+      }
+      var eventClass = entry.event.includes('threshold') ? 'scroll-tracker-demo__log-event--threshold' : '';
+      return '<div class="scroll-tracker-demo__log-entry">' +
+        '<span class="scroll-tracker-demo__log-time">' + entry.timestamp + '</span> ' +
+        '<span class="scroll-tracker-demo__log-event ' + eventClass + '">' + entry.event + '</span>' +
+        '<pre class="scroll-tracker-demo__log-data">' + dataStr + '</pre>' +
+        '</div>';
+    }).join('');
+
+    logContainer.innerHTML = html;
+  }
+
+  function showResult(elementId, message, type) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+
+    el.className = 'scroll-tracker-demo__result scroll-tracker-demo__result--' + (type || 'info');
+    if (typeof message === 'object') {
+      el.innerHTML = '<pre>' + JSON.stringify(message, null, 2) + '</pre>';
+    } else {
+      el.textContent = message;
+    }
+  }
+
+  // =========================================================================
+  // Monitor Updates
+  // =========================================================================
+
+  function updateWindowMonitor(data) {
+    document.getElementById('monitor-scroll-y').textContent = Math.round(data.scrollY);
+    document.getElementById('monitor-scroll-x').textContent = Math.round(data.scrollX);
+    document.getElementById('monitor-delta-y').textContent = Math.round(data.deltaY);
+
+    var directionEl = document.getElementById('monitor-direction');
+    if (data.direction) {
+      directionEl.textContent = data.direction;
+      directionEl.className = 'scroll-tracker-demo__stat-value scroll-tracker-demo__stat-value--direction scroll-tracker-demo__stat-value--' + data.direction;
+    }
+
+    if (data.velocity !== undefined) {
+      document.getElementById('monitor-velocity').textContent = Math.round(data.velocity);
+    }
+  }
+
+  function updateContainerMonitor(data) {
+    document.getElementById('container-position').textContent = Math.round(data.scrollY) + 'px';
+
+    var dirEl = document.getElementById('container-direction');
+    if (data.direction) {
+      dirEl.textContent = data.direction;
+      dirEl.className = 'scroll-tracker-demo__mini-value scroll-tracker-demo__mini-value--' + data.direction;
+    }
+  }
+
+  function updateActiveStatus(isActive) {
+    var el = document.getElementById('monitor-active');
+    el.textContent = isActive ? 'Yes' : 'No';
+    el.className = 'scroll-tracker-demo__stat-value scroll-tracker-demo__stat-value--status scroll-tracker-demo__stat-value--' + (isActive ? 'active' : 'inactive');
+  }
+
+  // =========================================================================
+  // Threshold Management
+  // =========================================================================
+
+  function parseThresholds(input) {
+    if (!input) return [100, 300, 500];
+    // Handle array input (from props)
+    if (Array.isArray(input)) {
+      return input
+        .map(function(t) { return parseInt(t, 10); })
+        .filter(function(t) { return !isNaN(t) && t > 0; })
+        .sort(function(a, b) { return a - b; });
+    }
+    // Handle string input (from form)
+    return String(input).split(',')
+      .map(function(t) { return parseInt(t.trim(), 10); })
+      .filter(function(t) { return !isNaN(t) && t > 0; })
+      .sort(function(a, b) { return a - b; });
+  }
+
+  function renderThresholdIndicators(thresholds, crossedState) {
+    var container = document.getElementById('threshold-indicators');
+    if (!container) return;
+
+    crossedState = crossedState || {};
+
+    var html = thresholds.map(function(t) {
+      var isCrossed = crossedState[t] === true;
+      var statusClass = isCrossed ? 'scroll-tracker-demo__indicator--crossed' : '';
+      return '<div class="scroll-tracker-demo__indicator ' + statusClass + '" data-threshold="' + t + '">' +
+        '<span class="scroll-tracker-demo__indicator-value">' + t + 'px</span>' +
+        '<span class="scroll-tracker-demo__indicator-status">' + (isCrossed ? 'ABOVE' : 'BELOW') + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function addThresholdHistory(data) {
+    var entry = {
+      timestamp: new Date().toLocaleTimeString(),
+      threshold: data.threshold,
+      crossed: data.crossed,
+      direction: data.direction,
+      scrollY: data.scrollY
+    };
+    thresholdHistory.unshift(entry);
+
+    if (thresholdHistory.length > 20) {
+      thresholdHistory.pop();
+    }
+
+    renderThresholdHistory();
+  }
+
+  function renderThresholdHistory() {
+    var container = document.getElementById('threshold-history');
+    if (!container) return;
+
+    if (thresholdHistory.length === 0) {
+      container.innerHTML = '<div class="scroll-tracker-demo__history-empty">Scroll in the container above to trigger threshold crossings.</div>';
+      return;
+    }
+
+    var html = thresholdHistory.map(function(entry) {
+      var crossedClass = entry.crossed === 'above' ? 'scroll-tracker-demo__history-crossed--above' : 'scroll-tracker-demo__history-crossed--below';
+      return '<div class="scroll-tracker-demo__history-entry">' +
+        '<span class="scroll-tracker-demo__history-time">' + entry.timestamp + '</span>' +
+        '<span class="scroll-tracker-demo__history-threshold">' + entry.threshold + 'px</span>' +
+        '<span class="scroll-tracker-demo__history-crossed ' + crossedClass + '">' + entry.crossed.toUpperCase() + '</span>' +
+        '<span class="scroll-tracker-demo__history-dir">' + (entry.direction || '—') + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function updateIndicator(threshold, crossed) {
+    var indicators = document.querySelectorAll('.scroll-tracker-demo__indicator');
+    indicators.forEach(function(ind) {
+      if (parseInt(ind.dataset.threshold, 10) === threshold) {
+        if (crossed === 'above') {
+          ind.classList.add('scroll-tracker-demo__indicator--crossed');
+          ind.querySelector('.scroll-tracker-demo__indicator-status').textContent = 'ABOVE';
+        } else {
+          ind.classList.remove('scroll-tracker-demo__indicator--crossed');
+          ind.querySelector('.scroll-tracker-demo__indicator-status').textContent = 'BELOW';
+        }
+      }
+    });
+  }
+
+  // =========================================================================
+  // Tracker Creation
+  // =========================================================================
+
+  function createWindowTracker(options) {
+    if (windowTracker) {
+      windowTracker.destroy();
+    }
+
+    var props = getProps();
+    var thresholds = parseThresholds(props.thresholds || options.thresholds || '100, 300, 500');
+
+    var config = {
+      target: window,
+      throttle: options.throttle || props.throttle || 'raf',
+      trackDirection: options.trackDirection !== undefined ? options.trackDirection : (props.trackDirection !== false),
+      trackVelocity: options.trackVelocity !== undefined ? options.trackVelocity : (props.trackVelocity === true),
+      trackHorizontal: options.trackHorizontal !== undefined ? options.trackHorizontal : (props.trackHorizontal === true),
+      thresholds: thresholds,
+      onScroll: function(data) {
+        updateWindowMonitor(data);
+        if (logScrollEvents) {
+          logEvent('scroll', { scrollY: data.scrollY, direction: data.direction, velocity: data.velocity ? Math.round(data.velocity) : undefined });
+        }
+      },
+      onThreshold: function(data) {
+        updateIndicator(data.threshold, data.crossed);
+        addThresholdHistory(data);
+        logEvent('threshold', data);
+      }
+    };
+
+    windowTracker = Funky.ScrollTracker.init(config);
+    renderThresholdIndicators(thresholds, windowTracker.getState().crossedThresholds);
+    updateActiveStatus(windowTracker.isActive());
+
+    return windowTracker;
+  }
+
+  function createContainerTracker() {
+    if (containerTracker) {
+      containerTracker.destroy();
+    }
+
+    var container = document.getElementById('scroll-container');
+    if (!container) return null;
+
+    containerTracker = Funky.ScrollTracker.init({
+      target: container,
+      throttle: 'raf',
+      trackDirection: true,
+      trackVelocity: false,
+      onScroll: function(data) {
+        updateContainerMonitor(data);
+      }
+    });
+
+    return containerTracker;
+  }
+
+  // =========================================================================
+  // Event Handlers
+  // =========================================================================
+
+  function handleThresholdUpdate() {
+    var input = document.getElementById('threshold-values');
+    var thresholds = parseThresholds(input.value);
+
+    if (thresholds.length === 0) {
+      showResult('controls-result', 'Please enter valid threshold values', 'error');
+      return;
+    }
+
+    createWindowTracker({ thresholds: thresholds.join(', ') });
+    thresholdHistory = [];
+    renderThresholdHistory();
+    logEvent('thresholds:updated', { thresholds: thresholds });
+  }
+
+  function handleThresholdReset() {
+    document.getElementById('threshold-values').value = '100, 300, 500';
+    createWindowTracker({ thresholds: '100, 300, 500' });
+    thresholdHistory = [];
+    renderThresholdHistory();
+    logEvent('thresholds:reset', { thresholds: [100, 300, 500] });
+  }
+
+  function handleWindowStart() {
+    if (windowTracker) {
+      windowTracker.start();
+      updateActiveStatus(true);
+      showResult('controls-result', 'Window tracker started', 'success');
+      logEvent('window:start', {});
+    }
+  }
+
+  function handleWindowStop() {
+    if (windowTracker) {
+      windowTracker.stop();
+      updateActiveStatus(false);
+      showResult('controls-result', 'Window tracker stopped', 'success');
+      logEvent('window:stop', {});
+    }
+  }
+
+  function handleWindowState() {
+    if (windowTracker) {
+      var state = windowTracker.getState();
+      showResult('controls-result', state, 'info');
+      logEvent('window:getState', state);
+    }
+  }
+
+  function handleContainerStart() {
+    if (containerTracker) {
+      containerTracker.start();
+      showResult('controls-result', 'Container tracker started', 'success');
+      logEvent('container:start', {});
+    }
+  }
+
+  function handleContainerStop() {
+    if (containerTracker) {
+      containerTracker.stop();
+      showResult('controls-result', 'Container tracker stopped', 'success');
+      logEvent('container:stop', {});
+    }
+  }
+
+  function handleContainerState() {
+    if (containerTracker) {
+      var state = containerTracker.getState();
+      showResult('controls-result', state, 'info');
+      logEvent('container:getState', state);
+    }
+  }
+
+  function handleConfigApply() {
+    var throttle = document.getElementById('config-throttle').value;
+    var trackDirection = document.getElementById('config-direction').checked;
+    var trackVelocity = document.getElementById('config-velocity').checked;
+    var trackHorizontal = document.getElementById('config-horizontal').checked;
+
+    // Convert numeric throttle values
+    var throttleValue = throttle;
+    if (!isNaN(parseInt(throttle, 10))) {
+      throttleValue = parseInt(throttle, 10);
+    }
+
+    createWindowTracker({
+      throttle: throttleValue,
+      trackDirection: trackDirection,
+      trackVelocity: trackVelocity,
+      trackHorizontal: trackHorizontal
+    });
+
+    showResult('config-result', 'Tracker recreated with new configuration', 'success');
+    logEvent('config:applied', {
+      throttle: throttleValue,
+      trackDirection: trackDirection,
+      trackVelocity: trackVelocity,
+      trackHorizontal: trackHorizontal
+    });
+  }
+
+  function handleLogScrollToggle(e) {
+    logScrollEvents = e.target.checked;
+    logEvent('log:scrollEvents', { enabled: logScrollEvents });
+  }
+
+  function handleLogClear() {
+    eventLog = [];
+    renderEventLog();
+  }
+
+  // =========================================================================
+  // Initialization
+  // =========================================================================
+
+  function bindEvents() {
+    // Threshold controls
+    document.getElementById('threshold-update').addEventListener('click', handleThresholdUpdate);
+    document.getElementById('threshold-reset').addEventListener('click', handleThresholdReset);
+
+    // Window tracker controls
+    document.getElementById('window-start').addEventListener('click', handleWindowStart);
+    document.getElementById('window-stop').addEventListener('click', handleWindowStop);
+    document.getElementById('window-state').addEventListener('click', handleWindowState);
+
+    // Container tracker controls
+    document.getElementById('container-start').addEventListener('click', handleContainerStart);
+    document.getElementById('container-stop').addEventListener('click', handleContainerStop);
+    document.getElementById('container-state').addEventListener('click', handleContainerState);
+
+    // Config controls
+    document.getElementById('config-apply').addEventListener('click', handleConfigApply);
+
+    // Log controls
+    document.getElementById('log-scroll-events').addEventListener('change', handleLogScrollToggle);
+    document.getElementById('log-clear').addEventListener('click', handleLogClear);
+  }
+
+  Funky.Pages.register('component-scroll-tracker', {
+    init: function(state) {
+      var props = getProps();
+
+      // Apply props to form controls
+      if (props.throttle) {
+        var throttleSelect = document.getElementById('config-throttle');
+        if (throttleSelect) {
+          throttleSelect.value = String(props.throttle);
+        }
+      }
+      if (props.trackDirection !== undefined) {
+        document.getElementById('config-direction').checked = props.trackDirection !== false;
+      }
+      if (props.trackVelocity !== undefined) {
+        document.getElementById('config-velocity').checked = props.trackVelocity === true;
+      }
+      if (props.trackHorizontal !== undefined) {
+        document.getElementById('config-horizontal').checked = props.trackHorizontal === true;
+      }
+      if (props.thresholds) {
+        var thresholdsStr = Array.isArray(props.thresholds) ? props.thresholds.join(', ') : props.thresholds;
+        document.getElementById('threshold-values').value = thresholdsStr;
+      }
+
+      bindEvents();
+      createWindowTracker({});
+      createContainerTracker();
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          createWindowTracker({
+            throttle: newProps.throttle,
+            trackDirection: newProps.trackDirection,
+            trackVelocity: newProps.trackVelocity,
+            trackHorizontal: newProps.trackHorizontal,
+            thresholds: newProps.thresholds
+          });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'scrollTracker:init', payload: {} });
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy trackers
+      if (windowTracker) {
+        windowTracker.destroy();
+        windowTracker = null;
+      }
+      if (containerTracker) {
+        containerTracker.destroy();
+        containerTracker = null;
+      }
+
+      // Reset state
+      eventLog = [];
+      thresholdHistory = [];
+      logScrollEvents = false;
+
+      return {};
+    }
+  });
+})();
+</script>

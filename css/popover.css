@@ -1,0 +1,263 @@
+/**
+ * Popover Styles
+ * Core popover fixes and playground demo styles
+ */
+
+/* ==========================================================================
+   POPOVER CORE FIXES
+   ========================================================================== */
+
+/* Top popover arrow - correct fill color */
+.bs-popover-top > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="top"] > .popover-arrow::after {
+    border-top-color: var(--pro-bg-elevated);
+}
+
+/* Hide Bootstrap's header pseudo-element border for bottom popovers
+   (not needed with our arrow positioning approach) */
+.bs-popover-bottom .popover-header::before,
+.bs-popover-auto[data-popper-placement^="bottom"] .popover-header::before {
+    display: none;
+}
+
+/* Left popover arrow - rotated top arrow with correct border colors */
+.bs-popover-left > .popover-arrow::before,
+.bs-popover-left > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::after {
+    border-width: var(--bs-popover-arrow-height) calc(var(--bs-popover-arrow-width) * 0.5) 0;
+}
+
+.bs-popover-left > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::before {
+    bottom: 0;
+    border-top-color: var(--pro-border-color);
+}
+
+.bs-popover-left > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::after {
+    bottom: 1px;
+    border-top-color: var(--pro-bg-elevated);
+}
+
+/* Right popover arrow - rotated top arrow with correct border colors */
+.bs-popover-right > .popover-arrow::before,
+.bs-popover-right > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::after {
+    border-width: var(--bs-popover-arrow-height) calc(var(--bs-popover-arrow-width) * 0.5) 0;
+}
+
+.bs-popover-right > .popover-arrow::before,
+.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::before {
+    bottom: 0;
+    border-top-color: var(--pro-bg-elevated);
+}
+
+.bs-popover-right > .popover-arrow::after,
+.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::after {
+    bottom: 1px;
+    border-top-color: var(--pro-border-color);
+}
+
+/* ==========================================================================
+   POPOVER PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+/* Interactive Demo */
+.popover-demo__interactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+}
+
+.popover-demo__interactive-info {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Placements Grid - Compass Layout */
+.popover-demo__placements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.popover-demo__placements-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.popover-demo__placements-center {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--pro-border-color, #333);
+    border-radius: 50%;
+    color: var(--pro-text-muted, #666);
+    font-size: 1.25rem;
+}
+
+.popover-demo__placement-btn {
+    min-width: 100px;
+}
+
+/* Trigger Types */
+.popover-demo__triggers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.popover-demo__trigger-btn {
+    min-width: 120px;
+}
+
+/* HTML Demo */
+.popover-demo__html-demo {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+/* Dynamic Content */
+.popover-demo__dynamic {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.popover-demo__dynamic-info {
+    display: flex;
+    justify-content: center;
+}
+
+/* API Controls */
+.popover-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* API Result Display */
+.popover-demo__result {
+    padding: 0.75rem 1rem;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: var(--pro-radius-sm, 6px);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+}
+
+.popover-demo__result-empty {
+    color: var(--pro-text-muted, #666);
+}
+
+.popover-demo__result-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.popover-demo__result-method {
+    color: var(--pro-text-secondary, #888);
+}
+
+.popover-demo__result-arrow {
+    color: var(--pro-text-muted, #666);
+}
+
+.popover-demo__result-value {
+    font-weight: 600;
+}
+
+.popover-demo__result-value--string {
+    color: var(--pro-color-success, #22c55e);
+}
+
+.popover-demo__result-value--undefined {
+    color: var(--pro-text-muted, #666);
+    font-style: italic;
+}
+
+/* Settings Display */
+.popover-demo__settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.popover-demo__settings .badge {
+    font-weight: 400;
+}
+
+.popover-demo__settings .badge strong {
+    font-weight: 600;
+}
+
+/* Light Theme */
+[data-theme="light"] .popover-demo__result {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .popover-demo__placements-center {
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .popover-demo__placements-row {
+        gap: 1rem;
+    }
+
+    .popover-demo__placements-center {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .popover-demo__placement-btn {
+        min-width: 80px;
+        font-size: 0.8125rem;
+    }
+
+    .popover-demo__triggers {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .popover-demo__trigger-btn {
+        min-width: auto;
+    }
+
+    .popover-demo__controls {
+        flex-direction: column;
+    }
+
+    .popover-demo__controls .btn {
+        width: 100%;
+    }
+
+    .popover-demo__settings {
+        flex-direction: column;
+    }
+
+    .popover-demo__dynamic {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

@@ -1,0 +1,483 @@
+<div data-page="component-truncate" class="component-demo">
+  <h2>Truncate</h2>
+  <p class="text-muted">Smart text truncation with show more/less toggle, character limits, and line clamping.</p>
+
+  <!-- Section 1: Character-based Truncation -->
+  <div class="demo-section">
+    <h3>Character-based Truncation</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Truncate text at a specific character count with word boundary awareness.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Character limit:</span>
+          <input type="number" id="char-limit" class="form-control truncate-demo__input" value="100" min="20" max="300">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-apply-chars">
+          <i class="fas fa-cut me-1"></i> Apply
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-reset-chars">
+          <i class="fas fa-undo me-1"></i> Reset
+        </button>
+      </div>
+      <div class="truncate-demo__content-box">
+        <p id="truncate-chars" class="truncate-demo__text">Funky is a lightweight ES5 component library built for progressive enhancement and simplicity. Unlike modern frameworks that require complex build pipelines, Funky works directly in the browser with zero dependencies. Each component follows consistent API patterns, making it easy to learn and use across your entire application.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Line-clamp Truncation -->
+  <div class="demo-section">
+    <h3>Line-clamp Truncation</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Use CSS line-clamp for multi-line truncation with automatic ellipsis.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Number of lines:</span>
+          <select id="line-count" class="form-select truncate-demo__select">
+            <option value="1">1 line</option>
+            <option value="2">2 lines</option>
+            <option value="3" selected>3 lines</option>
+            <option value="4">4 lines</option>
+            <option value="5">5 lines</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-apply-lines">
+          <i class="fas fa-layer-group me-1"></i> Apply
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-reset-lines">
+          <i class="fas fa-undo me-1"></i> Reset
+        </button>
+      </div>
+      <div class="truncate-demo__content-box">
+        <p id="truncate-lines" class="truncate-demo__text">The Funky philosophy embraces vanilla JavaScript patterns and progressive enhancement. Components are designed to work with or without JavaScript enabled, providing graceful degradation. Each module is self-contained, dependency-free, and follows consistent API conventions. The library includes components for modals, toasts, forms, tables, and much more - all designed to be lightweight and performant. Building with Funky means embracing simplicity over complexity.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Inline Mode -->
+  <div class="demo-section">
+    <h3>Inline Mode</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Truncate text inline without breaking the flow of surrounding content.</p>
+      <div class="truncate-demo__content-box">
+        <p class="truncate-demo__text">
+          The project name is: <span id="truncate-inline" class="truncate-demo__inline-target">Funky Framework: A Modern Approach to ES5 Progressive Enhancement</span> and it was created in 2024.
+        </p>
+      </div>
+      <div class="demo-form-row mt-3">
+        <button type="button" class="btn btn-outline-primary" id="btn-toggle-inline">
+          <i class="fas fa-exchange-alt me-1"></i> Toggle
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Custom Toggle Text -->
+  <div class="demo-section">
+    <h3>Custom Toggle Text</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Customize the "show more" and "show less" button labels.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">More text:</span>
+          <input type="text" id="more-text" class="form-control truncate-demo__input" value="Read more">
+        </div>
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Less text:</span>
+          <input type="text" id="less-text" class="form-control truncate-demo__input" value="Read less">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-apply-custom">
+          <i class="fas fa-check me-1"></i> Apply
+        </button>
+      </div>
+      <div class="truncate-demo__content-box">
+        <p id="truncate-custom" class="truncate-demo__text">With Funky, you get a complete toolkit for building modern web interfaces. From accessible modals and form validation to data tables and toasts, every component is crafted with care. The API is intuitive - methods like apply(), destroy(), and toggle() work consistently across all components. No transpilation, no bundlers, no node_modules - just include the scripts and start building.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: API Controls -->
+  <div class="demo-section">
+    <h3>Programmatic API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control truncation programmatically with the Truncate API.</p>
+      <div class="truncate-demo__content-box">
+        <p id="truncate-api" class="truncate-demo__text">Funky components work seamlessly together. Use the Highlight component to mark search terms, Toast for notifications, Modal for dialogs, and Truncate for long content. Each component dispatches events for integration with your application logic. The consistent ES5 pattern means no surprises - just vanilla JavaScript that works everywhere.</p>
+      </div>
+      <div class="truncate-demo__api-controls">
+        <button type="button" class="btn btn-outline-primary" id="btn-expand">
+          <i class="fas fa-expand-alt me-1"></i> expand()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-collapse">
+          <i class="fas fa-compress-alt me-1"></i> collapse()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-toggle">
+          <i class="fas fa-sync-alt me-1"></i> toggle()
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-is-expanded">
+          <i class="fas fa-question me-1"></i> isExpanded()
+        </button>
+        <button type="button" class="btn btn-outline-danger" id="btn-destroy">
+          <i class="fas fa-trash me-1"></i> destroy()
+        </button>
+      </div>
+      <div class="truncate-demo__status">
+        <span id="api-status">Status: Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Text Utility -->
+  <div class="demo-section">
+    <h3>Text Utility (Static)</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Use <code>Truncate.text()</code> to truncate strings without DOM manipulation.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field demo-form-row__field--flex">
+          <span class="demo-form-row__label">Text:</span>
+          <input type="text" id="util-text" class="form-control" placeholder="Enter text to truncate..." value="Funky makes building web applications simple and enjoyable">
+        </div>
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Limit:</span>
+          <input type="number" id="util-limit" class="form-control truncate-demo__input" value="30" min="5" max="100">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-truncate-text">
+          <i class="fas fa-scissors me-1"></i> Truncate
+        </button>
+      </div>
+      <div class="truncate-demo__output">
+        <h5>Result</h5>
+        <div id="util-result" class="truncate-demo__result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Events Log -->
+  <div class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="truncate-log" class="truncate-demo__log">Waiting for events...</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = {};
+  var propsChangedHandler = null;
+  var originalTexts = {};
+  var eventCleanups = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('truncate-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function saveOriginalText(id) {
+    var el = document.getElementById(id);
+    if (el && !originalTexts[id]) {
+      originalTexts[id] = el.textContent;
+    }
+  }
+
+  function restoreOriginalText(id) {
+    var el = document.getElementById(id);
+    if (el && originalTexts[id]) {
+      el.textContent = originalTexts[id];
+    }
+  }
+
+  // Update UI inputs from props
+  function syncInputsFromProps(props) {
+    var charLimitInput = document.getElementById('char-limit');
+    var lineCountSelect = document.getElementById('line-count');
+    var moreTextInput = document.getElementById('more-text');
+    var lessTextInput = document.getElementById('less-text');
+
+    if (charLimitInput && props.limit) charLimitInput.value = props.limit;
+    if (lineCountSelect && props.lines) lineCountSelect.value = props.lines;
+    if (moreTextInput && props.moreText) moreTextInput.value = props.moreText;
+    if (lessTextInput && props.lessText) lessTextInput.value = props.lessText;
+  }
+
+  Funky.Pages.register('component-truncate', {
+    init: function(state) {
+      var props = getProps();
+      var Truncate = Funky.Truncate;
+
+      if (!Truncate) {
+        log('Error: Funky.Truncate not available');
+        return;
+      }
+
+      log('Truncate module initialized');
+
+      // Save original texts for reset functionality
+      ['truncate-chars', 'truncate-lines', 'truncate-inline', 'truncate-custom', 'truncate-api'].forEach(saveOriginalText);
+
+      // Sync initial props to inputs
+      syncInputsFromProps(props);
+
+      // =========================================================================
+      // Section 1: Character-based Truncation
+      // =========================================================================
+
+      var charLimitInput = document.getElementById('char-limit');
+      var charsEl = document.getElementById('truncate-chars');
+
+      function applyCharTruncation() {
+        var currentProps = getProps();
+        var limit = parseInt(charLimitInput.value, 10) || 100;
+        restoreOriginalText('truncate-chars');
+        instances.chars = Truncate.apply(charsEl, {
+          limit: limit,
+          moreText: 'Show more',
+          lessText: 'Show less',
+          animate: currentProps.animate !== false
+        });
+        log('Character truncation applied: ' + limit + ' chars');
+        emit('event', { event: 'truncate:apply', payload: { mode: 'chars', limit: limit } });
+      }
+
+      document.getElementById('btn-apply-chars').addEventListener('click', applyCharTruncation);
+
+      document.getElementById('btn-reset-chars').addEventListener('click', function() {
+        if (instances.chars) {
+          instances.chars.destroy();
+          instances.chars = null;
+        }
+        restoreOriginalText('truncate-chars');
+        log('Character truncation reset');
+      });
+
+      // Apply initial truncation
+      applyCharTruncation();
+
+      // Event listener for expand/collapse
+      var charsHandler = function(e) {
+        log('Event: ' + e.type.replace('funky.truncate.', ''));
+      };
+      charsEl.addEventListener('funky.truncate.expand', charsHandler);
+      charsEl.addEventListener('funky.truncate.collapse', charsHandler);
+      eventCleanups.push(function() {
+        charsEl.removeEventListener('funky.truncate.expand', charsHandler);
+        charsEl.removeEventListener('funky.truncate.collapse', charsHandler);
+      });
+
+      // =========================================================================
+      // Section 2: Line-clamp Truncation
+      // =========================================================================
+
+      var lineCountSelect = document.getElementById('line-count');
+      var linesEl = document.getElementById('truncate-lines');
+
+      function applyLineTruncation() {
+        var currentProps = getProps();
+        var lines = parseInt(lineCountSelect.value, 10) || 3;
+        if (instances.lines) {
+          instances.lines.destroy();
+        }
+        restoreOriginalText('truncate-lines');
+        instances.lines = Truncate.apply(linesEl, {
+          lines: lines,
+          moreText: 'Show more',
+          lessText: 'Show less',
+          animate: currentProps.animate !== false
+        });
+        log('Line truncation applied: ' + lines + ' lines');
+        emit('event', { event: 'truncate:apply', payload: { mode: 'lines', lines: lines } });
+      }
+
+      document.getElementById('btn-apply-lines').addEventListener('click', applyLineTruncation);
+
+      document.getElementById('btn-reset-lines').addEventListener('click', function() {
+        if (instances.lines) {
+          instances.lines.destroy();
+          instances.lines = null;
+        }
+        restoreOriginalText('truncate-lines');
+        log('Line truncation reset');
+      });
+
+      // Apply initial if props specify lines mode
+      if (props.mode === 'lines') {
+        lineCountSelect.value = props.lines || '3';
+        applyLineTruncation();
+      }
+
+      // =========================================================================
+      // Section 3: Inline Mode
+      // =========================================================================
+
+      var inlineEl = document.getElementById('truncate-inline');
+
+      instances.inline = Truncate.apply(inlineEl, {
+        limit: 30,
+        inline: true,
+        moreText: 'more',
+        lessText: 'less',
+        animate: true
+      });
+      log('Inline truncation applied');
+
+      document.getElementById('btn-toggle-inline').addEventListener('click', function() {
+        if (instances.inline) {
+          instances.inline.toggle();
+          log('Inline toggled: ' + (instances.inline.isExpanded ? 'expanded' : 'collapsed'));
+        }
+      });
+
+      // =========================================================================
+      // Section 4: Custom Toggle Text
+      // =========================================================================
+
+      var moreTextInput = document.getElementById('more-text');
+      var lessTextInput = document.getElementById('less-text');
+      var customEl = document.getElementById('truncate-custom');
+
+      function applyCustomTruncation() {
+        var currentProps = getProps();
+        var moreText = moreTextInput.value || 'Show more';
+        var lessText = lessTextInput.value || 'Show less';
+        if (instances.custom) {
+          instances.custom.destroy();
+        }
+        restoreOriginalText('truncate-custom');
+        instances.custom = Truncate.apply(customEl, {
+          limit: 120,
+          moreText: moreText,
+          lessText: lessText,
+          animate: currentProps.animate !== false
+        });
+        log('Custom toggle text: "' + moreText + '" / "' + lessText + '"');
+        emit('event', { event: 'truncate:custom', payload: { moreText: moreText, lessText: lessText } });
+      }
+
+      document.getElementById('btn-apply-custom').addEventListener('click', applyCustomTruncation);
+
+      // Apply initial custom truncation
+      applyCustomTruncation();
+
+      // =========================================================================
+      // Section 5: API Controls
+      // =========================================================================
+
+      var apiEl = document.getElementById('truncate-api');
+      var apiStatus = document.getElementById('api-status');
+
+      instances.api = Truncate.apply(apiEl, {
+        limit: 150,
+        moreText: 'Show more',
+        lessText: 'Show less',
+        animate: true
+      });
+      log('API demo initialized');
+
+      document.getElementById('btn-expand').addEventListener('click', function() {
+        Truncate.expand(apiEl);
+        apiStatus.textContent = 'Status: Expanded';
+        log('API: expand()');
+      });
+
+      document.getElementById('btn-collapse').addEventListener('click', function() {
+        Truncate.collapse(apiEl);
+        apiStatus.textContent = 'Status: Collapsed';
+        log('API: collapse()');
+      });
+
+      document.getElementById('btn-toggle').addEventListener('click', function() {
+        Truncate.toggle(apiEl);
+        var expanded = Truncate.isExpanded(apiEl);
+        apiStatus.textContent = 'Status: ' + (expanded ? 'Expanded' : 'Collapsed');
+        log('API: toggle() -> ' + (expanded ? 'expanded' : 'collapsed'));
+      });
+
+      document.getElementById('btn-is-expanded').addEventListener('click', function() {
+        var expanded = Truncate.isExpanded(apiEl);
+        apiStatus.textContent = 'Status: isExpanded() = ' + expanded;
+        log('API: isExpanded() -> ' + expanded);
+      });
+
+      document.getElementById('btn-destroy').addEventListener('click', function() {
+        Truncate.destroy(apiEl);
+        instances.api = null;
+        apiStatus.textContent = 'Status: Destroyed (original text restored)';
+        log('API: destroy()');
+      });
+
+      // =========================================================================
+      // Section 6: Text Utility
+      // =========================================================================
+
+      var utilTextInput = document.getElementById('util-text');
+      var utilLimitInput = document.getElementById('util-limit');
+      var utilResult = document.getElementById('util-result');
+
+      function updateUtilResult() {
+        var text = utilTextInput.value;
+        var limit = parseInt(utilLimitInput.value, 10) || 30;
+        var result = Truncate.text(text, limit, '...');
+        utilResult.textContent = result;
+        log('Truncate.text(): ' + result.length + ' chars');
+      }
+
+      document.getElementById('btn-truncate-text').addEventListener('click', updateUtilResult);
+      utilTextInput.addEventListener('input', updateUtilResult);
+      utilLimitInput.addEventListener('input', updateUtilResult);
+
+      // Initial render
+      updateUtilResult();
+
+      // =========================================================================
+      // Props Change Handler - React to panel changes
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+
+          // Re-apply truncation based on mode
+          if (newProps.mode === 'chars') {
+            document.getElementById('btn-apply-chars').click();
+          } else if (newProps.mode === 'lines') {
+            document.getElementById('btn-apply-lines').click();
+          } else {
+            document.getElementById('btn-apply-custom').click();
+          }
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      // Destroy all instances
+      Object.keys(instances).forEach(function(key) {
+        if (instances[key] && instances[key].destroy) {
+          instances[key].destroy();
+        }
+      });
+      instances = {};
+      originalTexts = {};
+
+      // Cleanup event listeners
+      eventCleanups.forEach(function(cleanup) {
+        if (typeof cleanup === 'function') cleanup();
+      });
+      eventCleanups = [];
+
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

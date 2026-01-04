@@ -1,0 +1,360 @@
+/**
+ * Gesture Tracker Component Styles
+ * BEM naming with theme-aware CSS variables
+ */
+
+/* ==========================================================================
+   GESTURE TRACKER PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+.gesture-tracker-demo {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--pro-spacing-lg, 1.5rem);
+}
+
+.gesture-tracker-demo__section {
+    width: 100%;
+    margin-bottom: var(--pro-spacing-xl, 2rem);
+    box-sizing: border-box;
+}
+
+.gesture-tracker-demo__section h3 {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-text-primary);
+    font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+/* State Display */
+.gesture-tracker-demo__state {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.gesture-tracker-demo__state-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.gesture-tracker-demo__state-label {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.gesture-tracker-demo__state-value {
+    font-size: var(--pro-font-size-base, 1rem);
+    color: var(--pro-text-primary);
+    font-weight: var(--pro-font-weight-medium, 500);
+    min-width: 0;
+    word-break: break-word;
+}
+
+/* API Controls */
+.gesture-tracker-demo__controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    overflow: hidden;
+}
+
+.gesture-tracker-demo__control-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+}
+
+.gesture-tracker-demo__control-label {
+    min-width: 80px;
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+    color: var(--pro-text-secondary);
+}
+
+.gesture-tracker-demo__control-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Gesture Area */
+.gesture-tracker-demo__gesture-area {
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--pro-bg-secondary);
+    border: 2px dashed var(--pro-border-color);
+    border-radius: var(--pro-border-radius-lg, 8px);
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.gesture-tracker-demo__gesture-area:active {
+    cursor: grabbing;
+}
+
+.gesture-tracker-demo__gesture-area--active {
+    border-color: var(--pro-accent-primary);
+    background-color: var(--pro-accent-primary-muted, rgba(9, 105, 218, 0.05));
+}
+
+.gesture-tracker-demo__gesture-area--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.gesture-tracker-demo__gesture-icon {
+    font-size: 3rem;
+    color: var(--pro-text-muted);
+    margin-bottom: var(--pro-spacing-md, 1rem);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.gesture-tracker-demo__gesture-area--active .gesture-tracker-demo__gesture-icon {
+    color: var(--pro-accent-primary);
+    transform: scale(1.1);
+}
+
+.gesture-tracker-demo__gesture-hint {
+    color: var(--pro-text-muted);
+    text-align: center;
+}
+
+.gesture-tracker-demo__gesture-hint p {
+    margin: 0 0 var(--pro-spacing-xs, 0.25rem);
+}
+
+.gesture-tracker-demo__gesture-hint small {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+}
+
+/* Visual feedback overlay */
+.gesture-tracker-demo__feedback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: var(--pro-spacing-md, 1rem) var(--pro-spacing-lg, 1.5rem);
+    background-color: var(--pro-accent-primary);
+    color: var(--pro-text-inverse, #fff);
+    border-radius: var(--pro-border-radius, 6px);
+    font-size: var(--pro-font-size-lg, 1.125rem);
+    font-weight: var(--pro-font-weight-semibold, 600);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 10;
+}
+
+.gesture-tracker-demo__feedback--visible {
+    opacity: 1;
+}
+
+/* Direction indicator */
+.gesture-tracker-demo__direction {
+    position: absolute;
+    font-size: 4rem;
+    color: var(--pro-accent-primary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.gesture-tracker-demo__direction--visible {
+    opacity: 0.8;
+}
+
+.gesture-tracker-demo__direction--up {
+    top: var(--pro-spacing-md, 1rem);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gesture-tracker-demo__direction--down {
+    bottom: var(--pro-spacing-md, 1rem);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gesture-tracker-demo__direction--left {
+    left: var(--pro-spacing-md, 1rem);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.gesture-tracker-demo__direction--right {
+    right: var(--pro-spacing-md, 1rem);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Gesture Stats Display */
+.gesture-tracker-demo__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--pro-spacing-md, 1rem);
+}
+
+.gesture-tracker-demo__stat-card {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    text-align: center;
+}
+
+.gesture-tracker-demo__stat-value {
+    font-size: var(--pro-font-size-xl, 1.25rem);
+    font-weight: var(--pro-font-weight-semibold, 600);
+    color: var(--pro-text-primary);
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+    font-family: var(--pro-font-mono);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gesture-tracker-demo__stat-label {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Draggable Element Area */
+.gesture-tracker-demo__drag-container {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.gesture-tracker-demo__draggable {
+    width: 80px;
+    height: 80px;
+    background-color: var(--pro-accent-primary);
+    border-radius: var(--pro-border-radius, 6px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--pro-text-inverse, #fff);
+    font-size: 1.5rem;
+    box-shadow: var(--pro-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    transition: box-shadow 0.2s ease;
+    user-select: none;
+    touch-action: none;
+}
+
+.gesture-tracker-demo__draggable:active {
+    cursor: grabbing;
+    box-shadow: var(--pro-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+}
+
+.gesture-tracker-demo__draggable--dragging {
+    opacity: 0.9;
+}
+
+/* Events Log */
+.gesture-tracker-demo__log-controls {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.gesture-tracker-demo__log {
+    width: 100%;
+    min-height: 150px;
+    max-height: 250px;
+    padding: var(--pro-spacing-md, 1rem);
+    margin: 0;
+    overflow: auto;
+    font-family: var(--pro-font-mono);
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    line-height: 1.5;
+    color: var(--pro-text-secondary);
+    background-color: var(--pro-bg-tertiary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-sizing: border-box;
+}
+
+/* Hint text */
+.gesture-tracker-demo__hint {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-muted);
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.gesture-tracker-demo__hint i {
+    margin-right: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .gesture-tracker-demo {
+        padding: var(--pro-spacing-md, 1rem);
+    }
+
+    .gesture-tracker-demo__control-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .gesture-tracker-demo__control-label {
+        margin-bottom: var(--pro-spacing-xs, 0.25rem);
+    }
+
+    .gesture-tracker-demo__gesture-area {
+        min-height: 250px;
+    }
+
+    .gesture-tracker-demo__stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gesture-tracker-demo__state {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .gesture-tracker-demo__gesture-area,
+    .gesture-tracker-demo__gesture-icon,
+    .gesture-tracker-demo__feedback,
+    .gesture-tracker-demo__direction,
+    .gesture-tracker-demo__draggable {
+        transition: none;
+    }
+}

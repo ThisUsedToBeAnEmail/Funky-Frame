@@ -1,0 +1,598 @@
+<div data-page="component-kanban" class="component-demo">
+  <h2>Kanban Board</h2>
+  <p class="text-muted">Drag-and-drop workflow board with columns, swimlanes, search, filters, and real-time collaboration support.</p>
+
+  <section class="demo-section" aria-labelledby="kanban-demo-heading">
+    <h3 id="kanban-demo-heading">Interactive Board</h3>
+    <p class="text-muted small">Drag cards between columns. Use toolbar to search/filter. Click cards to view details.</p>
+    <div class="demo-area">
+      <div id="kanban-demo" class="kanban-demo__container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-cards-heading">
+    <h3 id="kanban-cards-heading">Card Operations</h3>
+    <p class="text-muted small">Add, update, remove, and move cards programmatically.</p>
+    <div class="demo-area kanban-demo__button-grid" role="group" aria-label="Card operation buttons">
+      <button class="btn btn-success btn-sm" id="kanban-add-card" type="button">
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add Card
+      </button>
+      <button class="btn btn-primary btn-sm" id="kanban-update-card" type="button">
+        <i class="fas fa-edit me-1" aria-hidden="true"></i>Update Card
+      </button>
+      <button class="btn btn-danger btn-sm" id="kanban-remove-card" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i>Remove Card
+      </button>
+      <button class="btn btn-info btn-sm" id="kanban-move-card" type="button">
+        <i class="fas fa-arrows-alt me-1" aria-hidden="true"></i>Move Card
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="kanban-get-card" type="button">
+        <i class="fas fa-search me-1" aria-hidden="true"></i>Get Card Info
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-columns-heading">
+    <h3 id="kanban-columns-heading">Column Operations</h3>
+    <p class="text-muted small">Add, remove, and manage columns dynamically.</p>
+    <div class="demo-area kanban-demo__button-grid" role="group" aria-label="Column operation buttons">
+      <button class="btn btn-primary btn-sm" id="kanban-add-column" type="button">
+        <i class="fas fa-columns me-1" aria-hidden="true"></i>Add Column
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="kanban-remove-column" type="button">
+        <i class="fas fa-minus me-1" aria-hidden="true"></i>Remove Last Column
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="kanban-get-columns" type="button">
+        <i class="fas fa-list me-1" aria-hidden="true"></i>Get Columns
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="kanban-get-cards-column" type="button">
+        <i class="fas fa-database me-1" aria-hidden="true"></i>Get "To Do" Cards
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-search-heading">
+    <h3 id="kanban-search-heading">Search & Filter</h3>
+    <p class="text-muted small">Search cards and apply filters programmatically.</p>
+    <div class="demo-area kanban-demo__button-grid" role="group" aria-label="Search and filter buttons">
+      <button class="btn btn-warning btn-sm" id="kanban-search" type="button">
+        <i class="fas fa-search me-1" aria-hidden="true"></i>Search "Task"
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="kanban-clear-search" type="button">
+        <i class="fas fa-times me-1" aria-hidden="true"></i>Clear Search
+      </button>
+      <button class="btn btn-info btn-sm" id="kanban-filter-high" type="button">
+        <i class="fas fa-filter me-1" aria-hidden="true"></i>Filter High Priority
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="kanban-clear-filters" type="button">
+        <i class="fas fa-eraser me-1" aria-hidden="true"></i>Clear All Filters
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-swimlanes-heading">
+    <h3 id="kanban-swimlanes-heading">Swimlane Controls</h3>
+    <p class="text-muted small">Manage swimlanes when enabled via props.</p>
+    <div class="demo-area kanban-demo__button-grid" role="group" aria-label="Swimlane control buttons">
+      <button class="btn btn-primary btn-sm" id="kanban-expand-swimlanes" type="button">
+        <i class="fas fa-expand-alt me-1" aria-hidden="true"></i>Expand All
+      </button>
+      <button class="btn btn-secondary btn-sm" id="kanban-collapse-swimlanes" type="button">
+        <i class="fas fa-compress-alt me-1" aria-hidden="true"></i>Collapse All
+      </button>
+      <button class="btn btn-outline-success btn-sm" id="kanban-add-swimlane" type="button">
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add Swimlane
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="kanban-remove-swimlane" type="button">
+        <i class="fas fa-minus me-1" aria-hidden="true"></i>Remove Swimlane
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-data-heading">
+    <h3 id="kanban-data-heading">Data Operations</h3>
+    <p class="text-muted small">Bulk data operations and board refresh.</p>
+    <div class="demo-area kanban-demo__button-grid" role="group" aria-label="Data operation buttons">
+      <button class="btn btn-outline-primary btn-sm" id="kanban-get-data" type="button">
+        <i class="fas fa-database me-1" aria-hidden="true"></i>Get All Data
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="kanban-refresh" type="button">
+        <i class="fas fa-sync me-1" aria-hidden="true"></i>Refresh Board
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="kanban-clear-data" type="button">
+        <i class="fas fa-trash-alt me-1" aria-hidden="true"></i>Clear All Cards
+      </button>
+      <button class="btn btn-success btn-sm" id="kanban-reset-data" type="button">
+        <i class="fas fa-redo me-1" aria-hidden="true"></i>Reset Demo Data
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-state-heading">
+    <h3 id="kanban-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time board state information.</p>
+    <div class="demo-area">
+      <pre id="kanban-state" class="kanban-demo__log" aria-live="polite" aria-label="Board state">Initializing board...</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="kanban-log-heading">
+    <h3 id="kanban-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="kanban-log" class="kanban-demo__log" aria-live="polite" aria-label="Event log">Interact with the board to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var kanbanInstance = null;
+  var logs = [];
+  var propsChangedHandler = null;
+  var cardCounter = 0;
+  var columnCounter = 0;
+  var swimlaneCounter = 0;
+
+  // Sample data
+  var defaultColumns = [
+    { id: 'backlog', title: 'Backlog', color: '#6c757d' },
+    { id: 'todo', title: 'To Do', color: '#0d6efd' },
+    { id: 'in-progress', title: 'In Progress', color: '#ffc107', limit: 3 },
+    { id: 'review', title: 'Review', color: '#6f42c1' },
+    { id: 'done', title: 'Done', color: '#198754' }
+  ];
+
+  function generateSampleCards(count) {
+    var cards = [];
+    var priorities = ['low', 'medium', 'high'];
+    var columnIds = defaultColumns.map(function(c) { return c.id; });
+    var assignees = ['Alice', 'Bob', 'Charlie', 'Diana'];
+    var tags = [['bug'], ['feature'], ['enhancement', 'urgent'], ['docs'], []];
+
+    for (var i = 1; i <= count; i++) {
+      cards.push({
+        id: 'card-' + i,
+        title: 'Task ' + i + ': ' + ['Implement feature', 'Fix bug', 'Write tests', 'Update docs', 'Review PR'][i % 5],
+        description: 'Description for task ' + i + '. This is sample content for the kanban card.',
+        column: columnIds[i % columnIds.length],
+        priority: priorities[i % 3],
+        assignee: assignees[i % assignees.length],
+        tags: tags[i % tags.length],
+        dueDate: i % 3 === 0 ? new Date(Date.now() + (i * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] : null
+      });
+    }
+    return cards;
+  }
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('kanban-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('kanban-state');
+    if (!stateEl || !kanbanInstance) return;
+
+    var props = getProps();
+    var columns = kanbanInstance.getColumns ? kanbanInstance.getColumns() : [];
+    var allCards = kanbanInstance.getData ? kanbanInstance.getData() : [];
+    var cardCount = Array.isArray(allCards) ? allCards.length : 0;
+
+    var cardsByColumn = {};
+    columns.forEach(function(col) {
+      // getColumns() returns { config: {...}, element, header, body, cardCount }
+      var colId = col.config ? col.config.id : col.id;
+      var colCards = kanbanInstance.getCards ? kanbanInstance.getCards(colId) : [];
+      cardsByColumn[colId] = colCards.length;
+    });
+
+    stateEl.textContent = JSON.stringify({
+      columnCount: columns.length,
+      totalCards: cardCount,
+      cardsByColumn: cardsByColumn,
+      showToolbar: props.showToolbar !== false,
+      showAddCard: props.showAddCard !== false,
+      useSwimlanes: props.useSwimlanes || false,
+      isLoading: kanbanInstance.isLoading ? kanbanInstance.isLoading() : false
+    }, null, 2);
+  }
+
+  function createBoard() {
+    var props = getProps();
+    var container = document.getElementById('kanban-demo');
+    if (!container) return;
+
+    // Destroy existing board
+    if (kanbanInstance && kanbanInstance.destroy) {
+      kanbanInstance.destroy();
+      kanbanInstance = null;
+    }
+    container.innerHTML = '';
+
+    var cardCount = props.cardCount || 8;
+    var sampleCards = generateSampleCards(cardCount);
+    cardCounter = cardCount;
+
+    var boardConfig = {
+      columns: props.columns || defaultColumns,
+      cards: sampleCards,
+      showToolbar: props.showToolbar !== false,
+      showAddCard: props.showAddCard !== false,
+      searchableFields: ['title', 'description', 'assignee'],
+      quickFilters: [
+        { id: 'high-priority', label: 'High Priority', filter: { priority: 'high' } },
+        { id: 'my-tasks', label: 'My Tasks', filter: { assignee: '@currentUser' } },
+        { id: 'bugs', label: 'Bugs Only', filter: { tags: 'bug' } }
+      ],
+      currentUser: 'Alice',
+      dimFiltered: false,
+      highlightMatches: true,
+
+      // Swimlanes configuration
+      swimlanes: props.useSwimlanes ? {
+        field: 'priority',
+        values: ['high', 'medium', 'low'],
+        labels: { high: 'High Priority', medium: 'Medium Priority', low: 'Low Priority' }
+      } : null,
+
+      // Callbacks
+      onCardMove: function(card, fromColumn, toColumn, position) {
+        log('Moved "' + card.title + '" from ' + fromColumn + ' to ' + toColumn + ' at position ' + position);
+        emit('event', { event: 'kanban:card-move', payload: { card: card.id, from: fromColumn, to: toColumn, position: position } });
+        updateState();
+      },
+      onCardMoved: function(card, fromColumn, toColumn, position) {
+        log('Card move completed: "' + card.title + '"');
+        emit('event', { event: 'kanban:card-moved', payload: { card: card.id } });
+      },
+      onCardClick: function(card, element) {
+        log('Clicked "' + card.title + '" (ID: ' + card.id + ')');
+        emit('event', { event: 'kanban:card-click', payload: { card: card.id, title: card.title } });
+      },
+      onCardCreate: function(card) {
+        log('Card created: "' + card.title + '"');
+        emit('event', { event: 'kanban:card-create', payload: { card: card.id } });
+        updateState();
+      },
+      onColumnLimitReached: function(column, limit) {
+        log('Column "' + column.title + '" limit reached (' + limit + ' cards)');
+        emit('event', { event: 'kanban:limit-reached', payload: { column: column.id, limit: limit } });
+        Funky.Toast.warning('Column "' + column.title + '" has reached its WIP limit of ' + limit);
+      },
+      onSwimlaneChange: function(swimlane, isCollapsed) {
+        log('Swimlane "' + swimlane + '" ' + (isCollapsed ? 'collapsed' : 'expanded'));
+        emit('event', { event: 'kanban:swimlane-change', payload: { swimlane: swimlane, collapsed: isCollapsed } });
+      },
+      onFilter: function(filters, matchCount, totalCount) {
+        log('Filtered: ' + matchCount + '/' + totalCount + ' cards visible');
+        emit('event', { event: 'kanban:filter', payload: { matchCount: matchCount, totalCount: totalCount } });
+      }
+    };
+
+    // Initialize board
+    if (Funky.Kanban) {
+      kanbanInstance = Funky.Kanban.init(container, boardConfig);
+      log('Board created with ' + defaultColumns.length + ' columns and ' + cardCount + ' cards');
+      emit('event', { event: 'kanban:init', payload: { columns: defaultColumns.length, cards: cardCount } });
+      updateState();
+    }
+  }
+
+  Funky.Pages.register('component-kanban', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+      cardCounter = 0;
+      columnCounter = 0;
+      swimlaneCounter = 0;
+
+      log('Init with showToolbar=' + (props.showToolbar !== false) + ', swimlanes=' + (props.useSwimlanes || false));
+      emit('event', { event: 'kanban:init', payload: props });
+
+      // Create the board
+      createBoard();
+
+      // Listen for props changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - recreating board');
+          createBoard();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Card Operations
+      document.getElementById('kanban-add-card').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.addCard) return;
+        cardCounter++;
+        var newCard = {
+          id: 'card-new-' + Date.now(),
+          title: 'New Task ' + cardCounter,
+          description: 'A newly added task via API',
+          column: 'backlog',
+          priority: ['low', 'medium', 'high'][cardCounter % 3],
+          assignee: 'Alice'
+        };
+        kanbanInstance.addCard(newCard);
+        log('Added card: "' + newCard.title + '"');
+        emit('event', { event: 'kanban:add-card', payload: newCard });
+        Funky.Toast.success('Added: ' + newCard.title);
+        updateState();
+      };
+
+      document.getElementById('kanban-update-card').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.updateCard) return;
+        var cards = kanbanInstance.getData ? kanbanInstance.getData() : [];
+        if (!cards || cards.length === 0) {
+          Funky.Toast.warning('No cards to update');
+          return;
+        }
+        var targetCard = cards[0];
+        var newTitle = targetCard.title + ' (Updated)';
+        kanbanInstance.updateCard(targetCard.id, { title: newTitle, priority: 'high' });
+        log('Updated card: "' + targetCard.id + '" -> "' + newTitle + '"');
+        emit('event', { event: 'kanban:update-card', payload: { id: targetCard.id } });
+        Funky.Toast.info('Updated: ' + newTitle);
+        updateState();
+      };
+
+      document.getElementById('kanban-remove-card').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.removeCard) return;
+        var cards = kanbanInstance.getData ? kanbanInstance.getData() : [];
+        if (!cards || cards.length === 0) {
+          Funky.Toast.warning('No cards to remove');
+          return;
+        }
+        var targetCard = cards[cards.length - 1];
+        kanbanInstance.removeCard(targetCard.id);
+        log('Removed card: "' + targetCard.title + '"');
+        emit('event', { event: 'kanban:remove-card', payload: { id: targetCard.id } });
+        Funky.Toast.info('Removed: ' + targetCard.title);
+        updateState();
+      };
+
+      document.getElementById('kanban-move-card').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.moveCard) return;
+        var cards = kanbanInstance.getData ? kanbanInstance.getData() : [];
+        if (!cards || cards.length === 0) {
+          Funky.Toast.warning('No cards to move');
+          return;
+        }
+        var targetCard = cards[0];
+        var columns = kanbanInstance.getColumns();
+        // getColumns() returns { config: {...}, element, header, body, cardCount }
+        var currentColIndex = columns.findIndex(function(c) { return c.config.id === targetCard.column; });
+        var nextColIndex = (currentColIndex + 1) % columns.length;
+        var nextColumn = columns[nextColIndex];
+        var nextColId = nextColumn.config.id;
+        var nextColTitle = nextColumn.config.title;
+        kanbanInstance.moveCard(targetCard.id, nextColId, 0);
+        log('Moved "' + targetCard.title + '" to "' + nextColTitle + '"');
+        emit('event', { event: 'kanban:move-card', payload: { id: targetCard.id, column: nextColId } });
+        Funky.Toast.info('Moved to: ' + nextColTitle);
+        updateState();
+      };
+
+      document.getElementById('kanban-get-card').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.getCard) return;
+        var cards = kanbanInstance.getData ? kanbanInstance.getData() : [];
+        if (!cards || cards.length === 0) {
+          Funky.Toast.warning('No cards available');
+          return;
+        }
+        var card = kanbanInstance.getCard(cards[0].id);
+        if (card) {
+          log('Card info: ' + JSON.stringify({ id: card.id, title: card.title, column: card.column, priority: card.priority }));
+          emit('event', { event: 'kanban:get-card', payload: card });
+          Funky.Toast.info('Card: ' + card.title + ' (' + card.column + ')');
+        }
+      };
+
+      // Column Operations
+      document.getElementById('kanban-add-column').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.addColumn) return;
+        columnCounter++;
+        var colors = ['#17a2b8', '#fd7e14', '#20c997', '#e83e8c', '#6610f2'];
+        var newColumn = {
+          id: 'column-' + Date.now(),
+          title: 'Column ' + columnCounter,
+          color: colors[columnCounter % colors.length]
+        };
+        kanbanInstance.addColumn(newColumn);
+        log('Added column: "' + newColumn.title + '"');
+        emit('event', { event: 'kanban:add-column', payload: newColumn });
+        Funky.Toast.success('Added column: ' + newColumn.title);
+        updateState();
+      };
+
+      document.getElementById('kanban-remove-column').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.removeColumn) return;
+        var columns = kanbanInstance.getColumns();
+        if (columns.length <= 1) {
+          Funky.Toast.warning('Cannot remove last column');
+          return;
+        }
+        var lastColumn = columns[columns.length - 1];
+        var colId = lastColumn.config.id;
+        var colTitle = lastColumn.config.title;
+        kanbanInstance.removeColumn(colId);
+        log('Removed column: "' + colTitle + '"');
+        emit('event', { event: 'kanban:remove-column', payload: { id: colId } });
+        Funky.Toast.info('Removed: ' + colTitle);
+        updateState();
+      };
+
+      document.getElementById('kanban-get-columns').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.getColumns) return;
+        var columns = kanbanInstance.getColumns();
+        var names = columns.map(function(c) {
+          return c.config ? c.config.title : (c.title || 'Unknown');
+        });
+        log('Columns: ' + names.join(', '));
+        emit('event', { event: 'kanban:get-columns', payload: { count: columns.length, columns: names } });
+        Funky.Toast.info(columns.length + ' columns: ' + names.join(', '));
+      };
+
+      document.getElementById('kanban-get-cards-column').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.getCards) return;
+        var cards = kanbanInstance.getCards('todo');
+        log('"To Do" has ' + cards.length + ' cards');
+        emit('event', { event: 'kanban:get-cards-column', payload: { column: 'todo', count: cards.length } });
+        Funky.Toast.info('"To Do" column: ' + cards.length + ' cards');
+      };
+
+      // Search & Filter
+      document.getElementById('kanban-search').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.search) return;
+        kanbanInstance.search('Task');
+        log('Searching for "Task"');
+        emit('event', { event: 'kanban:search', payload: { query: 'Task' } });
+      };
+
+      document.getElementById('kanban-clear-search').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.clearSearch) return;
+        kanbanInstance.clearSearch();
+        log('Search cleared');
+        emit('event', { event: 'kanban:clear-search', payload: {} });
+      };
+
+      document.getElementById('kanban-filter-high').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.filter) return;
+        kanbanInstance.filter({ priority: 'high' });
+        log('Filtered by high priority');
+        emit('event', { event: 'kanban:filter', payload: { priority: 'high' } });
+      };
+
+      document.getElementById('kanban-clear-filters').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.clearAllFilters) return;
+        kanbanInstance.clearAllFilters();
+        log('All filters cleared');
+        emit('event', { event: 'kanban:clear-filters', payload: {} });
+      };
+
+      // Swimlane Controls
+      document.getElementById('kanban-expand-swimlanes').onclick = function() {
+        if (!kanbanInstance) return;
+        var props = getProps();
+        if (!props.useSwimlanes) {
+          Funky.Toast.warning('Enable swimlanes via props first');
+          return;
+        }
+        if (kanbanInstance.expandAllSwimlanes) {
+          kanbanInstance.expandAllSwimlanes();
+          log('Expanded all swimlanes');
+          emit('event', { event: 'kanban:expand-swimlanes', payload: {} });
+        }
+      };
+
+      document.getElementById('kanban-collapse-swimlanes').onclick = function() {
+        if (!kanbanInstance) return;
+        var props = getProps();
+        if (!props.useSwimlanes) {
+          Funky.Toast.warning('Enable swimlanes via props first');
+          return;
+        }
+        if (kanbanInstance.collapseAllSwimlanes) {
+          kanbanInstance.collapseAllSwimlanes();
+          log('Collapsed all swimlanes');
+          emit('event', { event: 'kanban:collapse-swimlanes', payload: {} });
+        }
+      };
+
+      document.getElementById('kanban-add-swimlane').onclick = function() {
+        if (!kanbanInstance) return;
+        var props = getProps();
+        if (!props.useSwimlanes) {
+          Funky.Toast.warning('Enable swimlanes via props first');
+          return;
+        }
+        if (kanbanInstance.addSwimlane) {
+          swimlaneCounter++;
+          var value = 'custom-' + swimlaneCounter;
+          kanbanInstance.addSwimlane(value, 'Custom Lane ' + swimlaneCounter);
+          log('Added swimlane: ' + value);
+          emit('event', { event: 'kanban:add-swimlane', payload: { value: value } });
+          Funky.Toast.success('Added swimlane');
+        }
+      };
+
+      document.getElementById('kanban-remove-swimlane').onclick = function() {
+        if (!kanbanInstance) return;
+        var props = getProps();
+        if (!props.useSwimlanes) {
+          Funky.Toast.warning('Enable swimlanes via props first');
+          return;
+        }
+        if (kanbanInstance.removeSwimlane && swimlaneCounter > 0) {
+          var value = 'custom-' + swimlaneCounter;
+          kanbanInstance.removeSwimlane(value);
+          log('Removed swimlane: ' + value);
+          emit('event', { event: 'kanban:remove-swimlane', payload: { value: value } });
+          swimlaneCounter--;
+          Funky.Toast.info('Removed swimlane');
+        } else {
+          Funky.Toast.warning('No custom swimlanes to remove');
+        }
+      };
+
+      // Data Operations
+      document.getElementById('kanban-get-data').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.getData) return;
+        var cards = kanbanInstance.getData();
+        var columns = kanbanInstance.getColumns ? kanbanInstance.getColumns() : [];
+        log('Board data: ' + cards.length + ' cards, ' + columns.length + ' columns');
+        emit('event', { event: 'kanban:get-data', payload: { cards: cards.length, columns: columns.length } });
+        Funky.Toast.info('Total: ' + cards.length + ' cards in ' + columns.length + ' columns');
+      };
+
+      document.getElementById('kanban-refresh').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.refresh) return;
+        kanbanInstance.refresh();
+        log('Board refreshed');
+        emit('event', { event: 'kanban:refresh', payload: {} });
+        Funky.Toast.info('Board refreshed');
+        updateState();
+      };
+
+      document.getElementById('kanban-clear-data').onclick = function() {
+        if (!kanbanInstance || !kanbanInstance.clearData) return;
+        kanbanInstance.clearData();
+        log('All cards cleared');
+        emit('event', { event: 'kanban:clear-data', payload: {} });
+        Funky.Toast.warning('All cards removed');
+        updateState();
+      };
+
+      document.getElementById('kanban-reset-data').onclick = function() {
+        log('Resetting demo data');
+        createBoard();
+        Funky.Toast.success('Demo data reset');
+      };
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy board instance
+      if (kanbanInstance && kanbanInstance.destroy) {
+        kanbanInstance.destroy();
+      }
+      kanbanInstance = null;
+      logs = [];
+      cardCounter = 0;
+      columnCounter = 0;
+      swimlaneCounter = 0;
+      return {};
+    }
+  });
+})();
+</script>

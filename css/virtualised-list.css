@@ -1,0 +1,637 @@
+/**
+ * VirtualisedList Component Styles
+ * 
+ * Efficient rendering for large datasets using virtual scrolling.
+ * Uses Funky theme system variables (--pro-*) for consistent theming.
+ */
+
+/* ========================================
+   Container
+   ======================================== */
+
+.virtual-list {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+  
+  /* Smooth scrolling */
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Performance optimizations */
+  will-change: scroll-position;
+  contain: strict;
+  
+  /* Focus styling */
+  outline: none;
+}
+
+.virtual-list:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.virtual-list:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ========================================
+   Items Container
+   ======================================== */
+
+.virtual-list-items {
+  position: relative;
+  width: 100%;
+}
+
+/* ========================================
+   Spacers
+   ======================================== */
+
+.virtual-list-spacer {
+  width: 100%;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.virtual-list-spacer-top,
+.virtual-list-spacer-bottom {
+  /* Height set dynamically via JS */
+}
+
+/* ========================================
+   List Items
+   ======================================== */
+
+.virtual-list-item {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* Prevent layout shift during recycling */
+  contain: layout style;
+  
+  /* Default styling */
+  display: flex;
+  align-items: center;
+  padding: 0 var(--pro-spacing-md, 0.75rem);
+  
+  /* Theme integration */
+  background: var(--pro-bg-primary, #ffffff);
+  color: var(--pro-text-primary, #212529);
+  border-bottom: 1px solid var(--pro-border-color, rgba(0, 0, 0, 0.1));
+  
+  /* Transitions */
+  transition: background-color 0.15s ease;
+}
+
+.virtual-list-item:hover {
+  background: var(--pro-bg-hover, rgba(0, 0, 0, 0.04));
+}
+
+/* Focused item (keyboard navigation) */
+.virtual-list-item.focused {
+  background: var(--pro-bg-hover, rgba(0, 0, 0, 0.04));
+  outline: 2px solid var(--pro-accent-primary, #ff6600);
+  outline-offset: -2px;
+}
+
+/* Selected item */
+.virtual-list-item.selected {
+  background: var(--pro-accent-primary-transparent, rgba(255, 102, 0, 0.1));
+}
+
+.virtual-list-item.selected.focused {
+  background: var(--pro-accent-primary-transparent, rgba(255, 102, 0, 0.15));
+}
+
+/* Active (pressed) state */
+.virtual-list-item:active {
+  background: var(--pro-bg-active, rgba(0, 0, 0, 0.08));
+}
+
+/* ========================================
+   Loading State
+   ======================================== */
+
+.virtual-list-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pro-spacing-lg, 1rem);
+  color: var(--pro-text-secondary, #6c757d);
+}
+
+.virtual-list-loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--pro-border-color, rgba(0, 0, 0, 0.1));
+  border-top-color: var(--pro-accent-primary, #ff6600);
+  border-radius: 50%;
+  animation: virtual-list-spin 0.8s linear infinite;
+  margin-right: var(--pro-spacing-sm, 0.5rem);
+}
+
+@keyframes virtual-list-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   End of List
+   ======================================== */
+
+.virtual-list-end {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pro-spacing-lg, 1rem);
+  color: var(--pro-text-tertiary, #adb5bd);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+/* ========================================
+   Pull to Refresh
+   ======================================== */
+
+.virtual-list-pull-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: var(--pro-text-secondary, #6c757d);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+.virtual-list-pull-icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--pro-spacing-xs, 0.25rem);
+  transition: transform 0.2s ease;
+}
+
+.virtual-list-pull-indicator.ready .virtual-list-pull-icon {
+  transform: rotate(180deg);
+  color: var(--pro-accent-primary, #ff6600);
+}
+
+.virtual-list-pull-indicator.refreshing .virtual-list-pull-icon {
+  animation: virtual-list-spin 0.8s linear infinite;
+}
+
+.virtual-list-pull-indicator.refreshing {
+  opacity: 1 !important;
+  height: 60px !important;
+}
+
+/* ========================================
+   Empty State
+   ======================================== */
+
+.virtual-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pro-spacing-2xl, 2rem);
+  color: var(--pro-text-secondary, #6c757d);
+  text-align: center;
+  min-height: 200px;
+}
+
+.virtual-list-empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--pro-spacing-md, 0.75rem);
+  opacity: 0.5;
+}
+
+.virtual-list-empty-message {
+  font-size: var(--pro-font-size-md, 1rem);
+}
+
+/* ========================================
+   Dark Theme Adjustments
+   ======================================== */
+
+[data-theme="dark"] .virtual-list-item {
+  background: var(--pro-bg-primary, #1a1a2e);
+  border-bottom-color: var(--pro-border-color, rgba(255, 255, 255, 0.1));
+}
+
+[data-theme="dark"] .virtual-list-item:hover {
+  background: var(--pro-bg-hover, rgba(255, 255, 255, 0.04));
+}
+
+[data-theme="dark"] .virtual-list-item.focused {
+  background: var(--pro-bg-hover, rgba(255, 255, 255, 0.04));
+}
+
+[data-theme="dark"] .virtual-list-item.selected {
+  background: var(--pro-accent-primary-transparent, rgba(255, 102, 0, 0.15));
+}
+
+[data-theme="dark"] .virtual-list-item.selected.focused {
+  background: var(--pro-accent-primary-transparent, rgba(255, 102, 0, 0.2));
+}
+
+[data-theme="dark"] .virtual-list-item:active {
+  background: var(--pro-bg-active, rgba(255, 255, 255, 0.08));
+}
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .virtual-list-item {
+    transition: none;
+  }
+  
+  .virtual-list-loading-spinner {
+    animation: none;
+  }
+}
+
+/* ========================================
+   Density Modes
+   ======================================== */
+
+/* Compact density */
+[data-density="compact"] .virtual-list-item {
+  padding: 0 var(--pro-spacing-sm, 0.5rem);
+}
+
+/* Comfortable density (default) */
+[data-density="comfortable"] .virtual-list-item {
+  padding: 0 var(--pro-spacing-md, 0.75rem);
+}
+
+/* Spacious density */
+[data-density="spacious"] .virtual-list-item {
+  padding: 0 var(--pro-spacing-lg, 1rem);
+}
+
+/* ========================================
+   Scrollbar Styling
+   ======================================== */
+
+.virtual-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.virtual-list::-webkit-scrollbar-track {
+  background: var(--pro-bg-secondary, #f8f9fa);
+}
+
+.virtual-list::-webkit-scrollbar-thumb {
+  background: var(--pro-border-color, rgba(0, 0, 0, 0.2));
+  border-radius: 4px;
+}
+
+.virtual-list::-webkit-scrollbar-thumb:hover {
+  background: var(--pro-text-tertiary, #adb5bd);
+}
+
+[data-theme="dark"] .virtual-list::-webkit-scrollbar-track {
+  background: var(--pro-bg-secondary, #16161e);
+}
+
+[data-theme="dark"] .virtual-list::-webkit-scrollbar-thumb {
+  background: var(--pro-border-color, rgba(255, 255, 255, 0.2));
+}
+
+[data-theme="dark"] .virtual-list::-webkit-scrollbar-thumb:hover {
+  background: var(--pro-text-tertiary, #6c757d);
+}
+
+/* ========================================
+   Screen Reader Only (Live Region)
+   ======================================== */
+
+.virtual-list-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================
+   Search Highlight
+   ======================================== */
+
+.virtual-list-highlight {
+  background: var(--pro-highlight-bg, #fff3cd);
+  color: var(--pro-highlight-text, inherit);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .virtual-list-highlight {
+  background: var(--pro-highlight-bg, rgba(255, 193, 7, 0.3));
+}
+
+/* Current match styling */
+.virtual-list-item.focused .virtual-list-highlight {
+  background: var(--pro-accent-primary, #ff6600);
+  color: white;
+}
+
+/* ========================================
+   High Contrast Mode
+   ======================================== */
+
+@media (prefers-contrast: more) {
+  .virtual-list:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+  }
+
+  .virtual-list-item {
+    border-bottom: 2px solid currentColor;
+  }
+
+  .virtual-list-item.focused {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+    background: transparent;
+  }
+
+  .virtual-list-item.selected {
+    background: Mark;
+    color: MarkText;
+  }
+
+  .virtual-list-highlight {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* Forced colors (Windows High Contrast) */
+@media (forced-colors: active) {
+  .virtual-list:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .virtual-list-item.focused {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+  }
+
+  .virtual-list-item.selected {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+  
+  .virtual-list-loading-spinner {
+    border-color: CanvasText;
+    border-top-color: Highlight;
+  }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+  .virtual-list {
+    overflow: visible;
+    height: auto !important;
+  }
+
+  .virtual-list-spacer-top,
+  .virtual-list-spacer-bottom {
+    display: none;
+  }
+
+  .virtual-list-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .virtual-list-loading,
+  .virtual-list-end,
+  .virtual-list-pull-indicator {
+    display: none !important;
+  }
+}
+
+/* ========================================
+   Playground Demo Styles
+   ======================================== */
+
+.vlist-demo__container {
+  height: 400px;
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: var(--pro-border-radius, 6px);
+  background: var(--pro-bg-secondary, rgba(255, 255, 255, 0.03));
+  overflow: hidden;
+}
+
+.vlist-demo__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.vlist-demo__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vlist-demo__stat-label {
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  font-weight: var(--pro-font-weight-medium, 500);
+  color: var(--pro-text-muted, #adb5bd);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vlist-demo__stat-value {
+  font-size: var(--pro-font-size-lg, 1.125rem);
+  font-weight: var(--pro-font-weight-semibold, 600);
+  color: var(--pro-text-primary, #f8f9fa);
+  font-family: var(--pro-font-mono, 'Monaco', 'Menlo', monospace);
+}
+
+.vlist-demo__button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pro-spacing-sm, 0.75rem);
+  align-items: flex-start;
+}
+
+.vlist-demo__button-grid .btn {
+  flex-shrink: 0;
+}
+
+.vlist-demo__log {
+  font-family: var(--pro-font-mono, 'Monaco', 'Menlo', 'Consolas', monospace);
+  font-size: var(--pro-font-size-sm, 0.8125rem);
+  line-height: 1.6;
+  padding: var(--pro-spacing-md, 1rem);
+  margin: 0;
+  background: var(--pro-bg-tertiary, var(--pro-bg-secondary));
+  color: var(--pro-text-muted, var(--pro-text-secondary));
+  border-radius: var(--pro-radius-md, 6px);
+  border: 1px solid var(--pro-border-color);
+  min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Demo list item styling */
+.vlist-demo__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  gap: 1rem;
+  border-bottom: 1px solid var(--pro-border-color-light, rgba(255, 255, 255, 0.05));
+}
+
+.vlist-demo__item-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.vlist-demo__item-index {
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  font-weight: var(--pro-font-weight-medium, 500);
+  color: var(--pro-text-muted, #6c757d);
+  font-family: var(--pro-font-mono, monospace);
+  min-width: 60px;
+}
+
+.vlist-demo__item-name {
+  font-weight: var(--pro-font-weight-medium, 500);
+  color: var(--pro-text-primary, #f8f9fa);
+  white-space: nowrap;
+}
+
+.vlist-demo__item-desc {
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  color: var(--pro-text-muted, #adb5bd);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vlist-demo__item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.vlist-demo__item-priority {
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  color: var(--pro-text-muted, #6c757d);
+}
+
+/* Light theme */
+[data-theme="light"] .vlist-demo__container {
+  background: var(--pro-bg-secondary, #f8f9fa);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .vlist-demo__stat-value {
+  color: var(--pro-text-primary, #212529);
+}
+
+[data-theme="light"] .vlist-demo__log {
+  background: var(--pro-bg-tertiary, #e9ecef);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .vlist-demo__item {
+  border-bottom-color: var(--pro-border-color-light, rgba(0, 0, 0, 0.05));
+}
+
+[data-theme="light"] .vlist-demo__item-name {
+  color: var(--pro-text-primary, #212529);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .vlist-demo__container {
+    height: 300px;
+  }
+
+  .vlist-demo__stats {
+    gap: 1rem;
+  }
+
+  .vlist-demo__stat-value {
+    font-size: var(--pro-font-size-base, 1rem);
+  }
+
+  .vlist-demo__button-grid {
+    gap: var(--pro-spacing-xs, 0.5rem);
+  }
+
+  .vlist-demo__button-grid .btn {
+    flex: 1 1 calc(50% - var(--pro-spacing-xs, 0.5rem));
+    min-width: 130px;
+  }
+
+  .vlist-demo__item-desc {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .vlist-demo__button-grid .btn {
+    flex: 1 1 100%;
+  }
+
+  .vlist-demo__item-index {
+    min-width: 45px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .vlist-demo__log {
+    border-width: 2px;
+  }
+
+  .vlist-demo__container {
+    border-width: 2px;
+  }
+}
+
+[data-theme="high-contrast"] .vlist-demo__log {
+  border: 2px solid #ffffff;
+  background: #000000;
+  color: #ffffff;
+}
+
+[data-theme="high-contrast"] .vlist-demo__container {
+  border: 2px solid #ffffff;
+}

@@ -1,0 +1,485 @@
+<div data-page="component-context-menu" class="component-demo">
+  <h2>Context Menu</h2>
+  <p class="text-muted">Right-click context menus with submenus, icons, keyboard shortcuts, and dynamic content.</p>
+
+  <!-- Section 1: Interactive Context Menu -->
+  <section class="demo-section">
+    <h3>Interactive Context Menu</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Right-click in the area below to trigger a context menu with icons, shortcuts, and submenus.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="min-width">Min Width:</label>
+          <input type="number" id="min-width" class="form-control" value="160" min="100" max="400" step="10">
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="max-width">Max Width:</label>
+          <input type="number" id="max-width" class="form-control" value="320" min="200" max="600" step="10">
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="long-press-delay">Long Press (ms):</label>
+          <input type="number" id="long-press-delay" class="form-control" value="500" min="200" max="1500" step="50">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-apply-config">
+          <i class="fas fa-check me-1"></i> Apply
+        </button>
+      </div>
+      <figure class="context-menu-demo__target-area" id="context-basic" tabindex="0">
+        <i class="fas fa-mouse-pointer context-menu-demo__icon"></i>
+        <span>Right-click anywhere in this area</span>
+        <span class="context-menu-demo__hint">(or long-press on touch devices)</span>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Section 2: API Controls (for the basic menu above) -->
+  <section class="demo-section">
+    <h3>Programmatic API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control the context menu above programmatically using the ContextMenu API.</p>
+      <div class="context-menu-demo__api-controls">
+        <button type="button" class="btn btn-primary" id="btn-show">
+          <i class="fas fa-eye me-1"></i> show(x, y)
+        </button>
+        <button type="button" class="btn btn-secondary" id="btn-hide">
+          <i class="fas fa-eye-slash me-1"></i> hide()
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-add-item">
+          <i class="fas fa-plus me-1"></i> addItem()
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-remove-item">
+          <i class="fas fa-minus me-1"></i> removeItem()
+        </button>
+        <button type="button" class="btn btn-outline-warning" id="btn-toggle-disabled">
+          <i class="fas fa-ban me-1"></i> Toggle Disabled
+        </button>
+      </div>
+      <output id="api-status" class="demo-status mt-3">Status: Ready</output>
+    </div>
+  </section>
+
+  <!-- Section 3: Nested Submenus -->
+  <section class="demo-section">
+    <h3>Nested Submenus</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Context menus support nested submenus. Hover or use arrow keys to navigate.</p>
+      <figure class="context-menu-demo__target-area context-menu-demo__target-area--compact" id="context-submenu" tabindex="0">
+        <i class="fas fa-layer-group context-menu-demo__icon"></i>
+        <span>Right-click for submenu demo</span>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Section 4: File Explorer Context -->
+  <section class="demo-section">
+    <h3>File Explorer Context</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Attach context menus to list items. Each file gets a contextual menu.</p>
+      <ul class="list-group context-menu-demo__file-list" id="file-list" role="list">
+        <li class="list-group-item list-group-item-action" data-file="document.pdf" role="listitem">
+          <i class="fas fa-file-pdf context-menu-demo__icon--pdf" aria-hidden="true"></i>
+          <span>document.pdf</span>
+        </li>
+        <li class="list-group-item list-group-item-action" data-file="image.png" role="listitem">
+          <i class="fas fa-file-image context-menu-demo__icon--image" aria-hidden="true"></i>
+          <span>image.png</span>
+        </li>
+        <li class="list-group-item list-group-item-action" data-file="data.json" role="listitem">
+          <i class="fas fa-file-code context-menu-demo__icon--code" aria-hidden="true"></i>
+          <span>data.json</span>
+        </li>
+        <li class="list-group-item list-group-item-action" data-file="notes.txt" role="listitem">
+          <i class="fas fa-file-alt context-menu-demo__icon--text" aria-hidden="true"></i>
+          <span>notes.txt</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Section 5: Dynamic Menu Items -->
+  <section class="demo-section">
+    <h3>Dynamic Menu Items</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Menu items can be generated dynamically based on the target element.</p>
+      <table class="table table-hover context-menu-demo__table" id="context-table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-id="1" data-status="active">
+            <td>John Doe</td>
+            <td>john@example.com</td>
+            <td><span class="badge context-menu-demo__badge--active">Active</span></td>
+          </tr>
+          <tr data-id="2" data-status="pending">
+            <td>Jane Smith</td>
+            <td>jane@example.com</td>
+            <td><span class="badge context-menu-demo__badge--pending">Pending</span></td>
+          </tr>
+          <tr data-id="3" data-status="inactive">
+            <td>Bob Johnson</td>
+            <td>bob@example.com</td>
+            <td><span class="badge context-menu-demo__badge--inactive">Inactive</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Section 6: Keyboard Navigation -->
+  <section class="demo-section">
+    <h3>Keyboard Navigation</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Context menus support full keyboard navigation.</p>
+      <dl class="context-menu-demo__keyboard-hints">
+        <div class="context-menu-demo__keyboard-hint">
+          <dt><kbd>↑</kbd> <kbd>↓</kbd></dt>
+          <dd>Navigate items</dd>
+        </div>
+        <div class="context-menu-demo__keyboard-hint">
+          <dt><kbd>→</kbd></dt>
+          <dd>Open submenu</dd>
+        </div>
+        <div class="context-menu-demo__keyboard-hint">
+          <dt><kbd>←</kbd></dt>
+          <dd>Close submenu</dd>
+        </div>
+        <div class="context-menu-demo__keyboard-hint">
+          <dt><kbd>Enter</kbd> <kbd>Space</kbd></dt>
+          <dd>Select item</dd>
+        </div>
+        <div class="context-menu-demo__keyboard-hint">
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Close menu</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Events Log -->
+  <section class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="context-log" class="demo-log">Right-click on elements to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var attachments = {};
+  var propsChangedHandler = null;
+  var dynamicItemCounter = 0;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('context-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function syncInputsFromProps(props) {
+    var minWidthInput = document.getElementById('min-width');
+    var maxWidthInput = document.getElementById('max-width');
+    var longPressInput = document.getElementById('long-press-delay');
+
+    if (minWidthInput && props.minWidth != null) minWidthInput.value = props.minWidth;
+    if (maxWidthInput && props.maxWidth != null) maxWidthInput.value = props.maxWidth;
+    if (longPressInput && props.longPressDelay != null) longPressInput.value = props.longPressDelay;
+  }
+
+  function parseItemsFromProps(props) {
+    if (!props.items) return null;
+    try {
+      return typeof props.items === 'string' ? JSON.parse(props.items) : props.items;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Funky.Pages.register('component-context-menu', {
+    init: function(state) {
+      var props = getProps();
+      var ContextMenu = Funky.ContextMenu;
+
+      if (!ContextMenu) {
+        log('Error: Funky.ContextMenu not available');
+        return;
+      }
+
+      log('ContextMenu module initialized');
+      syncInputsFromProps(props);
+
+      var minWidthInput = document.getElementById('min-width');
+      var maxWidthInput = document.getElementById('max-width');
+      var longPressInput = document.getElementById('long-press-delay');
+      var apiStatus = document.getElementById('api-status');
+
+      // Default items for basic menu (can be overridden by props)
+      var defaultItems = [
+        { id: 'cut', label: 'Cut', icon: 'fa-scissors', shortcut: '\u2318X' },
+        { id: 'copy', label: 'Copy', icon: 'fa-copy', shortcut: '\u2318C' },
+        { id: 'paste', label: 'Paste', icon: 'fa-paste', shortcut: '\u2318V' },
+        { divider: true },
+        { id: 'select-all', label: 'Select All', icon: 'fa-check-double', shortcut: '\u2318A' },
+        { divider: true },
+        { id: 'preferences', label: 'Preferences', icon: 'fa-cog' }
+      ];
+
+      // =========================================================================
+      // Section 1: Interactive Context Menu
+      // =========================================================================
+
+      function createBasicMenu() {
+        if (attachments.basic) {
+          ContextMenu.destroy('#context-basic');
+        }
+
+        // Use items from props if valid, otherwise use defaults
+        var currentProps = getProps();
+        var itemsFromProps = parseItemsFromProps(currentProps);
+        var menuItems = itemsFromProps || defaultItems;
+
+        attachments.basic = ContextMenu.attach('#context-basic', {
+          minWidth: parseInt(minWidthInput.value, 10) || 160,
+          maxWidth: parseInt(maxWidthInput.value, 10) || 320,
+          longPressDelay: parseInt(longPressInput.value, 10) || 500,
+          items: menuItems,
+          onSelect: function(id, target, event) {
+            log('Basic: Selected "' + id + '"');
+            emit('event', { event: 'context-menu:select', payload: { context: 'basic', id: id } });
+          },
+          onShow: function(target, event) {
+            log('Basic: Menu opened');
+          },
+          onHide: function() {
+            log('Basic: Menu closed');
+          }
+        });
+
+        log('Basic menu attached: minWidth=' + minWidthInput.value + ', maxWidth=' + maxWidthInput.value + ', longPressDelay=' + longPressInput.value);
+      }
+
+      createBasicMenu();
+
+      document.getElementById('btn-apply-config').addEventListener('click', function() {
+        createBasicMenu();
+        emit('event', { event: 'context-menu:config', payload: {
+          minWidth: parseInt(minWidthInput.value, 10),
+          maxWidth: parseInt(maxWidthInput.value, 10),
+          longPressDelay: parseInt(longPressInput.value, 10)
+        }});
+      });
+
+      // =========================================================================
+      // Section 2: API Controls
+      // =========================================================================
+
+      document.getElementById('btn-show').addEventListener('click', function(e) {
+        // Get the target area element and position
+        var targetArea = document.getElementById('context-basic');
+        var targetRect = targetArea.getBoundingClientRect();
+
+        // Trigger the attached menu at the center of the target area
+        var x = targetRect.left + targetRect.width / 2;
+        var y = targetRect.top + targetRect.height / 2;
+
+        // Get items from the attachment's registry
+        if (attachments.basic && attachments.basic._getItems) {
+          var items = attachments.basic._getItems(targetArea, null);
+          var showOptions = Object.assign({}, attachments.basic.options, { items: items });
+          ContextMenu._showMenu(x, y, showOptions, targetArea, null);
+          apiStatus.textContent = 'Status: show() triggered menu at target area center';
+          log('API: show() called - opened menu at (' + Math.round(x) + ', ' + Math.round(y) + ')');
+        } else {
+          apiStatus.textContent = 'Status: No menu attached';
+        }
+      });
+
+      document.getElementById('btn-hide').addEventListener('click', function() {
+        ContextMenu.hide();
+        apiStatus.textContent = 'Status: hide() called';
+        log('API: hide() called');
+      });
+
+      document.getElementById('btn-add-item').addEventListener('click', function() {
+        if (attachments.basic) {
+          dynamicItemCounter++;
+          attachments.basic.addItem({
+            id: 'dynamic-' + dynamicItemCounter,
+            label: 'Dynamic Item #' + dynamicItemCounter,
+            icon: 'fa-star'
+          });
+          apiStatus.textContent = 'Status: Added "dynamic-' + dynamicItemCounter + '"';
+          log('API: addItem() - dynamic-' + dynamicItemCounter);
+        }
+      });
+
+      document.getElementById('btn-remove-item').addEventListener('click', function() {
+        if (attachments.basic && dynamicItemCounter > 0) {
+          attachments.basic.removeItem('dynamic-' + dynamicItemCounter);
+          apiStatus.textContent = 'Status: Removed "dynamic-' + dynamicItemCounter + '"';
+          log('API: removeItem() - dynamic-' + dynamicItemCounter);
+          dynamicItemCounter--;
+        } else {
+          apiStatus.textContent = 'Status: No dynamic items to remove';
+        }
+      });
+
+      document.getElementById('btn-toggle-disabled').addEventListener('click', function() {
+        if (attachments.basic) {
+          var item = attachments.basic.getItem('paste');
+          if (item) {
+            var newState = !item.disabled;
+            attachments.basic.setItemEnabled('paste', !newState);
+            apiStatus.textContent = 'Status: "paste" is now ' + (newState ? 'disabled' : 'enabled');
+            log('API: setItemEnabled("paste", ' + !newState + ')');
+          }
+        }
+      });
+
+      // =========================================================================
+      // Section 3: Nested Submenus
+      // =========================================================================
+
+      attachments.submenu = ContextMenu.attach('#context-submenu', {
+        items: [
+          { id: 'file', label: 'File', icon: 'fa-file', items: [
+            { id: 'new', label: 'New', icon: 'fa-plus', shortcut: '\u2318N' },
+            { id: 'open', label: 'Open', icon: 'fa-folder-open', shortcut: '\u2318O' },
+            { divider: true },
+            { id: 'save', label: 'Save', icon: 'fa-save', shortcut: '\u2318S' },
+            { id: 'save-as', label: 'Save As...', icon: 'fa-save' }
+          ]},
+          { id: 'edit', label: 'Edit', icon: 'fa-edit', items: [
+            { id: 'undo', label: 'Undo', icon: 'fa-undo', shortcut: '\u2318Z' },
+            { id: 'redo', label: 'Redo', icon: 'fa-redo', shortcut: '\u21e7\u2318Z' },
+            { divider: true },
+            { id: 'find', label: 'Find', icon: 'fa-search', shortcut: '\u2318F' }
+          ]},
+          { id: 'view', label: 'View', icon: 'fa-eye', items: [
+            { id: 'zoom-in', label: 'Zoom In', icon: 'fa-search-plus', shortcut: '\u2318+' },
+            { id: 'zoom-out', label: 'Zoom Out', icon: 'fa-search-minus', shortcut: '\u2318-' },
+            { id: 'zoom-reset', label: 'Reset Zoom', icon: 'fa-compress' },
+            { divider: true },
+            { id: 'fullscreen', label: 'Fullscreen', icon: 'fa-expand', shortcut: 'F11' }
+          ]},
+          { divider: true },
+          { id: 'help', label: 'Help', icon: 'fa-question-circle' },
+          { id: 'about', label: 'About', icon: 'fa-info-circle' }
+        ],
+        onSelect: function(id, target) {
+          log('Submenu: Selected "' + id + '"');
+          emit('event', { event: 'context-menu:select', payload: { context: 'submenu', id: id } });
+        }
+      });
+
+      log('Submenu demo attached');
+
+      // =========================================================================
+      // Section 4: File Explorer Context
+      // =========================================================================
+
+      attachments.files = ContextMenu.attach('#file-list .list-group-item', {
+        items: [
+          { id: 'open', label: 'Open', icon: 'fa-folder-open' },
+          { id: 'preview', label: 'Preview', icon: 'fa-eye' },
+          { divider: true },
+          { id: 'rename', label: 'Rename', icon: 'fa-edit', shortcut: 'F2' },
+          { id: 'duplicate', label: 'Duplicate', icon: 'fa-clone' },
+          { id: 'move', label: 'Move to...', icon: 'fa-folder' },
+          { divider: true },
+          { id: 'share', label: 'Share', icon: 'fa-share-alt' },
+          { id: 'download', label: 'Download', icon: 'fa-download' },
+          { divider: true },
+          { id: 'delete', label: 'Delete', icon: 'fa-trash', variant: 'danger', shortcut: '\u232b' }
+        ],
+        onSelect: function(id, target) {
+          var fileName = target.getAttribute('data-file');
+          log('File: ' + id + ' \u2192 ' + fileName);
+          emit('event', { event: 'context-menu:file', payload: { action: id, file: fileName } });
+        }
+      });
+
+      log('File explorer context attached');
+
+      // =========================================================================
+      // Section 5: Dynamic Menu Items
+      // =========================================================================
+
+      attachments.table = ContextMenu.attach('#context-table tbody tr', {
+        items: function(targetEl, event) {
+          var status = targetEl.getAttribute('data-status');
+          var userId = targetEl.getAttribute('data-id');
+          var items = [
+            { id: 'view', label: 'View Details', icon: 'fa-eye' },
+            { id: 'edit', label: 'Edit User', icon: 'fa-edit' },
+            { divider: true }
+          ];
+
+          // Dynamic items based on status
+          if (status === 'active') {
+            items.push({ id: 'deactivate', label: 'Deactivate', icon: 'fa-ban' });
+          } else if (status === 'inactive') {
+            items.push({ id: 'activate', label: 'Activate', icon: 'fa-check-circle' });
+          } else if (status === 'pending') {
+            items.push({ id: 'approve', label: 'Approve', icon: 'fa-check' });
+            items.push({ id: 'reject', label: 'Reject', icon: 'fa-times' });
+          }
+
+          items.push({ divider: true });
+          items.push({ id: 'delete', label: 'Delete User', icon: 'fa-trash', variant: 'danger' });
+
+          return items;
+        },
+        onSelect: function(id, target) {
+          var userId = target.getAttribute('data-id');
+          var status = target.getAttribute('data-status');
+          log('User #' + userId + ' (' + status + '): ' + id);
+          emit('event', { event: 'context-menu:user', payload: { action: id, userId: userId } });
+        }
+      });
+
+      log('Dynamic table context attached');
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+          createBasicMenu();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      // Clean up all attachments
+      Object.keys(attachments).forEach(function(key) {
+        var attachment = attachments[key];
+        if (attachment && attachment.destroy) {
+          attachment.destroy();
+        }
+      });
+      attachments = {};
+      logs = [];
+      dynamicItemCounter = 0;
+      return {};
+    }
+  });
+})();
+</script>

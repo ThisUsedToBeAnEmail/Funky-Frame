@@ -1,0 +1,752 @@
+<div data-page="component-animate" class="component-demo">
+  <h2>Animate</h2>
+  <p class="text-muted">Unified animation system with transform utilities, composition, and accessibility-first design.</p>
+
+  <!-- Accessibility Demo Section -->
+  <section class="demo-section" id="section-accessibility" aria-labelledby="a11y-heading">
+    <h3 id="a11y-heading">Accessibility</h3>
+    <p class="text-muted small">Animation respects user preferences for reduced motion.</p>
+    <div class="demo-area">
+      <div class="animate-demo__a11y">
+        <div class="animate-demo__a11y-info">
+          <div class="animate-demo__a11y-item">
+            <span class="animate-demo__a11y-label">Prefers Reduced Motion:</span>
+            <span class="animate-demo__a11y-value" id="a11y-reduced-motion">checking...</span>
+          </div>
+          <div class="animate-demo__a11y-item">
+            <span class="animate-demo__a11y-label">Animations Toggle:</span>
+            <span class="animate-demo__a11y-value" id="a11y-toggle">on</span>
+          </div>
+          <div class="animate-demo__a11y-item">
+            <span class="animate-demo__a11y-label">Speed Multiplier:</span>
+            <span class="animate-demo__a11y-value" id="a11y-speed">1.0x</span>
+          </div>
+        </div>
+        <div class="animate-demo__a11y-controls">
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-toggle-animations">
+            Toggle Animations
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-speed-slower">
+            Slower (0.5x)
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-speed-normal">
+            Normal (1x)
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-speed-faster">
+            Faster (2x)
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Transform Utilities Section -->
+  <section class="demo-section" id="section-transforms" aria-labelledby="transforms-heading">
+    <h3 id="transforms-heading">Transform Utilities</h3>
+    <p class="text-muted small">Built-in animation methods: fade, slide, scale, shake.</p>
+    <div class="demo-area">
+      <div class="animate-demo__transforms">
+        <div class="animate-demo__transform-grid">
+          <div class="animate-demo__transform-item">
+            <div class="animate-demo__transform-target fade" id="fade-target">
+              <i class="fas fa-sun" aria-hidden="true"></i>
+            </div>
+            <div class="animate-demo__transform-buttons">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-method="fade" data-direction="in">Fade In</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-method="fade" data-direction="out">Fade Out</button>
+            </div>
+          </div>
+          <div class="animate-demo__transform-item">
+            <div class="animate-demo__transform-target fade" id="slide-target">
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </div>
+            <div class="animate-demo__transform-buttons">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-method="slide" data-direction="in">Slide In</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-method="slide" data-direction="out">Slide Out</button>
+            </div>
+          </div>
+          <div class="animate-demo__transform-item">
+            <div class="animate-demo__transform-target fade" id="scale-target">
+              <i class="fas fa-expand" aria-hidden="true"></i>
+            </div>
+            <div class="animate-demo__transform-buttons">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-method="scale" data-direction="in">Scale In</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-method="scale" data-direction="out">Scale Out</button>
+            </div>
+          </div>
+          <div class="animate-demo__transform-item">
+            <div class="animate-demo__transform-target fade" id="shake-target">
+              <i class="fas fa-bell" aria-hidden="true"></i>
+            </div>
+            <div class="animate-demo__transform-buttons">
+              <button type="button" class="btn btn-sm btn-outline-warning" data-method="shake">Shake</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Composition Section -->
+  <section class="demo-section" id="section-composition" aria-labelledby="composition-heading">
+    <h3 id="composition-heading">Composition</h3>
+    <p class="text-muted small">Sequence and parallel animation composition.</p>
+    <div class="demo-area">
+      <div class="animate-demo__composition">
+        <div class="animate-demo__composition-targets">
+          <div class="animate-demo__composition-target fade" id="seq-target-1">
+            <span>Step 1</span>
+          </div>
+          <div class="animate-demo__composition-target fade" id="seq-target-2">
+            <span>Step 2</span>
+          </div>
+          <div class="animate-demo__composition-target fade" id="seq-target-3">
+            <span>Step 3</span>
+          </div>
+        </div>
+        <div class="animate-demo__composition-buttons">
+          <button type="button" class="btn btn-outline-primary" id="btn-play-sequence">
+            <i class="fas fa-list-ol me-1" aria-hidden="true"></i>Sequence
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="btn-play-parallel">
+            <i class="fas fa-arrows-alt-h me-1" aria-hidden="true"></i>Parallel
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stagger Animation Section -->
+  <section class="demo-section" id="section-stagger" aria-labelledby="stagger-heading">
+    <h3 id="stagger-heading">Stagger Animation</h3>
+    <p class="text-muted small">Animate multiple elements with delay between each. Uses prop: <code>stagger</code>.</p>
+    <div class="demo-area">
+      <div class="animate-demo__stagger">
+        <div class="animate-demo__stagger-items" id="stagger-container">
+          <div class="animate-demo__stagger-item fade">1</div>
+          <div class="animate-demo__stagger-item fade">2</div>
+          <div class="animate-demo__stagger-item fade">3</div>
+          <div class="animate-demo__stagger-item fade">4</div>
+          <div class="animate-demo__stagger-item fade">5</div>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-play-stagger">
+          <i class="fas fa-layer-group me-1" aria-hidden="true"></i>Play Stagger
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll Trigger Section -->
+  <section class="demo-section" id="section-scroll" aria-labelledby="scroll-heading">
+    <h3 id="scroll-heading">Scroll Animations</h3>
+    <p class="text-muted small">Elements animate when they enter the viewport.</p>
+    <div class="demo-area">
+      <div class="animate-demo__scroll-info">
+        <p class="text-muted">Scroll-triggered animations use <code>data-animate-trigger="in-view"</code> attribute. The Animate module checks for elements entering the viewport and applies animation classes automatically.</p>
+        <div class="animate-demo__scroll-example">
+          <code>&lt;div data-animate-trigger="in-view" data-animate="fade-in-up"&gt;...&lt;/div&gt;</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo Section - Always visible, configured by props -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to configure the animation type and settings.</p>
+    <div class="demo-area">
+      <div class="animate-demo__interactive">
+        <div class="animate-demo__config">
+          <div class="animate-demo__config-item">
+            <span class="animate-demo__config-label">Type:</span>
+            <span class="animate-demo__config-value" id="config-type">fade</span>
+          </div>
+          <div class="animate-demo__config-item">
+            <span class="animate-demo__config-label">Direction:</span>
+            <span class="animate-demo__config-value" id="config-direction">in</span>
+          </div>
+          <div class="animate-demo__config-item" id="config-from-wrapper">
+            <span class="animate-demo__config-label">From:</span>
+            <span class="animate-demo__config-value" id="config-from">right</span>
+          </div>
+          <div class="animate-demo__config-item">
+            <span class="animate-demo__config-label">Duration:</span>
+            <span class="animate-demo__config-value" id="config-duration">300ms</span>
+          </div>
+          <div class="animate-demo__config-item">
+            <span class="animate-demo__config-label">Easing:</span>
+            <span class="animate-demo__config-value" id="config-easing">ease-out</span>
+          </div>
+        </div>
+        <div class="animate-demo__target-wrapper">
+          <div class="animate-demo__target fade" id="main-target">
+            <i class="fas fa-star fa-2x" aria-hidden="true"></i>
+          </div>
+          <span class="animate-demo__label">Target Element</span>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-play-animation">
+          <i class="fas fa-play me-1" aria-hidden="true"></i>Play Animation
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test the Funky.Animate API methods.</p>
+    <div class="demo-area">
+      <div class="animate-demo__api-grid">
+        <button type="button" class="btn btn-outline-primary" id="btn-get-duration">
+          <i class="fas fa-clock me-1" aria-hidden="true"></i>getDuration()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-cancel-animation">
+          <i class="fas fa-stop me-1" aria-hidden="true"></i>cancel()
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="animate-demo__state">
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">Demo:</span>
+          <span class="animate-demo__state-value" id="state-demo">accessibility</span>
+        </div>
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">Animation:</span>
+          <span class="animate-demo__state-value" id="state-animation">fade</span>
+        </div>
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">Direction:</span>
+          <span class="animate-demo__state-value" id="state-direction">in</span>
+        </div>
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">From:</span>
+          <span class="animate-demo__state-value" id="state-from">right</span>
+        </div>
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">Duration:</span>
+          <span class="animate-demo__state-value" id="state-duration">300ms</span>
+        </div>
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">Easing:</span>
+          <span class="animate-demo__state-value" id="state-easing">ease-out</span>
+        </div>
+        <div class="animate-demo__state-item">
+          <span class="animate-demo__state-label">Stagger:</span>
+          <span class="animate-demo__state-value" id="state-stagger">100ms</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var currentAnimation = null;
+  var staggerControl = null;
+  var sequenceControl = null;
+  var parallelControl = null;
+
+  // Section IDs mapped to demo prop values
+  var DEMO_SECTIONS = {
+    'accessibility': 'section-accessibility',
+    'transforms': 'section-transforms',
+    'composition': 'section-composition',
+    'stagger': 'section-stagger',
+    'scroll': 'section-scroll'
+  };
+
+  /**
+   * Show/hide sections based on demo prop
+   */
+  function updateVisibleSections(demo) {
+    Object.keys(DEMO_SECTIONS).forEach(function(key) {
+      var section = document.getElementById(DEMO_SECTIONS[key]);
+      if (section) {
+        section.style.display = (key === demo) ? '' : 'none';
+      }
+    });
+  }
+
+  /**
+   * Update interactive config display from props
+   */
+  function updateConfigDisplay(props) {
+    var typeEl = document.getElementById('config-type');
+    var dirEl = document.getElementById('config-direction');
+    var fromEl = document.getElementById('config-from');
+    var fromWrapper = document.getElementById('config-from-wrapper');
+    var durEl = document.getElementById('config-duration');
+    var easeEl = document.getElementById('config-easing');
+
+    var animationType = props.animationType || 'fade';
+
+    if (typeEl) typeEl.textContent = animationType;
+    if (dirEl) dirEl.textContent = props.direction || 'in';
+    if (fromEl) fromEl.textContent = props.from || 'right';
+    if (durEl) durEl.textContent = (props.duration || 300) + 'ms';
+    if (easeEl) easeEl.textContent = props.easing || 'ease-out';
+
+    // Only show "from" for slide animations
+    if (fromWrapper) {
+      fromWrapper.style.display = (animationType === 'slide') ? '' : 'none';
+    }
+
+    // Update visible sections based on demo prop
+    updateVisibleSections(props.demo || 'accessibility');
+  }
+
+  /**
+   * Update state display from props
+   */
+  function updateStateDisplay(props) {
+    var demoEl = document.getElementById('state-demo');
+    var animEl = document.getElementById('state-animation');
+    var dirEl = document.getElementById('state-direction');
+    var fromEl = document.getElementById('state-from');
+    var durEl = document.getElementById('state-duration');
+    var easeEl = document.getElementById('state-easing');
+    var staggerEl = document.getElementById('state-stagger');
+
+    if (demoEl) demoEl.textContent = props.demo || 'accessibility';
+    if (animEl) animEl.textContent = props.animationType || 'fade';
+    if (dirEl) dirEl.textContent = props.direction || 'in';
+    if (fromEl) fromEl.textContent = props.from || 'right';
+    if (durEl) durEl.textContent = (props.duration || 300) + 'ms';
+    if (easeEl) easeEl.textContent = props.easing || 'ease-out';
+    if (staggerEl) staggerEl.textContent = (props.stagger || 100) + 'ms';
+
+    // Update config display in interactive section
+    updateConfigDisplay(props);
+  }
+
+  /**
+   * Update accessibility info display
+   */
+  function updateA11yDisplay() {
+    var reducedEl = document.getElementById('a11y-reduced-motion');
+    var toggleEl = document.getElementById('a11y-toggle');
+    var speedEl = document.getElementById('a11y-speed');
+
+    if (reducedEl) {
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      reducedEl.textContent = prefersReduced ? 'yes' : 'no';
+    }
+
+    if (toggleEl) {
+      var animationsOff = document.documentElement.getAttribute('data-animations') === 'off';
+      toggleEl.textContent = animationsOff ? 'off' : 'on';
+    }
+
+    if (speedEl && Funky.Animate) {
+      speedEl.textContent = Funky.Animate.speedMultiplier + 'x';
+    }
+  }
+
+  /**
+   * Play animation based on current props
+   */
+  function playAnimation(targetId) {
+    if (!Funky.Animate) return;
+
+    var props = getProps();
+    var target = document.getElementById(targetId || 'main-target');
+    var animationType = props.animationType || 'fade';
+    var direction = props.direction || 'in';
+    var duration = props.duration || 300;
+    var from = props.from || 'right';
+    var easing = props.easing || 'ease-out';
+
+    // Set initial state based on animation direction
+    if (direction === 'in') {
+      target.style.opacity = '0';
+    } else {
+      target.style.opacity = '1';
+    }
+    target.style.transform = '';
+
+    var options = {
+      duration: duration,
+      easing: Funky.Animate.EASING[easing.toUpperCase().replace(/-/g, '_')] || easing,
+      onStart: function() {
+        emit('event', { event: 'funky:animate:start', payload: { type: animationType, direction: direction } });
+      },
+      onEnd: function() {
+        // Set final opacity based on animation direction
+        target.style.opacity = (direction === 'in' || animationType === 'shake') ? '1' : '0';
+        target.style.transform = '';
+        emit('event', { event: 'funky:animate:end', payload: { type: animationType, direction: direction } });
+      }
+    };
+
+    if (animationType === 'fade') {
+      currentAnimation = Funky.Animate.fade(target, direction, options);
+    } else if (animationType === 'slide') {
+      options.from = from;
+      currentAnimation = Funky.Animate.slide(target, direction, options);
+    } else if (animationType === 'scale') {
+      currentAnimation = Funky.Animate.scale(target, direction, options);
+    } else if (animationType === 'shake') {
+      currentAnimation = Funky.Animate.shake(target, options);
+    }
+  }
+
+  /**
+   * Set up transform utility buttons
+   */
+  function setupTransformButtons() {
+    var props = getProps();
+    var duration = props.duration || 300;
+
+    document.querySelectorAll('[data-method]').forEach(function(btn) {
+      btn.onclick = function() {
+        if (!Funky.Animate) return;
+
+        var method = btn.dataset.method;
+        var direction = btn.dataset.direction;
+        var targetId = method + '-target';
+        var target = document.getElementById(targetId);
+
+        // Set initial state based on animation direction
+        if (direction === 'in') {
+          target.style.opacity = '0';
+        } else if (direction === 'out') {
+          target.style.opacity = '1';
+        }
+        target.style.transform = '';
+
+        var options = {
+          duration: duration,
+          onEnd: function() {
+            // Set final opacity based on animation direction
+            target.style.opacity = (direction === 'in' || !direction) ? '1' : '0';
+            target.style.transform = '';
+            emit('event', { event: 'funky:animate:end', payload: { method: method, direction: direction } });
+          }
+        };
+
+        if (method === 'fade') {
+          Funky.Animate.fade(target, direction, options);
+        } else if (method === 'slide') {
+          options.from = props.from || 'right';
+          Funky.Animate.slide(target, direction, options);
+        } else if (method === 'scale') {
+          Funky.Animate.scale(target, direction, options);
+        } else if (method === 'shake') {
+          Funky.Animate.shake(target, options);
+        }
+
+        emit('event', { event: 'funky:animate:start', payload: { method: method, direction: direction } });
+      };
+    });
+  }
+
+  /**
+   * Set up stagger button
+   */
+  function setupStaggerButton() {
+    var btn = document.getElementById('btn-play-stagger');
+    if (!btn) return;
+
+    btn.onclick = function() {
+      if (!Funky.Animate) return;
+
+      var props = getProps();
+      var items = document.querySelectorAll('.animate-demo__stagger-item');
+
+      // Reset items
+      items.forEach(function(item) {
+        item.classList.remove('fade-in-up');
+        item.style.opacity = '0';
+      });
+
+      // Small delay to ensure reset is applied
+      setTimeout(function() {
+        staggerControl = Funky.Animate.stagger(items, {
+          class: 'fade-in-up',
+          duration: props.duration || 300,
+          stagger: props.stagger || 100,
+          onComplete: function() {
+            // Ensure all items are visible after stagger completes
+            items.forEach(function(item) {
+              item.style.opacity = '1';
+            });
+            emit('event', { event: 'funky:animate:stagger:complete', payload: { count: items.length } });
+          }
+        });
+
+        emit('event', { event: 'funky:animate:stagger:start', payload: { count: items.length, stagger: props.stagger } });
+      }, 50);
+    };
+  }
+
+  /**
+   * Set up composition buttons
+   */
+  function setupCompositionButtons() {
+    var props = getProps();
+
+    // Sequence button
+    var seqBtn = document.getElementById('btn-play-sequence');
+    if (seqBtn) {
+      seqBtn.onclick = function() {
+        if (!Funky.Animate) return;
+
+        var currentProps = getProps();
+
+        // Reset targets
+        ['seq-target-1', 'seq-target-2', 'seq-target-3'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) {
+            el.classList.remove('fade-in', 'scale-in', 'slide-in-right');
+            el.style.opacity = '0';
+          }
+        });
+
+        setTimeout(function() {
+          sequenceControl = Funky.Animate.sequence([
+            { element: '#seq-target-1', options: { class: 'fade-in', duration: currentProps.duration || 300, onEnd: function() { this.style.opacity = '1'; } } },
+            { element: '#seq-target-2', options: { class: 'scale-in', duration: currentProps.duration || 300, onEnd: function() { this.style.opacity = '1'; } } },
+            { element: '#seq-target-3', options: { class: 'slide-in-right', duration: currentProps.duration || 300, onEnd: function() { this.style.opacity = '1'; } } }
+          ]).start();
+
+          emit('event', { event: 'funky:animate:sequence:start', payload: { steps: 3 } });
+        }, 50);
+      };
+    }
+
+    // Parallel button
+    var parBtn = document.getElementById('btn-play-parallel');
+    if (parBtn) {
+      parBtn.onclick = function() {
+        if (!Funky.Animate) return;
+
+        var currentProps = getProps();
+
+        // Reset targets
+        ['seq-target-1', 'seq-target-2', 'seq-target-3'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) {
+            el.classList.remove('fade-in', 'scale-in', 'slide-in-right');
+            el.style.opacity = '0';
+          }
+        });
+
+        setTimeout(function() {
+          parallelControl = Funky.Animate.parallel([
+            { element: '#seq-target-1', options: { class: 'fade-in', duration: currentProps.duration || 300, onEnd: function() { this.style.opacity = '1'; } } },
+            { element: '#seq-target-2', options: { class: 'scale-in', duration: currentProps.duration || 300, onEnd: function() { this.style.opacity = '1'; } } },
+            { element: '#seq-target-3', options: { class: 'slide-in-right', duration: currentProps.duration || 300, onEnd: function() { this.style.opacity = '1'; } } }
+          ]).start();
+
+          emit('event', { event: 'funky:animate:parallel:start', payload: { count: 3 } });
+        }, 50);
+      };
+    }
+  }
+
+  /**
+   * Set up accessibility controls
+   */
+  function setupA11yControls() {
+    // Toggle animations
+    var toggleBtn = document.getElementById('btn-toggle-animations');
+    if (toggleBtn) {
+      toggleBtn.onclick = function() {
+        var current = document.documentElement.getAttribute('data-animations');
+        document.documentElement.setAttribute('data-animations', current === 'off' ? 'on' : 'off');
+        updateA11yDisplay();
+        emit('event', { event: 'funky:animate:toggle', payload: { enabled: current === 'off' } });
+      };
+    }
+
+    // Speed controls
+    var slowerBtn = document.getElementById('btn-speed-slower');
+    var normalBtn = document.getElementById('btn-speed-normal');
+    var fasterBtn = document.getElementById('btn-speed-faster');
+
+    if (slowerBtn && Funky.Animate) {
+      slowerBtn.onclick = function() {
+        Funky.Animate.speedMultiplier = 0.5;
+        updateA11yDisplay();
+        emit('event', { event: 'funky:animate:speed', payload: { multiplier: 0.5 } });
+      };
+    }
+
+    if (normalBtn && Funky.Animate) {
+      normalBtn.onclick = function() {
+        Funky.Animate.speedMultiplier = 1.0;
+        updateA11yDisplay();
+        emit('event', { event: 'funky:animate:speed', payload: { multiplier: 1.0 } });
+      };
+    }
+
+    if (fasterBtn && Funky.Animate) {
+      fasterBtn.onclick = function() {
+        Funky.Animate.speedMultiplier = 2.0;
+        updateA11yDisplay();
+        emit('event', { event: 'funky:animate:speed', payload: { multiplier: 2.0 } });
+      };
+    }
+  }
+
+  /**
+   * Set up API method buttons
+   */
+  function setupApiButtons() {
+    // Play button
+    var playBtn = document.getElementById('btn-play-animation');
+    if (playBtn) {
+      playBtn.onclick = function() {
+        playAnimation('main-target');
+      };
+    }
+
+    // Get duration button
+    var durationBtn = document.getElementById('btn-get-duration');
+    if (durationBtn) {
+      durationBtn.onclick = function() {
+        if (!Funky.Animate) return;
+
+        var props = getProps();
+        var target = document.getElementById('main-target');
+        var duration = Funky.Animate.getDuration(target, props.duration || 300);
+
+        if (Funky.Toast) {
+          Funky.Toast.info('Computed duration: ' + duration + 'ms');
+        }
+        emit('event', { event: 'funky:animate:getDuration', payload: { duration: duration } });
+      };
+    }
+
+    // Cancel button
+    var cancelBtn = document.getElementById('btn-cancel-animation');
+    if (cancelBtn) {
+      cancelBtn.onclick = function() {
+        var cancelled = false;
+
+        if (currentAnimation && currentAnimation.cancel) {
+          currentAnimation.cancel();
+          cancelled = true;
+        }
+        if (staggerControl && staggerControl.cancel) {
+          staggerControl.cancel();
+          cancelled = true;
+        }
+        if (sequenceControl && sequenceControl.cancel) {
+          sequenceControl.cancel();
+          cancelled = true;
+        }
+        if (parallelControl && parallelControl.cancel) {
+          parallelControl.cancel();
+          cancelled = true;
+        }
+
+        if (Funky.Toast) {
+          Funky.Toast.info(cancelled ? 'Animation cancelled' : 'No animation running');
+        }
+        emit('event', { event: 'funky:animate:cancel', payload: { cancelled: cancelled } });
+      };
+    }
+  }
+
+  /**
+   * Reset stagger items visibility
+   */
+  function resetStaggerItems() {
+    var items = document.querySelectorAll('.animate-demo__stagger-item');
+    items.forEach(function(item) {
+      item.style.opacity = '1';
+    });
+  }
+
+  /**
+   * Reset composition targets
+   */
+  function resetCompositionTargets() {
+    ['seq-target-1', 'seq-target-2', 'seq-target-3'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.style.opacity = '1';
+      }
+    });
+  }
+
+  Funky.Pages.register('component-animate', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display and visible sections
+      updateStateDisplay(props);
+      updateA11yDisplay();
+
+      // Reset items to visible initially
+      resetStaggerItems();
+      resetCompositionTargets();
+
+      // Set up all button handlers
+      setupTransformButtons();
+      setupStaggerButton();
+      setupCompositionButtons();
+      setupA11yControls();
+      setupApiButtons();
+
+      // Listen for reduced motion changes
+      var mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      mediaQuery.addEventListener('change', updateA11yDisplay);
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function() {
+          var newProps = getProps();
+          updateStateDisplay(newProps);
+          setupTransformButtons();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Cancel any running animations
+      if (currentAnimation && currentAnimation.cancel) {
+        currentAnimation.cancel();
+      }
+      if (staggerControl && staggerControl.cancel) {
+        staggerControl.cancel();
+      }
+      if (sequenceControl && sequenceControl.cancel) {
+        sequenceControl.cancel();
+      }
+      if (parallelControl && parallelControl.cancel) {
+        parallelControl.cancel();
+      }
+
+      currentAnimation = null;
+      staggerControl = null;
+      sequenceControl = null;
+      parallelControl = null;
+
+      return {};
+    }
+  });
+})();
+</script>

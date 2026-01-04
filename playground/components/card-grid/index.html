@@ -1,0 +1,927 @@
+<div data-page="component-card-grid" class="component-demo">
+  <h2>CardGrid</h2>
+  <p class="text-muted">Responsive grid of data cards with search, sort, selection, and virtualization.</p>
+
+  <!-- Interactive Demo Section -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to configure grid options. Cards are generated automatically.</p>
+    <div class="demo-area">
+      <div id="card-grid-container" class="card-grid-demo__container"></div>
+    </div>
+  </section>
+
+  <!-- Search, Sort & View Toggle Section -->
+  <section class="demo-section" aria-labelledby="toolbar-heading">
+    <h3 id="toolbar-heading">Search, Sort &amp; View Toggle</h3>
+    <p class="text-muted small">Enable via props panel. Uses ActionBar integration - search filters cards, sort reorders them, view toggle switches layout.</p>
+    <div class="demo-area">
+      <!-- ActionBar with CardGrid integration -->
+      <div class="action-bar card-grid-demo__action-bar" role="toolbar" aria-label="Card grid actions" data-card-grid-id="card-grid-container" id="card-grid-action-bar">
+        <!-- Search -->
+        <div class="action-bar__group action-bar__group--search" id="toolbar-search-group">
+          <label class="action-bar__label" for="input-search">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <span class="visually-hidden">Search</span>
+          </label>
+          <input type="text" id="input-search" class="form-control form-control-sm" data-action="search" placeholder="Search cards..." aria-label="Search cards">
+        </div>
+
+        <!-- Sort -->
+        <div class="action-bar__group action-bar__group--sort" id="toolbar-sort-group">
+          <label class="action-bar__label" for="select-sort">Sort:</label>
+          <select id="select-sort" data-action="sort" data-combobox data-dropdown-fit-content="true" data-combobox-searchable="false" data-combobox-clearable="false" data-combobox-size="sm">
+            <option value="">None</option>
+            <option value="title">Title</option>
+            <option value="category">Category</option>
+            <option value="createdAt">Date Created</option>
+          </select>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-action="sort-direction" title="Toggle sort direction" aria-label="Sort ascending">
+            <i class="fas fa-arrow-up-short-wide" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="action-bar__group action-bar__group--view" id="toolbar-view-group">
+          <span class="action-bar__label">View:</span>
+          <div class="btn-group" role="group" aria-label="View toggle">
+            <button type="button" class="btn btn-sm btn-outline-primary active" data-action="view" data-view="grid" title="Grid view">
+              <i class="fas fa-th" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" data-view="list" title="List view">
+              <i class="fas fa-list" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Results count -->
+        <div class="action-bar__group action-bar__group--count">
+          <span class="action-bar__count" data-role="count">12 items</span>
+        </div>
+      </div>
+
+      <!-- Status indicators -->
+      <div class="card-grid-demo__toolbar-status" id="toolbar-status">
+        <span class="card-grid-demo__status-item" id="status-searchable">
+          <i class="fas fa-circle text-muted" aria-hidden="true"></i> Searchable: <strong>Off</strong>
+        </span>
+        <span class="card-grid-demo__status-item" id="status-sortable">
+          <i class="fas fa-circle text-muted" aria-hidden="true"></i> Sortable: <strong>Off</strong>
+        </span>
+        <span class="card-grid-demo__status-item" id="status-view-toggle">
+          <i class="fas fa-circle text-muted" aria-hidden="true"></i> View Toggle: <strong>Off</strong>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Layout Options Section -->
+  <section class="demo-section" aria-labelledby="layout-heading">
+    <h3 id="layout-heading">Layout Options</h3>
+    <p class="text-muted small">Switch between grid and list views, adjust columns and gap.</p>
+    <div class="demo-area">
+      <div class="card-grid-demo__layout-controls">
+        <div class="card-grid-demo__control-group">
+          <label class="card-grid-demo__label">View:</label>
+          <div class="btn-group" role="group" aria-label="View toggle">
+            <button type="button" class="btn btn-outline-primary btn-sm active" id="btn-view-grid">
+              <i class="fas fa-th me-1" aria-hidden="true"></i>Grid
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-view-list">
+              <i class="fas fa-list me-1" aria-hidden="true"></i>List
+            </button>
+          </div>
+        </div>
+        <div class="card-grid-demo__control-group">
+          <label class="card-grid-demo__label">Gap:</label>
+          <select id="select-gap" class="form-select form-select-sm card-grid-demo__select">
+            <option value="xs">Extra Small</option>
+            <option value="sm">Small</option>
+            <option value="md" selected>Medium</option>
+            <option value="lg">Large</option>
+            <option value="xl">Extra Large</option>
+          </select>
+        </div>
+        <div class="card-grid-demo__control-group">
+          <label class="card-grid-demo__label">Columns:</label>
+          <select id="select-columns" class="form-select form-select-sm card-grid-demo__select">
+            <option value="auto" selected>Auto</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test CardGrid API methods for data manipulation and selection.</p>
+    <div class="demo-area">
+      <div class="card-grid-demo__api-buttons">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-item">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i>addItems()
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm" id="btn-remove-item">
+          <i class="fas fa-minus me-1" aria-hidden="true"></i>removeItem()
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-update-item">
+          <i class="fas fa-edit me-1" aria-hidden="true"></i>updateItem()
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm" id="btn-select-all">
+          <i class="fas fa-check-double me-1" aria-hidden="true"></i>selectAll()
+        </button>
+        <button type="button" class="btn btn-outline-warning btn-sm" id="btn-clear-selection">
+          <i class="fas fa-times me-1" aria-hidden="true"></i>clearSelection()
+        </button>
+        <button type="button" class="btn btn-outline-success btn-sm" id="btn-get-selected">
+          <i class="fas fa-list-check me-1" aria-hidden="true"></i>getSelected()
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-scroll-to">
+          <i class="fas fa-arrow-down me-1" aria-hidden="true"></i>scrollToItem()
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-refresh">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i>Refresh
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selection Mode Section -->
+  <section class="demo-section" aria-labelledby="selection-heading">
+    <h3 id="selection-heading">Selection Mode</h3>
+    <p class="text-muted small">Test different selection modes. Click cards to select them.</p>
+    <div class="demo-area">
+      <div class="card-grid-demo__selection-controls">
+        <div class="btn-group" role="group" aria-label="Selection mode">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-select-none">
+            None
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-select-single">
+            Single
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm active" id="btn-select-multi">
+            Multi
+          </button>
+        </div>
+        <span class="card-grid-demo__selection-hint">
+          <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
+          Multi: Shift+click for range, Ctrl/Cmd+A to select all
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Virtualization Section -->
+  <section class="demo-section" aria-labelledby="virtualization-heading">
+    <h3 id="virtualization-heading">Virtualization</h3>
+    <p class="text-muted small">Enable virtualization for large datasets. Only visible cards are rendered.</p>
+    <div class="demo-area">
+      <div class="card-grid-demo__virtualize-controls">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="check-virtualize">
+          <label class="form-check-label" for="check-virtualize">Enable Virtualization</label>
+        </div>
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-load-large">
+          <i class="fas fa-database me-1" aria-hidden="true"></i>Load 500 Items
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-load-small">
+          <i class="fas fa-compress me-1" aria-hidden="true"></i>Load 12 Items
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display Section -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="card-grid-demo__state">
+        <div class="card-grid-demo__state-item">
+          <span class="card-grid-demo__state-label">Items:</span>
+          <span class="card-grid-demo__state-value" id="state-items">12</span>
+        </div>
+        <div class="card-grid-demo__state-item">
+          <span class="card-grid-demo__state-label">View:</span>
+          <span class="card-grid-demo__state-value" id="state-view">grid</span>
+        </div>
+        <div class="card-grid-demo__state-item">
+          <span class="card-grid-demo__state-label">Columns:</span>
+          <span class="card-grid-demo__state-value" id="state-columns">auto</span>
+        </div>
+        <div class="card-grid-demo__state-item">
+          <span class="card-grid-demo__state-label">Gap:</span>
+          <span class="card-grid-demo__state-value" id="state-gap">md</span>
+        </div>
+        <div class="card-grid-demo__state-item">
+          <span class="card-grid-demo__state-label">Selected:</span>
+          <span class="card-grid-demo__state-value" id="state-selected">0</span>
+        </div>
+        <div class="card-grid-demo__state-item">
+          <span class="card-grid-demo__state-label">Virtualized:</span>
+          <span class="card-grid-demo__state-value" id="state-virtualized">No</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="events-heading">
+    <h3 id="events-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre class="card-grid-demo__log" id="event-log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var gridInstance = null;
+  var propsChangedHandler = null;
+  var logs = [];
+  var itemIdCounter = 100;
+
+  /**
+   * Generate sample card data
+   */
+  function generateItems(count) {
+    var items = [];
+    var categories = ['Technology', 'Design', 'Business', 'Marketing', 'Development'];
+    var colors = ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0'];
+
+    for (var i = 1; i <= count; i++) {
+      items.push({
+        id: i,
+        title: 'Card ' + i,
+        description: 'This is a sample card with description text for item number ' + i + '.',
+        category: categories[(i - 1) % categories.length],
+        color: colors[(i - 1) % colors.length],
+        createdAt: new Date(Date.now() - (i * 86400000)).toISOString()
+      });
+    }
+    return items;
+  }
+
+  /**
+   * Custom card renderer
+   */
+  function renderCard(item, view) {
+    var D = Funky.Dom;
+    var content = D.div().classAdd('funky-card-grid__card-content');
+
+    if (view === 'list') {
+      // List view: horizontal layout with color indicator on left
+      content.classAdd('card-grid-demo__card-content--list');
+
+      // Color indicator (vertical bar on left)
+      var colorIndicator = D.div()
+        .classAdd('card-grid-demo__card-indicator')
+        .style({ backgroundColor: item.color || '#4361ee' });
+      content.append(colorIndicator);
+
+      // Text content wrapper
+      var textWrapper = D.div().classAdd('card-grid-demo__card-text');
+
+      // Title and badge on same row
+      var titleRow = D.div().classAdd('card-grid-demo__card-title-row');
+      titleRow.append(
+        D.div()
+          .classAdd('funky-card-grid__card-title')
+          .text(item.title)
+      );
+      titleRow.append(
+        D.span()
+          .classAdd('card-grid-demo__card-badge')
+          .text(item.category)
+      );
+      textWrapper.append(titleRow);
+
+      // Description
+      textWrapper.append(
+        D.div()
+          .classAdd('funky-card-grid__card-description')
+          .text(item.description)
+      );
+
+      content.append(textWrapper);
+    } else {
+      // Grid view: vertical card layout
+      // Color bar at top
+      var colorBar = D.div()
+        .classAdd('card-grid-demo__card-color')
+        .style({ backgroundColor: item.color || '#4361ee' });
+      content.append(colorBar);
+
+      // Title
+      content.append(
+        D.div()
+          .classAdd('funky-card-grid__card-title')
+          .text(item.title)
+      );
+
+      // Description
+      content.append(
+        D.div()
+          .classAdd('funky-card-grid__card-description')
+          .text(item.description)
+      );
+
+      // Category badge
+      content.append(
+        D.span()
+          .classAdd('card-grid-demo__card-badge')
+          .text(item.category)
+      );
+    }
+
+    return content;
+  }
+
+  /**
+   * Log an event
+   */
+  function logEvent(eventName, detail) {
+    var time = new Date().toLocaleTimeString();
+    var message = time + ' - ' + eventName;
+    if (detail) {
+      message += ': ' + (typeof detail === 'string' ? detail : JSON.stringify(detail));
+    }
+    logs.unshift(message);
+    if (logs.length > 15) logs.pop();
+
+    var logEl = document.getElementById('event-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+  }
+
+  /**
+   * Update state display
+   */
+  function updateStateDisplay() {
+    if (!gridInstance) return;
+
+    var stateItems = document.getElementById('state-items');
+    var stateView = document.getElementById('state-view');
+    var stateColumns = document.getElementById('state-columns');
+    var stateGap = document.getElementById('state-gap');
+    var stateSelected = document.getElementById('state-selected');
+    var stateVirtualized = document.getElementById('state-virtualized');
+
+    if (stateItems) stateItems.textContent = gridInstance.items.length;
+    if (stateView) stateView.textContent = gridInstance.currentView;
+    if (stateColumns) stateColumns.textContent = gridInstance.options.columns;
+    if (stateGap) stateGap.textContent = gridInstance.options.gap;
+    if (stateSelected) stateSelected.textContent = gridInstance.selectedIds.size;
+    if (stateVirtualized) stateVirtualized.textContent = gridInstance.isVirtualized ? 'Yes' : 'No';
+  }
+
+  /**
+   * Parse selectable prop value
+   */
+  function parseSelectable(value) {
+    if (value === 'false' || value === false) return false;
+    if (value === 'single') return 'single';
+    if (value === 'multi') return 'multi';
+    return 'multi';
+  }
+
+  /**
+   * Parse boolean prop
+   */
+  function parseBool(value) {
+    if (typeof value === 'boolean') return value;
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return !!value;
+  }
+
+  /**
+   * Create the CardGrid instance
+   */
+  function createGrid(props) {
+    var container = document.getElementById('card-grid-container');
+    if (!container || !Funky.CardGrid) return;
+
+    // Destroy existing instance
+    if (gridInstance) {
+      gridInstance.destroy();
+      gridInstance = null;
+    }
+
+    var itemCount = parseInt(props.itemCount) || 12;
+    var columns = props.columns || 'auto';
+    var gap = props.gap || 'md';
+    var layout = props.layout || 'grid';
+    var selectable = parseSelectable(props.selectable);
+    var virtualize = parseBool(props.virtualize);
+    var cardMinWidth = (parseInt(props.cardMinWidth) || 250) + 'px';
+
+    // Convert columns to number if not 'auto'
+    if (columns !== 'auto') {
+      columns = parseInt(columns) || 'auto';
+    }
+
+    // Log the config being applied
+    logEvent('createGrid', {
+      itemCount: itemCount,
+      columns: columns,
+      gap: gap,
+      layout: layout,
+      selectable: selectable,
+      virtualize: virtualize,
+      cardMinWidth: cardMinWidth
+    });
+
+    var items = generateItems(itemCount);
+
+    gridInstance = Funky.CardGrid.init(container, {
+      items: items,
+      columns: columns,
+      gap: gap,
+      layout: layout,
+      selectable: selectable,
+      checkboxPosition: 'top-right',
+      virtualize: virtualize,
+      cardMinWidth: cardMinWidth,
+      renderCard: renderCard,
+      onCardClick: function(item) {
+        logEvent('card:click', { id: item.id, title: item.title });
+        emit('event', { event: 'funky:card-grid:card:click', payload: item });
+        updateStateDisplay();
+      },
+      onSelect: function(selectedItems) {
+        logEvent('select', { count: selectedItems.length });
+        emit('event', { event: 'funky:card-grid:select', payload: { count: selectedItems.length } });
+        updateStateDisplay();
+      },
+      onViewChange: function(view) {
+        logEvent('view:change', { view: view });
+        emit('event', { event: 'funky:card-grid:view:change', payload: { view: view } });
+        updateStateDisplay();
+      }
+    });
+
+    // Update UI state
+    updateStateDisplay();
+    updateViewButtons(layout);
+    updateSelectButtons(selectable);
+
+    // Update controls to match props
+    var selectGap = document.getElementById('select-gap');
+    var selectColumns = document.getElementById('select-columns');
+    var checkVirtualize = document.getElementById('check-virtualize');
+
+    if (selectGap) selectGap.value = gap;
+    if (selectColumns) selectColumns.value = columns;
+    if (checkVirtualize) checkVirtualize.checked = virtualize;
+  }
+
+  /**
+   * Update view toggle buttons
+   */
+  function updateViewButtons(view) {
+    var btnGrid = document.getElementById('btn-view-grid');
+    var btnList = document.getElementById('btn-view-list');
+
+    if (btnGrid) btnGrid.classList.toggle('active', view === 'grid');
+    if (btnList) btnList.classList.toggle('active', view === 'list');
+  }
+
+  /**
+   * Update selection mode buttons
+   */
+  function updateSelectButtons(mode) {
+    var btnNone = document.getElementById('btn-select-none');
+    var btnSingle = document.getElementById('btn-select-single');
+    var btnMulti = document.getElementById('btn-select-multi');
+
+    if (btnNone) btnNone.classList.toggle('active', mode === false);
+    if (btnSingle) btnSingle.classList.toggle('active', mode === 'single');
+    if (btnMulti) btnMulti.classList.toggle('active', mode === 'multi');
+  }
+
+  /**
+   * Set up layout control handlers
+   */
+  function setupLayoutControls() {
+    // View toggle
+    var btnGrid = document.getElementById('btn-view-grid');
+    var btnList = document.getElementById('btn-view-list');
+
+    if (btnGrid) {
+      btnGrid.onclick = function() {
+        if (gridInstance) {
+          gridInstance.setView('grid');
+          updateViewButtons('grid');
+          updateStateDisplay();
+        }
+      };
+    }
+
+    if (btnList) {
+      btnList.onclick = function() {
+        if (gridInstance) {
+          gridInstance.setView('list');
+          updateViewButtons('list');
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Gap select
+    var selectGap = document.getElementById('select-gap');
+    if (selectGap) {
+      selectGap.onchange = function() {
+        if (gridInstance) {
+          gridInstance.setGap(this.value);
+          logEvent('setGap', { gap: this.value });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Columns select
+    var selectColumns = document.getElementById('select-columns');
+    if (selectColumns) {
+      selectColumns.onchange = function() {
+        if (gridInstance) {
+          var cols = this.value === 'auto' ? 'auto' : parseInt(this.value);
+          gridInstance.setColumns(cols);
+          logEvent('setColumns', { columns: cols });
+          updateStateDisplay();
+        }
+      };
+    }
+  }
+
+  /**
+   * Set up API method buttons
+   */
+  function setupApiButtons() {
+    // Add item
+    var btnAdd = document.getElementById('btn-add-item');
+    if (btnAdd) {
+      btnAdd.onclick = function() {
+        if (gridInstance) {
+          itemIdCounter++;
+          var newItem = {
+            id: itemIdCounter,
+            title: 'New Card ' + itemIdCounter,
+            description: 'This card was added dynamically via addItems().',
+            category: 'New',
+            color: '#4cc9f0',
+            createdAt: new Date().toISOString()
+          };
+          gridInstance.addItems([newItem]);
+          logEvent('addItems', { id: itemIdCounter });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Remove item
+    var btnRemove = document.getElementById('btn-remove-item');
+    if (btnRemove) {
+      btnRemove.onclick = function() {
+        if (gridInstance && gridInstance.items.length > 0) {
+          var lastItem = gridInstance.items[gridInstance.items.length - 1];
+          gridInstance.removeItem(lastItem.id);
+          logEvent('removeItem', { id: lastItem.id });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Update item
+    var btnUpdate = document.getElementById('btn-update-item');
+    if (btnUpdate) {
+      btnUpdate.onclick = function() {
+        if (gridInstance && gridInstance.items.length > 0) {
+          var firstItem = gridInstance.items[0];
+          gridInstance.updateItem(firstItem.id, {
+            title: 'Updated: ' + firstItem.title,
+            color: '#f72585'
+          });
+          logEvent('updateItem', { id: firstItem.id });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Select all
+    var btnSelectAll = document.getElementById('btn-select-all');
+    if (btnSelectAll) {
+      btnSelectAll.onclick = function() {
+        if (gridInstance) {
+          gridInstance.selectAll();
+          logEvent('selectAll');
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Clear selection
+    var btnClear = document.getElementById('btn-clear-selection');
+    if (btnClear) {
+      btnClear.onclick = function() {
+        if (gridInstance) {
+          gridInstance.clearSelection();
+          logEvent('clearSelection');
+          updateStateDisplay();
+        }
+      };
+    }
+
+    // Get selected
+    var btnGetSelected = document.getElementById('btn-get-selected');
+    if (btnGetSelected) {
+      btnGetSelected.onclick = function() {
+        if (gridInstance) {
+          var selected = gridInstance.getSelected();
+          logEvent('getSelected', { count: selected.length, ids: selected.map(function(i) { return i.id; }) });
+        }
+      };
+    }
+
+    // Scroll to item
+    var btnScrollTo = document.getElementById('btn-scroll-to');
+    if (btnScrollTo) {
+      btnScrollTo.onclick = function() {
+        if (gridInstance && gridInstance.items.length > 5) {
+          var targetItem = gridInstance.items[Math.floor(gridInstance.items.length / 2)];
+          gridInstance.scrollToItem(targetItem.id);
+          logEvent('scrollToItem', { id: targetItem.id });
+        }
+      };
+    }
+
+    // Refresh
+    var btnRefresh = document.getElementById('btn-refresh');
+    if (btnRefresh) {
+      btnRefresh.onclick = function() {
+        var props = getProps();
+        createGrid(props);
+        logEvent('refresh');
+      };
+    }
+  }
+
+  /**
+   * Set up selection mode buttons
+   */
+  function setupSelectionControls() {
+    var btnNone = document.getElementById('btn-select-none');
+    var btnSingle = document.getElementById('btn-select-single');
+    var btnMulti = document.getElementById('btn-select-multi');
+
+    if (btnNone) {
+      btnNone.onclick = function() {
+        if (gridInstance) {
+          gridInstance.options.selectable = false;
+          gridInstance.clearSelection();
+          gridInstance.els.wrapper.classRemove('funky-card-grid--selectable');
+          updateSelectButtons(false);
+          logEvent('selectable', { mode: 'none' });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    if (btnSingle) {
+      btnSingle.onclick = function() {
+        if (gridInstance) {
+          gridInstance.options.selectable = 'single';
+          gridInstance.clearSelection();
+          gridInstance.els.wrapper.classAdd('funky-card-grid--selectable');
+          updateSelectButtons('single');
+          logEvent('selectable', { mode: 'single' });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    if (btnMulti) {
+      btnMulti.onclick = function() {
+        if (gridInstance) {
+          gridInstance.options.selectable = 'multi';
+          gridInstance.els.wrapper.classAdd('funky-card-grid--selectable');
+          updateSelectButtons('multi');
+          logEvent('selectable', { mode: 'multi' });
+          updateStateDisplay();
+        }
+      };
+    }
+  }
+
+  /**
+   * Set up virtualization controls
+   */
+  function setupVirtualizationControls() {
+    var checkVirtualize = document.getElementById('check-virtualize');
+    var btnLoadLarge = document.getElementById('btn-load-large');
+    var btnLoadSmall = document.getElementById('btn-load-small');
+
+    if (checkVirtualize) {
+      checkVirtualize.onchange = function() {
+        if (gridInstance) {
+          gridInstance.options.virtualize = this.checked;
+          gridInstance._renderCards();
+          logEvent('virtualize', { enabled: this.checked });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    if (btnLoadLarge) {
+      btnLoadLarge.onclick = function() {
+        if (gridInstance) {
+          var items = generateItems(500);
+          gridInstance.setItems(items);
+          logEvent('setItems', { count: 500 });
+          updateStateDisplay();
+        }
+      };
+    }
+
+    if (btnLoadSmall) {
+      btnLoadSmall.onclick = function() {
+        if (gridInstance) {
+          var items = generateItems(12);
+          gridInstance.setItems(items);
+          logEvent('setItems', { count: 12 });
+          updateStateDisplay();
+        }
+      };
+    }
+  }
+
+  /**
+   * Subscribe to PubSub events from CardGrid
+   */
+  function subscribeToEvents() {
+    if (!Funky.PubSub) return;
+
+    Funky.PubSub.on('funky:card-grid:load', function(data) {
+      logEvent('load', { items: data.items.length });
+      updateStateDisplay();
+    });
+
+    Funky.PubSub.on('funky:card-grid:card:click', function(data) {
+      // Already handled in callback
+    });
+
+    Funky.PubSub.on('funky:card-grid:select', function(data) {
+      // Already handled in callback
+    });
+  }
+
+  // Track current feature states
+  var featureStates = {
+    searchable: false,
+    sortable: false,
+    viewToggle: false
+  };
+
+  /**
+   * Update toolbar based on feature props
+   */
+  function updateToolbarFeatures(props) {
+    featureStates.searchable = parseBool(props.searchable);
+    featureStates.sortable = parseBool(props.sortable);
+    featureStates.viewToggle = parseBool(props.viewToggle);
+
+    // Update search group
+    var searchGroup = document.getElementById('toolbar-search-group');
+    var searchInput = document.getElementById('input-search');
+    if (searchGroup) {
+      searchGroup.classList.toggle('action-bar__group--disabled', !featureStates.searchable);
+      if (searchInput) searchInput.disabled = !featureStates.searchable;
+    }
+
+    // Update sort group
+    var sortGroup = document.getElementById('toolbar-sort-group');
+    var sortSelect = document.getElementById('select-sort');
+    var sortDirBtn = sortGroup ? sortGroup.querySelector('[data-action="sort-direction"]') : null;
+    if (sortGroup) {
+      sortGroup.classList.toggle('action-bar__group--disabled', !featureStates.sortable);
+      if (sortSelect) sortSelect.disabled = !featureStates.sortable;
+      if (sortDirBtn) sortDirBtn.disabled = !featureStates.sortable;
+    }
+
+    // Update view toggle group
+    var viewGroup = document.getElementById('toolbar-view-group');
+    var viewBtns = viewGroup ? viewGroup.querySelectorAll('[data-action="view"]') : [];
+    if (viewGroup) {
+      viewGroup.classList.toggle('action-bar__group--disabled', !featureStates.viewToggle);
+      viewBtns.forEach(function(btn) {
+        btn.disabled = !featureStates.viewToggle;
+      });
+    }
+
+    // Update status indicators
+    updateStatusIndicator('status-searchable', featureStates.searchable, 'Searchable');
+    updateStatusIndicator('status-sortable', featureStates.sortable, 'Sortable');
+    updateStatusIndicator('status-view-toggle', featureStates.viewToggle, 'View Toggle');
+  }
+
+  /**
+   * Update a status indicator
+   */
+  function updateStatusIndicator(id, isEnabled, label) {
+    var el = document.getElementById(id);
+    if (!el) return;
+
+    var icon = el.querySelector('i');
+    var strong = el.querySelector('strong');
+
+    if (icon) {
+      icon.className = isEnabled ? 'fas fa-circle text-success' : 'fas fa-circle text-muted';
+    }
+    if (strong) {
+      strong.textContent = isEnabled ? 'On' : 'Off';
+    }
+  }
+
+  /**
+   * Update toolbar view buttons to match current view
+   */
+  function updateToolbarViewButtons(view) {
+    var viewGroup = document.getElementById('toolbar-view-group');
+    if (!viewGroup) return;
+
+    var viewBtns = viewGroup.querySelectorAll('[data-action="view"]');
+    viewBtns.forEach(function(btn) {
+      var btnView = btn.getAttribute('data-view');
+      btn.classList.toggle('active', btnView === view);
+    });
+  }
+
+  Funky.Pages.register('component-card-grid', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create the grid
+      createGrid(props);
+
+      // Set up controls
+      setupLayoutControls();
+      setupApiButtons();
+      setupSelectionControls();
+      setupVirtualizationControls();
+
+      // Update toolbar based on initial props
+      updateToolbarFeatures(props);
+
+      // Subscribe to events
+      subscribeToEvents();
+
+      // Log initialization
+      logEvent('CardGrid demo initialized');
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          logEvent('propsChanged', currentProps);
+          createGrid(currentProps);
+          updateToolbarFeatures(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy grid instance
+      if (gridInstance) {
+        gridInstance.destroy();
+        gridInstance = null;
+      }
+
+      // Clear logs
+      logs = [];
+      itemIdCounter = 100;
+
+      return {};
+    }
+  });
+})();
+</script>

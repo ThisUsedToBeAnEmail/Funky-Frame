@@ -1,0 +1,596 @@
+<div data-page="component-gesture-tracker" class="gesture-tracker-demo">
+  <!-- State Display -->
+  <section class="gesture-tracker-demo__section" aria-labelledby="gesture-state-heading">
+    <h3 id="gesture-state-heading">State</h3>
+    <div class="gesture-tracker-demo__state" role="status" aria-live="polite">
+      <div class="gesture-tracker-demo__state-item">
+        <span class="gesture-tracker-demo__state-label">Active</span>
+        <span id="state-active" class="gesture-tracker-demo__state-value">Yes</span>
+      </div>
+      <div class="gesture-tracker-demo__state-item">
+        <span class="gesture-tracker-demo__state-label">Gestures</span>
+        <span id="state-gestures" class="gesture-tracker-demo__state-value">tap, swipe, longpress</span>
+      </div>
+      <div class="gesture-tracker-demo__state-item">
+        <span class="gesture-tracker-demo__state-label">Swipe Threshold</span>
+        <span id="state-swipe-threshold" class="gesture-tracker-demo__state-value">50px</span>
+      </div>
+      <div class="gesture-tracker-demo__state-item">
+        <span class="gesture-tracker-demo__state-label">Long Press Delay</span>
+        <span id="state-longpress-delay" class="gesture-tracker-demo__state-value">500ms</span>
+      </div>
+      <div class="gesture-tracker-demo__state-item">
+        <span class="gesture-tracker-demo__state-label">Haptic</span>
+        <span id="state-haptic" class="gesture-tracker-demo__state-value">Off</span>
+      </div>
+      <div class="gesture-tracker-demo__state-item">
+        <span class="gesture-tracker-demo__state-label">Events</span>
+        <span id="state-events" class="gesture-tracker-demo__state-value">On</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Buttons -->
+  <section class="gesture-tracker-demo__section" aria-labelledby="gesture-controls-heading">
+    <h3 id="gesture-controls-heading">API Controls</h3>
+    <div class="gesture-tracker-demo__controls">
+      <div class="gesture-tracker-demo__control-group">
+        <span class="gesture-tracker-demo__control-label">Tracker</span>
+        <div class="gesture-tracker-demo__control-buttons">
+          <button type="button" class="btn btn-funky-success btn-sm" data-action="start" aria-label="Start gesture tracking">
+            <i class="fas fa-play" aria-hidden="true"></i> Start
+          </button>
+          <button type="button" class="btn btn-funky-warning btn-sm" data-action="stop" aria-label="Stop gesture tracking">
+            <i class="fas fa-stop" aria-hidden="true"></i> Stop
+          </button>
+          <button type="button" class="btn btn-funky-danger btn-sm" data-action="destroy" aria-label="Destroy and recreate tracker">
+            <i class="fas fa-sync" aria-hidden="true"></i> Reset
+          </button>
+        </div>
+      </div>
+      <div class="gesture-tracker-demo__control-group">
+        <span class="gesture-tracker-demo__control-label">Gestures</span>
+        <div class="gesture-tracker-demo__control-buttons">
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="toggle-tap" aria-pressed="true" aria-label="Toggle tap detection">
+            <i class="fas fa-hand-pointer" aria-hidden="true"></i> Tap
+          </button>
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="toggle-swipe" aria-pressed="true" aria-label="Toggle swipe detection">
+            <i class="fas fa-arrows-alt-h" aria-hidden="true"></i> Swipe
+          </button>
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="toggle-longpress" aria-pressed="true" aria-label="Toggle long press detection">
+            <i class="fas fa-hand-rock" aria-hidden="true"></i> Long Press
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="toggle-drag" aria-pressed="false" aria-label="Toggle drag detection">
+            <i class="fas fa-arrows-alt" aria-hidden="true"></i> Drag
+          </button>
+        </div>
+      </div>
+      <div class="gesture-tracker-demo__control-group">
+        <span class="gesture-tracker-demo__control-label">Options</span>
+        <div class="gesture-tracker-demo__control-buttons">
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="toggle-haptic" aria-pressed="false" aria-label="Toggle haptic feedback">
+            <i class="fas fa-mobile-alt" aria-hidden="true"></i> Haptic
+          </button>
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="toggle-events" aria-pressed="true" aria-label="Toggle PubSub events">
+            <i class="fas fa-broadcast-tower" aria-hidden="true"></i> PubSub
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gesture Area -->
+  <section class="gesture-tracker-demo__section" aria-labelledby="gesture-area-heading">
+    <h3 id="gesture-area-heading">Gesture Area</h3>
+    <p class="gesture-tracker-demo__hint">
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
+      Tap, swipe, or hold to test gestures. Works with both mouse and touch.
+    </p>
+    <div id="gesture-area" class="gesture-tracker-demo__gesture-area" role="application" aria-label="Gesture detection area" tabindex="0">
+      <i class="fas fa-hand-pointer gesture-tracker-demo__gesture-icon" aria-hidden="true"></i>
+      <div class="gesture-tracker-demo__gesture-hint">
+        <p>Perform gestures here</p>
+        <small>Mouse click = tap | Drag = swipe | Hold = long press</small>
+      </div>
+      <!-- Direction indicators -->
+      <i class="fas fa-chevron-up gesture-tracker-demo__direction gesture-tracker-demo__direction--up" id="dir-up" aria-hidden="true"></i>
+      <i class="fas fa-chevron-down gesture-tracker-demo__direction gesture-tracker-demo__direction--down" id="dir-down" aria-hidden="true"></i>
+      <i class="fas fa-chevron-left gesture-tracker-demo__direction gesture-tracker-demo__direction--left" id="dir-left" aria-hidden="true"></i>
+      <i class="fas fa-chevron-right gesture-tracker-demo__direction gesture-tracker-demo__direction--right" id="dir-right" aria-hidden="true"></i>
+      <!-- Feedback overlay -->
+      <div id="gesture-feedback" class="gesture-tracker-demo__feedback" aria-live="assertive"></div>
+    </div>
+  </section>
+
+  <!-- Gesture Stats -->
+  <section class="gesture-tracker-demo__section" aria-labelledby="gesture-stats-heading">
+    <h3 id="gesture-stats-heading">Last Gesture</h3>
+    <div class="gesture-tracker-demo__stats" role="status" aria-live="polite">
+      <div class="gesture-tracker-demo__stat-card">
+        <div id="stat-type" class="gesture-tracker-demo__stat-value">-</div>
+        <div class="gesture-tracker-demo__stat-label">Type</div>
+      </div>
+      <div class="gesture-tracker-demo__stat-card">
+        <div id="stat-direction" class="gesture-tracker-demo__stat-value">-</div>
+        <div class="gesture-tracker-demo__stat-label">Direction</div>
+      </div>
+      <div class="gesture-tracker-demo__stat-card">
+        <div id="stat-velocity" class="gesture-tracker-demo__stat-value">-</div>
+        <div class="gesture-tracker-demo__stat-label">Velocity</div>
+      </div>
+      <div class="gesture-tracker-demo__stat-card">
+        <div id="stat-position" class="gesture-tracker-demo__stat-value">-</div>
+        <div class="gesture-tracker-demo__stat-label">Position</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Draggable Demo -->
+  <section class="gesture-tracker-demo__section" aria-labelledby="gesture-drag-heading">
+    <h3 id="gesture-drag-heading">Drag Demo</h3>
+    <p class="gesture-tracker-demo__hint">
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
+      Drag the box around. Uses GestureTracker's drag gesture.
+    </p>
+    <div id="drag-container" class="gesture-tracker-demo__drag-container" role="application" aria-label="Drag demo container">
+      <div id="draggable-element" class="gesture-tracker-demo__draggable" role="button" tabindex="0" aria-label="Draggable element">
+        <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events Log -->
+  <section class="gesture-tracker-demo__section" aria-labelledby="gesture-log-heading">
+    <h3 id="gesture-log-heading">Events Log</h3>
+    <div class="gesture-tracker-demo__log-controls">
+      <button type="button" class="btn btn-funky-outline btn-sm" data-action="clear-log" aria-label="Clear log">
+        <i class="fas fa-eraser" aria-hidden="true"></i> Clear
+      </button>
+    </div>
+    <pre id="gesture-log" class="gesture-tracker-demo__log" role="log" aria-live="polite" aria-label="Event log">Waiting for gestures...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var trackerInstance = null;
+  var dragTrackerInstance = null;
+  var logs = [];
+  var feedbackTimeout = null;
+  var directionTimeout = null;
+
+  var currentOptions = {
+    gestures: ['tap', 'swipe', 'longpress'],
+    swipeThreshold: 50,
+    swipeVelocity: 0.3,
+    longPressDelay: 500,
+    tapThreshold: 10,
+    preventDefault: false,
+    hapticFeedback: false,
+    emitEvents: true
+  };
+
+  // Draggable element state
+  var dragState = {
+    startX: 0,
+    startY: 0,
+    elemX: 0,
+    elemY: 0
+  };
+
+  function log(message, type) {
+    type = type || 'info';
+    var timestamp = new Date().toLocaleTimeString();
+    var prefix = type === 'gesture' ? '[GESTURE]' : type === 'api' ? '[API]' : '[INFO]';
+    logs.unshift(timestamp + ' ' + prefix + ' ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('gesture-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+    emit('log', { message: message, type: type });
+  }
+
+  function updateState() {
+    var activeEl = document.getElementById('state-active');
+    var gesturesEl = document.getElementById('state-gestures');
+    var swipeThresholdEl = document.getElementById('state-swipe-threshold');
+    var longpressDelayEl = document.getElementById('state-longpress-delay');
+    var hapticEl = document.getElementById('state-haptic');
+    var eventsEl = document.getElementById('state-events');
+
+    if (activeEl) activeEl.textContent = trackerInstance && trackerInstance.isActive() ? 'Yes' : 'No';
+    if (gesturesEl) gesturesEl.textContent = currentOptions.gestures.join(', ') || 'none';
+    if (swipeThresholdEl) swipeThresholdEl.textContent = currentOptions.swipeThreshold + 'px';
+    if (longpressDelayEl) longpressDelayEl.textContent = currentOptions.longPressDelay + 'ms';
+    if (hapticEl) hapticEl.textContent = currentOptions.hapticFeedback ? 'On' : 'Off';
+    if (eventsEl) eventsEl.textContent = currentOptions.emitEvents ? 'On' : 'Off';
+
+    // Update gesture area state
+    var gestureArea = document.getElementById('gesture-area');
+    if (gestureArea) {
+      if (trackerInstance && trackerInstance.isActive()) {
+        gestureArea.classList.remove('gesture-tracker-demo__gesture-area--disabled');
+      } else {
+        gestureArea.classList.add('gesture-tracker-demo__gesture-area--disabled');
+      }
+    }
+
+    // Update toggle button states
+    updateToggleButtons();
+  }
+
+  function updateToggleButtons() {
+    var toggles = {
+      'toggle-tap': currentOptions.gestures.indexOf('tap') !== -1,
+      'toggle-swipe': currentOptions.gestures.indexOf('swipe') !== -1,
+      'toggle-longpress': currentOptions.gestures.indexOf('longpress') !== -1,
+      'toggle-drag': currentOptions.gestures.indexOf('drag') !== -1,
+      'toggle-haptic': currentOptions.hapticFeedback,
+      'toggle-events': currentOptions.emitEvents
+    };
+
+    Object.keys(toggles).forEach(function(action) {
+      var btn = document.querySelector('[data-action="' + action + '"]');
+      if (btn) {
+        btn.setAttribute('aria-pressed', toggles[action] ? 'true' : 'false');
+        if (toggles[action]) {
+          btn.classList.remove('btn-funky-outline');
+          btn.classList.add('btn-funky-primary');
+        } else {
+          btn.classList.remove('btn-funky-primary');
+          btn.classList.add('btn-funky-outline');
+        }
+      }
+    });
+  }
+
+  function showFeedback(text) {
+    var feedbackEl = document.getElementById('gesture-feedback');
+    if (!feedbackEl) return;
+
+    feedbackEl.textContent = text;
+    feedbackEl.classList.add('gesture-tracker-demo__feedback--visible');
+
+    if (feedbackTimeout) clearTimeout(feedbackTimeout);
+    feedbackTimeout = setTimeout(function() {
+      feedbackEl.classList.remove('gesture-tracker-demo__feedback--visible');
+    }, 800);
+  }
+
+  function showDirection(direction) {
+    // Hide all directions first
+    ['up', 'down', 'left', 'right'].forEach(function(dir) {
+      var el = document.getElementById('dir-' + dir);
+      if (el) el.classList.remove('gesture-tracker-demo__direction--visible');
+    });
+
+    // Show the current direction
+    var dirEl = document.getElementById('dir-' + direction);
+    if (dirEl) {
+      dirEl.classList.add('gesture-tracker-demo__direction--visible');
+    }
+
+    if (directionTimeout) clearTimeout(directionTimeout);
+    directionTimeout = setTimeout(function() {
+      if (dirEl) dirEl.classList.remove('gesture-tracker-demo__direction--visible');
+    }, 500);
+  }
+
+  function updateStats(type, data) {
+    document.getElementById('stat-type').textContent = type;
+    document.getElementById('stat-direction').textContent = data.direction || '-';
+    document.getElementById('stat-velocity').textContent = data.velocity ? data.velocity.toFixed(2) : '-';
+    document.getElementById('stat-position').textContent = data.x !== undefined ? Math.round(data.x) + ', ' + Math.round(data.y) : '-';
+  }
+
+  function createTracker() {
+    var gestureArea = document.getElementById('gesture-area');
+    if (!gestureArea || !Funky.GestureTracker) {
+      log('Cannot create tracker - element or Funky.GestureTracker missing');
+      return;
+    }
+
+    // Destroy existing
+    if (trackerInstance) {
+      trackerInstance.destroy();
+      trackerInstance = null;
+    }
+
+    trackerInstance = Funky.GestureTracker.create({
+      target: gestureArea,
+      gestures: currentOptions.gestures.slice(),
+      swipeThreshold: currentOptions.swipeThreshold,
+      swipeVelocity: currentOptions.swipeVelocity,
+      longPressDelay: currentOptions.longPressDelay,
+      tapThreshold: currentOptions.tapThreshold,
+      preventDefault: currentOptions.preventDefault,
+      hapticFeedback: currentOptions.hapticFeedback,
+      emitEvents: currentOptions.emitEvents,
+      autoStart: true,
+
+      onTap: function(data) {
+        log('Tap at (' + Math.round(data.x) + ', ' + Math.round(data.y) + ')', 'gesture');
+        showFeedback('TAP');
+        updateStats('Tap', data);
+        emit('event', { event: 'gesture:tap', payload: data });
+      },
+
+      onSwipe: function(data) {
+        log('Swipe ' + data.direction + ' (velocity: ' + data.velocity.toFixed(2) + ')', 'gesture');
+        showFeedback('SWIPE ' + data.direction.toUpperCase());
+        showDirection(data.direction);
+        updateStats('Swipe', data);
+        emit('event', { event: 'gesture:swipe', payload: data });
+      },
+
+      onLongPress: function(data) {
+        log('Long press at (' + Math.round(data.x) + ', ' + Math.round(data.y) + ')', 'gesture');
+        showFeedback('LONG PRESS');
+        updateStats('Long Press', data);
+        emit('event', { event: 'gesture:longpress', payload: data });
+      },
+
+      onDragStart: function(data) {
+        log('Drag started at (' + Math.round(data.x) + ', ' + Math.round(data.y) + ')', 'gesture');
+        gestureArea.classList.add('gesture-tracker-demo__gesture-area--active');
+        updateStats('Drag Start', data);
+        emit('event', { event: 'gesture:dragstart', payload: data });
+      },
+
+      onDragMove: function(data) {
+        // Don't log every move - too noisy
+        updateStats('Dragging', { x: data.x, y: data.y, direction: '-', velocity: null });
+      },
+
+      onDragEnd: function(data) {
+        log('Drag ended at (' + Math.round(data.x) + ', ' + Math.round(data.y) + ') delta: ' + Math.round(data.deltaX) + ', ' + Math.round(data.deltaY), 'gesture');
+        gestureArea.classList.remove('gesture-tracker-demo__gesture-area--active');
+        updateStats('Drag End', data);
+        emit('event', { event: 'gesture:dragend', payload: data });
+      }
+    });
+
+    log('Tracker created with gestures: ' + currentOptions.gestures.join(', '), 'api');
+    updateState();
+  }
+
+  function createDragTracker() {
+    var draggable = document.getElementById('draggable-element');
+    var container = document.getElementById('drag-container');
+    if (!draggable || !container || !Funky.GestureTracker) return;
+
+    // Destroy existing
+    if (dragTrackerInstance) {
+      dragTrackerInstance.destroy();
+      dragTrackerInstance = null;
+    }
+
+    // Get initial position
+    var rect = draggable.getBoundingClientRect();
+    var containerRect = container.getBoundingClientRect();
+    dragState.elemX = rect.left - containerRect.left;
+    dragState.elemY = rect.top - containerRect.top;
+
+    dragTrackerInstance = Funky.GestureTracker.create({
+      target: draggable,
+      gestures: ['drag'],
+      tapThreshold: 5,
+      autoStart: true,
+
+      onDragStart: function(data) {
+        dragState.startX = data.x;
+        dragState.startY = data.y;
+        var rect = draggable.getBoundingClientRect();
+        var containerRect = container.getBoundingClientRect();
+        dragState.elemX = rect.left - containerRect.left;
+        dragState.elemY = rect.top - containerRect.top;
+        draggable.classList.add('gesture-tracker-demo__draggable--dragging');
+        log('Draggable: drag started', 'gesture');
+      },
+
+      onDragMove: function(data) {
+        var newX = dragState.elemX + data.deltaX;
+        var newY = dragState.elemY + data.deltaY;
+        var containerRect = container.getBoundingClientRect();
+
+        // Bounds check
+        newX = Math.max(0, Math.min(containerRect.width - 80, newX));
+        newY = Math.max(0, Math.min(containerRect.height - 80, newY));
+
+        draggable.style.left = newX + 'px';
+        draggable.style.top = newY + 'px';
+        draggable.style.transform = 'none';
+      },
+
+      onDragEnd: function(data) {
+        draggable.classList.remove('gesture-tracker-demo__draggable--dragging');
+        log('Draggable: drag ended', 'gesture');
+      }
+    });
+  }
+
+  function applyProps(props) {
+    if (!props) return;
+
+    var needsRecreate = false;
+
+    if (props.gestures !== undefined) {
+      var gestures = typeof props.gestures === 'string'
+        ? props.gestures.split(',').map(function(g) { return g.trim(); }).filter(Boolean)
+        : props.gestures;
+      if (JSON.stringify(gestures) !== JSON.stringify(currentOptions.gestures)) {
+        currentOptions.gestures = gestures;
+        needsRecreate = true;
+      }
+    }
+
+    if (props.swipeThreshold !== undefined && props.swipeThreshold !== currentOptions.swipeThreshold) {
+      currentOptions.swipeThreshold = props.swipeThreshold;
+      needsRecreate = true;
+    }
+
+    if (props.swipeVelocity !== undefined && props.swipeVelocity !== currentOptions.swipeVelocity) {
+      currentOptions.swipeVelocity = props.swipeVelocity;
+      needsRecreate = true;
+    }
+
+    if (props.longPressDelay !== undefined && props.longPressDelay !== currentOptions.longPressDelay) {
+      currentOptions.longPressDelay = props.longPressDelay;
+      needsRecreate = true;
+    }
+
+    if (props.tapThreshold !== undefined && props.tapThreshold !== currentOptions.tapThreshold) {
+      currentOptions.tapThreshold = props.tapThreshold;
+      needsRecreate = true;
+    }
+
+    if (props.preventDefault !== undefined) {
+      currentOptions.preventDefault = props.preventDefault;
+      needsRecreate = true;
+    }
+
+    if (props.hapticFeedback !== undefined) {
+      currentOptions.hapticFeedback = props.hapticFeedback;
+      needsRecreate = true;
+    }
+
+    if (props.emitEvents !== undefined) {
+      currentOptions.emitEvents = props.emitEvents;
+      needsRecreate = true;
+    }
+
+    if (needsRecreate) {
+      createTracker();
+      log('Tracker recreated with new options', 'api');
+    }
+
+    updateState();
+    emit('state', { options: currentOptions });
+  }
+
+  function toggleGesture(gesture) {
+    var idx = currentOptions.gestures.indexOf(gesture);
+    if (idx === -1) {
+      currentOptions.gestures.push(gesture);
+      log('Enabled gesture: ' + gesture, 'api');
+    } else {
+      currentOptions.gestures.splice(idx, 1);
+      log('Disabled gesture: ' + gesture, 'api');
+    }
+    createTracker();
+  }
+
+  function setupButtonHandlers() {
+    var actions = {
+      'start': function() {
+        if (trackerInstance) {
+          trackerInstance.start();
+          log('start() called', 'api');
+          updateState();
+        }
+      },
+      'stop': function() {
+        if (trackerInstance) {
+          trackerInstance.stop();
+          log('stop() called', 'api');
+          updateState();
+        }
+      },
+      'destroy': function() {
+        createTracker();
+        log('Tracker reset', 'api');
+      },
+      'toggle-tap': function() { toggleGesture('tap'); },
+      'toggle-swipe': function() { toggleGesture('swipe'); },
+      'toggle-longpress': function() { toggleGesture('longpress'); },
+      'toggle-drag': function() { toggleGesture('drag'); },
+      'toggle-haptic': function() {
+        currentOptions.hapticFeedback = !currentOptions.hapticFeedback;
+        createTracker();
+        log('Haptic feedback: ' + (currentOptions.hapticFeedback ? 'enabled' : 'disabled'), 'api');
+      },
+      'toggle-events': function() {
+        currentOptions.emitEvents = !currentOptions.emitEvents;
+        createTracker();
+        log('PubSub events: ' + (currentOptions.emitEvents ? 'enabled' : 'disabled'), 'api');
+      },
+      'clear-log': function() {
+        logs = [];
+        var logEl = document.getElementById('gesture-log');
+        if (logEl) logEl.textContent = 'Log cleared';
+      }
+    };
+
+    document.querySelectorAll('[data-action]').forEach(function(btn) {
+      var action = btn.getAttribute('data-action');
+      if (actions[action]) {
+        btn.addEventListener('click', actions[action]);
+      }
+    });
+  }
+
+  Funky.Pages.register('component-gesture-tracker', {
+    init: function(state) {
+      // Get initial props
+      var props = getProps();
+      if (props.gestures !== undefined) {
+        currentOptions.gestures = typeof props.gestures === 'string'
+          ? props.gestures.split(',').map(function(g) { return g.trim(); }).filter(Boolean)
+          : props.gestures;
+      }
+      if (props.swipeThreshold !== undefined) currentOptions.swipeThreshold = props.swipeThreshold;
+      if (props.swipeVelocity !== undefined) currentOptions.swipeVelocity = props.swipeVelocity;
+      if (props.longPressDelay !== undefined) currentOptions.longPressDelay = props.longPressDelay;
+      if (props.tapThreshold !== undefined) currentOptions.tapThreshold = props.tapThreshold;
+      if (props.preventDefault !== undefined) currentOptions.preventDefault = props.preventDefault;
+      if (props.hapticFeedback !== undefined) currentOptions.hapticFeedback = props.hapticFeedback;
+      if (props.emitEvents !== undefined) currentOptions.emitEvents = props.emitEvents;
+
+      // Create trackers
+      createTracker();
+      createDragTracker();
+
+      // Setup button handlers
+      setupButtonHandlers();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          var props = data && data.props ? data.props : data;
+          if (props && typeof props === 'object') {
+            log('Props changed: ' + Object.keys(props).join(', '), 'info');
+            applyProps(props);
+          }
+        });
+      }
+
+      log('GestureTracker demo initialized', 'info');
+    },
+
+    destroy: function() {
+      if (feedbackTimeout) clearTimeout(feedbackTimeout);
+      if (directionTimeout) clearTimeout(directionTimeout);
+
+      if (trackerInstance) {
+        trackerInstance.destroy();
+        trackerInstance = null;
+      }
+
+      if (dragTrackerInstance) {
+        dragTrackerInstance.destroy();
+        dragTrackerInstance = null;
+      }
+
+      logs = [];
+      feedbackTimeout = null;
+      directionTimeout = null;
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,532 @@
+<div data-page="component-keyboard" class="component-demo">
+  <h2>Keyboard</h2>
+  <p class="text-muted">Centralized keyboard shortcut manager with scopes and help overlay</p>
+
+  <section class="demo-section" aria-labelledby="keyboard-status-heading">
+    <h3 id="keyboard-status-heading">Current Status</h3>
+    <p class="text-muted small">Press keys to see them detected in real-time</p>
+    <div class="demo-area">
+      <div class="keyboard-demo__status">
+        <div class="keyboard-demo__key-display" id="key-display">
+          <span class="keyboard-demo__key-label">Press any key...</span>
+        </div>
+        <div class="keyboard-demo__metrics">
+          <div class="keyboard-demo__metric">
+            <span class="keyboard-demo__metric-label">Platform</span>
+            <span class="keyboard-demo__metric-value" id="platform-value">-</span>
+          </div>
+          <div class="keyboard-demo__metric">
+            <span class="keyboard-demo__metric-label">Active Scopes</span>
+            <span class="keyboard-demo__metric-value" id="scope-count">1</span>
+          </div>
+          <div class="keyboard-demo__metric">
+            <span class="keyboard-demo__metric-label">Current Scope</span>
+            <span class="keyboard-demo__metric-value" id="current-scope">global</span>
+          </div>
+          <div class="keyboard-demo__metric">
+            <span class="keyboard-demo__metric-label">Registered</span>
+            <span class="keyboard-demo__metric-value" id="shortcut-count">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="keyboard-shortcuts-heading">
+    <h3 id="keyboard-shortcuts-heading">Demo Shortcuts</h3>
+    <p class="text-muted small">Try these shortcuts registered for this demo</p>
+    <div class="demo-area">
+      <div class="keyboard-demo__shortcuts" id="demo-shortcuts">
+        <div class="keyboard-demo__shortcut">
+          <kbd>D</kbd>
+          <span>Say hello (global)</span>
+        </div>
+        <div class="keyboard-demo__shortcut">
+          <kbd>Ctrl/⌘ + Shift + S</kbd>
+          <span>Save demo</span>
+        </div>
+        <div class="keyboard-demo__shortcut">
+          <kbd>F1</kbd>
+          <span>Show help overlay</span>
+        </div>
+        <div class="keyboard-demo__shortcut">
+          <kbd>Ctrl/⌘ + /</kbd>
+          <span>Show help (alternative)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="keyboard-scope-heading">
+    <h3 id="keyboard-scope-heading">Scope Management</h3>
+    <p class="text-muted small">Manage scope stack to control which shortcuts are active</p>
+    <div class="demo-area">
+      <div class="keyboard-demo__scope-controls">
+        <div class="keyboard-demo__scope-input">
+          <label for="scope-name" class="visually-hidden">Scope name</label>
+          <input type="text" id="scope-name" class="form-control" placeholder="Enter scope name..." value="modal" autocomplete="off">
+        </div>
+        <div class="keyboard-demo__scope-buttons">
+          <button type="button" id="push-scope-btn" class="btn btn-primary">
+            <i class="fas fa-layer-group" aria-hidden="true"></i> Push Scope
+          </button>
+          <button type="button" id="pop-scope-btn" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-up" aria-hidden="true"></i> Pop Scope
+          </button>
+          <button type="button" id="clear-scopes-btn" class="btn btn-outline-warning">
+            <i class="fas fa-trash" aria-hidden="true"></i> Clear All
+          </button>
+        </div>
+      </div>
+      <div class="keyboard-demo__scope-stack">
+        <span class="keyboard-demo__scope-stack-label">Scope Stack:</span>
+        <div class="keyboard-demo__scope-badges" id="scope-badges">
+          <span class="keyboard-demo__scope-badge keyboard-demo__scope-badge--active">global</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="keyboard-register-heading">
+    <h3 id="keyboard-register-heading">Register Shortcut</h3>
+    <p class="text-muted small">Dynamically register new shortcuts</p>
+    <div class="demo-area">
+      <div class="keyboard-demo__register-form">
+        <div class="keyboard-demo__register-row">
+          <div class="keyboard-demo__register-field">
+            <label for="reg-key">Key</label>
+            <input type="text" id="reg-key" class="form-control" placeholder="e.g., k" maxlength="10" autocomplete="off">
+          </div>
+          <div class="keyboard-demo__register-field">
+            <label for="reg-scope">Scope</label>
+            <input type="text" id="reg-scope" class="form-control" placeholder="global" value="global" autocomplete="off">
+          </div>
+          <div class="keyboard-demo__register-field">
+            <label for="reg-group">Group</label>
+            <input type="text" id="reg-group" class="form-control" placeholder="Demo" value="Demo" autocomplete="off">
+          </div>
+        </div>
+        <div class="keyboard-demo__register-row">
+          <div class="keyboard-demo__register-field keyboard-demo__register-field--wide">
+            <label for="reg-description">Description</label>
+            <input type="text" id="reg-description" class="form-control" placeholder="What does this shortcut do?" autocomplete="off">
+          </div>
+        </div>
+        <div class="keyboard-demo__register-row">
+          <div class="keyboard-demo__register-modifiers">
+            <label class="keyboard-demo__modifier">
+              <input type="checkbox" id="reg-mod"> <span>Mod (⌘/Ctrl)</span>
+            </label>
+            <label class="keyboard-demo__modifier">
+              <input type="checkbox" id="reg-shift"> <span>Shift</span>
+            </label>
+            <label class="keyboard-demo__modifier">
+              <input type="checkbox" id="reg-alt"> <span>Alt</span>
+            </label>
+          </div>
+          <button type="button" id="register-btn" class="btn btn-success">
+            <i class="fas fa-plus" aria-hidden="true"></i> Register
+          </button>
+        </div>
+      </div>
+      <div class="keyboard-demo__registered-list" id="registered-list">
+        <!-- Dynamically registered shortcuts will appear here -->
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="keyboard-help-heading">
+    <h3 id="keyboard-help-heading">Help Overlay</h3>
+    <div class="demo-area">
+      <div class="keyboard-demo__help-controls">
+        <button type="button" id="show-help-btn" class="btn btn-primary">
+          <i class="fas fa-question-circle" aria-hidden="true"></i> Show Help (F1)
+        </button>
+        <button type="button" id="toggle-help-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-toggle-on" aria-hidden="true"></i> Toggle Help
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="keyboard-log-heading">
+    <h3 id="keyboard-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="keyboard-log" class="keyboard-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var logs = [];
+  var registeredShortcuts = [];  // Track shortcuts registered in this demo
+  var keyDisplayTimeout = null;
+
+  function log(message, type) {
+    var prefix = type ? '[' + type.toUpperCase() + '] ' : '';
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + prefix + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('keyboard-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateMetrics() {
+    var platformEl = document.getElementById('platform-value');
+    var scopeCountEl = document.getElementById('scope-count');
+    var currentScopeEl = document.getElementById('current-scope');
+    var shortcutCountEl = document.getElementById('shortcut-count');
+
+    if (platformEl) platformEl.textContent = Funky.Keyboard.isMac ? 'macOS' : 'Windows/Linux';
+
+    var scopes = Funky.Keyboard.getActiveScopes();
+    if (scopeCountEl) scopeCountEl.textContent = scopes.length;
+    if (currentScopeEl) currentScopeEl.textContent = Funky.Keyboard.getCurrentScope();
+
+    if (shortcutCountEl) {
+      var allShortcuts = Funky.Keyboard.getShortcuts();
+      shortcutCountEl.textContent = allShortcuts.length;
+    }
+
+    updateScopeBadges();
+  }
+
+  function updateScopeBadges() {
+    var container = document.getElementById('scope-badges');
+    if (!container) return;
+
+    var scopes = Funky.Keyboard.getActiveScopes();
+    var currentScope = Funky.Keyboard.getCurrentScope();
+
+    var html = '';
+    for (var i = 0; i < scopes.length; i++) {
+      var isActive = scopes[i] === currentScope;
+      html += '<span class="keyboard-demo__scope-badge' + (isActive ? ' keyboard-demo__scope-badge--active' : '') + '">' + scopes[i] + '</span>';
+    }
+    container.innerHTML = html;
+  }
+
+  function showKeyPress(key, modifiers) {
+    var display = document.getElementById('key-display');
+    if (!display) return;
+
+    var parts = [];
+    if (modifiers.meta) parts.push(Funky.Keyboard.isMac ? '⌘' : 'Win');
+    if (modifiers.ctrl) parts.push(Funky.Keyboard.isMac ? '⌃' : 'Ctrl');
+    if (modifiers.alt) parts.push(Funky.Keyboard.isMac ? '⌥' : 'Alt');
+    if (modifiers.shift) parts.push(Funky.Keyboard.isMac ? '⇧' : 'Shift');
+    parts.push(key.toUpperCase());
+
+    display.innerHTML = '<kbd class="keyboard-demo__key-pressed">' + parts.join(' + ') + '</kbd>';
+    display.classList.add('keyboard-demo__key-display--active');
+
+    if (keyDisplayTimeout) clearTimeout(keyDisplayTimeout);
+    keyDisplayTimeout = setTimeout(function() {
+      display.classList.remove('keyboard-demo__key-display--active');
+    }, 1500);
+  }
+
+  function renderRegisteredList() {
+    var container = document.getElementById('registered-list');
+    if (!container) return;
+
+    if (registeredShortcuts.length === 0) {
+      container.innerHTML = '<div class="keyboard-demo__registered-empty">No custom shortcuts registered yet</div>';
+      return;
+    }
+
+    var html = '';
+    for (var i = 0; i < registeredShortcuts.length; i++) {
+      var item = registeredShortcuts[i];
+      html += '<div class="keyboard-demo__registered-item">';
+      html += '<kbd>' + item.display + '</kbd>';
+      html += '<span class="keyboard-demo__registered-desc">' + (item.description || 'No description') + '</span>';
+      html += '<span class="keyboard-demo__registered-scope">' + item.scope + '</span>';
+      html += '<button type="button" class="keyboard-demo__unregister-btn btn btn-sm btn-outline-danger" data-index="' + i + '">';
+      html += '<i class="fas fa-times" aria-hidden="true"></i>';
+      html += '</button>';
+      html += '</div>';
+    }
+    container.innerHTML = html;
+
+    // Bind unregister buttons
+    var buttons = container.querySelectorAll('.keyboard-demo__unregister-btn');
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var index = parseInt(this.getAttribute('data-index'), 10);
+        unregisterShortcut(index);
+      });
+    });
+  }
+
+  function unregisterShortcut(index) {
+    if (index >= 0 && index < registeredShortcuts.length) {
+      var item = registeredShortcuts[index];
+      if (item.unregister) {
+        item.unregister();
+      }
+      registeredShortcuts.splice(index, 1);
+      log('Unregistered shortcut: ' + item.display);
+      renderRegisteredList();
+      updateMetrics();
+    }
+  }
+
+  function setupDemoShortcuts() {
+    // Register demo shortcuts
+    var unregD = Funky.Keyboard.register({
+      key: 'd',
+      handler: function() {
+        log('Hello from D shortcut!', 'shortcut');
+        emit('event', { event: 'keyboard:shortcut', payload: { key: 'd' } });
+      },
+      description: 'Say hello',
+      group: 'Playground Demo',
+      allowInInput: false
+    });
+
+    var unregSave = Funky.Keyboard.register({
+      key: 's',
+      mod: true,
+      shift: true,
+      handler: function(e) {
+        e.preventDefault();
+        log('Save triggered!', 'shortcut');
+        emit('event', { event: 'keyboard:save', payload: {} });
+      },
+      description: 'Save demo',
+      group: 'Playground Demo'
+    });
+
+    // Store for cleanup
+    registeredShortcuts.push({
+      display: 'D',
+      description: 'Say hello',
+      scope: 'global',
+      unregister: unregD,
+      builtIn: true
+    });
+
+    registeredShortcuts.push({
+      display: (Funky.Keyboard.isMac ? '⌘⇧S' : 'Ctrl+Shift+S'),
+      description: 'Save demo',
+      scope: 'global',
+      unregister: unregSave,
+      builtIn: true
+    });
+  }
+
+  function setupEventListeners() {
+    // Key display
+    document.addEventListener('keydown', function(e) {
+      showKeyPress(e.key, {
+        ctrl: e.ctrlKey,
+        alt: e.altKey,
+        shift: e.shiftKey,
+        meta: e.metaKey
+      });
+    });
+
+    // Scope management
+    var pushBtn = document.getElementById('push-scope-btn');
+    var popBtn = document.getElementById('pop-scope-btn');
+    var clearBtn = document.getElementById('clear-scopes-btn');
+    var scopeInput = document.getElementById('scope-name');
+
+    if (pushBtn) {
+      pushBtn.addEventListener('click', function() {
+        var scopeName = scopeInput ? scopeInput.value.trim() : '';
+        if (scopeName) {
+          Funky.Keyboard.pushScope(scopeName);
+          log('Pushed scope: ' + scopeName, 'scope');
+          emit('event', { event: 'keyboard:pushScope', payload: { scope: scopeName } });
+          updateMetrics();
+        }
+      });
+    }
+
+    if (popBtn) {
+      popBtn.addEventListener('click', function() {
+        var popped = Funky.Keyboard.popScope();
+        if (popped) {
+          log('Popped scope: ' + popped, 'scope');
+          emit('event', { event: 'keyboard:popScope', payload: { scope: popped } });
+        } else {
+          log('Cannot pop global scope', 'warning');
+        }
+        updateMetrics();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        Funky.Keyboard.clearScopes();
+        log('Cleared all scopes (back to global)', 'scope');
+        emit('event', { event: 'keyboard:clearScopes', payload: {} });
+        updateMetrics();
+      });
+    }
+
+    // Register shortcut form
+    var registerBtn = document.getElementById('register-btn');
+    if (registerBtn) {
+      registerBtn.addEventListener('click', function() {
+        var keyInput = document.getElementById('reg-key');
+        var scopeInput = document.getElementById('reg-scope');
+        var groupInput = document.getElementById('reg-group');
+        var descInput = document.getElementById('reg-description');
+        var modCheck = document.getElementById('reg-mod');
+        var shiftCheck = document.getElementById('reg-shift');
+        var altCheck = document.getElementById('reg-alt');
+
+        var key = keyInput ? keyInput.value.trim().toLowerCase() : '';
+        if (!key) {
+          log('Key is required', 'error');
+          return;
+        }
+
+        var scope = scopeInput ? scopeInput.value.trim() || 'global' : 'global';
+        var group = groupInput ? groupInput.value.trim() || 'Demo' : 'Demo';
+        var description = descInput ? descInput.value.trim() : '';
+        var useMod = modCheck ? modCheck.checked : false;
+        var useShift = shiftCheck ? shiftCheck.checked : false;
+        var useAlt = altCheck ? altCheck.checked : false;
+
+        var unregister = Funky.Keyboard.register({
+          key: key,
+          mod: useMod,
+          shift: useShift,
+          alt: useAlt,
+          scope: scope,
+          group: group,
+          description: description || 'Custom shortcut',
+          handler: function() {
+            log('Custom shortcut triggered: ' + key, 'shortcut');
+            emit('event', { event: 'keyboard:custom', payload: { key: key } });
+          }
+        });
+
+        // Build display string
+        var displayParts = [];
+        if (useMod) displayParts.push(Funky.Keyboard.isMac ? '⌘' : 'Ctrl');
+        if (useAlt) displayParts.push(Funky.Keyboard.isMac ? '⌥' : 'Alt');
+        if (useShift) displayParts.push(Funky.Keyboard.isMac ? '⇧' : 'Shift');
+        displayParts.push(key.toUpperCase());
+        var display = displayParts.join(Funky.Keyboard.isMac ? '' : '+');
+
+        registeredShortcuts.push({
+          display: display,
+          description: description,
+          scope: scope,
+          unregister: unregister,
+          builtIn: false
+        });
+
+        log('Registered shortcut: ' + display + ' (' + scope + ')', 'register');
+        emit('event', { event: 'keyboard:register', payload: { key: key, scope: scope } });
+
+        // Clear form
+        if (keyInput) keyInput.value = '';
+        if (descInput) descInput.value = '';
+        if (modCheck) modCheck.checked = false;
+        if (shiftCheck) shiftCheck.checked = false;
+        if (altCheck) altCheck.checked = false;
+
+        renderRegisteredList();
+        updateMetrics();
+      });
+    }
+
+    // Help controls
+    var showHelpBtn = document.getElementById('show-help-btn');
+    var toggleHelpBtn = document.getElementById('toggle-help-btn');
+
+    if (showHelpBtn) {
+      showHelpBtn.addEventListener('click', function() {
+        Funky.Keyboard.showHelp();
+        log('Showing help overlay');
+        emit('event', { event: 'keyboard:showHelp', payload: {} });
+      });
+    }
+
+    if (toggleHelpBtn) {
+      toggleHelpBtn.addEventListener('click', function() {
+        Funky.Keyboard.toggleHelp();
+        log('Toggled help overlay');
+        emit('event', { event: 'keyboard:toggleHelp', payload: {} });
+      });
+    }
+
+    // Listen for scope changes
+    document.addEventListener('funky.keyboard.scope-push', function(e) {
+      updateMetrics();
+    });
+
+    document.addEventListener('funky.keyboard.scope-pop', function(e) {
+      updateMetrics();
+    });
+
+    document.addEventListener('funky.keyboard.help-show', function() {
+      log('Help overlay opened');
+    });
+
+    document.addEventListener('funky.keyboard.help-hide', function() {
+      log('Help overlay closed');
+    });
+
+    // Listen for global keyboard events (⌘K, ⌘,)
+    document.addEventListener('funky.keyboard.search', function() {
+      log('Quick search triggered (⌘K)', 'shortcut');
+      emit('event', { event: 'keyboard:search', payload: {} });
+      if (Funky.Toast) {
+        Funky.Toast.info('Quick Search triggered - would open search/command palette');
+      }
+    });
+
+    document.addEventListener('funky.keyboard.settings', function() {
+      log('Open settings triggered (⌘,)', 'shortcut');
+      emit('event', { event: 'keyboard:settings', payload: {} });
+      if (Funky.Toast) {
+        Funky.Toast.info('Settings triggered - would open preferences panel');
+      }
+    });
+  }
+
+  Funky.Pages.register('component-keyboard', {
+    init: function(state) {
+      setupDemoShortcuts();
+      setupEventListeners();
+      updateMetrics();
+      renderRegisteredList();
+
+      log('Keyboard demo initialized');
+      log('Platform: ' + (Funky.Keyboard.isMac ? 'macOS' : 'Windows/Linux'));
+      emit('event', { event: 'keyboard:init', payload: {} });
+    },
+
+    destroy: function() {
+      // Unregister all demo shortcuts
+      for (var i = 0; i < registeredShortcuts.length; i++) {
+        if (registeredShortcuts[i].unregister) {
+          registeredShortcuts[i].unregister();
+        }
+      }
+      registeredShortcuts = [];
+
+      if (keyDisplayTimeout) {
+        clearTimeout(keyDisplayTimeout);
+        keyDisplayTimeout = null;
+      }
+
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

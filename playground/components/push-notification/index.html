@@ -1,0 +1,395 @@
+<div data-page="component-push-notification" class="component-demo">
+  <h2>Push Notification</h2>
+  <p class="text-muted">Send browser push notifications with optional delay. Works even after navigating away!</p>
+
+  <!-- Permission Status Section -->
+  <section class="demo-section" aria-labelledby="permission-heading">
+    <h3 id="permission-heading">Permission Status</h3>
+    <p class="text-muted small">Browser notification permission is required to send notifications</p>
+    <div class="demo-area">
+      <div class="push-notification-demo__permission">
+        <div class="push-notification-demo__permission-status">
+          <span class="push-notification-demo__permission-icon" id="permission-icon" aria-hidden="true">
+            <i class="fa-solid fa-question-circle"></i>
+          </span>
+          <span class="push-notification-demo__permission-text" id="permission-text">Checking...</span>
+        </div>
+        <button type="button" class="btn btn-primary" id="request-permission-btn" disabled>
+          <i class="fa-solid fa-bell" aria-hidden="true"></i> Request Permission
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Worker Status Section -->
+  <section class="demo-section" aria-labelledby="sw-heading">
+    <h3 id="sw-heading">Service Worker Status</h3>
+    <p class="text-muted small">A service worker is required to send notifications that persist after page navigation</p>
+    <div class="demo-area">
+      <div class="push-notification-demo__sw-status">
+        <span class="push-notification-demo__sw-icon" id="sw-icon" aria-hidden="true">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+        </span>
+        <span class="push-notification-demo__sw-text" id="sw-text">Checking service worker...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Send Notification Section -->
+  <section class="demo-section" aria-labelledby="send-heading">
+    <h3 id="send-heading">Send Notification</h3>
+    <p class="text-muted small">Configure and send a test notification using the props panel</p>
+    <div class="demo-area">
+      <div class="push-notification-demo__preview">
+        <div class="push-notification-demo__preview-card">
+          <div class="push-notification-demo__preview-header">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+            <span>Notification Preview</span>
+          </div>
+          <div class="push-notification-demo__preview-content">
+            <div class="push-notification-demo__preview-title" id="preview-title">Hello from Funky!</div>
+            <div class="push-notification-demo__preview-body" id="preview-body">This is a test notification from the Playground.</div>
+          </div>
+          <div class="push-notification-demo__preview-delay" id="preview-delay">
+            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+            <span>Delay: <strong>5 seconds</strong></span>
+          </div>
+        </div>
+      </div>
+      <div class="push-notification-demo__actions">
+        <button type="button" class="btn btn-lg btn-primary" id="send-notification-btn" disabled>
+          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Notification
+        </button>
+        <button type="button" class="btn btn-lg btn-outline-secondary" id="send-immediate-btn" disabled>
+          <i class="fa-solid fa-bolt" aria-hidden="true"></i> Send Immediately
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notification History Section -->
+  <section class="demo-section" aria-labelledby="history-heading">
+    <h3 id="history-heading">Notification History</h3>
+    <p class="text-muted small">Track sent notifications in this session</p>
+    <div class="demo-area">
+      <div id="notification-history" class="push-notification-demo__history">
+        <p class="text-muted small">No notifications sent yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings Section -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div id="current-settings" class="push-notification-demo__settings"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var propsChangedHandler = null;
+  var notificationHistory = [];
+
+  /**
+   * Update permission UI based on Funky.PushNotification state
+   */
+  function updatePermissionUI() {
+    var iconEl = document.getElementById('permission-icon');
+    var textEl = document.getElementById('permission-text');
+    var btnEl = document.getElementById('request-permission-btn');
+
+    if (!Funky.PushNotification.isSupported()) {
+      iconEl.innerHTML = '<i class="fa-solid fa-times-circle"></i>';
+      iconEl.className = 'push-notification-demo__permission-icon push-notification-demo__permission-icon--denied';
+      textEl.textContent = 'Notifications not supported in this browser';
+      btnEl.disabled = true;
+      return;
+    }
+
+    var permission = Funky.PushNotification.getPermission();
+
+    switch (permission) {
+      case 'granted':
+        iconEl.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
+        iconEl.className = 'push-notification-demo__permission-icon push-notification-demo__permission-icon--granted';
+        textEl.textContent = 'Permission granted';
+        btnEl.disabled = true;
+        btnEl.textContent = 'Permission Granted';
+        break;
+      case 'denied':
+        iconEl.innerHTML = '<i class="fa-solid fa-times-circle"></i>';
+        iconEl.className = 'push-notification-demo__permission-icon push-notification-demo__permission-icon--denied';
+        textEl.textContent = 'Permission denied - enable in browser settings';
+        btnEl.disabled = true;
+        btnEl.innerHTML = '<i class="fa-solid fa-ban" aria-hidden="true"></i> Permission Denied';
+        break;
+      default:
+        iconEl.innerHTML = '<i class="fa-solid fa-question-circle"></i>';
+        iconEl.className = 'push-notification-demo__permission-icon push-notification-demo__permission-icon--default';
+        textEl.textContent = 'Permission not yet requested';
+        btnEl.disabled = false;
+        btnEl.innerHTML = '<i class="fa-solid fa-bell" aria-hidden="true"></i> Request Permission';
+    }
+
+    updateSendButtons();
+  }
+
+  /**
+   * Update service worker UI based on Funky.PushNotification state
+   */
+  function updateServiceWorkerUI() {
+    var iconEl = document.getElementById('sw-icon');
+    var textEl = document.getElementById('sw-text');
+
+    if (!Funky.PushNotification.isSupported()) {
+      iconEl.innerHTML = '<i class="fa-solid fa-times-circle"></i>';
+      iconEl.className = 'push-notification-demo__sw-icon push-notification-demo__sw-icon--error';
+      textEl.textContent = 'Service Worker not supported';
+      return;
+    }
+
+    if (Funky.PushNotification.isReady()) {
+      iconEl.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
+      iconEl.className = 'push-notification-demo__sw-icon push-notification-demo__sw-icon--ready';
+      textEl.textContent = 'Service Worker ready';
+      updateSendButtons();
+    } else {
+      // Wait for ready event
+      Funky.PushNotification.once('ready', function() {
+        iconEl.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
+        iconEl.className = 'push-notification-demo__sw-icon push-notification-demo__sw-icon--ready';
+        textEl.textContent = 'Service Worker ready';
+        updateSendButtons();
+      });
+
+      Funky.PushNotification.once('error', function(data) {
+        iconEl.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i>';
+        iconEl.className = 'push-notification-demo__sw-icon push-notification-demo__sw-icon--error';
+        textEl.textContent = 'Service Worker error: ' + (data.error ? data.error.message : 'Unknown');
+      });
+    }
+  }
+
+  /**
+   * Update send button states
+   */
+  function updateSendButtons() {
+    var sendBtn = document.getElementById('send-notification-btn');
+    var immediateBtn = document.getElementById('send-immediate-btn');
+    var canSend = Funky.PushNotification.getPermission() === 'granted' && Funky.PushNotification.isReady();
+
+    sendBtn.disabled = !canSend;
+    immediateBtn.disabled = !canSend;
+  }
+
+  /**
+   * Request notification permission
+   */
+  function requestPermission() {
+    Funky.PushNotification.requestPermission().then(function(permission) {
+      updatePermissionUI();
+      emit('event', { event: 'notification:permission', payload: { permission: permission } });
+    });
+  }
+
+  /**
+   * Send notification via Funky.PushNotification
+   */
+  function sendNotification(props, immediate) {
+    var title = props.title || 'Hello from Funky!';
+    var body = props.body || 'This is a test notification.';
+    var delay = immediate ? 0 : (props.delay || 0);
+
+    Funky.PushNotification.show(title, {
+      body: body,
+      delay: delay
+    }).then(function() {
+      // Add to history
+      var historyEntry = {
+        title: title,
+        body: body,
+        delay: delay,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      notificationHistory.unshift(historyEntry);
+      updateHistory();
+
+      emit('event', {
+        event: 'notification:send',
+        payload: { title: title, body: body, delay: delay }
+      });
+    }).catch(function(err) {
+      console.error('Failed to send notification:', err);
+      emit('event', {
+        event: 'notification:error',
+        payload: { error: err.message }
+      });
+    });
+  }
+
+  /**
+   * Update notification history display
+   */
+  function updateHistory() {
+    var container = document.getElementById('notification-history');
+    if (!container) return;
+
+    if (notificationHistory.length === 0) {
+      container.innerHTML = '<p class="text-muted small">No notifications sent yet.</p>';
+      return;
+    }
+
+    var html = '<ul class="push-notification-demo__history-list">';
+    for (var i = 0; i < Math.min(notificationHistory.length, 5); i++) {
+      var entry = notificationHistory[i];
+      html += '<li class="push-notification-demo__history-item">';
+      html += '<div class="push-notification-demo__history-content">';
+      html += '<strong>' + escapeHtml(entry.title) + '</strong>';
+      html += '<span class="text-muted"> - ' + escapeHtml(entry.body.substring(0, 50)) + (entry.body.length > 50 ? '...' : '') + '</span>';
+      html += '</div>';
+      html += '<div class="push-notification-demo__history-meta">';
+      html += '<span class="badge bg-secondary">' + (entry.delay > 0 ? entry.delay + 's delay' : 'Immediate') + '</span>';
+      html += '<span class="text-muted small">' + entry.timestamp + '</span>';
+      html += '</div>';
+      html += '</li>';
+    }
+    html += '</ul>';
+
+    if (notificationHistory.length > 5) {
+      html += '<p class="text-muted small">Showing 5 of ' + notificationHistory.length + ' notifications</p>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  /**
+   * Escape HTML entities
+   */
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * Update preview with current props
+   */
+  function updatePreview(props) {
+    var titleEl = document.getElementById('preview-title');
+    var bodyEl = document.getElementById('preview-body');
+    var delayEl = document.getElementById('preview-delay');
+
+    if (titleEl) titleEl.textContent = props.title || 'Hello from Funky!';
+    if (bodyEl) bodyEl.textContent = props.body || 'This is a test notification.';
+    if (delayEl) {
+      var delay = props.delay || 0;
+      delayEl.innerHTML = '<i class="fa-solid fa-clock" aria-hidden="true"></i> <span>Delay: <strong>' + delay + ' second' + (delay !== 1 ? 's' : '') + '</strong></span>';
+    }
+  }
+
+  /**
+   * Update settings display
+   */
+  function updateSettingsDisplay(props) {
+    var container = document.getElementById('current-settings');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var badges = [
+      { label: 'Title', value: (props.title || 'Hello from Funky!').substring(0, 20) + (props.title && props.title.length > 20 ? '...' : ''), variant: 'primary' },
+      { label: 'Body', value: (props.body || 'Test notification').substring(0, 30) + (props.body && props.body.length > 30 ? '...' : ''), variant: 'info' },
+      { label: 'Delay', value: (props.delay || 0) + 's', variant: 'secondary' }
+    ];
+
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var span = document.createElement('span');
+      span.className = 'badge bg-' + badge.variant;
+      span.innerHTML = '<strong>' + badge.label + ':</strong> ' + escapeHtml(String(badge.value));
+      container.appendChild(span);
+    }
+  }
+
+  /**
+   * Bind event handlers
+   */
+  function bindEvents() {
+    var permissionBtn = document.getElementById('request-permission-btn');
+    var sendBtn = document.getElementById('send-notification-btn');
+    var immediateBtn = document.getElementById('send-immediate-btn');
+
+    if (permissionBtn) {
+      permissionBtn.addEventListener('click', requestPermission);
+    }
+
+    if (sendBtn) {
+      sendBtn.addEventListener('click', function() {
+        sendNotification(getProps(), false);
+      });
+    }
+
+    if (immediateBtn) {
+      immediateBtn.addEventListener('click', function() {
+        sendNotification(getProps(), true);
+      });
+    }
+  }
+
+  /**
+   * Render component
+   */
+  function render(props) {
+    updatePreview(props);
+    updateSettingsDisplay(props);
+  }
+
+  // Page registration
+  Funky.Pages.register('component-push-notification', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update UI based on Funky.PushNotification state
+      updatePermissionUI();
+      updateServiceWorkerUI();
+
+      // Initial render
+      render(props);
+
+      // Bind events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          render(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'push-notification:init', payload: { permission: Funky.PushNotification.getPermission() } });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Reset state
+      notificationHistory = [];
+
+      return {};
+    }
+  });
+})();
+</script>

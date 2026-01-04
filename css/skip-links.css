@@ -1,0 +1,172 @@
+/**
+ * Skip Links - Accessibility Navigation
+ *
+ * Provides keyboard-accessible skip links for bypassing repetitive content.
+ * Hidden by default, visible on keyboard focus.
+ *
+ * Features:
+ * - Visually hidden until focused
+ * - High contrast for visibility
+ * - Theme-aware styling
+ * - Smooth transitions
+ * - Proper z-index layering
+ *
+ * @version 1.0.0
+ */
+
+/* =========================================================================
+   CONTAINER
+   ========================================================================= */
+
+.skip-links {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10000;
+	pointer-events: none;
+}
+
+/* =========================================================================
+   SKIP LINK ELEMENTS
+   ========================================================================= */
+
+.skip-link {
+	/*
+	 * Screen reader accessible but visually hidden
+	 * Using sr-only technique with tabindex="1" for first focus
+	 */
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	/* Re-enable pointer events for focusability (container has pointer-events: none) */
+	pointer-events: auto;
+}
+
+/* Focus state - remains hidden, just triggers help modal */
+.skip-link:focus {
+	outline: none;
+}
+
+/* =========================================================================
+   THEME: LIGHT (DEFAULT)
+   ========================================================================= */
+
+.skip-link {
+	background-color: #007bff;
+	color: #ffffff;
+	border: 2px solid #0056b3;
+}
+
+.skip-link:hover,
+.skip-link:focus {
+	background-color: #0056b3;
+	color: #ffffff;
+}
+
+.skip-link:focus-visible {
+	outline-color: var(--focus-ring-color, #0056b3);
+}
+
+/* =========================================================================
+   THEME: DARK
+   ========================================================================= */
+
+[data-bs-theme="dark"] .skip-link {
+	background-color: #0d6efd;
+	color: #ffffff;
+	border: 2px solid #0a58ca;
+}
+
+[data-bs-theme="dark"] .skip-link:hover,
+[data-bs-theme="dark"] .skip-link:focus {
+	background-color: #0a58ca;
+	color: #ffffff;
+}
+
+[data-bs-theme="dark"] .skip-link:focus-visible {
+	outline-color: var(--focus-ring-color, #6ea8fe);
+}
+
+/* =========================================================================
+   THEME: EVEN FUNKYER
+   ========================================================================= */
+
+[data-bs-theme="even-funkyer"] .skip-link {
+	background-color: #00ff00;
+	color: #000000;
+	border: 2px solid #00cc00;
+	font-family: 'Courier New', monospace;
+}
+
+[data-bs-theme="even-funkyer"] .skip-link:hover,
+[data-bs-theme="even-funkyer"] .skip-link:focus {
+	background-color: #00cc00;
+	color: #000000;
+}
+
+[data-bs-theme="even-funkyer"] .skip-link:focus-visible {
+	outline-color: var(--focus-ring-color, #00ff00);
+	box-shadow: 0 0 10px #00ff00;
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 768px) {
+	.skip-link {
+		font-size: 0.875rem;
+		padding: 0.5rem 1rem;
+	}
+}
+
+/* =========================================================================
+   ACCESSIBILITY
+   ========================================================================= */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.skip-link {
+		border-width: 3px;
+	}
+
+	.skip-link:focus-visible {
+		outline: var(--focus-ring-width, 4px) var(--focus-ring-style, solid) var(--focus-ring-color);
+		outline-offset: var(--focus-ring-offset, 3px);
+	}
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	.skip-link {
+		transition: none;
+	}
+}
+
+/* Print styles - hide skip links */
+@media print {
+	.skip-links {
+		display: none;
+	}
+}
+
+/* =========================================================================
+   VISUALLY HIDDEN UTILITY
+   ========================================================================= */
+
+.visually-hidden {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+

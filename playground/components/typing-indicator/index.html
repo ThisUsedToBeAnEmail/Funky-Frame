@@ -1,0 +1,581 @@
+<div data-page="component-typing-indicator" class="component-demo">
+  <h2>Typing Indicator</h2>
+  <p class="text-muted">Real-time typing status display with animated dots for chat and collaborative applications.</p>
+
+  <!-- Live Indicator Section -->
+  <section class="demo-section" aria-labelledby="live-heading">
+    <h3 id="live-heading">Live Indicator</h3>
+    <p class="text-muted small">The indicator below is controlled by the props panel. Try changing variant, timeout, and other settings.</p>
+
+    <div class="demo-area">
+      <div id="typing-container" class="typing-demo__container" aria-live="polite">
+        <!-- TypingIndicator will render here -->
+      </div>
+
+      <div class="typing-demo__state-display">
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Variant:</span>
+          <span class="badge bg-secondary" id="state-variant">default</span>
+        </div>
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Show Dots:</span>
+          <span class="badge bg-secondary" id="state-showDots">true</span>
+        </div>
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Timeout:</span>
+          <span class="badge bg-secondary" id="state-timeout">3000ms</span>
+        </div>
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Debounce:</span>
+          <span class="badge bg-secondary" id="state-debounce">300ms</span>
+        </div>
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Max Typers:</span>
+          <span class="badge bg-secondary" id="state-maxTypers">5</span>
+        </div>
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Typers:</span>
+          <span class="badge bg-primary" id="state-typer-count">0</span>
+        </div>
+        <div class="typing-demo__state-item">
+          <span class="text-muted">Text:</span>
+          <span id="state-text">-</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat Demo Section -->
+  <section class="demo-section" aria-labelledby="chat-heading">
+    <h3 id="chat-heading">Chat Demo</h3>
+    <p class="text-muted small">Type in the input below to see typing indicators in action. The timeout from props controls auto-stop.</p>
+
+    <div class="demo-area">
+      <div class="typing-demo__chat card" role="log" aria-label="Chat messages">
+        <div class="card-body">
+          <div id="chat-messages" class="typing-demo__messages">
+            <div class="typing-demo__message typing-demo__message--incoming">
+              <strong class="text-muted">John</strong>
+              <span>Hey, are you there?</span>
+            </div>
+            <div class="typing-demo__message typing-demo__message--outgoing">
+              <strong class="text-muted">You</strong>
+              <span>Yes, I'm here!</span>
+            </div>
+          </div>
+          <div id="chat-typing-area" class="typing-demo__typing-area" hidden>
+            <div class="typing-indicator typing-indicator--bubble" id="chat-indicator">
+              <span class="typing-indicator__dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+              <span class="typing-indicator__text" id="chat-typing-text">John is typing...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group mt-3">
+        <input type="text"
+               class="form-control"
+               id="chat-input"
+               placeholder="Type a message..."
+               aria-label="Message input">
+        <button class="btn btn-primary" id="btn-send" type="button">
+          <i class="fas fa-paper-plane me-1" aria-hidden="true"></i> Send
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Multiple Users Section -->
+  <section class="demo-section" aria-labelledby="users-heading">
+    <h3 id="users-heading">Multiple Users</h3>
+    <p class="text-muted small">Click the buttons to simulate multiple users typing. When typers exceed <strong>Max Typer Names</strong>, it shows "N people are typing..." instead of listing names.</p>
+
+    <div class="demo-area">
+      <div id="users-indicator" class="typing-demo__users-display" aria-live="polite">
+        <div class="typing-indicator typing-indicator--bubble typing-indicator--animated" id="multi-user-indicator" hidden>
+          <span class="typing-indicator__dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span class="typing-indicator__text" id="multi-user-text">No one is typing</span>
+        </div>
+        <p class="text-muted" id="no-typers-message">No one is typing</p>
+      </div>
+
+      <div class="typing-demo__button-grid" role="group" aria-label="Simulated users">
+        <button class="btn btn-outline-primary btn-sm" data-user="Alice" data-user-id="1" type="button">
+          <i class="fas fa-user me-1" aria-hidden="true"></i> Alice
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-user="Bob" data-user-id="2" type="button">
+          <i class="fas fa-user me-1" aria-hidden="true"></i> Bob
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-user="Charlie" data-user-id="3" type="button">
+          <i class="fas fa-user me-1" aria-hidden="true"></i> Charlie
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-user="Diana" data-user-id="4" type="button">
+          <i class="fas fa-user me-1" aria-hidden="true"></i> Diana
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-user="Eve" data-user-id="5" type="button">
+          <i class="fas fa-user me-1" aria-hidden="true"></i> Eve
+        </button>
+        <button class="btn btn-outline-primary btn-sm" data-user="Frank" data-user-id="6" type="button">
+          <i class="fas fa-user me-1" aria-hidden="true"></i> Frank
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-clear-users" type="button">
+          <i class="fas fa-times me-1" aria-hidden="true"></i> Clear All
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Variant Showcase Section -->
+  <section class="demo-section" aria-labelledby="variants-heading">
+    <h3 id="variants-heading">Style Variants</h3>
+    <p class="text-muted small">Different visual styles for various use cases.</p>
+
+    <div class="demo-area">
+      <div class="typing-demo__variants">
+        <div class="typing-demo__variant-item">
+          <span class="badge bg-secondary mb-2">Default</span>
+          <div class="typing-indicator">
+            <span class="typing-indicator__dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="typing-indicator__text">Typing...</span>
+          </div>
+        </div>
+
+        <div class="typing-demo__variant-item">
+          <span class="badge bg-secondary mb-2">Bubble</span>
+          <div class="typing-indicator typing-indicator--bubble">
+            <span class="typing-indicator__dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="typing-indicator__text">Typing...</span>
+          </div>
+        </div>
+
+        <div class="typing-demo__variant-item">
+          <span class="badge bg-secondary mb-2">Inline</span>
+          <div class="typing-indicator typing-indicator--inline">
+            <span class="typing-indicator__dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="typing-indicator__text">Typing...</span>
+          </div>
+        </div>
+
+        <div class="typing-demo__variant-item">
+          <span class="badge bg-secondary mb-2">Small</span>
+          <div class="typing-indicator typing-indicator--sm">
+            <span class="typing-indicator__dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="typing-indicator__text">Typing...</span>
+          </div>
+        </div>
+
+        <div class="typing-demo__variant-item">
+          <span class="badge bg-secondary mb-2">Large</span>
+          <div class="typing-indicator typing-indicator--lg">
+            <span class="typing-indicator__dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="typing-indicator__text">Typing...</span>
+          </div>
+        </div>
+
+        <div class="typing-demo__variant-item">
+          <span class="badge bg-secondary mb-2">Dots Only</span>
+          <div class="typing-indicator typing-indicator--bubble typing-indicator--dots-only">
+            <span class="typing-indicator__dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="typing-indicator__text">Typing...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="event-log" class="typing-demo__log" aria-live="polite">Interact with the demo to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var typingUsers = [];
+  var mainIndicator = null;
+  var chatTypingTimeout = null;
+  var propsChangedHandler = null;
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data) entry += ': ' + JSON.stringify(data);
+    logs.unshift(entry);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('event-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState(key, value) {
+    var el = document.getElementById('state-' + key);
+    if (el) el.textContent = value;
+  }
+
+  function updateAllStateFromProps(props) {
+    updateState('variant', props.variant || 'default');
+    updateState('showDots', props.showDots !== false ? 'true' : 'false');
+    updateState('timeout', (props.timeout || 3000) + 'ms');
+    updateState('debounce', (props.debounce || 300) + 'ms');
+    updateState('maxTypers', props.maxTypers || 5);
+  }
+
+  function getVariantClass(variant) {
+    switch (variant) {
+      case 'bubble': return 'typing-indicator--bubble';
+      case 'inline': return 'typing-indicator--inline';
+      case 'sm': return 'typing-indicator--sm';
+      case 'lg': return 'typing-indicator--lg';
+      default: return '';
+    }
+  }
+
+  function updateMultiUserIndicator() {
+    var indicator = document.getElementById('multi-user-indicator');
+    var textEl = document.getElementById('multi-user-text');
+    var noTypersEl = document.getElementById('no-typers-message');
+    var dotsEl = indicator.querySelector('.typing-indicator__dots');
+    var props = getProps();
+
+    // Apply variant class
+    indicator.className = 'typing-indicator typing-indicator--animated';
+    var variantClass = getVariantClass(props.variant);
+    if (variantClass) {
+      indicator.classList.add(variantClass);
+    }
+
+    // Apply showDots
+    if (dotsEl) {
+      dotsEl.style.display = props.showDots !== false ? '' : 'none';
+    }
+
+    if (typingUsers.length === 0) {
+      indicator.hidden = true;
+      indicator.classList.remove('typing-indicator--active');
+      noTypersEl.hidden = false;
+      updateState('text', '-');
+    } else {
+      indicator.hidden = false;
+      indicator.classList.add('typing-indicator--active');
+      noTypersEl.hidden = true;
+
+      var text = Funky.TypingIndicator.formatText(
+        typingUsers.map(function(name) { return { name: name }; }),
+        props.maxTypers || 5
+      );
+      textEl.textContent = text;
+      updateState('text', text);
+    }
+    updateState('typer-count', typingUsers.length);
+  }
+
+  function createIndicator(container, props) {
+    // Destroy existing indicator
+    if (mainIndicator && mainIndicator.destroy) {
+      mainIndicator.destroy();
+      mainIndicator = null;
+    }
+
+    mainIndicator = Funky.TypingIndicator.create({
+      container: container,
+      timeout: props.timeout || 3000,
+      debounce: props.debounce || 300,
+      maxTypers: props.maxTypers || 5,
+      showDots: props.showDots !== false,
+      variant: props.variant || 'default',
+      onStart: function() {
+        log('Typing started');
+        emit('event', { event: 'funky:typing:start', payload: {} });
+      },
+      onStop: function() {
+        log('Typing stopped');
+        emit('event', { event: 'funky:typing:stop', payload: {} });
+      },
+      onChange: function(typers, text) {
+        log('Typers changed', { count: typers.length, text: text });
+        updateState('typer-count', typers.length);
+        updateState('text', text || '-');
+        emit('event', { event: 'funky:typing:change', payload: { typers: typers, text: text } });
+      }
+    });
+
+    // Add simulated typers based on props
+    if (props.simulateTypers && props.typerCount > 0) {
+      var names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
+      for (var i = 0; i < Math.min(props.typerCount || 2, names.length); i++) {
+        mainIndicator.addTyper({ id: 'user-' + (i + 1), name: names[i] });
+      }
+    }
+
+    return mainIndicator;
+  }
+
+  Funky.Pages.register('component-typing-indicator', {
+    init: function(state) {
+      var self = this;
+      var props = getProps();
+
+      log('Initializing TypingIndicator demo');
+      updateAllStateFromProps(props);
+
+      // Create main indicator instance if component exists
+      if (Funky.TypingIndicator) {
+        var container = document.getElementById('typing-container');
+        createIndicator(container, props);
+        log('TypingIndicator created', {
+          timeout: props.timeout || 3000,
+          debounce: props.debounce || 300,
+          variant: props.variant || 'default',
+          showDots: props.showDots !== false,
+          simulateTypers: props.simulateTypers,
+          typerCount: props.typerCount || 2
+        });
+        emit('event', { event: 'funky:typing:init', payload: props });
+      } else {
+        log('Funky.TypingIndicator not available - showing static demo');
+      }
+
+      // Chat input - show typing when user types
+      var chatInput = document.getElementById('chat-input');
+      var chatTypingArea = document.getElementById('chat-typing-area');
+
+      chatInput.addEventListener('input', function() {
+        var currentProps = getProps();
+        if (this.value.length > 0) {
+          clearTimeout(chatTypingTimeout);
+          log('You are typing...');
+          emit('event', { event: 'typing:local:start', payload: {} });
+
+          chatTypingTimeout = setTimeout(function() {
+            log('You stopped typing');
+            emit('event', { event: 'typing:local:stop', payload: {} });
+          }, currentProps.timeout || 3000);
+        }
+      });
+
+      // Send message button
+      document.getElementById('btn-send').onclick = function() {
+        var message = chatInput.value.trim();
+        if (!message) return;
+
+        var messagesContainer = document.getElementById('chat-messages');
+
+        // Add user message
+        var msgDiv = document.createElement('div');
+        msgDiv.className = 'typing-demo__message typing-demo__message--outgoing';
+        msgDiv.innerHTML = '<strong class="text-muted">You</strong><span>' + message + '</span>';
+        messagesContainer.appendChild(msgDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        chatInput.value = '';
+        clearTimeout(chatTypingTimeout);
+
+        log('Message sent', { preview: message.substring(0, 30) });
+        emit('event', { event: 'typing:message', payload: { message: message } });
+
+        // Simulate reply after typing indicator
+        chatTypingArea.hidden = false;
+        // Scroll to show typing indicator
+        var cardBody = chatTypingArea.closest('.card-body');
+        if (cardBody) cardBody.scrollTop = cardBody.scrollHeight;
+
+        setTimeout(function() {
+          chatTypingArea.hidden = true;
+          var replyDiv = document.createElement('div');
+          replyDiv.className = 'typing-demo__message typing-demo__message--incoming';
+          replyDiv.innerHTML = '<strong class="text-muted">John</strong><span>Got it, thanks!</span>';
+          messagesContainer.appendChild(replyDiv);
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          log('Reply received from John');
+        }, 2000);
+      };
+
+      // Enter key to send
+      chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          document.getElementById('btn-send').click();
+        }
+      });
+
+      // Multiple users buttons
+      document.querySelectorAll('[data-user]').forEach(function(btn) {
+        btn.onclick = function() {
+          var user = this.dataset.user;
+          var userId = this.dataset.userId;
+          var index = typingUsers.indexOf(user);
+
+          if (index === -1) {
+            typingUsers.push(user);
+            this.classList.add('active');
+            log(user + ' started typing');
+            emit('event', { event: 'funky:typing:user:add', payload: { id: userId, name: user } });
+
+            if (mainIndicator) {
+              mainIndicator.addTyper({ id: userId, name: user });
+            }
+          } else {
+            typingUsers.splice(index, 1);
+            this.classList.remove('active');
+            log(user + ' stopped typing');
+            emit('event', { event: 'funky:typing:user:remove', payload: { id: userId, name: user } });
+
+            if (mainIndicator) {
+              mainIndicator.removeTyper(userId);
+            }
+          }
+
+          updateMultiUserIndicator();
+        };
+      });
+
+      // Clear all button
+      document.getElementById('btn-clear-users').onclick = function() {
+        typingUsers = [];
+        document.querySelectorAll('[data-user]').forEach(function(btn) {
+          btn.classList.remove('active');
+          if (mainIndicator) {
+            mainIndicator.removeTyper(btn.dataset.userId);
+          }
+        });
+        updateMultiUserIndicator();
+        log('Cleared all typing indicators');
+        emit('event', { event: 'funky:typing:clear', payload: {} });
+      };
+
+      // Clear log button
+      document.getElementById('btn-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('event-log').textContent = 'Log cleared';
+      };
+
+      // Listen for props changes from playground
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed', newProps);
+
+          // Update state display
+          var currentProps = getProps();
+          updateAllStateFromProps(currentProps);
+
+          // Update multi-user indicator styling
+          updateMultiUserIndicator();
+
+          // Recreate main indicator if variant changed (requires rebuild)
+          if (newProps.variant !== undefined && mainIndicator) {
+            var container = document.getElementById('typing-container');
+            createIndicator(container, currentProps);
+            log('Indicator rebuilt with new variant: ' + currentProps.variant);
+          } else if (mainIndicator) {
+            // Update individual options without rebuild
+            if (newProps.timeout !== undefined) {
+              mainIndicator.options.timeout = newProps.timeout;
+            }
+            if (newProps.debounce !== undefined) {
+              mainIndicator.options.debounce = newProps.debounce;
+            }
+            if (newProps.maxTypers !== undefined) {
+              mainIndicator.options.maxTypers = newProps.maxTypers;
+            }
+            if (newProps.showDots !== undefined) {
+              mainIndicator.options.showDots = newProps.showDots;
+              // Update dots visibility in UI
+              var dotsEl = mainIndicator.el ? mainIndicator.el.querySelector('.typing-indicator__dots') : null;
+              if (dotsEl) {
+                dotsEl.style.display = newProps.showDots ? '' : 'none';
+              }
+            }
+
+            // Handle simulated typers change
+            if (newProps.simulateTypers !== undefined || newProps.typerCount !== undefined) {
+              // Clear existing simulated typers
+              var names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
+              names.forEach(function(name, i) {
+                mainIndicator.removeTyper('user-' + (i + 1));
+              });
+
+              // Add new simulated typers
+              if (currentProps.simulateTypers && currentProps.typerCount > 0) {
+                for (var i = 0; i < Math.min(currentProps.typerCount, names.length); i++) {
+                  mainIndicator.addTyper({ id: 'user-' + (i + 1), name: names[i] });
+                }
+              }
+            }
+          }
+
+          emit('event', { event: 'funky:typing:propsChanged', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      log('Demo ready');
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clear timeout
+      if (chatTypingTimeout) {
+        clearTimeout(chatTypingTimeout);
+        chatTypingTimeout = null;
+      }
+
+      // Destroy main indicator
+      if (mainIndicator && mainIndicator.destroy) {
+        mainIndicator.destroy();
+        mainIndicator = null;
+      }
+
+      // Reset state
+      typingUsers = [];
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

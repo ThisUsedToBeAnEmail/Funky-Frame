@@ -1,0 +1,307 @@
+/**
+ * Tooltip Component & Demo Styles
+ * Bootstrap tooltip CSS handles the actual tooltip styling
+ * This file contains arrow positioning fixes and playground demo styles
+ */
+
+/* ============================================================================
+   TOOLTIP ARROW POSITIONING
+   Bootstrap uses bs-tooltip-end/start, we use bs-tooltip-right/left
+   Also need to center arrows since we're not using Popper.js
+   ============================================================================ */
+
+/* Top placement - arrow at bottom center */
+.tooltip.bs-tooltip-top .tooltip-arrow {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -6px;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--pro-tooltip-bg, #000);
+}
+
+/* Bottom placement - arrow at top center */
+.tooltip.bs-tooltip-bottom .tooltip-arrow {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -6px;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: var(--pro-tooltip-bg, #000);
+}
+
+/* Right placement - arrow at left center */
+.tooltip.bs-tooltip-right .tooltip-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -6px;
+    width: 6px;
+    height: 12px;
+}
+
+.tooltip.bs-tooltip-right .tooltip-arrow::before {
+    right: -1px;
+    border-width: 6px 6px 6px 0;
+    border-right-color: var(--pro-tooltip-bg, #000);
+}
+
+/* Left placement - arrow at right center */
+.tooltip.bs-tooltip-left .tooltip-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -6px;
+    width: 6px;
+    height: 12px;
+}
+
+.tooltip.bs-tooltip-left .tooltip-arrow::before {
+    left: -1px;
+    border-width: 6px 0 6px 6px;
+    border-left-color: var(--pro-tooltip-bg, #000);
+}
+
+/* ============================================================================
+   PLAYGROUND DEMO STYLES
+   ============================================================================ */
+
+.tooltip-demo__interactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.tooltip-demo__interactive-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Placements Demo */
+.tooltip-demo__placements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.tooltip-demo__placements-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.tooltip-demo__placements-center {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--pro-border-color, #333);
+    border-radius: 8px;
+    color: var(--pro-text-muted, #666);
+    font-size: 1.25rem;
+}
+
+.tooltip-demo__placement-btn {
+    min-width: 100px;
+}
+
+/* Triggers Demo */
+.tooltip-demo__triggers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.tooltip-demo__trigger-btn {
+    min-width: 120px;
+}
+
+.tooltip-demo__trigger-input {
+    max-width: 200px;
+}
+
+/* Delays Demo */
+.tooltip-demo__delays {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.tooltip-demo__delay-info {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* HTML Content Demo */
+.tooltip-demo__html-demo {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+/* Dynamic Content Demo */
+.tooltip-demo__dynamic {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.tooltip-demo__dynamic-info {
+    display: flex;
+    justify-content: center;
+}
+
+/* API Controls */
+.tooltip-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.tooltip-demo__result {
+    padding: 0.75rem 1rem;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.875rem;
+}
+
+.tooltip-demo__result-empty {
+    color: var(--pro-text-muted, #666);
+}
+
+.tooltip-demo__result-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tooltip-demo__result-method {
+    color: var(--pro-text-secondary, #888);
+}
+
+.tooltip-demo__result-arrow {
+    color: var(--pro-text-muted, #666);
+}
+
+.tooltip-demo__result-value {
+    font-weight: 600;
+}
+
+.tooltip-demo__result-value--string {
+    color: var(--pro-color-success, #22c55e);
+}
+
+.tooltip-demo__result-value--undefined {
+    color: var(--pro-text-muted, #666);
+    font-style: italic;
+}
+
+/* Settings Display */
+.tooltip-demo__settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tooltip-demo__settings .badge {
+    font-weight: 400;
+}
+
+.tooltip-demo__settings .badge strong {
+    font-weight: 600;
+}
+
+/* ============================================================================
+   LIGHT THEME ADJUSTMENTS
+   ============================================================================ */
+
+[data-theme="light"] .tooltip-demo__result {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .tooltip-demo__placements-center {
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* ============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================ */
+
+@media (max-width: 576px) {
+    .tooltip-demo__placements-row {
+        gap: 1rem;
+    }
+
+    .tooltip-demo__placements-center {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .tooltip-demo__placement-btn {
+        min-width: 80px;
+        font-size: 0.8125rem;
+    }
+
+    .tooltip-demo__triggers {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tooltip-demo__trigger-btn {
+        min-width: auto;
+    }
+
+    .tooltip-demo__trigger-input {
+        max-width: none;
+    }
+
+    .tooltip-demo__controls {
+        flex-direction: column;
+    }
+
+    .tooltip-demo__controls .btn {
+        width: 100%;
+    }
+
+    .tooltip-demo__settings {
+        flex-direction: column;
+    }
+
+    .tooltip-demo__dynamic {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tooltip-demo__delays {
+        flex-direction: column;
+    }
+
+    .tooltip-demo__delay-info {
+        flex-direction: column;
+        align-items: center;
+    }
+}

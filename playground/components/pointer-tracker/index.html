@@ -1,0 +1,560 @@
+<div data-page="component-pointer-tracker" class="component-demo">
+  <h2>PointerTracker</h2>
+  <p class="text-muted">Low-level pointer tracking with unified mouse, touch, and stylus support. Tracks pressure, velocity, and tilt data.</p>
+
+  <!-- Drawing Canvas -->
+  <section class="demo-section" aria-labelledby="canvas-heading">
+    <h3 id="canvas-heading">Drawing Canvas</h3>
+    <p class="text-muted small">Draw on the canvas below. Line thickness responds to pressure, color responds to velocity.</p>
+
+    <div class="demo-area">
+      <div class="pointer-tracker-demo__canvas-container">
+        <canvas id="drawing-canvas" class="pointer-tracker-demo__canvas" role="img" aria-label="Drawing canvas for pointer tracking"></canvas>
+        <div class="pointer-tracker-demo__pointer-indicator" id="pointer-indicator">
+          <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
+          <span id="pointer-type-label">mouse</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Data Display -->
+  <section class="demo-section" aria-labelledby="data-heading">
+    <h3 id="data-heading">Live Data</h3>
+    <p class="text-muted small">Real-time pointer data updates as you interact with the canvas</p>
+
+    <div class="demo-area">
+      <div class="pointer-tracker-demo__data-grid">
+        <!-- Coordinates -->
+        <div class="pointer-tracker-demo__data-card">
+          <div class="pointer-tracker-demo__data-label">
+            <i class="fas fa-crosshairs" aria-hidden="true"></i> Coordinates
+          </div>
+          <div class="pointer-tracker-demo__data-value pointer-tracker-demo__data-value--coords" id="data-coords">
+            X: 0.0, Y: 0.0
+          </div>
+        </div>
+
+        <!-- Pressure -->
+        <div class="pointer-tracker-demo__data-card" id="pressure-card">
+          <div class="pointer-tracker-demo__data-label">
+            <i class="fas fa-tachometer-alt" aria-hidden="true"></i> Pressure
+          </div>
+          <div class="pointer-tracker-demo__data-value pointer-tracker-demo__data-value--pressure" id="data-pressure">
+            0.500
+          </div>
+          <div class="pointer-tracker-demo__pressure-bar">
+            <div class="pointer-tracker-demo__pressure-fill" id="pressure-fill"></div>
+          </div>
+        </div>
+
+        <!-- Velocity -->
+        <div class="pointer-tracker-demo__data-card" id="velocity-card">
+          <div class="pointer-tracker-demo__data-label">
+            <i class="fas fa-tachometer-alt" aria-hidden="true"></i> Velocity
+          </div>
+          <div class="pointer-tracker-demo__data-value pointer-tracker-demo__data-value--velocity">
+            <span id="data-velocity-mag">0.00</span> px/ms
+          </div>
+          <div class="pointer-tracker-demo__velocity-components">
+            <span>vX: <span id="data-velocity-x">0.00</span></span>
+            <span>vY: <span id="data-velocity-y">0.00</span></span>
+          </div>
+        </div>
+
+        <!-- Tilt -->
+        <div class="pointer-tracker-demo__data-card" id="tilt-card">
+          <div class="pointer-tracker-demo__data-label">
+            <i class="fas fa-pen-fancy" aria-hidden="true"></i> Tilt (Stylus)
+          </div>
+          <div class="pointer-tracker-demo__data-value pointer-tracker-demo__data-value--tilt" id="data-tilt">
+            X: 0°, Y: 0°
+          </div>
+          <div class="pointer-tracker-demo__tilt-info" id="data-twist">
+            Twist: 0°
+          </div>
+        </div>
+
+        <!-- Event Count -->
+        <div class="pointer-tracker-demo__data-card">
+          <div class="pointer-tracker-demo__data-label">
+            <i class="fas fa-chart-line" aria-hidden="true"></i> Events
+          </div>
+          <div class="pointer-tracker-demo__data-value">
+            <span id="data-event-count">0</span> move events
+          </div>
+          <div class="pointer-tracker-demo__event-rate" id="data-event-rate">
+            0 events/sec
+          </div>
+        </div>
+
+        <!-- Active State -->
+        <div class="pointer-tracker-demo__data-card">
+          <div class="pointer-tracker-demo__data-label">
+            <i class="fas fa-hand-pointer" aria-hidden="true"></i> State
+          </div>
+          <div class="pointer-tracker-demo__data-value">
+            <span class="pointer-tracker-demo__state-indicator" id="state-indicator">Idle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <div class="demo-area">
+      <div class="pointer-tracker-demo__controls">
+        <button type="button" class="btn btn-primary" id="clear-canvas-btn">
+          <i class="fas fa-eraser" aria-hidden="true"></i> Clear Canvas
+        </button>
+        <button type="button" class="btn btn-secondary" id="is-active-btn">
+          isActive()
+        </button>
+        <button type="button" class="btn btn-secondary" id="reset-stats-btn">
+          <i class="fas fa-redo" aria-hidden="true"></i> Reset Stats
+        </button>
+        <button type="button" class="btn btn-outline-danger" id="destroy-btn">
+          <i class="fas fa-times" aria-hidden="true"></i> Destroy
+        </button>
+        <button type="button" class="btn btn-outline-success" id="recreate-btn" disabled>
+          <i class="fas fa-plus" aria-hidden="true"></i> Recreate
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Result -->
+  <section class="demo-section" aria-labelledby="result-heading">
+    <h3 id="result-heading">API Result</h3>
+    <div class="demo-area">
+      <div class="pointer-tracker-demo__result" id="api-result">
+        <span class="pointer-tracker-demo__result-empty">Click an API button to see results</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Playground Props -->
+  <section class="demo-section" aria-labelledby="props-heading">
+    <h3 id="props-heading">Playground Props</h3>
+    <div class="demo-area">
+      <div class="pointer-tracker-demo__settings">
+        <span class="badge bg-secondary">pressure: <strong id="setting-pressure">true</strong></span>
+        <span class="badge bg-secondary">velocity: <strong id="setting-velocity">true</strong></span>
+        <span class="badge bg-secondary">tilt: <strong id="setting-tilt">false</strong></span>
+        <span class="badge bg-secondary">coalesced: <strong id="setting-coalesced">false</strong></span>
+        <span class="badge bg-secondary">throttle: <strong id="setting-throttle">0</strong></span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var tracker = null;
+  var canvas = null;
+  var ctx = null;
+  var propsChangedHandler = null;
+
+  // Stats tracking
+  var eventCount = 0;
+  var eventStartTime = 0;
+  var lastEventTime = 0;
+
+  function log(message, type) {
+    console.log('[PointerTracker Demo]', message);
+    emit('event', { event: 'pointer:' + (type || 'info'), payload: { message: message } });
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      pressure: props.pressure !== false,
+      velocity: props.velocity !== false,
+      tilt: props.tilt === true,
+      coalesced: props.coalesced === true,
+      throttle: parseInt(props.throttle, 10) || 0
+    };
+  }
+
+  function updatePropsDisplay() {
+    var opts = getOptions();
+    var el = function(id) { return document.getElementById(id); };
+    if (el('setting-pressure')) el('setting-pressure').textContent = String(opts.pressure);
+    if (el('setting-velocity')) el('setting-velocity').textContent = String(opts.velocity);
+    if (el('setting-tilt')) el('setting-tilt').textContent = String(opts.tilt);
+    if (el('setting-coalesced')) el('setting-coalesced').textContent = String(opts.coalesced);
+    if (el('setting-throttle')) el('setting-throttle').textContent = opts.throttle + 'ms';
+
+    // Show/hide data cards based on props
+    var pressureCard = el('pressure-card');
+    var velocityCard = el('velocity-card');
+    var tiltCard = el('tilt-card');
+
+    if (pressureCard) pressureCard.style.display = opts.pressure ? '' : 'none';
+    if (velocityCard) velocityCard.style.display = opts.velocity ? '' : 'none';
+    if (tiltCard) tiltCard.style.display = opts.tilt ? '' : 'none';
+  }
+
+  function showApiResult(method, result) {
+    var resultEl = document.getElementById('api-result');
+    if (!resultEl) return;
+
+    var typeStr = typeof result;
+    var valueStr = JSON.stringify(result);
+
+    resultEl.innerHTML = '<div class="pointer-tracker-demo__result-content">' +
+      '<span class="pointer-tracker-demo__result-method">' + method + '</span>' +
+      '<span class="pointer-tracker-demo__result-arrow">→</span>' +
+      '<span class="pointer-tracker-demo__result-value pointer-tracker-demo__result-value--' + typeStr + '">' + valueStr + '</span>' +
+      '<span class="pointer-tracker-demo__result-type">(' + typeStr + ')</span>' +
+      '</div>';
+  }
+
+  function updatePointerType(type) {
+    var indicator = document.getElementById('pointer-indicator');
+    var label = document.getElementById('pointer-type-label');
+    if (!indicator || !label) return;
+
+    var iconClass = 'fa-mouse-pointer';
+    if (type === 'touch') iconClass = 'fa-hand-pointer';
+    else if (type === 'pen') iconClass = 'fa-pen-fancy';
+
+    var icon = indicator.querySelector('i');
+    if (icon) icon.className = 'fas ' + iconClass;
+    label.textContent = type;
+
+    indicator.className = 'pointer-tracker-demo__pointer-indicator pointer-tracker-demo__pointer-indicator--' + type;
+  }
+
+  function updateDataDisplay(point) {
+    var opts = getOptions();
+
+    // Coordinates
+    var coordsEl = document.getElementById('data-coords');
+    if (coordsEl) {
+      coordsEl.textContent = 'X: ' + point.x.toFixed(1) + ', Y: ' + point.y.toFixed(1);
+    }
+
+    // Pressure
+    if (opts.pressure) {
+      var pressureEl = document.getElementById('data-pressure');
+      var pressureFill = document.getElementById('pressure-fill');
+      if (pressureEl) pressureEl.textContent = point.pressure.toFixed(3);
+      if (pressureFill) pressureFill.style.width = (point.pressure * 100) + '%';
+    }
+
+    // Velocity
+    if (opts.velocity && point.velocity) {
+      var velMagEl = document.getElementById('data-velocity-mag');
+      var velXEl = document.getElementById('data-velocity-x');
+      var velYEl = document.getElementById('data-velocity-y');
+      if (velMagEl) velMagEl.textContent = point.velocity.magnitude.toFixed(2);
+      if (velXEl) velXEl.textContent = point.velocity.x.toFixed(2);
+      if (velYEl) velYEl.textContent = point.velocity.y.toFixed(2);
+    }
+
+    // Tilt
+    if (opts.tilt && point.tilt) {
+      var tiltEl = document.getElementById('data-tilt');
+      var twistEl = document.getElementById('data-twist');
+      if (tiltEl) tiltEl.textContent = 'X: ' + point.tilt.x + '°, Y: ' + point.tilt.y + '°';
+      if (twistEl) twistEl.textContent = 'Twist: ' + (point.twist || 0) + '°';
+    }
+
+    // Pointer type
+    updatePointerType(point.pointerType);
+  }
+
+  function updateEventStats() {
+    var countEl = document.getElementById('data-event-count');
+    var rateEl = document.getElementById('data-event-rate');
+
+    if (countEl) countEl.textContent = eventCount;
+
+    if (rateEl && eventStartTime > 0) {
+      var elapsed = (Date.now() - eventStartTime) / 1000;
+      if (elapsed > 0) {
+        var rate = (eventCount / elapsed).toFixed(1);
+        rateEl.textContent = rate + ' events/sec';
+      }
+    }
+  }
+
+  function updateState(active) {
+    var stateEl = document.getElementById('state-indicator');
+    if (stateEl) {
+      stateEl.textContent = active ? 'Active' : 'Idle';
+      stateEl.className = 'pointer-tracker-demo__state-indicator' +
+        (active ? ' pointer-tracker-demo__state-indicator--active' : '');
+    }
+  }
+
+  function resetStats() {
+    eventCount = 0;
+    eventStartTime = 0;
+    lastEventTime = 0;
+    updateEventStats();
+    log('Stats reset', 'stats');
+  }
+
+  function setupCanvas() {
+    canvas = document.getElementById('drawing-canvas');
+    if (!canvas) return;
+
+    // Set canvas size
+    var container = canvas.parentElement;
+    var rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = 300;
+
+    ctx = canvas.getContext('2d');
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#2f81f7';
+    ctx.lineWidth = 2;
+
+    // Draw grid background
+    drawGrid();
+  }
+
+  function drawGrid() {
+    if (!ctx || !canvas) return;
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 1;
+
+    var gridSize = 20;
+    for (var x = 0; x < canvas.width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (var y = 0; y < canvas.height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function clearCanvas() {
+    if (!ctx || !canvas) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
+    log('Canvas cleared', 'clear');
+    emit('event', { event: 'pointer:clear', payload: {} });
+  }
+
+  function createTracker() {
+    if (!canvas) return;
+
+    var opts = getOptions();
+
+    // Destroy existing tracker
+    if (tracker) {
+      tracker.destroy();
+      tracker = null;
+    }
+
+    tracker = new Funky.PointerTracker(canvas, {
+      pressure: opts.pressure,
+      velocity: opts.velocity,
+      tilt: opts.tilt,
+      coalesced: opts.coalesced,
+      throttle: opts.throttle,
+      preventDefault: true,
+
+      onStart: function(point) {
+        updateState(true);
+        updateDataDisplay(point);
+
+        // Reset event stats on new stroke
+        eventCount = 0;
+        eventStartTime = Date.now();
+
+        // Begin drawing
+        ctx.beginPath();
+        ctx.moveTo(point.x, point.y);
+
+        emit('event', { event: 'pointer:start', payload: { x: point.x, y: point.y, pointerType: point.pointerType } });
+        log('Pointer down at ' + point.x.toFixed(0) + ', ' + point.y.toFixed(0), 'start');
+      },
+
+      onMove: function(point) {
+        eventCount++;
+        updateDataDisplay(point);
+        updateEventStats();
+
+        // Calculate stroke style based on velocity
+        if (opts.velocity && point.velocity) {
+          var hue = Math.min(point.velocity.magnitude * 500, 240);
+          ctx.strokeStyle = 'hsl(' + (240 - hue) + ', 70%, 50%)';
+        } else {
+          ctx.strokeStyle = '#2f81f7';
+        }
+
+        // Line width from pressure
+        if (opts.pressure) {
+          ctx.lineWidth = 1 + point.pressure * 9;
+        } else {
+          ctx.lineWidth = 3;
+        }
+
+        // Draw line segment
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(point.x, point.y);
+      },
+
+      onEnd: function(point) {
+        updateState(false);
+        if (point) {
+          updateDataDisplay(point);
+        }
+        ctx.closePath();
+
+        emit('event', { event: 'pointer:end', payload: point ? { x: point.x, y: point.y } : {} });
+        log('Pointer up - ' + eventCount + ' move events', 'end');
+      },
+
+      onCancel: function() {
+        updateState(false);
+        ctx.closePath();
+        log('Pointer cancelled', 'cancel');
+      }
+    });
+
+    log('Tracker created with options: ' + JSON.stringify(opts), 'init');
+  }
+
+  function destroyTracker() {
+    if (tracker) {
+      tracker.destroy();
+      tracker = null;
+      updateState(false);
+
+      var destroyBtn = document.getElementById('destroy-btn');
+      var recreateBtn = document.getElementById('recreate-btn');
+      if (destroyBtn) destroyBtn.disabled = true;
+      if (recreateBtn) recreateBtn.disabled = false;
+
+      showApiResult('destroy()', 'Tracker destroyed');
+      log('Tracker destroyed', 'destroy');
+    }
+  }
+
+  function recreateTracker() {
+    createTracker();
+
+    var destroyBtn = document.getElementById('destroy-btn');
+    var recreateBtn = document.getElementById('recreate-btn');
+    if (destroyBtn) destroyBtn.disabled = false;
+    if (recreateBtn) recreateBtn.disabled = true;
+
+    showApiResult('new PointerTracker()', 'Tracker recreated');
+  }
+
+  function setupControls() {
+    var clearBtn = document.getElementById('clear-canvas-btn');
+    var isActiveBtn = document.getElementById('is-active-btn');
+    var resetStatsBtn = document.getElementById('reset-stats-btn');
+    var destroyBtn = document.getElementById('destroy-btn');
+    var recreateBtn = document.getElementById('recreate-btn');
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', clearCanvas);
+    }
+
+    if (isActiveBtn) {
+      isActiveBtn.addEventListener('click', function() {
+        var active = tracker ? tracker.isActive() : false;
+        showApiResult('isActive()', active);
+        log('isActive() = ' + active, 'api');
+      });
+    }
+
+    if (resetStatsBtn) {
+      resetStatsBtn.addEventListener('click', resetStats);
+    }
+
+    if (destroyBtn) {
+      destroyBtn.addEventListener('click', destroyTracker);
+    }
+
+    if (recreateBtn) {
+      recreateBtn.addEventListener('click', recreateTracker);
+    }
+  }
+
+  // Handle window resize
+  function handleResize() {
+    if (!canvas) return;
+    var container = canvas.parentElement;
+    var rect = container.getBoundingClientRect();
+
+    // Save current drawing
+    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    canvas.width = rect.width;
+
+    // Restore drawing
+    ctx.putImageData(imageData, 0, 0);
+    drawGrid();
+  }
+
+  Funky.Pages.register('component-pointer-tracker', {
+    init: function(state) {
+      updatePropsDisplay();
+      setupCanvas();
+      setupControls();
+      createTracker();
+
+      window.addEventListener('resize', handleResize);
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updatePropsDisplay();
+          createTracker(); // Recreate with new options
+          log('Props changed, tracker recreated', 'props');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'pointer:init', payload: getOptions() });
+      log('Demo initialized', 'init');
+
+      return {};
+    },
+
+    destroy: function() {
+      window.removeEventListener('resize', handleResize);
+
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      if (tracker) {
+        tracker.destroy();
+        tracker = null;
+      }
+
+      canvas = null;
+      ctx = null;
+
+      return {};
+    }
+  });
+})();
+</script>

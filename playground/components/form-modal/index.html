@@ -1,0 +1,352 @@
+<div data-page="component-form-modal" class="component-demo">
+  <h2>Form Modal</h2>
+  <p class="text-muted">Schema-driven form modals with validation, supporting create and edit modes.</p>
+
+  <section class="demo-section" aria-labelledby="form-modal-props-heading">
+    <h3 id="form-modal-props-heading">Props-Configured Demo</h3>
+    <p class="text-muted small">Configure title, mode, and schema using the props panel.</p>
+    <div class="demo-area">
+      <button class="btn btn-primary btn-lg" id="form-props-modal" type="button">
+        <i class="fas fa-edit me-2" aria-hidden="true"></i>Open Props-Configured Form
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-modal-modes-heading">
+    <h3 id="form-modal-modes-heading">Create vs Edit Mode</h3>
+    <p class="text-muted small">Create mode starts empty; edit mode loads existing data.</p>
+    <div class="demo-area form-modal-demo__button-grid" role="group" aria-label="Form mode examples">
+      <button class="btn btn-success" id="form-create" type="button">
+        <i class="fas fa-plus me-2" aria-hidden="true"></i>Create New Client
+      </button>
+      <button class="btn btn-primary" id="form-edit" type="button">
+        <i class="fas fa-edit me-2" aria-hidden="true"></i>Edit Existing Client
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-modal-schemas-heading">
+    <h3 id="form-modal-schemas-heading">Different Schemas</h3>
+    <p class="text-muted small">Schema-driven forms adapt to different data structures.</p>
+    <div class="demo-area form-modal-demo__button-grid" role="group" aria-label="Schema examples">
+      <button class="btn btn-info" id="form-product" type="button">
+        <i class="fas fa-box me-2" aria-hidden="true"></i>Product Form
+      </button>
+      <button class="btn btn-warning" id="form-settings" type="button">
+        <i class="fas fa-cog me-2" aria-hidden="true"></i>Settings Form
+      </button>
+      <button class="btn btn-secondary" id="form-contact" type="button">
+        <i class="fas fa-address-book me-2" aria-hidden="true"></i>Contact Form
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-modal-validation-heading">
+    <h3 id="form-modal-validation-heading">Validation</h3>
+    <p class="text-muted small">Schema-based validation with required fields and format checks.</p>
+    <div class="demo-area form-modal-demo__button-grid" role="group" aria-label="Validation examples">
+      <button class="btn btn-outline-danger" id="form-validation" type="button">
+        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>Show Validation Demo
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-modal-result-heading">
+    <h3 id="form-modal-result-heading">Last Submitted Data</h3>
+    <p class="text-muted small">View the data from the most recent form submission.</p>
+    <div class="demo-area">
+      <pre id="form-result" class="form-modal-demo__log" aria-live="polite" aria-label="Form submission result">No data submitted yet</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-modal-log-heading">
+    <h3 id="form-modal-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="form-modal-log" class="form-modal-demo__log" aria-live="polite" aria-label="Form modal event log">Interact with form modals to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  // Schema definitions
+  var clientSchema = {
+    type: 'object',
+    properties: {
+      name: { type: 'string', title: 'Client Name', minLength: 1 },
+      email: { type: 'string', title: 'Email', format: 'email' },
+      phone: { type: 'string', title: 'Phone' },
+      is_active: { type: 'boolean', title: 'Active', default: true }
+    },
+    required: ['name', 'email']
+  };
+
+  var productSchema = {
+    type: 'object',
+    properties: {
+      name: { type: 'string', title: 'Product Name', minLength: 1 },
+      price: { type: 'number', title: 'Price', minimum: 0 },
+      category: { type: 'string', title: 'Category', enum: ['Electronics', 'Clothing', 'Food', 'Other'] },
+      in_stock: { type: 'boolean', title: 'In Stock', default: true }
+    },
+    required: ['name', 'price']
+  };
+
+  var settingsSchema = {
+    type: 'object',
+    properties: {
+      theme: { type: 'string', title: 'Theme', enum: ['light', 'dark', 'system'] },
+      notifications: { type: 'boolean', title: 'Enable Notifications', default: true },
+      language: { type: 'string', title: 'Language', enum: ['en', 'es', 'fr', 'de'] },
+      timezone: { type: 'string', title: 'Timezone' }
+    }
+  };
+
+  var contactSchema = {
+    type: 'object',
+    properties: {
+      firstName: { type: 'string', title: 'First Name', minLength: 1 },
+      lastName: { type: 'string', title: 'Last Name', minLength: 1 },
+      email: { type: 'string', title: 'Email', format: 'email' },
+      subject: { type: 'string', title: 'Subject', enum: ['General', 'Support', 'Sales', 'Feedback'] },
+      message: { type: 'string', title: 'Message', format: 'textarea' }
+    },
+    required: ['firstName', 'email', 'message']
+  };
+
+  var validationSchema = {
+    type: 'object',
+    properties: {
+      username: { type: 'string', title: 'Username', minLength: 3, maxLength: 20, pattern: '^[a-zA-Z0-9_]+$' },
+      email: { type: 'string', title: 'Email (required)', format: 'email' },
+      age: { type: 'integer', title: 'Age', minimum: 18, maximum: 120 },
+      website: { type: 'string', title: 'Website', format: 'uri' },
+      password: { type: 'string', title: 'Password', minLength: 8 }
+    },
+    required: ['email', 'password']
+  };
+
+  Funky.Pages.register('component-form-modal', {
+    _logs: [],
+    _resultLogs: [],
+
+    _log: function(message) {
+      this._logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+      if (this._logs.length > 10) this._logs.pop();
+      var logEl = document.getElementById('form-modal-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _showResult: function(data) {
+      var resultEl = document.getElementById('form-result');
+      if (resultEl) resultEl.textContent = JSON.stringify(data, null, 2);
+    },
+
+    _getSchemaFromProps: function(props) {
+      // Return schema based on props or default to client schema
+      var schemaType = props.schemaType || 'client';
+      switch (schemaType) {
+        case 'product': return productSchema;
+        case 'settings': return settingsSchema;
+        case 'contact': return contactSchema;
+        case 'validation': return validationSchema;
+        default: return clientSchema;
+      }
+    },
+
+    init: function(state) {
+      var self = this;
+      this._logs = [];
+
+      var props = getProps();
+      var title = props.title || 'Edit Client';
+      var mode = props.mode || 'edit';
+
+      this._log('Init with title=' + title + ', mode=' + mode);
+      emit('event', { event: 'form-modal:init', payload: { title: title, mode: mode } });
+
+      if (!Funky.FormModal) {
+        this._log('Error: Funky.FormModal not available');
+        return;
+      }
+
+      // Props-configured modal button
+      document.getElementById('form-props-modal').onclick = function() {
+        var props = getProps();
+        var modalTitle = props.title || 'Form Modal Demo';
+        var modalMode = props.mode || 'create';
+        var schema = self._getSchemaFromProps(props);
+        var initialData = modalMode === 'edit' ? (props.data || { name: 'Demo User', email: 'demo@example.com' }) : {};
+
+        Funky.FormModal.show({
+          modalId: 'propsFormModal',
+          title: modalTitle,
+          mode: modalMode,
+          schema: schema,
+          data: initialData,
+          onSubmit: function(data) {
+            Funky.Toast.success('Form submitted successfully!');
+            self._showResult(data);
+            self._log('Props form submitted: ' + JSON.stringify(data));
+            emit('event', { event: 'form-modal:submit', payload: { mode: modalMode, data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened props-configured form (mode=' + modalMode + ')');
+        emit('event', { event: 'form-modal:open', payload: { mode: modalMode, title: modalTitle } });
+      };
+
+      // Create mode button
+      document.getElementById('form-create').onclick = function() {
+        Funky.FormModal.show({
+          modalId: 'createClientModal',
+          title: 'Create New Client',
+          mode: 'create',
+          schema: clientSchema,
+          onSubmit: function(data) {
+            Funky.Toast.success('Client created successfully!');
+            self._showResult(data);
+            self._log('Client created: ' + data.name);
+            emit('event', { event: 'form-modal:submit', payload: { mode: 'create', type: 'client', data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened create client form');
+        emit('event', { event: 'form-modal:open', payload: { mode: 'create', type: 'client' } });
+      };
+
+      // Edit mode button
+      document.getElementById('form-edit').onclick = function() {
+        var existingData = {
+          name: 'John Doe',
+          email: 'john@example.com',
+          phone: '+1 555-1234',
+          is_active: true
+        };
+
+        Funky.FormModal.show({
+          modalId: 'editClientModal',
+          title: 'Edit Client',
+          mode: 'edit',
+          schema: clientSchema,
+          data: existingData,
+          onSubmit: function(data) {
+            Funky.Toast.success('Client updated successfully!');
+            self._showResult(data);
+            self._log('Client updated: ' + data.name);
+            emit('event', { event: 'form-modal:submit', payload: { mode: 'edit', type: 'client', data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened edit client form');
+        emit('event', { event: 'form-modal:open', payload: { mode: 'edit', type: 'client' } });
+      };
+
+      // Product form button
+      document.getElementById('form-product').onclick = function() {
+        Funky.FormModal.show({
+          modalId: 'productFormModal',
+          title: 'Add Product',
+          mode: 'create',
+          schema: productSchema,
+          onSubmit: function(data) {
+            Funky.Toast.success('Product added!');
+            self._showResult(data);
+            self._log('Product added: ' + data.name);
+            emit('event', { event: 'form-modal:submit', payload: { type: 'product', data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened product form');
+        emit('event', { event: 'form-modal:open', payload: { type: 'product' } });
+      };
+
+      // Settings form button
+      document.getElementById('form-settings').onclick = function() {
+        Funky.FormModal.show({
+          modalId: 'settingsFormModal',
+          title: 'Settings',
+          mode: 'edit',
+          schema: settingsSchema,
+          data: { theme: 'dark', notifications: true, language: 'en' },
+          onSubmit: function(data) {
+            Funky.Toast.success('Settings saved!');
+            self._showResult(data);
+            self._log('Settings saved');
+            emit('event', { event: 'form-modal:submit', payload: { type: 'settings', data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened settings form');
+        emit('event', { event: 'form-modal:open', payload: { type: 'settings' } });
+      };
+
+      // Contact form button
+      document.getElementById('form-contact').onclick = function() {
+        Funky.FormModal.show({
+          modalId: 'contactFormModal',
+          title: 'Contact Us',
+          mode: 'create',
+          schema: contactSchema,
+          onSubmit: function(data) {
+            Funky.Toast.success('Message sent!');
+            self._showResult(data);
+            self._log('Contact form submitted');
+            emit('event', { event: 'form-modal:submit', payload: { type: 'contact', data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened contact form');
+        emit('event', { event: 'form-modal:open', payload: { type: 'contact' } });
+      };
+
+      // Validation demo button
+      document.getElementById('form-validation').onclick = function() {
+        Funky.FormModal.show({
+          modalId: 'validationFormModal',
+          title: 'Validation Demo',
+          mode: 'create',
+          schema: validationSchema,
+          data: {
+            username: 'ab', // Too short
+            age: 15 // Too young
+          },
+          onSubmit: function(data) {
+            Funky.Toast.success('Validation passed!');
+            self._showResult(data);
+            self._log('Validation form submitted');
+            emit('event', { event: 'form-modal:submit', payload: { type: 'validation', data: data } });
+            return Promise.resolve();
+          }
+        });
+
+        self._log('Opened validation demo form');
+        emit('event', { event: 'form-modal:open', payload: { type: 'validation' } });
+      };
+    },
+
+    destroy: function() {
+      // Clean up form modals
+      if (Funky.FormModal) {
+        var modalIds = ['propsFormModal', 'createClientModal', 'editClientModal', 'productFormModal', 'settingsFormModal', 'contactFormModal', 'validationFormModal'];
+        modalIds.forEach(function(id) {
+          if (Funky.FormModal._instances && Funky.FormModal._instances[id]) {
+            Funky.FormModal.destroy(id);
+          }
+        });
+      }
+      this._logs = [];
+      return {};
+    }
+  });
+})();
+</script>

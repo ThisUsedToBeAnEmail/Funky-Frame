@@ -1,0 +1,658 @@
+<div data-page="component-pubsub" class="component-demo">
+  <h2>PubSub</h2>
+  <p class="text-muted">Application event bus for decoupled communication between components</p>
+
+  <!-- Quick Start Section - First for immediate interaction -->
+  <section class="demo-section" aria-labelledby="quickstart-heading">
+    <h3 id="quickstart-heading">Quick Start</h3>
+    <p class="text-muted small">Try it: Subscribe first, then emit to see the event flow</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__quickstart">
+        <div class="pubsub-demo__quickstart-row">
+          <span class="pubsub-demo__step-badge">1</span>
+          <button type="button" class="btn btn-sm btn-success" id="btn-quick-subscribe">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> Subscribe to demo:test
+          </button>
+        </div>
+        <div class="pubsub-demo__quickstart-row">
+          <span class="pubsub-demo__step-badge">2</span>
+          <button type="button" class="btn btn-sm btn-primary" id="btn-quick-emit">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Emit demo:test
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section - Shows results immediately -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Real-time display of received events</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__log-header">
+        <span class="badge bg-info">Events: <span id="event-count">0</span></span>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-clear-log">
+          <i class="fa-solid fa-eraser" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+      <pre id="event-log" class="pubsub-demo__log" aria-live="polite"><span class="text-muted">// Subscribe to an event, then emit it to see results here</span></pre>
+    </div>
+  </section>
+
+  <!-- Active Subscriptions Section - Shows what's listening -->
+  <section class="demo-section" aria-labelledby="subscriptions-heading">
+    <h3 id="subscriptions-heading">Active Subscriptions</h3>
+    <p class="text-muted small">Current event listeners managed by this demo</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__subscriptions-header">
+        <span class="badge bg-secondary">Active: <span id="subscription-count">0</span></span>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-clear-subscriptions">
+          <i class="fa-solid fa-trash" aria-hidden="true"></i> Clear All
+        </button>
+      </div>
+      <div id="subscriptions-list" class="pubsub-demo__subscriptions-list">
+        <span class="text-muted">No active subscriptions</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Custom Subscribe Section -->
+  <section class="demo-section" aria-labelledby="subscribe-heading">
+    <h3 id="subscribe-heading">Subscribe</h3>
+    <p class="text-muted small">Add listeners for custom events (uses Props panel values)</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__subscribe-form">
+        <div class="pubsub-demo__form-row">
+          <label for="subscribe-event" class="pubsub-demo__label">Event:</label>
+          <input type="text" id="subscribe-event" class="form-control form-control-sm" placeholder="demo:test" value="demo:test">
+        </div>
+        <div class="pubsub-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-success" id="btn-subscribe">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> Subscribe (on)
+          </button>
+          <button type="button" class="btn btn-sm btn-warning" id="btn-subscribe-once">
+            <i class="fa-solid fa-1" aria-hidden="true"></i> Subscribe Once
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Custom Emit Section -->
+  <section class="demo-section" aria-labelledby="emit-heading">
+    <h3 id="emit-heading">Emit Event</h3>
+    <p class="text-muted small">Publish events to all subscribers (uses Props panel values)</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__emit-form">
+        <div class="pubsub-demo__form-row">
+          <label for="emit-event" class="pubsub-demo__label">Event:</label>
+          <input type="text" id="emit-event" class="form-control form-control-sm" placeholder="demo:test" value="demo:test">
+        </div>
+        <div class="pubsub-demo__form-row">
+          <label for="emit-data" class="pubsub-demo__label">Data:</label>
+          <input type="text" id="emit-data" class="form-control form-control-sm" placeholder='{"message": "Hello!"}' value='{"message": "Hello!"}'>
+        </div>
+        <div class="pubsub-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-emit">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Emit
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Namespace Demo Section -->
+  <section class="demo-section" aria-labelledby="namespace-heading">
+    <h3 id="namespace-heading">Namespaced PubSub</h3>
+    <p class="text-muted small">Create isolated event channels with automatic prefixing</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__namespace">
+        <div class="pubsub-demo__namespace-info">
+          <span class="pubsub-demo__namespace-label">Namespace:</span>
+          <code id="namespace-prefix">myApp</code>
+          <span class="text-muted small">(emit('action') becomes 'myApp:action')</span>
+        </div>
+        <div class="pubsub-demo__form-row">
+          <label for="namespace-event" class="pubsub-demo__label">Event:</label>
+          <input type="text" id="namespace-event" class="form-control form-control-sm" placeholder="action" value="userAction">
+        </div>
+        <div class="pubsub-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-info" id="btn-namespace-subscribe">
+            <i class="fa-solid fa-plug" aria-hidden="true"></i> Subscribe
+          </button>
+          <button type="button" class="btn btn-sm btn-primary" id="btn-namespace-emit">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Emit
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Actions Section -->
+  <section class="demo-section" aria-labelledby="actions-heading">
+    <h3 id="actions-heading">Query Methods</h3>
+    <p class="text-muted small">Inspect the current state of the event bus</p>
+    <div class="demo-area">
+      <div class="pubsub-demo__actions">
+        <button type="button" class="btn btn-sm btn-outline-info" id="btn-show-events">
+          <i class="fa-solid fa-list" aria-hidden="true"></i> Show Event Names
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-info" id="btn-check-listeners">
+          <i class="fa-solid fa-users" aria-hidden="true"></i> Check Listeners
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-warning" id="btn-emit-multiple">
+          <i class="fa-solid fa-layer-group" aria-hidden="true"></i> Emit 5 Events
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="demo-section" aria-labelledby="stats-heading">
+    <h3 id="stats-heading">Statistics</h3>
+    <div class="demo-area">
+      <div class="pubsub-demo__stats">
+        <div class="pubsub-demo__stat-item">
+          <span class="pubsub-demo__stat-label">Events Emitted:</span>
+          <span id="stat-emitted" class="badge bg-primary">0</span>
+        </div>
+        <div class="pubsub-demo__stat-item">
+          <span class="pubsub-demo__stat-label">Events Received:</span>
+          <span id="stat-received" class="badge bg-success">0</span>
+        </div>
+        <div class="pubsub-demo__stat-item">
+          <span class="pubsub-demo__stat-label">Active Subscriptions:</span>
+          <span id="stat-subscriptions" class="badge bg-info">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var propsChangedHandler = null;
+  var subscriptions = []; // Array of { id, event, type, unsubscribe }
+  var eventLog = [];
+  var emitCount = 0;
+  var receiveCount = 0;
+  var subscriptionId = 0;
+  var namespaceInstance = null;
+  var namespaceSubscriptions = [];
+
+  // ============================================
+  // HELPERS
+  // ============================================
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function formatTime() {
+    return new Date().toLocaleTimeString('en-US', { hour12: false });
+  }
+
+  function parseData(str) {
+    if (!str || str.trim() === '') return null;
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return str; // Return as string if not valid JSON
+    }
+  }
+
+  function getCurrentEvent() {
+    var props = getProps();
+    return props.eventName || 'demo:test';
+  }
+
+  function getCurrentData() {
+    var props = getProps();
+    return props.eventData || '{"message": "Hello!"}';
+  }
+
+  function getNamespacePrefix() {
+    var props = getProps();
+    return props.namespace || 'myApp';
+  }
+
+  // ============================================
+  // UI UPDATES
+  // ============================================
+
+  function syncInputsFromProps() {
+    var props = getProps();
+
+    var subscribeEventEl = document.getElementById('subscribe-event');
+    var emitEventEl = document.getElementById('emit-event');
+    var emitDataEl = document.getElementById('emit-data');
+    var namespaceEventEl = document.getElementById('namespace-event');
+    var namespacePrefixEl = document.getElementById('namespace-prefix');
+
+    if (subscribeEventEl && props.eventName) {
+      subscribeEventEl.value = props.eventName;
+    }
+    if (emitEventEl && props.eventName) {
+      emitEventEl.value = props.eventName;
+    }
+    if (emitDataEl && props.eventData) {
+      emitDataEl.value = props.eventData;
+    }
+    if (namespaceEventEl && props.namespaceEvent) {
+      namespaceEventEl.value = props.namespaceEvent;
+    }
+    if (namespacePrefixEl && props.namespace) {
+      namespacePrefixEl.textContent = props.namespace;
+      // Recreate namespace instance with new prefix
+      namespaceInstance = Funky.PubSub.namespace(props.namespace);
+    }
+  }
+
+  function updateEventLog() {
+    var logEl = document.getElementById('event-log');
+    var countEl = document.getElementById('event-count');
+    var receivedEl = document.getElementById('stat-received');
+
+    if (countEl) countEl.textContent = eventLog.length;
+    if (receivedEl) receivedEl.textContent = receiveCount;
+
+    if (logEl) {
+      if (eventLog.length === 0) {
+        logEl.innerHTML = '<span class="text-muted">// Subscribe to an event, then emit it to see results here</span>';
+      } else {
+        var html = eventLog.map(function(entry) {
+          var dataStr = entry.data !== undefined ? ' ' + JSON.stringify(entry.data) : '';
+          var typeClass = entry.type === 'once' ? 'text-warning' : (entry.type === 'ns' ? 'text-info' : 'text-success');
+          return '<span class="text-muted">' + entry.time + '</span> ' +
+                 '<span class="' + typeClass + '">[' + entry.type + ']</span> ' +
+                 '<span class="text-info">' + escapeHtml(entry.event) + '</span>' +
+                 '<span class="text-secondary">' + escapeHtml(dataStr) + '</span>';
+        }).join('\n');
+        logEl.innerHTML = html;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+    }
+  }
+
+  function updateSubscriptionsList() {
+    var listEl = document.getElementById('subscriptions-list');
+    var countEl = document.getElementById('subscription-count');
+    var statEl = document.getElementById('stat-subscriptions');
+
+    var totalCount = subscriptions.length + namespaceSubscriptions.length;
+
+    if (countEl) countEl.textContent = totalCount;
+    if (statEl) statEl.textContent = totalCount;
+
+    if (listEl) {
+      if (totalCount === 0) {
+        listEl.innerHTML = '<span class="text-muted">No active subscriptions</span>';
+      } else {
+        var html = '';
+
+        // Regular subscriptions
+        subscriptions.forEach(function(sub) {
+          var typeClass = sub.type === 'once' ? 'bg-warning' : 'bg-success';
+          html += '<div class="pubsub-demo__subscription-item">' +
+                  '<span class="badge ' + typeClass + '">' + sub.type + '</span> ' +
+                  '<code>' + escapeHtml(sub.event) + '</code>' +
+                  '<button type="button" class="btn btn-sm btn-outline-danger pubsub-demo__unsub-btn" data-id="' + sub.id + '">' +
+                  '<i class="fa-solid fa-times" aria-hidden="true"></i>' +
+                  '</button>' +
+                  '</div>';
+        });
+
+        // Namespace subscriptions
+        var nsPrefix = getNamespacePrefix();
+        namespaceSubscriptions.forEach(function(sub) {
+          html += '<div class="pubsub-demo__subscription-item">' +
+                  '<span class="badge bg-info">ns</span> ' +
+                  '<code>' + nsPrefix + ':' + escapeHtml(sub.event) + '</code>' +
+                  '<button type="button" class="btn btn-sm btn-outline-danger pubsub-demo__unsub-btn" data-ns-id="' + sub.id + '">' +
+                  '<i class="fa-solid fa-times" aria-hidden="true"></i>' +
+                  '</button>' +
+                  '</div>';
+        });
+
+        listEl.innerHTML = html;
+
+        // Bind unsubscribe buttons
+        listEl.querySelectorAll('.pubsub-demo__unsub-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            var nsId = this.getAttribute('data-ns-id');
+
+            if (id) {
+              unsubscribeById(parseInt(id));
+            } else if (nsId) {
+              unsubscribeNamespaceById(parseInt(nsId));
+            }
+          });
+        });
+      }
+    }
+  }
+
+  function updateStats() {
+    var emittedEl = document.getElementById('stat-emitted');
+    if (emittedEl) emittedEl.textContent = emitCount;
+  }
+
+  function logEvent(event, data, type) {
+    receiveCount++;
+    eventLog.unshift({
+      time: formatTime(),
+      event: event,
+      data: data,
+      type: type
+    });
+
+    if (eventLog.length > 50) eventLog.pop();
+
+    updateEventLog();
+  }
+
+  // ============================================
+  // SUBSCRIPTION MANAGEMENT
+  // ============================================
+
+  function addSubscription(event, type) {
+    var id = ++subscriptionId;
+    var handler;
+    var unsubscribe;
+
+    if (type === 'on') {
+      handler = function(data) {
+        logEvent(event, data, 'on');
+        emit('event', { event: 'pubsub:received', payload: { event: event, data: data } });
+      };
+      unsubscribe = Funky.PubSub.on(event, handler);
+    } else {
+      handler = function(data) {
+        logEvent(event, data, 'once');
+        // Remove from our tracking after it fires
+        subscriptions = subscriptions.filter(function(s) { return s.id !== id; });
+        updateSubscriptionsList();
+        emit('event', { event: 'pubsub:received:once', payload: { event: event, data: data } });
+      };
+      unsubscribe = Funky.PubSub.once(event, handler);
+    }
+
+    subscriptions.push({
+      id: id,
+      event: event,
+      type: type,
+      handler: handler,
+      unsubscribe: unsubscribe
+    });
+
+    updateSubscriptionsList();
+    emit('event', { event: 'pubsub:subscribed', payload: { event: event, type: type } });
+  }
+
+  function unsubscribeById(id) {
+    var sub = subscriptions.find(function(s) { return s.id === id; });
+    if (sub) {
+      sub.unsubscribe();
+      subscriptions = subscriptions.filter(function(s) { return s.id !== id; });
+      updateSubscriptionsList();
+      emit('event', { event: 'pubsub:unsubscribed', payload: { event: sub.event } });
+    }
+  }
+
+  function clearAllSubscriptions() {
+    subscriptions.forEach(function(sub) {
+      sub.unsubscribe();
+    });
+    subscriptions = [];
+
+    namespaceSubscriptions.forEach(function(sub) {
+      sub.unsubscribe();
+    });
+    namespaceSubscriptions = [];
+
+    updateSubscriptionsList();
+    emit('event', { event: 'pubsub:cleared', payload: {} });
+  }
+
+  // ============================================
+  // NAMESPACE MANAGEMENT
+  // ============================================
+
+  function ensureNamespaceInstance() {
+    var prefix = getNamespacePrefix();
+    if (!namespaceInstance) {
+      namespaceInstance = Funky.PubSub.namespace(prefix);
+    }
+    return namespaceInstance;
+  }
+
+  function addNamespaceSubscription(event) {
+    ensureNamespaceInstance();
+    var prefix = getNamespacePrefix();
+
+    var id = ++subscriptionId;
+    var handler = function(data) {
+      logEvent(prefix + ':' + event, data, 'ns');
+      emit('event', { event: 'pubsub:namespace:received', payload: { event: event, data: data } });
+    };
+
+    var unsubscribe = namespaceInstance.on(event, handler);
+
+    namespaceSubscriptions.push({
+      id: id,
+      event: event,
+      unsubscribe: unsubscribe
+    });
+
+    updateSubscriptionsList();
+    emit('event', { event: 'pubsub:namespace:subscribed', payload: { event: event } });
+  }
+
+  function unsubscribeNamespaceById(id) {
+    var sub = namespaceSubscriptions.find(function(s) { return s.id === id; });
+    if (sub) {
+      sub.unsubscribe();
+      namespaceSubscriptions = namespaceSubscriptions.filter(function(s) { return s.id !== id; });
+      updateSubscriptionsList();
+    }
+  }
+
+  function emitNamespaceEvent(event) {
+    ensureNamespaceInstance();
+    namespaceInstance.emit(event, { source: 'namespace-demo', timestamp: Date.now() });
+    emitCount++;
+    updateStats();
+    emit('event', { event: 'pubsub:namespace:emitted', payload: { event: event } });
+  }
+
+  // ============================================
+  // EVENT BINDINGS
+  // ============================================
+
+  function bindEvents() {
+    // Quick start buttons
+    document.getElementById('btn-quick-subscribe').addEventListener('click', function() {
+      addSubscription(getCurrentEvent(), 'on');
+    });
+
+    document.getElementById('btn-quick-emit').addEventListener('click', function() {
+      var event = getCurrentEvent();
+      var data = parseData(getCurrentData());
+      Funky.PubSub.emit(event, data);
+      emitCount++;
+      updateStats();
+      emit('event', { event: 'pubsub:emitted', payload: { event: event, data: data } });
+    });
+
+    // Emit event
+    document.getElementById('btn-emit').addEventListener('click', function() {
+      var event = document.getElementById('emit-event').value.trim();
+      var dataStr = document.getElementById('emit-data').value.trim();
+
+      if (!event) {
+        Funky.Toast.warning('Please enter an event name');
+        return;
+      }
+
+      var data = parseData(dataStr);
+      Funky.PubSub.emit(event, data);
+      emitCount++;
+      updateStats();
+      emit('event', { event: 'pubsub:emitted', payload: { event: event, data: data } });
+    });
+
+    // Subscribe (on)
+    document.getElementById('btn-subscribe').addEventListener('click', function() {
+      var event = document.getElementById('subscribe-event').value.trim();
+      if (!event) {
+        Funky.Toast.warning('Please enter an event name');
+        return;
+      }
+      addSubscription(event, 'on');
+    });
+
+    // Subscribe once
+    document.getElementById('btn-subscribe-once').addEventListener('click', function() {
+      var event = document.getElementById('subscribe-event').value.trim();
+      if (!event) {
+        Funky.Toast.warning('Please enter an event name');
+        return;
+      }
+      addSubscription(event, 'once');
+    });
+
+    // Clear log
+    document.getElementById('btn-clear-log').addEventListener('click', function() {
+      eventLog = [];
+      receiveCount = 0;
+      updateEventLog();
+    });
+
+    // Clear all subscriptions
+    document.getElementById('btn-clear-subscriptions').addEventListener('click', function() {
+      clearAllSubscriptions();
+    });
+
+    // Namespace subscribe
+    document.getElementById('btn-namespace-subscribe').addEventListener('click', function() {
+      var event = document.getElementById('namespace-event').value.trim();
+      if (!event) {
+        Funky.Toast.warning('Please enter an event name');
+        return;
+      }
+      addNamespaceSubscription(event);
+    });
+
+    // Namespace emit
+    document.getElementById('btn-namespace-emit').addEventListener('click', function() {
+      var event = document.getElementById('namespace-event').value.trim();
+      if (!event) {
+        Funky.Toast.warning('Please enter an event name');
+        return;
+      }
+      emitNamespaceEvent(event);
+    });
+
+    // Show event names
+    document.getElementById('btn-show-events').addEventListener('click', function() {
+      var names = Funky.PubSub.eventNames();
+      if (names.length === 0) {
+        Funky.Toast.info('No events registered');
+      } else {
+        Funky.Modal.alert({
+          title: 'Registered Events',
+          message: '<pre style="text-align:left;max-height:300px;overflow:auto">' + names.join('\n') + '</pre>',
+          type: 'info'
+        });
+      }
+      emit('event', { event: 'pubsub:eventNames', payload: { count: names.length } });
+    });
+
+    // Check listeners
+    document.getElementById('btn-check-listeners').addEventListener('click', function() {
+      var event = document.getElementById('subscribe-event').value.trim() || getCurrentEvent();
+      var count = Funky.PubSub.listenerCount(event);
+      var has = Funky.PubSub.hasListeners(event);
+      Funky.Toast.info('Event "' + event + '": ' + count + ' listener(s)');
+      emit('event', { event: 'pubsub:checkListeners', payload: { event: event, count: count, has: has } });
+    });
+
+    // Emit multiple events
+    document.getElementById('btn-emit-multiple').addEventListener('click', function() {
+      var event = getCurrentEvent();
+      for (var i = 1; i <= 5; i++) {
+        Funky.PubSub.emit(event, { index: i, total: 5 });
+        emitCount++;
+      }
+      updateStats();
+      emit('event', { event: 'pubsub:emitBatch', payload: { count: 5 } });
+    });
+  }
+
+  // ============================================
+  // PAGE REGISTRATION
+  // ============================================
+
+  Funky.Pages.register('component-pubsub', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create namespace instance
+      namespaceInstance = Funky.PubSub.namespace(getNamespacePrefix());
+
+      // Sync inputs from props
+      syncInputsFromProps();
+
+      // Bind events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          syncInputsFromProps();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'pubsub:init', payload: props });
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clear all demo subscriptions
+      subscriptions.forEach(function(sub) {
+        sub.unsubscribe();
+      });
+      subscriptions = [];
+
+      namespaceSubscriptions.forEach(function(sub) {
+        sub.unsubscribe();
+      });
+      namespaceSubscriptions = [];
+
+      // Reset state
+      eventLog = [];
+      emitCount = 0;
+      receiveCount = 0;
+      subscriptionId = 0;
+      namespaceInstance = null;
+
+      return {};
+    }
+  });
+})();
+</script>

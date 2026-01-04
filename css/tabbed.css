@@ -1,0 +1,133 @@
+/**
+ * Tabbed Component Demo Styles
+ * Playground-specific styling for the Tabbed component demos
+ */
+
+/* ============================================
+   TAB CONTENT STYLING
+   ============================================ */
+
+.tabbed-demo__content {
+  border: 1px solid var(--pro-border-color);
+  border-top: none;
+  border-radius: 0 0 var(--pro-radius-md, 6px) var(--pro-radius-md, 6px);
+  background: var(--pro-bg-primary);
+}
+
+.tabbed-demo__pane {
+  padding: var(--pro-spacing-lg, 1.5rem);
+}
+
+.tabbed-demo__pane h5 {
+  margin-bottom: var(--pro-spacing-sm, 0.75rem);
+  color: var(--pro-text-primary);
+  font-weight: 600;
+}
+
+.tabbed-demo__pane p {
+  margin-bottom: var(--pro-spacing-sm, 0.75rem);
+  color: var(--pro-text-secondary);
+  line-height: 1.6;
+}
+
+.tabbed-demo__pane p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   BUTTON GRID FOR API CONTROLS
+   ============================================ */
+
+.tabbed-demo__button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pro-spacing-sm, 0.75rem);
+  align-items: flex-start;
+}
+
+.tabbed-demo__button-grid .btn {
+  flex-shrink: 0;
+}
+
+/* ============================================
+   STATE & EVENT LOG
+   ============================================ */
+
+.tabbed-demo__log {
+  font-family: var(--pro-font-mono, 'Monaco', 'Menlo', 'Consolas', monospace);
+  font-size: var(--pro-font-size-sm, 0.8125rem);
+  line-height: 1.6;
+  padding: var(--pro-spacing-md, 1rem);
+  margin: 0;
+  background: var(--pro-bg-tertiary, var(--pro-bg-secondary));
+  color: var(--pro-text-muted, var(--pro-text-secondary));
+  border-radius: var(--pro-radius-md, 6px);
+  border: 1px solid var(--pro-border-color);
+  min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .tabbed-demo__pane {
+    padding: var(--pro-spacing-md, 1rem);
+  }
+
+  .tabbed-demo__button-grid {
+    gap: var(--pro-spacing-xs, 0.5rem);
+  }
+
+  .tabbed-demo__button-grid .btn {
+    flex: 1 1 calc(50% - var(--pro-spacing-xs, 0.5rem));
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabbed-demo__button-grid .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .tabbed-demo__content {
+    border-width: 2px;
+  }
+
+  .tabbed-demo__log {
+    border-width: 2px;
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST THEME (Manual Selection)
+   ============================================ */
+
+[data-theme="high-contrast"] .tabbed-demo__content {
+  border: 2px solid #ffffff;
+  background: #000000;
+}
+
+[data-theme="high-contrast"] .tabbed-demo__pane h5 {
+  color: #ffffff;
+}
+
+[data-theme="high-contrast"] .tabbed-demo__pane p {
+  color: #ffffff;
+}
+
+[data-theme="high-contrast"] .tabbed-demo__log {
+  border: 2px solid #ffffff;
+  background: #000000;
+  color: #ffffff;
+}

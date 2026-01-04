@@ -1,0 +1,575 @@
+/**
+ * Funky.Accordion Styles
+ * Accessible accordion component with data-driven rendering
+ * 
+ * Uses --pro-* CSS variables for theme consistency.
+ * No hardcoded colors - all values inherit from theme.
+ */
+
+/* ==========================================================================
+   CSS Variables
+   ========================================================================== */
+
+.funky-accordion {
+    /* Structure */
+    --accordion-border-radius: var(--pro-border-radius);
+    --accordion-spacing: var(--pro-spacing-md);
+    
+    /* Colors - inherit from theme, no hardcoded fallbacks */
+    --accordion-bg: var(--pro-bg-primary);
+    --accordion-header-bg: var(--pro-bg-secondary);
+    --accordion-header-hover-bg: var(--pro-bg-hover);
+    --accordion-header-active-bg: var(--pro-bg-tertiary);
+    --accordion-border-color: var(--pro-border-color);
+    --accordion-text-color: var(--pro-text-primary);
+    --accordion-text-muted: var(--pro-text-secondary);
+    
+    /* States */
+    --accordion-focus-ring: var(--pro-focus-ring);
+    --accordion-disabled-opacity: 0.5;
+    
+    /* Animation */
+    --accordion-transition-duration: 300ms;
+    --accordion-transition-timing: ease-in-out;
+}
+
+/* ==========================================================================
+   Base Container
+   ========================================================================== */
+
+.funky-accordion {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid var(--accordion-border-color);
+    border-radius: var(--accordion-border-radius);
+    overflow: hidden;
+}
+
+.funky-accordion--animated .funky-accordion__chevron {
+    transition: transform var(--accordion-transition-duration) var(--accordion-transition-timing);
+}
+
+/* ==========================================================================
+   Items Container (for search)
+   ========================================================================== */
+
+.funky-accordion__items {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   Accordion Item
+   ========================================================================== */
+
+.funky-accordion__item {
+    background: var(--accordion-bg);
+    border-bottom: 1px solid var(--accordion-border-color);
+}
+
+/* Remove border from last item */
+.funky-accordion__item:last-child {
+    border-bottom: none;
+}
+
+.funky-accordion__item--disabled {
+    opacity: var(--accordion-disabled-opacity);
+}
+
+.funky-accordion__item--hidden {
+    display: none !important;
+}
+
+.funky-accordion__item--loading .funky-accordion__header {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Nested items */
+.funky-accordion__item--nested {
+    border-left: 2px solid var(--pro-accent-primary, var(--accordion-border-color));
+    margin-left: 0;
+}
+
+.funky-accordion__item--level-1 { margin-left: 16px; }
+.funky-accordion__item--level-2 { margin-left: 32px; }
+.funky-accordion__item--level-3 { margin-left: 48px; }
+.funky-accordion__item--level-4 { margin-left: 64px; }
+.funky-accordion__item--level-5 { margin-left: 80px; }
+
+/* Has children indicator */
+.funky-accordion__item--has-children > .funky-accordion__header-wrapper .funky-accordion__header {
+    font-weight: 500;
+}
+
+/* Lazy indicator dot */
+.funky-accordion__item--lazy .funky-accordion__chevron::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: var(--pro-spacing-xs);
+    border-radius: 50%;
+    background-color: var(--pro-accent-primary);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.funky-accordion__header-wrapper {
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.funky-accordion__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--accordion-spacing);
+    border: none;
+    background: var(--accordion-header-bg);
+    color: var(--accordion-text-color);
+    font: inherit;
+    font-size: var(--pro-font-size-base);
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.funky-accordion__header:hover:not([aria-disabled="true"]) {
+    background: var(--accordion-header-hover-bg);
+}
+
+.funky-accordion__header:active:not([aria-disabled="true"]) {
+    background: var(--accordion-header-active-bg);
+}
+
+.funky-accordion__header:focus {
+    outline: none;
+}
+
+.funky-accordion__header:focus-visible {
+    outline: 2px solid var(--pro-accent-primary);
+    outline-offset: -2px;
+    box-shadow: var(--accordion-focus-ring);
+}
+
+/* Disabled header */
+.funky-accordion__header[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+.funky-accordion__header[aria-disabled="true"]:hover {
+    background: var(--accordion-header-bg);
+}
+
+/* Icon left position - chevron is already first in DOM, just adjust justify-content */
+.funky-accordion__header--icon-left {
+    justify-content: flex-start;
+}
+
+.funky-accordion__header--icon-left .funky-accordion__chevron {
+    margin-right: var(--accordion-spacing);
+    margin-left: 0;
+}
+
+/* ==========================================================================
+   Header Content
+   ========================================================================== */
+
+.funky-accordion__header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-sm);
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+/* Custom icon in header */
+.funky-accordion__icon {
+    flex-shrink: 0;
+    color: var(--accordion-text-muted);
+}
+
+/* Title */
+.funky-accordion__title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   Chevron
+   ========================================================================== */
+
+.funky-accordion__chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: var(--pro-spacing-sm);
+    color: var(--accordion-text-muted);
+    transition: transform var(--accordion-transition-duration) var(--accordion-transition-timing);
+}
+
+.funky-accordion__chevron--rotated {
+    transform: rotate(180deg);
+}
+
+/* When using separate collapse icon, don't rotate */
+.funky-accordion[data-collapse-icon] .funky-accordion__chevron--rotated {
+    transform: none;
+}
+
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+
+.funky-accordion__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.125rem 0.5rem;
+    font-size: var(--pro-font-size-xs);
+    font-weight: 500;
+    line-height: 1;
+    border-radius: var(--pro-border-radius-full, 9999px);
+    background-color: var(--pro-bg-tertiary);
+    color: var(--accordion-text-muted);
+    flex-shrink: 0;
+}
+
+.funky-accordion__badge--primary {
+    background-color: var(--pro-accent-primary);
+    color: var(--pro-accent-primary-contrast, #fff);
+}
+
+.funky-accordion__badge--success {
+    background-color: var(--pro-accent-success);
+    color: var(--pro-accent-success-contrast, #fff);
+}
+
+.funky-accordion__badge--warning {
+    background-color: var(--pro-accent-warning);
+    color: var(--pro-accent-warning-contrast, #000);
+}
+
+.funky-accordion__badge--danger {
+    background-color: var(--pro-accent-danger);
+    color: var(--pro-accent-danger-contrast, #fff);
+}
+
+.funky-accordion__badge--info {
+    background-color: var(--pro-accent-info);
+    color: var(--pro-accent-info-contrast, #fff);
+}
+
+/* ==========================================================================
+   Panel
+   ========================================================================== */
+
+.funky-accordion__panel {
+    overflow: hidden;
+}
+
+.funky-accordion__panel[hidden] {
+    display: none;
+}
+
+.funky-accordion__content {
+    padding: var(--accordion-spacing);
+    border-top: 1px solid var(--accordion-border-color);
+    color: var(--accordion-text-color);
+}
+
+/* ==========================================================================
+   Loading State
+   ========================================================================== */
+
+.funky-accordion__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pro-spacing-lg);
+    color: var(--accordion-text-muted);
+}
+
+.funky-accordion__loading-fallback {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-sm);
+}
+
+/* ==========================================================================
+   Error State
+   ========================================================================== */
+
+.funky-accordion__error {
+    padding: var(--accordion-spacing);
+    color: var(--pro-accent-danger);
+    text-align: center;
+}
+
+.funky-accordion__error i {
+    margin-right: var(--pro-spacing-xs);
+}
+
+/* ==========================================================================
+   Search
+   ========================================================================== */
+
+.funky-accordion__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.funky-accordion__search-icon {
+    position: absolute;
+    left: var(--pro-spacing-sm);
+    color: var(--accordion-text-muted);
+    pointer-events: none;
+}
+
+.funky-accordion__search-input {
+    width: 100%;
+    padding: var(--pro-spacing-sm) var(--pro-spacing-md);
+    padding-left: calc(var(--pro-spacing-sm) + 1.5em + var(--pro-spacing-xs));
+    padding-right: calc(var(--pro-spacing-sm) + 1.5em + var(--pro-spacing-xs));
+    border: 1px solid var(--accordion-border-color);
+    border-radius: var(--accordion-border-radius);
+    background-color: var(--accordion-bg);
+    color: var(--accordion-text-color);
+    font-size: var(--pro-font-size-base);
+}
+
+.funky-accordion__search-input:focus {
+    outline: none;
+    border-color: var(--pro-accent-primary);
+    box-shadow: var(--accordion-focus-ring);
+}
+
+.funky-accordion__search-input::placeholder {
+    color: var(--accordion-text-muted);
+}
+
+/* Hide webkit search cancel button - we have our own */
+.funky-accordion__search-input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.funky-accordion__search-clear {
+    position: absolute;
+    right: var(--pro-spacing-xs);
+    padding: var(--pro-spacing-xs);
+    border: none;
+    background: transparent;
+    color: var(--accordion-text-muted);
+    cursor: pointer;
+    border-radius: var(--accordion-border-radius);
+}
+
+.funky-accordion__search-clear:hover {
+    color: var(--accordion-text-color);
+    background-color: var(--accordion-header-hover-bg);
+}
+
+/* ==========================================================================
+   Highlight (search matches)
+   ========================================================================== */
+
+.funky-accordion__highlight {
+    background-color: var(--pro-highlight-bg, rgba(255, 235, 59, 0.4));
+    color: inherit;
+    padding: 0 0.125em;
+    border-radius: 2px;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.funky-accordion__empty {
+    padding: var(--pro-spacing-xl);
+    text-align: center;
+}
+
+.funky-accordion__empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--pro-spacing-sm);
+}
+
+.funky-accordion__empty-icon {
+    font-size: 2rem;
+    color: var(--accordion-text-muted);
+}
+
+.funky-accordion__empty-message {
+    margin: 0;
+    color: var(--accordion-text-muted);
+}
+
+.funky-accordion__empty-action {
+    margin-top: var(--pro-spacing-sm);
+}
+
+/* ==========================================================================
+   Density Modes (via data attribute on body/container)
+   ========================================================================== */
+
+/* Compact density */
+[data-density="compact"] .funky-accordion,
+.funky-accordion--compact {
+    --accordion-spacing: var(--pro-spacing-sm);
+    --accordion-item-gap: 0;
+}
+
+[data-density="compact"] .funky-accordion__item,
+.funky-accordion--compact .funky-accordion__item {
+    border-radius: 0;
+}
+
+[data-density="compact"] .funky-accordion__item:first-child,
+.funky-accordion--compact .funky-accordion__item:first-child {
+    border-radius: var(--accordion-border-radius) var(--accordion-border-radius) 0 0;
+}
+
+[data-density="compact"] .funky-accordion__item:last-child,
+.funky-accordion--compact .funky-accordion__item:last-child {
+    border-radius: 0 0 var(--accordion-border-radius) var(--accordion-border-radius);
+}
+
+[data-density="compact"] .funky-accordion__item + .funky-accordion__item,
+.funky-accordion--compact .funky-accordion__item + .funky-accordion__item {
+    border-top: none;
+}
+
+/* Comfortable density */
+[data-density="comfortable"] .funky-accordion,
+.funky-accordion--comfortable {
+    --accordion-spacing: var(--pro-spacing-lg);
+    --accordion-item-gap: var(--pro-spacing-sm);
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .funky-accordion__panel[hidden] {
+        display: block !important;
+    }
+
+    .funky-accordion__chevron {
+        display: none;
+    }
+
+    .funky-accordion__search {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Playground Demo Styles
+   ========================================================================== */
+
+.accordion-demo__state-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--pro-bg-secondary, #f6f8fa);
+    border-radius: var(--pro-radius-md, 0.5rem);
+}
+
+.accordion-demo__state-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.accordion-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.accordion-demo__controls--items {
+    margin-bottom: 0;
+}
+
+.accordion-demo__log {
+    background: var(--pro-bg-secondary, #f6f8fa);
+    padding: 1rem;
+    border-radius: var(--pro-radius-md, 0.5rem);
+    max-height: 200px;
+    overflow: auto;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Override playground .demo-section h3 styles for accordion headers */
+.demo-section .funky-accordion__header-wrapper {
+    margin-bottom: 0;
+    font-size: inherit;
+    color: inherit;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .accordion-demo__state-display {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .accordion-demo__controls {
+        flex-direction: column;
+    }
+
+    .accordion-demo__controls .btn {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   BOOTSTRAP ACCORDION THEME OVERRIDES
+   Using --pro-* variables for theme consistency
+   ============================================ */
+
+.accordion-item {
+    background-color: var(--pro-bg-secondary);
+    border-color: var(--pro-border);
+}
+
+.accordion-button {
+    background-color: var(--pro-bg-secondary);
+    color: var(--pro-text-primary);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--pro-bg-tertiary);
+    color: var(--pro-text-primary);
+}
+
+.accordion-button:focus {
+    border-color: var(--pro-primary);
+    box-shadow: 0 0 0 0.25rem var(--pro-focus-ring);
+}
+
+.accordion-body {
+    background-color: var(--pro-bg-secondary);
+}

@@ -1,0 +1,534 @@
+<div data-page="component-advanced-filter" class="advanced-filter-demo">
+  <!-- State Display -->
+  <section class="advanced-filter-demo__section">
+    <h3>Component State</h3>
+    <div class="advanced-filter-demo__state">
+      <div class="advanced-filter-demo__state-item">
+        <span class="advanced-filter-demo__state-label">Entity Type</span>
+        <span class="advanced-filter-demo__state-value" id="state-entity-type">playground</span>
+      </div>
+      <div class="advanced-filter-demo__state-item">
+        <span class="advanced-filter-demo__state-label">Context</span>
+        <span class="advanced-filter-demo__state-value" id="state-context">playground_demo</span>
+      </div>
+      <div class="advanced-filter-demo__state-item">
+        <span class="advanced-filter-demo__state-label">Active Filters</span>
+        <span class="advanced-filter-demo__state-value" id="state-filter-count">0</span>
+      </div>
+      <div class="advanced-filter-demo__state-item">
+        <span class="advanced-filter-demo__state-label">Status</span>
+        <span class="advanced-filter-demo__state-value advanced-filter-demo__state-value--inactive" id="state-status">No active filters</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="advanced-filter-demo__section">
+    <h3>API Methods (Simulated)</h3>
+    <p class="advanced-filter-demo__hint">
+      <i class="fas fa-info-circle"></i>
+      AdvancedFilter requires API endpoints. This demo simulates the API locally.
+    </p>
+    <div class="advanced-filter-demo__controls">
+      <div class="advanced-filter-demo__control-group">
+        <span class="advanced-filter-demo__control-label">Instance:</span>
+        <div class="advanced-filter-demo__control-buttons">
+          <button class="btn btn-sm btn-outline-primary" id="btn-get-data">
+            <i class="fas fa-database me-1"></i>getData()
+          </button>
+          <button class="btn btn-sm btn-outline-primary" id="btn-has-active">
+            <i class="fas fa-check-circle me-1"></i>hasActiveFilters()
+          </button>
+          <button class="btn btn-sm btn-outline-primary" id="btn-count-active">
+            <i class="fas fa-hashtag me-1"></i>countActiveFilters()
+          </button>
+        </div>
+      </div>
+      <div class="advanced-filter-demo__control-group">
+        <span class="advanced-filter-demo__control-label">Actions:</span>
+        <div class="advanced-filter-demo__control-buttons">
+          <button class="btn btn-sm btn-primary" id="btn-submit">
+            <i class="fas fa-filter me-1"></i>submitFilters()
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" id="btn-reset">
+            <i class="fas fa-undo me-1"></i>resetFilters()
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" id="btn-apply-preset">
+            <i class="fas fa-magic me-1"></i>applyFilters(preset)
+          </button>
+        </div>
+      </div>
+      <div class="advanced-filter-demo__control-group">
+        <span class="advanced-filter-demo__control-label">Saved:</span>
+        <div class="advanced-filter-demo__control-buttons">
+          <button class="btn btn-sm btn-outline-info" id="btn-save-dialog">
+            <i class="fas fa-save me-1"></i>saveFilter()
+          </button>
+          <button class="btn btn-sm btn-outline-info" id="btn-copy-url">
+            <i class="fas fa-link me-1"></i>copyFilterUrl()
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Trigger -->
+  <section class="advanced-filter-demo__section">
+    <h3>Filter Trigger</h3>
+    <p class="advanced-filter-demo__hint">
+      <i class="fas fa-info-circle"></i>
+      Click the button to open the advanced filter modal
+    </p>
+    <div class="advanced-filter-demo__trigger">
+      <button class="btn btn-primary" id="btn-open-filter">
+        <i class="fas fa-filter me-2"></i>Advanced Filter
+        <span class="badge bg-light text-primary ms-2" id="filter-badge" style="display: none;">0</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Active Filter Chips -->
+  <section class="advanced-filter-demo__section">
+    <h3>Active Filter Chips</h3>
+    <p class="advanced-filter-demo__hint">
+      <i class="fas fa-info-circle"></i>
+      Applied filters appear as removable chips (click X to remove)
+    </p>
+    <div class="advanced-filter-demo__chips">
+      <div class="advanced-filter-demo__chips-list" id="filter-chips-container">
+        <span class="advanced-filter-demo__chips-empty" id="chips-empty">No active filters</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Saved Filters from API -->
+  <section class="advanced-filter-demo__section">
+    <h3>Saved Filters (from Mock API)</h3>
+    <p class="advanced-filter-demo__hint">
+      <i class="fas fa-info-circle"></i>
+      Filters saved via the modal appear here. Click to apply, use the X to delete.
+    </p>
+    <div class="advanced-filter-demo__saved">
+      <div class="advanced-filter-demo__saved-list" id="api-saved-filters">
+        <span class="advanced-filter-demo__chips-empty">Loading saved filters...</span>
+      </div>
+      <button class="btn btn-sm btn-outline-primary mt-3" id="btn-refresh-saved">
+        <i class="fas fa-sync-alt me-1"></i>Refresh List
+      </button>
+    </div>
+  </section>
+
+  <div class="advanced-filter-demo__grid">
+    <!-- Quick Filters Panel -->
+    <section class="advanced-filter-demo__section">
+      <h3>Quick Filters (Local Presets)</h3>
+      <div class="advanced-filter-demo__saved">
+        <div class="advanced-filter-demo__saved-title">
+          <i class="fas fa-bookmark"></i>Click to Apply Filter Preset
+        </div>
+        <div class="advanced-filter-demo__saved-list" id="saved-filters-list">
+          <button class="btn btn-outline-primary btn-sm" data-filter-preset="active-users">
+            <i class="fas fa-user-check me-1"></i>Active Users
+          </button>
+          <button class="btn btn-outline-primary btn-sm" data-filter-preset="high-value">
+            <i class="fas fa-dollar-sign me-1"></i>High Value
+          </button>
+          <button class="btn btn-outline-primary btn-sm" data-filter-preset="recent">
+            <i class="fas fa-clock me-1"></i>Recent Activity
+          </button>
+          <button class="btn btn-outline-primary btn-sm" data-filter-preset="pending-review">
+            <i class="fas fa-hourglass-half me-1"></i>Pending Review
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Current Filter State -->
+    <section class="advanced-filter-demo__section">
+      <h3>Current Filter Parameters</h3>
+      <pre class="advanced-filter-demo__query" id="filter-params">{}</pre>
+    </section>
+  </div>
+
+  <!-- Events Log -->
+  <section class="advanced-filter-demo__section">
+    <h3>Events Log</h3>
+    <div class="advanced-filter-demo__log-controls">
+      <button class="btn btn-sm btn-outline-secondary" id="btn-clear-log">
+        <i class="fas fa-trash me-1"></i>Clear Log
+      </button>
+    </div>
+    <pre class="advanced-filter-demo__log" id="events-log">Waiting for filter events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var currentFilterParams = {};
+  var filterInstance = null;
+
+  // Mock presets for demo
+  var filterPresets = {
+    'active-users': { status: 'active' },
+    'high-value': { amount_min: '1000', amount_max: '10000' },
+    'recent': { created_at_from: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] },
+    'pending-review': { status: 'pending', category: 'support' }
+  };
+
+  function log(message, data) {
+    var timestamp = new Date().toLocaleTimeString();
+    var entry = timestamp + ' ' + message;
+    if (data !== undefined) {
+      entry += ' ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 50) logs.pop();
+    var logEl = document.getElementById('events-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+  }
+
+  function updateState() {
+    var props = getProps();
+
+    // Update state display
+    var entityTypeEl = document.getElementById('state-entity-type');
+    var contextEl = document.getElementById('state-context');
+    var filterCountEl = document.getElementById('state-filter-count');
+    var statusEl = document.getElementById('state-status');
+    var paramsEl = document.getElementById('filter-params');
+    var chipsEmpty = document.getElementById('chips-empty');
+
+    if (entityTypeEl) entityTypeEl.textContent = props.entityType || 'playground';
+    if (contextEl) contextEl.textContent = props.context || 'playground_demo';
+
+    var filterCount = Object.keys(currentFilterParams).length;
+    if (filterCountEl) filterCountEl.textContent = filterCount;
+
+    if (statusEl) {
+      if (filterCount > 0) {
+        statusEl.textContent = 'Filters active';
+        statusEl.classList.add('advanced-filter-demo__state-value--active');
+        statusEl.classList.remove('advanced-filter-demo__state-value--inactive');
+      } else {
+        statusEl.textContent = 'No active filters';
+        statusEl.classList.remove('advanced-filter-demo__state-value--active');
+        statusEl.classList.add('advanced-filter-demo__state-value--inactive');
+      }
+    }
+
+    if (paramsEl) {
+      paramsEl.textContent = JSON.stringify(currentFilterParams, null, 2);
+    }
+
+    // Update chips empty state
+    if (chipsEmpty) {
+      chipsEmpty.style.display = filterCount > 0 ? 'none' : 'block';
+    }
+  }
+
+  function updateFilterChips(params) {
+    var container = document.getElementById('filter-chips-container');
+    var emptyEl = document.getElementById('chips-empty');
+    if (!container) return;
+
+    // Remove existing chips (keep empty message)
+    var existingChips = container.querySelectorAll('.filter-chip');
+    existingChips.forEach(function(chip) { chip.remove(); });
+
+    var hasFilters = Object.keys(params).length > 0;
+    if (emptyEl) {
+      emptyEl.style.display = hasFilters ? 'none' : 'block';
+    }
+
+    // Add chips for each filter
+    Object.keys(params).forEach(function(field) {
+      var value = params[field];
+      if (!value && value !== 0) return;
+
+      var chip = document.createElement('div');
+      chip.className = 'filter-chip';
+      chip.setAttribute('data-field', field);
+
+      var label = field.replace(/_/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+
+      chip.innerHTML = '<span>' + label + ': ' + value + '</span>' +
+        '<button class="filter-chip-remove" title="Remove filter" aria-label="Remove ' + label + ' filter">' +
+        '<i class="fas fa-times"></i></button>';
+
+      chip.querySelector('.filter-chip-remove').onclick = function(e) {
+        e.stopPropagation();
+        delete currentFilterParams[field];
+        updateFilterChips(currentFilterParams);
+        updateState();
+        log('advanced-filter:chip-removed', { field: field });
+        emit('event', { event: 'advanced-filter:chip-removed', payload: { field: field } });
+      };
+
+      container.appendChild(chip);
+    });
+  }
+
+  function updateBadge() {
+    var badge = document.getElementById('filter-badge');
+    if (!badge) return;
+    var count = Object.keys(currentFilterParams).length;
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function applyFiltersToUI(params) {
+    currentFilterParams = Object.assign({}, params);
+    updateFilterChips(currentFilterParams);
+    updateState();
+    updateBadge();
+  }
+
+  function loadSavedFilters() {
+    var container = document.getElementById('api-saved-filters');
+    if (!container) return;
+
+    fetch('/api/playground/saved_filters')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var filters = data.filters || [];
+        container.innerHTML = '';
+
+        if (filters.length === 0) {
+          container.innerHTML = '<span class="advanced-filter-demo__chips-empty">No saved filters yet. Use the modal to save one!</span>';
+          return;
+        }
+
+        filters.forEach(function(filter) {
+          var chip = document.createElement('div');
+          chip.className = 'filter-chip';
+          chip.innerHTML = '<span title="' + (filter.description || '') + '">' +
+            '<i class="fas fa-bookmark me-1"></i>' + filter.name +
+            (filter.is_default ? ' <i class="fas fa-star text-warning" title="Default"></i>' : '') +
+            '</span>' +
+            '<button class="filter-chip-remove" title="Delete filter" aria-label="Delete ' + filter.name + '">' +
+            '<i class="fas fa-times"></i></button>';
+
+          // Click to apply - load into the AdvancedFilter component
+          chip.querySelector('span').onclick = function() {
+            // Update demo UI
+            applyFiltersToUI(filter.params || filter.filters || {});
+            log('applied saved filter: ' + filter.name, filter.params || filter.filters);
+            emit('event', { event: 'advanced-filter:apply-saved', payload: filter });
+
+            // Load into the AdvancedFilter component form
+            if (filterInstance && filterInstance.loadSavedFilter) {
+              filterInstance.loadSavedFilter(filter.id);
+            }
+          };
+          chip.querySelector('span').style.cursor = 'pointer';
+
+          // Delete button
+          chip.querySelector('.filter-chip-remove').onclick = function(e) {
+            e.stopPropagation();
+            fetch('/api/playground/saved_filters/' + filter.id, { method: 'DELETE' })
+              .then(function() {
+                log('deleted saved filter: ' + filter.name);
+                emit('event', { event: 'advanced-filter:delete-saved', payload: { id: filter.id } });
+                Funky.Toast.info('Deleted: ' + filter.name);
+                loadSavedFilters(); // Refresh the list
+              });
+          };
+
+          container.appendChild(chip);
+        });
+
+        log('Loaded ' + filters.length + ' saved filters from API');
+      })
+      .catch(function(err) {
+        container.innerHTML = '<span class="advanced-filter-demo__chips-empty text-danger">Failed to load saved filters</span>';
+        log('Error loading saved filters: ' + err.message);
+      });
+  }
+
+  Funky.Pages.register('component-advanced-filter', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+      currentFilterParams = {};
+
+      log('advanced-filter:init', {
+        entityType: props.entityType,
+        context: props.context
+      });
+
+      updateState();
+      updateBadge();
+      loadSavedFilters();
+
+      // Refresh saved filters button
+      document.getElementById('btn-refresh-saved').onclick = function() {
+        loadSavedFilters();
+        Funky.Toast.info('Refreshed saved filters');
+      };
+
+      // Initialize AdvancedFilter instance
+      var triggerBtn = document.getElementById('btn-open-filter');
+      if (triggerBtn && Funky.AdvancedFilter) {
+        filterInstance = Funky.AdvancedFilter.init(triggerBtn, {
+          entityType: props.entityType || 'playground',
+          context: props.context || 'playground_demo',
+          optionsEndpoint: '/api/playground/filter_options',
+          savedFiltersEndpoint: '/api/playground/saved_filters',
+          onApply: function(filters, filterHash) {
+            currentFilterParams = filters;
+            updateFilterChips(filters);
+            updateState();
+            updateBadge();
+            log('advanced-filter:apply', { filters: filters, hash: filterHash });
+            emit('event', { event: 'advanced-filter:apply', payload: filters });
+          },
+          onReset: function() {
+            currentFilterParams = {};
+            updateFilterChips({});
+            updateState();
+            updateBadge();
+            log('advanced-filter:reset');
+            emit('event', { event: 'advanced-filter:reset', payload: {} });
+          },
+          onSave: function(savedFilter) {
+            log('advanced-filter:saved', savedFilter);
+            emit('event', { event: 'advanced-filter:saved', payload: savedFilter });
+            // Refresh the saved filters list
+            loadSavedFilters();
+          },
+          onFilterStateChange: function(hasActive) {
+            log('advanced-filter:state-change', { hasActiveFilters: hasActive });
+            updateBadge();
+          }
+        });
+        log('AdvancedFilter initialized with mock API');
+      }
+
+      // API Method buttons - all simulated locally
+      document.getElementById('btn-get-data').onclick = function() {
+        var data = {
+          context: props.context || 'playground_demo',
+          filters: currentFilterParams,
+          hasActiveFilters: Object.keys(currentFilterParams).length > 0
+        };
+        log('getData()', data);
+        emit('event', { event: 'advanced-filter:get-data', payload: data });
+        Funky.Toast.info('getData() - see log');
+      };
+
+      document.getElementById('btn-has-active').onclick = function() {
+        var hasActive = Object.keys(currentFilterParams).length > 0;
+        log('hasActiveFilters()', hasActive);
+        emit('event', { event: 'advanced-filter:has-active', payload: { hasActive: hasActive } });
+        Funky.Toast.info('hasActiveFilters(): ' + hasActive);
+      };
+
+      document.getElementById('btn-count-active').onclick = function() {
+        var count = Object.keys(currentFilterParams).length;
+        log('countActiveFilters()', count);
+        emit('event', { event: 'advanced-filter:count-active', payload: { count: count } });
+        Funky.Toast.info('countActiveFilters(): ' + count);
+      };
+
+      document.getElementById('btn-submit').onclick = function() {
+        log('submitFilters()', currentFilterParams);
+        emit('event', { event: 'advanced-filter:submit', payload: currentFilterParams });
+        Funky.Toast.success('Filters submitted');
+      };
+
+      document.getElementById('btn-reset').onclick = function() {
+        currentFilterParams = {};
+        updateFilterChips({});
+        updateState();
+        updateBadge();
+        log('resetFilters()');
+        emit('event', { event: 'advanced-filter:reset', payload: {} });
+        Funky.Toast.info('Filters reset');
+      };
+
+      document.getElementById('btn-apply-preset').onclick = function() {
+        var preset = { status: 'active', category: 'sales' };
+        applyFiltersToUI(preset);
+        log('applyFilters(preset)', preset);
+        emit('event', { event: 'advanced-filter:apply-preset', payload: preset });
+        Funky.Toast.success('Preset applied');
+      };
+
+      document.getElementById('btn-save-dialog').onclick = function() {
+        var name = prompt('Enter filter name:');
+        if (name) {
+          log('saveFilter', { name: name, filters: currentFilterParams });
+          emit('event', { event: 'advanced-filter:save', payload: { name: name, filters: currentFilterParams } });
+          Funky.Toast.success('Filter saved: ' + name);
+        }
+      };
+
+      document.getElementById('btn-copy-url').onclick = function() {
+        var url = window.location.href.split('?')[0] + '?filters=' + encodeURIComponent(JSON.stringify(currentFilterParams));
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url);
+          Funky.Toast.success('URL copied to clipboard');
+        }
+        log('copyFilterUrl()', url);
+        emit('event', { event: 'advanced-filter:copy-url', payload: { url: url } });
+      };
+
+      // Saved filter preset buttons
+      document.querySelectorAll('[data-filter-preset]').forEach(function(btn) {
+        btn.onclick = function() {
+          var presetName = this.dataset.filterPreset;
+          var preset = filterPresets[presetName] || {};
+
+          applyFiltersToUI(preset);
+          log('advanced-filter:load-preset', { name: presetName, filters: preset });
+          emit('event', { event: 'advanced-filter:load-preset', payload: { name: presetName, filters: preset } });
+          Funky.Toast.info('Loaded: ' + presetName.replace(/-/g, ' '));
+        };
+      });
+
+      // Clear log button
+      document.getElementById('btn-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('events-log').textContent = 'Log cleared...';
+      };
+
+      // Listen for props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          if (data.component === 'AdvancedFilter') {
+            log('props-changed', data.props);
+            updateState();
+          }
+        });
+      }
+    },
+
+    destroy: function() {
+      logs = [];
+      currentFilterParams = {};
+
+      // Destroy filter instance
+      if (filterInstance && filterInstance.destroy) {
+        filterInstance.destroy();
+        filterInstance = null;
+      }
+
+      // Unsubscribe from events
+      if (Funky.PubSub && Funky.PubSub.off) {
+        Funky.PubSub.off('playground:propsChanged');
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

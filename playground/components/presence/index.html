@@ -1,0 +1,601 @@
+<div data-page="component-presence" class="component-demo">
+  <h2>Presence</h2>
+  <p class="text-muted">Real-time user presence with avatar stacks, status dots, and typing indicators</p>
+
+  <!-- Status Dot Section -->
+  <section class="demo-section" aria-labelledby="status-dot-heading">
+    <h3 id="status-dot-heading">Status Dot</h3>
+    <p class="text-muted small">Shows current user status with colored indicator</p>
+    <div class="demo-area">
+      <div id="status-dot-container" class="presence-demo__status-dot-area"></div>
+    </div>
+  </section>
+
+  <!-- Avatar Stack Section -->
+  <section class="demo-section" aria-labelledby="avatar-stack-heading">
+    <h3 id="avatar-stack-heading">Avatar Stack</h3>
+    <p class="text-muted small">Shows online users with overlapping avatars and status rings</p>
+    <div class="demo-area">
+      <div id="avatar-stack-container" class="presence-demo__avatar-stack-area"></div>
+    </div>
+  </section>
+
+  <!-- Viewers List Section -->
+  <section class="demo-section" aria-labelledby="viewers-list-heading">
+    <h3 id="viewers-list-heading">Viewers List</h3>
+    <p class="text-muted small">Lists other users currently viewing the same page</p>
+    <div class="demo-area">
+      <div id="viewers-list-container" class="presence-demo__viewers-list-area"></div>
+    </div>
+  </section>
+
+  <!-- Typing Indicator Section -->
+  <section class="demo-section" aria-labelledby="typing-indicator-heading">
+    <h3 id="typing-indicator-heading">Typing Indicator</h3>
+    <p class="text-muted small">Shows who is currently typing with animated dots</p>
+    <div class="demo-area">
+      <div id="typing-indicator-container" class="presence-demo__typing-area"></div>
+    </div>
+  </section>
+
+  <!-- API Controls Section -->
+  <section class="demo-section" aria-labelledby="api-controls-heading">
+    <h3 id="api-controls-heading">API Controls</h3>
+    <p class="text-muted small">Test status changes and channel operations</p>
+    <div class="demo-area">
+      <div class="presence-demo__controls">
+        <div class="presence-demo__control-group">
+          <span class="presence-demo__control-label">Set Status:</span>
+          <div class="presence-demo__control-buttons">
+            <button type="button" class="btn btn-sm btn-success" data-action="setOnline">
+              <i class="fa-solid fa-circle" aria-hidden="true"></i> Online
+            </button>
+            <button type="button" class="btn btn-sm btn-warning" data-action="setAway">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i> Away
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" data-action="setIdle">
+              <i class="fa-solid fa-moon" aria-hidden="true"></i> Idle
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" data-action="setBusy">
+              <i class="fa-solid fa-minus-circle" aria-hidden="true"></i> Busy
+            </button>
+          </div>
+        </div>
+        <div class="presence-demo__control-group">
+          <span class="presence-demo__control-label">Actions:</span>
+          <div class="presence-demo__control-buttons">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-action="addUser">
+              <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Add User
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-action="removeUser">
+              <i class="fa-solid fa-user-minus" aria-hidden="true"></i> Remove User
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-action="toggleTyping">
+              <i class="fa-solid fa-keyboard" aria-hidden="true"></i> Toggle Typing
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="api-result" class="presence-demo__result">
+        <span class="presence-demo__result-empty">Click a button to see the result</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings Section -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div id="current-settings" class="presence-demo__settings"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // Simulated users for demo
+  var DEMO_AVATARS = [
+    'https://i.pravatar.cc/150?u=alice',
+    'https://i.pravatar.cc/150?u=bob',
+    'https://i.pravatar.cc/150?u=carol',
+    'https://i.pravatar.cc/150?u=dave',
+    'https://i.pravatar.cc/150?u=eve',
+    'https://i.pravatar.cc/150?u=frank',
+    'https://i.pravatar.cc/150?u=grace',
+    'https://i.pravatar.cc/150?u=henry',
+    'https://i.pravatar.cc/150?u=irene',
+    'https://i.pravatar.cc/150?u=jack'
+  ];
+
+  var DEMO_NAMES = ['Alice', 'Bob', 'Carol', 'Dave', 'Eve', 'Frank', 'Grace', 'Henry', 'Irene', 'Jack'];
+  var DEMO_STATUSES = ['online', 'away', 'idle', 'busy', 'online', 'online', 'away', 'online', 'idle', 'online'];
+
+  // State
+  var propsChangedHandler = null;
+  var currentStatus = 'online';
+  var simulatedUsers = [];
+  var typingUsers = [];
+  var uiComponents = [];
+  var typingInterval = null;
+
+  /**
+   * Generate simulated users based on props
+   */
+  function generateSimulatedUsers(count, excludeSelf) {
+    var users = [];
+    var startIndex = excludeSelf ? 0 : 1; // Skip first if not excluding self (self is "You")
+
+    for (var i = 0; i < count && i < DEMO_NAMES.length; i++) {
+      users.push({
+        id: 'user-' + (i + 1),
+        name: DEMO_NAMES[i],
+        avatar: DEMO_AVATARS[i],
+        status: DEMO_STATUSES[i]
+      });
+    }
+
+    return users;
+  }
+
+  /**
+   * Create status dot UI
+   */
+  function createStatusDot(container, status) {
+    container.innerHTML = '';
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'presence-demo__status-display';
+
+    var dot = document.createElement('span');
+    dot.className = 'presence-dot presence-dot--' + status;
+    dot.setAttribute('title', status.charAt(0).toUpperCase() + status.slice(1));
+
+    var label = document.createElement('span');
+    label.className = 'presence-demo__status-label';
+    label.textContent = 'Your status: ' + status.charAt(0).toUpperCase() + status.slice(1);
+
+    wrapper.appendChild(dot);
+    wrapper.appendChild(label);
+    container.appendChild(wrapper);
+
+    return { element: wrapper, destroy: function() { wrapper.remove(); } };
+  }
+
+  /**
+   * Create avatar stack UI
+   */
+  function createAvatarStack(container, users, maxAvatars, excludeSelf) {
+    container.innerHTML = '';
+
+    var displayUsers = excludeSelf ? users : [{ id: 'self', name: 'You', avatar: 'https://i.pravatar.cc/150?u=you', status: currentStatus }].concat(users);
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'presence-indicator';
+    wrapper.setAttribute('role', 'group');
+    wrapper.setAttribute('aria-label', displayUsers.length + ' users online');
+
+    var count = document.createElement('span');
+    count.className = 'presence-indicator__count';
+    count.textContent = displayUsers.length + ' online';
+    wrapper.appendChild(count);
+
+    var avatarsDiv = document.createElement('div');
+    avatarsDiv.className = 'presence-indicator__avatars';
+    avatarsDiv.setAttribute('role', 'list');
+
+    var visibleUsers = displayUsers.slice(0, maxAvatars);
+    for (var i = visibleUsers.length - 1; i >= 0; i--) {
+      var user = visibleUsers[i];
+      var img = document.createElement('img');
+      img.className = 'presence-indicator__avatar presence-indicator__avatar--' + user.status;
+      img.src = user.avatar;
+      img.alt = user.name;
+      img.title = user.name + ' (' + user.status + ')';
+      avatarsDiv.appendChild(img);
+    }
+
+    if (displayUsers.length > maxAvatars) {
+      var overflow = document.createElement('span');
+      overflow.className = 'presence-indicator__overflow';
+      overflow.textContent = '+' + (displayUsers.length - maxAvatars);
+      overflow.title = (displayUsers.length - maxAvatars) + ' more users';
+      avatarsDiv.appendChild(overflow);
+    }
+
+    wrapper.appendChild(avatarsDiv);
+    container.appendChild(wrapper);
+
+    return { element: wrapper, destroy: function() { wrapper.remove(); } };
+  }
+
+  /**
+   * Create viewers list UI
+   */
+  function createViewersList(container, users, excludeSelf) {
+    container.innerHTML = '';
+
+    var displayUsers = excludeSelf ? users : users;
+
+    if (displayUsers.length === 0) {
+      var emptyMsg = document.createElement('p');
+      emptyMsg.className = 'text-muted small';
+      emptyMsg.textContent = 'No other users are currently viewing this page.';
+      container.appendChild(emptyMsg);
+      return { element: emptyMsg, destroy: function() { emptyMsg.remove(); } };
+    }
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'presence-viewers';
+    wrapper.setAttribute('aria-live', 'polite');
+
+    var label = document.createElement('span');
+    label.className = 'presence-viewers__label';
+    label.textContent = 'Also viewing:';
+    wrapper.appendChild(label);
+
+    var list = document.createElement('ul');
+    list.className = 'presence-viewers__list';
+    list.setAttribute('role', 'list');
+
+    for (var i = 0; i < displayUsers.length; i++) {
+      var user = displayUsers[i];
+      var li = document.createElement('li');
+
+      var img = document.createElement('img');
+      img.src = user.avatar;
+      img.alt = '';
+      li.appendChild(img);
+
+      var nameSpan = document.createElement('span');
+      nameSpan.textContent = user.name;
+      li.appendChild(nameSpan);
+
+      if (user.status && user.status !== 'online') {
+        var statusSpan = document.createElement('span');
+        statusSpan.className = 'presence-viewers__status';
+        statusSpan.setAttribute('data-status', user.status);
+        statusSpan.textContent = user.status;
+        li.appendChild(statusSpan);
+      }
+
+      list.appendChild(li);
+    }
+
+    wrapper.appendChild(list);
+    container.appendChild(wrapper);
+
+    return { element: wrapper, destroy: function() { wrapper.remove(); } };
+  }
+
+  /**
+   * Create typing indicator UI
+   */
+  function createTypingIndicator(container, typers) {
+    container.innerHTML = '';
+
+    if (typers.length === 0) {
+      var emptyMsg = document.createElement('p');
+      emptyMsg.className = 'text-muted small';
+      emptyMsg.textContent = 'No one is typing.';
+      container.appendChild(emptyMsg);
+      return { element: emptyMsg, destroy: function() { emptyMsg.remove(); } };
+    }
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'presence-typing';
+    wrapper.setAttribute('aria-live', 'polite');
+
+    var dots = document.createElement('span');
+    dots.className = 'presence-typing__dots';
+    dots.setAttribute('aria-hidden', 'true');
+    for (var i = 0; i < 3; i++) {
+      var dot = document.createElement('span');
+      dots.appendChild(dot);
+    }
+    wrapper.appendChild(dots);
+
+    var text = document.createElement('span');
+    text.className = 'presence-typing__text';
+
+    if (typers.length === 1) {
+      text.textContent = typers[0].name + ' is typing...';
+    } else if (typers.length === 2) {
+      text.textContent = typers[0].name + ' and ' + typers[1].name + ' are typing...';
+    } else {
+      text.textContent = typers[0].name + ' and ' + (typers.length - 1) + ' others are typing...';
+    }
+
+    wrapper.appendChild(text);
+    container.appendChild(wrapper);
+
+    return { element: wrapper, destroy: function() { wrapper.remove(); } };
+  }
+
+  /**
+   * Update settings display
+   */
+  function updateSettingsDisplay(props) {
+    var container = document.getElementById('current-settings');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var badges = [
+      { label: 'Avatar Stack', value: props.showAvatarStack ? 'Visible' : 'Hidden', variant: props.showAvatarStack ? 'success' : 'secondary' },
+      { label: 'Viewers List', value: props.showViewersList ? 'Visible' : 'Hidden', variant: props.showViewersList ? 'success' : 'secondary' },
+      { label: 'Status Dot', value: props.showStatusDot ? 'Visible' : 'Hidden', variant: props.showStatusDot ? 'success' : 'secondary' },
+      { label: 'Typing', value: props.showTypingIndicator ? 'Visible' : 'Hidden', variant: props.showTypingIndicator ? 'success' : 'secondary' },
+      { label: 'Max Avatars', value: props.maxAvatars, variant: 'primary' },
+      { label: 'User Count', value: props.userCount, variant: 'primary' },
+      { label: 'Status', value: props.currentStatus, variant: getStatusVariant(props.currentStatus) }
+    ];
+
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var span = document.createElement('span');
+      span.className = 'badge bg-' + badge.variant;
+      span.innerHTML = '<strong>' + badge.label + ':</strong> ' + badge.value;
+      container.appendChild(span);
+    }
+  }
+
+  /**
+   * Get Bootstrap variant for status
+   */
+  function getStatusVariant(status) {
+    switch (status) {
+      case 'online': return 'success';
+      case 'away': return 'warning';
+      case 'idle': return 'secondary';
+      case 'busy': return 'danger';
+      case 'offline': return 'dark';
+      default: return 'primary';
+    }
+  }
+
+  /**
+   * Show API result
+   */
+  function showResult(method, value) {
+    var container = document.getElementById('api-result');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var content = document.createElement('div');
+    content.className = 'presence-demo__result-content';
+
+    var methodSpan = document.createElement('span');
+    methodSpan.className = 'presence-demo__result-method';
+    methodSpan.textContent = method;
+    content.appendChild(methodSpan);
+
+    var arrow = document.createElement('span');
+    arrow.className = 'presence-demo__result-arrow';
+    arrow.textContent = ' \u2192 ';
+    content.appendChild(arrow);
+
+    var valueSpan = document.createElement('span');
+    valueSpan.className = 'presence-demo__result-value presence-demo__result-value--string';
+    valueSpan.textContent = value;
+    content.appendChild(valueSpan);
+
+    container.appendChild(content);
+
+    emit('event', { event: 'funky:presence:' + method, payload: { value: value } });
+  }
+
+  /**
+   * Destroy all UI components
+   */
+  function destroyComponents() {
+    for (var i = 0; i < uiComponents.length; i++) {
+      if (uiComponents[i] && uiComponents[i].destroy) {
+        uiComponents[i].destroy();
+      }
+    }
+    uiComponents = [];
+  }
+
+  /**
+   * Render all components based on props
+   */
+  function render(props) {
+    destroyComponents();
+
+    // Apply current status from props
+    currentStatus = props.currentStatus || 'online';
+
+    // Generate simulated users
+    if (props.simulateUsers) {
+      simulatedUsers = generateSimulatedUsers(props.userCount || 4, props.excludeSelf);
+    } else {
+      simulatedUsers = [];
+    }
+
+    // Generate typing users
+    if (props.showTypingUsers && props.simulateUsers && simulatedUsers.length > 0) {
+      typingUsers = simulatedUsers.slice(0, Math.min(2, simulatedUsers.length));
+    } else {
+      typingUsers = [];
+    }
+
+    // Status Dot
+    var statusDotContainer = document.getElementById('status-dot-container');
+    if (statusDotContainer) {
+      if (props.showStatusDot) {
+        uiComponents.push(createStatusDot(statusDotContainer, currentStatus));
+      } else {
+        statusDotContainer.innerHTML = '<p class="text-muted small">Status dot is hidden. Enable it in the props panel.</p>';
+      }
+    }
+
+    // Avatar Stack
+    var avatarStackContainer = document.getElementById('avatar-stack-container');
+    if (avatarStackContainer) {
+      if (props.showAvatarStack) {
+        uiComponents.push(createAvatarStack(avatarStackContainer, simulatedUsers, props.maxAvatars || 5, props.excludeSelf));
+      } else {
+        avatarStackContainer.innerHTML = '<p class="text-muted small">Avatar stack is hidden. Enable it in the props panel.</p>';
+      }
+    }
+
+    // Viewers List
+    var viewersListContainer = document.getElementById('viewers-list-container');
+    if (viewersListContainer) {
+      if (props.showViewersList) {
+        uiComponents.push(createViewersList(viewersListContainer, simulatedUsers, props.excludeSelf));
+      } else {
+        viewersListContainer.innerHTML = '<p class="text-muted small">Viewers list is hidden. Enable it in the props panel.</p>';
+      }
+    }
+
+    // Typing Indicator
+    var typingContainer = document.getElementById('typing-indicator-container');
+    if (typingContainer) {
+      if (props.showTypingIndicator) {
+        uiComponents.push(createTypingIndicator(typingContainer, typingUsers));
+      } else {
+        typingContainer.innerHTML = '<p class="text-muted small">Typing indicator is hidden. Enable it in the props panel.</p>';
+      }
+    }
+
+    // Settings display
+    updateSettingsDisplay(props);
+  }
+
+  /**
+   * Handle API button clicks
+   */
+  function handleAction(action) {
+    var props = getProps();
+
+    switch (action) {
+      case 'setOnline':
+        currentStatus = 'online';
+        showResult('setStatus', 'online');
+        break;
+      case 'setAway':
+        currentStatus = 'away';
+        showResult('setStatus', 'away');
+        break;
+      case 'setIdle':
+        currentStatus = 'idle';
+        showResult('setStatus', 'idle');
+        break;
+      case 'setBusy':
+        currentStatus = 'busy';
+        showResult('setStatus', 'busy');
+        break;
+      case 'addUser':
+        if (simulatedUsers.length < 10) {
+          var newIndex = simulatedUsers.length;
+          simulatedUsers.push({
+            id: 'user-' + (newIndex + 1),
+            name: DEMO_NAMES[newIndex] || 'User ' + (newIndex + 1),
+            avatar: DEMO_AVATARS[newIndex] || 'https://i.pravatar.cc/150?u=user' + newIndex,
+            status: DEMO_STATUSES[newIndex] || 'online'
+          });
+          showResult('addUser', simulatedUsers[newIndex].name + ' joined');
+        } else {
+          showResult('addUser', 'Max users reached (10)');
+        }
+        break;
+      case 'removeUser':
+        if (simulatedUsers.length > 0) {
+          var removed = simulatedUsers.pop();
+          // Also remove from typing if present
+          typingUsers = typingUsers.filter(function(u) { return u.id !== removed.id; });
+          showResult('removeUser', removed.name + ' left');
+        } else {
+          showResult('removeUser', 'No users to remove');
+        }
+        break;
+      case 'toggleTyping':
+        if (simulatedUsers.length > 0) {
+          if (typingUsers.length > 0) {
+            typingUsers = [];
+            showResult('stopTyping', 'Typing stopped');
+          } else {
+            typingUsers = simulatedUsers.slice(0, Math.min(2, simulatedUsers.length));
+            showResult('startTyping', typingUsers.map(function(u) { return u.name; }).join(', ') + ' typing');
+          }
+        } else {
+          showResult('toggleTyping', 'No users to toggle');
+        }
+        break;
+    }
+
+    // Re-render with updated state
+    var updatedProps = Object.assign({}, props, { currentStatus: currentStatus });
+    render(updatedProps);
+  }
+
+  /**
+   * Bind event handlers
+   */
+  function bindEvents() {
+    var controls = document.querySelector('.presence-demo__controls');
+    if (controls) {
+      controls.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-action]');
+        if (btn) {
+          handleAction(btn.getAttribute('data-action'));
+        }
+      });
+    }
+  }
+
+  // Page registration
+  Funky.Pages.register('component-presence', {
+    init: function(state) {
+      var props = getProps();
+
+      // Initial render
+      render(props);
+
+      // Bind events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          render(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'funky:presence:init', payload: { props: props } });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clear typing interval
+      if (typingInterval) {
+        clearInterval(typingInterval);
+        typingInterval = null;
+      }
+
+      // Destroy UI components
+      destroyComponents();
+
+      // Reset state
+      simulatedUsers = [];
+      typingUsers = [];
+      currentStatus = 'online';
+
+      return {};
+    }
+  });
+})();
+</script>

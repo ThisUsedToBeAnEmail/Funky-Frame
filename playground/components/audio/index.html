@@ -1,0 +1,380 @@
+<div data-page="component-audio" class="audio-demo">
+  <!-- Header with Play Button -->
+  <section class="audio-demo__section">
+    <div class="audio-demo__hero">
+      <div class="audio-demo__hero-content">
+        <h3>Audio Playback Demo</h3>
+        <p>Test the Funky.Audio API and HTML5 Audio element</p>
+      </div>
+      <button type="button" class="btn btn-lg btn-success" data-sound="success" data-url="https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg">
+        <i class="fas fa-play-circle"></i> Play Sound
+      </button>
+    </div>
+  </section>
+
+  <!-- Status Cards -->
+  <section class="audio-demo__section">
+    <div class="audio-demo__cards">
+      <div class="audio-demo__card">
+        <div class="audio-demo__card-icon">
+          <i class="fas fa-music"></i>
+        </div>
+        <div class="audio-demo__card-content">
+          <span class="audio-demo__card-label">Now Playing</span>
+          <span class="audio-demo__card-value" id="state-playing">None</span>
+        </div>
+      </div>
+      <div class="audio-demo__card">
+        <div class="audio-demo__card-icon">
+          <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="audio-demo__card-content">
+          <span class="audio-demo__card-label">Volume</span>
+          <span class="audio-demo__card-value" id="state-volume">70%</span>
+        </div>
+      </div>
+      <div class="audio-demo__card">
+        <div class="audio-demo__card-icon" id="mute-icon-wrapper">
+          <i class="fas fa-volume-mute"></i>
+        </div>
+        <div class="audio-demo__card-content">
+          <span class="audio-demo__card-label">Muted</span>
+          <span class="audio-demo__card-value" id="state-muted">No</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <section class="audio-demo__section">
+    <h3>Controls</h3>
+    <div class="audio-demo__controls">
+      <!-- Playback -->
+      <div class="audio-demo__control-group">
+        <h4><i class="fas fa-play"></i> Playback</h4>
+        <div class="audio-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="pause">
+            <i class="fas fa-pause"></i> Pause
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="resume">
+            <i class="fas fa-play"></i> Resume
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" data-method="stop">
+            <i class="fas fa-stop"></i> Stop
+          </button>
+        </div>
+      </div>
+
+      <!-- Volume -->
+      <div class="audio-demo__control-group">
+        <h4><i class="fas fa-sliders-h"></i> Volume</h4>
+        <div class="audio-demo__volume-control">
+          <i class="fas fa-volume-down"></i>
+          <input type="range" class="audio-demo__volume-slider" id="volume-slider" min="0" max="100" value="70" aria-label="Volume">
+          <i class="fas fa-volume-up"></i>
+          <span class="audio-demo__volume-value" id="volume-value">70%</span>
+        </div>
+        <div class="audio-demo__buttons">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="volume-25">25%</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="volume-50">50%</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="volume-75">75%</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="volume-100">100%</button>
+        </div>
+      </div>
+
+      <!-- Mute -->
+      <div class="audio-demo__control-group">
+        <h4><i class="fas fa-volume-mute"></i> Mute</h4>
+        <div class="audio-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="mute">
+            <i class="fas fa-volume-mute"></i> Mute
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="unmute">
+            <i class="fas fa-volume-up"></i> Unmute
+          </button>
+          <button type="button" class="btn btn-sm btn-primary" data-method="toggle-mute">
+            <i class="fas fa-random"></i> Toggle
+          </button>
+        </div>
+      </div>
+
+      <!-- API -->
+      <div class="audio-demo__control-group">
+        <h4><i class="fas fa-code"></i> Funky.Audio API</h4>
+        <div class="audio-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-api="playSuccess">
+            <i class="fas fa-check"></i> playSuccess()
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="stop-all">
+            <i class="fas fa-stop-circle"></i> stopAll()
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="is-muted">
+            <i class="fas fa-info-circle"></i> isMuted()
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Native Audio -->
+  <section class="audio-demo__section">
+    <h3>Native HTML5 Audio</h3>
+    <div class="audio-demo__native-wrapper">
+      <audio id="native-audio" controls class="audio-demo__native-player">
+        <source src="https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="audio-demo__section">
+    <div class="audio-demo__log-header">
+      <h3>Event Log</h3>
+      <button type="button" class="btn btn-sm btn-outline-secondary" data-method="clear-log">
+        <i class="fas fa-trash"></i> Clear
+      </button>
+    </div>
+    <pre id="audio-log" class="audio-demo__log" role="log" aria-live="polite">Ready...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var eventHandlers = [];
+  var currentAudio = null;
+  var currentName = null;
+  var volume = 0.7;
+  var muted = false;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('audio-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay() {
+    var playingEl = document.getElementById('state-playing');
+    var volumeEl = document.getElementById('state-volume');
+    var mutedEl = document.getElementById('state-muted');
+    var volumeSlider = document.getElementById('volume-slider');
+    var volumeValue = document.getElementById('volume-value');
+    var muteIconWrapper = document.getElementById('mute-icon-wrapper');
+
+    if (playingEl) playingEl.textContent = currentName || 'None';
+    if (volumeEl) volumeEl.textContent = Math.round(volume * 100) + '%';
+    if (mutedEl) mutedEl.textContent = muted ? 'Yes' : 'No';
+    if (volumeSlider) volumeSlider.value = Math.round(volume * 100);
+    if (volumeValue) volumeValue.textContent = Math.round(volume * 100) + '%';
+    if (muteIconWrapper) {
+      muteIconWrapper.className = 'audio-demo__card-icon' + (muted ? ' audio-demo__card-icon--muted' : '');
+    }
+  }
+
+  function playSound(name, url) {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+
+    currentAudio = new Audio(url);
+    currentAudio.volume = muted ? 0 : volume;
+    currentName = name;
+
+    currentAudio.addEventListener('ended', function() {
+      currentName = null;
+      currentAudio = null;
+      log('Ended: ' + name);
+      updateStateDisplay();
+      emit('event', { event: 'audio:ended', payload: { sound: name } });
+    });
+
+    currentAudio.addEventListener('error', function() {
+      log('Error loading: ' + name);
+      emit('event', { event: 'audio:error', payload: { sound: name } });
+    });
+
+    currentAudio.play().then(function() {
+      log('Playing: ' + name);
+      updateStateDisplay();
+      emit('event', { event: 'audio:play', payload: { sound: name } });
+    }).catch(function(error) {
+      log('Error: ' + error.message);
+    });
+  }
+
+  function handleSoundClick(e) {
+    var btn = e.target.closest('[data-sound]');
+    if (!btn || !btn.dataset.url) return;
+    playSound(btn.dataset.sound, btn.dataset.url);
+  }
+
+  function handleApiClick(e) {
+    var btn = e.target.closest('[data-api]');
+    if (!btn) return;
+
+    if (typeof Funky === 'undefined' || !Funky.Audio) {
+      log('Funky.Audio not available');
+      return;
+    }
+
+    if (btn.dataset.api === 'playSuccess') {
+      Funky.Audio.play('success.mp3', { bypass: true, volume: 0.6 });
+      currentName = 'success.mp3';
+      log('Funky.Audio.playSuccess()');
+      updateStateDisplay();
+    }
+  }
+
+  function handleControlClick(e) {
+    var btn = e.target.closest('[data-method]');
+    if (!btn) return;
+
+    var method = btn.dataset.method;
+
+    switch (method) {
+      case 'pause':
+        if (currentAudio && !currentAudio.paused) {
+          currentAudio.pause();
+          log('Paused');
+        }
+        break;
+
+      case 'resume':
+        if (currentAudio && currentAudio.paused) {
+          currentAudio.play();
+          log('Resumed');
+        }
+        break;
+
+      case 'stop':
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentName = null;
+          currentAudio = null;
+          log('Stopped');
+          updateStateDisplay();
+        }
+        break;
+
+      case 'stop-all':
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
+        currentAudio = null;
+        currentName = null;
+        if (typeof Funky !== 'undefined' && Funky.Audio) {
+          Funky.Audio.stopAll();
+        }
+        log('Stopped all');
+        updateStateDisplay();
+        break;
+
+      case 'mute':
+        muted = true;
+        if (currentAudio) currentAudio.volume = 0;
+        if (typeof Funky !== 'undefined' && Funky.Audio) Funky.Audio.mute();
+        log('Muted');
+        updateStateDisplay();
+        break;
+
+      case 'unmute':
+        muted = false;
+        if (currentAudio) currentAudio.volume = volume;
+        if (typeof Funky !== 'undefined' && Funky.Audio) Funky.Audio.unmute();
+        log('Unmuted');
+        updateStateDisplay();
+        break;
+
+      case 'toggle-mute':
+        muted = !muted;
+        if (currentAudio) currentAudio.volume = muted ? 0 : volume;
+        if (typeof Funky !== 'undefined' && Funky.Audio) Funky.Audio.toggleMute();
+        log(muted ? 'Muted' : 'Unmuted');
+        updateStateDisplay();
+        break;
+
+      case 'volume-25':
+      case 'volume-50':
+      case 'volume-75':
+      case 'volume-100':
+        volume = parseInt(method.split('-')[1], 10) / 100;
+        if (currentAudio && !muted) currentAudio.volume = volume;
+        if (typeof Funky !== 'undefined' && Funky.Audio) Funky.Audio.setVolume(volume);
+        log('Volume: ' + Math.round(volume * 100) + '%');
+        updateStateDisplay();
+        break;
+
+      case 'is-muted':
+        var result = typeof Funky !== 'undefined' && Funky.Audio ? Funky.Audio.isMuted() : muted;
+        log('isMuted() -> ' + result);
+        break;
+
+      case 'clear-log':
+        logs = [];
+        var logEl = document.getElementById('audio-log');
+        if (logEl) logEl.textContent = 'Cleared...';
+        break;
+    }
+  }
+
+  function handleVolumeChange(e) {
+    if (e.target.id !== 'volume-slider') return;
+    volume = parseInt(e.target.value, 10) / 100;
+    if (currentAudio && !muted) currentAudio.volume = volume;
+    if (typeof Funky !== 'undefined' && Funky.Audio) Funky.Audio.setVolume(volume);
+    updateStateDisplay();
+  }
+
+  Funky.Pages.register('component-audio', {
+    init: function(state) {
+      log('Audio demo ready');
+
+      if (typeof Funky !== 'undefined' && Funky.Audio) {
+        volume = Funky.Audio.volume;
+        muted = Funky.Audio.isMuted();
+      }
+
+      document.addEventListener('click', handleSoundClick);
+      eventHandlers.push({ event: 'click', handler: handleSoundClick });
+
+      document.addEventListener('click', handleApiClick);
+      eventHandlers.push({ event: 'click', handler: handleApiClick });
+
+      document.addEventListener('click', handleControlClick);
+      eventHandlers.push({ event: 'click', handler: handleControlClick });
+
+      document.addEventListener('input', handleVolumeChange);
+      eventHandlers.push({ event: 'input', handler: handleVolumeChange });
+
+      updateStateDisplay();
+    },
+
+    destroy: function() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+
+      eventHandlers.forEach(function(h) {
+        document.removeEventListener(h.event, h.handler);
+      });
+      eventHandlers = [];
+
+      logs = [];
+      currentName = null;
+      volume = 0.7;
+      muted = false;
+
+      return {};
+    }
+  });
+})();
+</script>

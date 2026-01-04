@@ -1,0 +1,301 @@
+<div data-page="component-slider" class="component-demo">
+  <h2>Slider</h2>
+  <p class="text-muted">Dual-handle range slider for numeric filtering with touch and keyboard support</p>
+
+  <!-- Main Demo Section -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">Drag handles to set range. Click track to move nearest handle. Use arrow keys for fine control.</p>
+    <div class="demo-area">
+      <div class="slider-demo__container">
+        <div id="slider-container" class="slider-demo__slider"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Values Section -->
+  <section class="demo-section" aria-labelledby="values-heading">
+    <h3 id="values-heading">Current Values</h3>
+    <p class="text-muted small">Shows the currently selected range</p>
+    <div class="demo-area">
+      <div class="slider-demo__values">
+        <div class="slider-demo__value-group">
+          <span class="slider-demo__value-label">Min:</span>
+          <span id="value-min" class="slider-demo__value badge bg-primary">$10,000</span>
+        </div>
+        <div class="slider-demo__value-separator">
+          <i class="fas fa-arrows-alt-h" aria-hidden="true"></i>
+        </div>
+        <div class="slider-demo__value-group">
+          <span class="slider-demo__value-label">Max:</span>
+          <span id="value-max" class="slider-demo__value badge bg-primary">$75,000</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Test the component's public methods</p>
+    <div class="demo-area">
+      <div class="slider-demo__controls">
+        <div class="slider-demo__control-group">
+          <span class="slider-demo__control-label">Set Range:</span>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-set-low">
+            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i> Low ($0 - $25K)
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-set-mid">
+            <i class="fa-solid fa-minus" aria-hidden="true"></i> Mid ($25K - $75K)
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-set-high">
+            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i> High ($75K - $100K)
+          </button>
+        </div>
+        <div class="slider-demo__control-group">
+          <span class="slider-demo__control-label">Actions:</span>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-get-values">
+            <i class="fa-solid fa-info-circle" aria-hidden="true"></i> Get Values
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-reset">
+            <i class="fa-solid fa-undo" aria-hidden="true"></i> Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keyboard Shortcuts Section -->
+  <section class="demo-section" aria-labelledby="keyboard-heading">
+    <h3 id="keyboard-heading">Keyboard Shortcuts</h3>
+    <div class="demo-area">
+      <div class="slider-demo__shortcuts">
+        <div class="slider-demo__shortcut">
+          <kbd>Tab</kbd>
+          <span>Focus handles</span>
+        </div>
+        <div class="slider-demo__shortcut">
+          <kbd>&larr;</kbd> <kbd>&rarr;</kbd>
+          <span>Adjust by step</span>
+        </div>
+        <div class="slider-demo__shortcut">
+          <kbd>PgUp</kbd> <kbd>PgDn</kbd>
+          <span>Large adjustments</span>
+        </div>
+        <div class="slider-demo__shortcut">
+          <kbd>Home</kbd> <kbd>End</kbd>
+          <span>Min / Max</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings Section -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div id="current-settings" class="slider-demo__settings"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var sliderInstance = null;
+  var propsChangedHandler = null;
+
+  /**
+   * Format value as currency
+   */
+  function formatCurrency(val) {
+    return '$' + val.toLocaleString();
+  }
+
+  /**
+   * Update value displays
+   */
+  function updateValueDisplay(values) {
+    var minEl = document.getElementById('value-min');
+    var maxEl = document.getElementById('value-max');
+
+    if (minEl) minEl.textContent = formatCurrency(values.min);
+    if (maxEl) maxEl.textContent = formatCurrency(values.max);
+  }
+
+  /**
+   * Update settings display
+   */
+  function updateSettingsDisplay(props) {
+    var container = document.getElementById('current-settings');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var badges = [
+      { label: 'Min', value: formatCurrency(props.min || 0), variant: 'secondary' },
+      { label: 'Max', value: formatCurrency(props.max || 100000), variant: 'secondary' },
+      { label: 'Step', value: formatCurrency(props.step || 1000), variant: 'info' },
+      { label: 'Initial Min', value: formatCurrency(props.minValue || 10000), variant: 'primary' },
+      { label: 'Initial Max', value: formatCurrency(props.maxValue || 75000), variant: 'primary' }
+    ];
+
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var span = document.createElement('span');
+      span.className = 'badge bg-' + badge.variant;
+      span.innerHTML = '<strong>' + badge.label + ':</strong> ' + badge.value;
+      container.appendChild(span);
+    }
+  }
+
+  /**
+   * Create the slider
+   */
+  function createSlider(props) {
+    var container = document.getElementById('slider-container');
+    if (!container) return;
+
+    // Destroy existing instance
+    if (sliderInstance && sliderInstance.destroy) {
+      sliderInstance.destroy();
+      sliderInstance = null;
+    }
+
+    // Create instance
+    sliderInstance = Funky.Slider.init(container, {
+      min: props.min || 0,
+      max: props.max || 100000,
+      step: props.step || 1000,
+      minValue: props.minValue || 10000,
+      maxValue: props.maxValue || 75000,
+      formatValue: formatCurrency,
+
+      onUpdate: function(values) {
+        updateValueDisplay(values);
+
+        emit('event', {
+          event: 'funky:slider:update',
+          payload: { min: values.min, max: values.max }
+        });
+      }
+    });
+
+    // Update initial display
+    updateValueDisplay({
+      min: props.minValue || 10000,
+      max: props.maxValue || 75000
+    });
+
+    // Update settings display
+    updateSettingsDisplay(props);
+  }
+
+  /**
+   * Bind button events
+   */
+  function bindEvents() {
+    var btnSetLow = document.getElementById('btn-set-low');
+    var btnSetMid = document.getElementById('btn-set-mid');
+    var btnSetHigh = document.getElementById('btn-set-high');
+    var btnGetValues = document.getElementById('btn-get-values');
+    var btnReset = document.getElementById('btn-reset');
+
+    if (btnSetLow) {
+      btnSetLow.addEventListener('click', function() {
+        if (sliderInstance) {
+          sliderInstance.setValues(0, 25000);
+          updateValueDisplay({ min: 0, max: 25000 });
+          emit('event', { event: 'api:setValues', payload: { min: 0, max: 25000 } });
+        }
+      });
+    }
+
+    if (btnSetMid) {
+      btnSetMid.addEventListener('click', function() {
+        if (sliderInstance) {
+          sliderInstance.setValues(25000, 75000);
+          updateValueDisplay({ min: 25000, max: 75000 });
+          emit('event', { event: 'api:setValues', payload: { min: 25000, max: 75000 } });
+        }
+      });
+    }
+
+    if (btnSetHigh) {
+      btnSetHigh.addEventListener('click', function() {
+        if (sliderInstance) {
+          sliderInstance.setValues(75000, 100000);
+          updateValueDisplay({ min: 75000, max: 100000 });
+          emit('event', { event: 'api:setValues', payload: { min: 75000, max: 100000 } });
+        }
+      });
+    }
+
+    if (btnGetValues) {
+      btnGetValues.addEventListener('click', function() {
+        if (sliderInstance) {
+          var values = sliderInstance.getValues();
+          emit('event', { event: 'api:getValues', payload: values });
+        }
+      });
+    }
+
+    if (btnReset) {
+      btnReset.addEventListener('click', function() {
+        if (sliderInstance) {
+          var props = getProps();
+          var minVal = props.minValue || 10000;
+          var maxVal = props.maxValue || 75000;
+          sliderInstance.setValues(minVal, maxVal);
+          updateValueDisplay({ min: minVal, max: maxVal });
+          emit('event', { event: 'api:reset', payload: { min: minVal, max: maxVal } });
+        }
+      });
+    }
+  }
+
+  // Page registration
+  Funky.Pages.register('component-slider', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create initial slider
+      createSlider(props);
+
+      // Bind button events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          createSlider(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'slider:init', payload: props });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy slider instance
+      if (sliderInstance && sliderInstance.destroy) {
+        sliderInstance.destroy();
+        sliderInstance = null;
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,757 @@
+<div data-page="component-websocket" class="component-demo">
+  <h2>WebSocket</h2>
+  <p class="text-muted">Real-time connection manager with automatic reconnection, channels, and presence support (simulated)</p>
+
+  <!-- Connection Status Section -->
+  <section class="demo-section" aria-labelledby="status-heading">
+    <h3 id="status-heading">Connection Status</h3>
+    <p class="text-muted small">Current simulated connection state</p>
+    <div class="demo-area">
+      <div class="websocket-demo__status-panel">
+        <div class="websocket-demo__status-indicator" id="status-indicator">
+          <span class="websocket-demo__status-dot" id="status-dot"></span>
+          <span class="websocket-demo__status-text" id="status-text">Disconnected</span>
+        </div>
+        <div class="websocket-demo__status-details">
+          <div class="websocket-demo__detail-item">
+            <span class="websocket-demo__detail-label">Connection ID:</span>
+            <code id="connection-id">—</code>
+          </div>
+          <div class="websocket-demo__detail-item">
+            <span class="websocket-demo__detail-label">Latency:</span>
+            <span id="latency-value">—</span>
+          </div>
+          <div class="websocket-demo__detail-item">
+            <span class="websocket-demo__detail-label">Quality:</span>
+            <span id="quality-badge" class="badge bg-secondary">Unknown</span>
+          </div>
+        </div>
+        <div class="websocket-demo__status-actions">
+          <button type="button" class="btn btn-sm btn-success" id="btn-connect">
+            <i class="fa-solid fa-plug" aria-hidden="true"></i> Connect
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" id="btn-disconnect" disabled>
+            <i class="fa-solid fa-plug-circle-xmark" aria-hidden="true"></i> Disconnect
+          </button>
+          <button type="button" class="btn btn-sm btn-warning" id="btn-reconnect" disabled>
+            <i class="fa-solid fa-rotate" aria-hidden="true"></i> Simulate Reconnect
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Real-time display of WebSocket events</p>
+    <div class="demo-area">
+      <div class="websocket-demo__log-header">
+        <span class="badge bg-info">Events: <span id="event-count">0</span></span>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-clear-log">
+          <i class="fa-solid fa-eraser" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+      <pre id="event-log" class="websocket-demo__log" aria-live="polite"><span class="text-muted">// Connect to see events</span></pre>
+    </div>
+  </section>
+
+  <!-- Channel Subscriptions Section -->
+  <section class="demo-section" aria-labelledby="channels-heading">
+    <h3 id="channels-heading">Channel Subscriptions</h3>
+    <p class="text-muted small">Subscribe to message channels</p>
+    <div class="demo-area">
+      <div class="websocket-demo__channels">
+        <div class="websocket-demo__form-row">
+          <label for="channel-name" class="websocket-demo__label">Channel:</label>
+          <input type="text" id="channel-name" class="form-control form-control-sm" placeholder="notifications" value="notifications">
+        </div>
+        <div class="websocket-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-success" id="btn-subscribe" disabled>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> Subscribe
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" id="btn-unsubscribe" disabled>
+            <i class="fa-solid fa-minus" aria-hidden="true"></i> Unsubscribe
+          </button>
+        </div>
+        <div class="websocket-demo__subscriptions-list">
+          <span class="websocket-demo__subscriptions-label">Active:</span>
+          <div id="subscriptions-list" class="websocket-demo__subscriptions-badges">
+            <span class="text-muted small">None</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Message Sending Section -->
+  <section class="demo-section" aria-labelledby="send-heading">
+    <h3 id="send-heading">Send Message</h3>
+    <p class="text-muted small">Simulate sending a message (not actually sent)</p>
+    <div class="demo-area">
+      <div class="websocket-demo__send-form">
+        <div class="websocket-demo__form-row">
+          <label for="send-type" class="websocket-demo__label">Type:</label>
+          <input type="text" id="send-type" class="form-control form-control-sm" placeholder="chat:message" value="chat:message">
+        </div>
+        <div class="websocket-demo__form-row">
+          <label for="send-data" class="websocket-demo__label">Data:</label>
+          <input type="text" id="send-data" class="form-control form-control-sm" placeholder='{"text": "Hello!"}' value='{"text": "Hello!"}'>
+        </div>
+        <div class="websocket-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-send" disabled>
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Message Receiving Section -->
+  <section class="demo-section" aria-labelledby="receive-heading">
+    <h3 id="receive-heading">Simulate Receive</h3>
+    <p class="text-muted small">Simulate receiving a message from the server</p>
+    <div class="demo-area">
+      <div class="websocket-demo__receive-form">
+        <div class="websocket-demo__form-row">
+          <label for="receive-type" class="websocket-demo__label">Type:</label>
+          <select id="receive-type" class="form-select form-select-sm">
+            <option value="notification">notification</option>
+            <option value="chat:message">chat:message</option>
+            <option value="user:update">user:update</option>
+            <option value="presence:user_joined">presence:user_joined</option>
+            <option value="presence:user_left">presence:user_left</option>
+            <option value="error">error</option>
+          </select>
+        </div>
+        <div class="websocket-demo__form-row">
+          <label for="receive-data" class="websocket-demo__label">Data:</label>
+          <input type="text" id="receive-data" class="form-control form-control-sm" placeholder='{"message": "Hello!"}' value='{"message": "New notification!"}'>
+        </div>
+        <div class="websocket-demo__form-actions">
+          <button type="button" class="btn btn-sm btn-info" id="btn-receive" disabled>
+            <i class="fa-solid fa-download" aria-hidden="true"></i> Simulate Receive
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Presence Section -->
+  <section class="demo-section" aria-labelledby="presence-heading">
+    <h3 id="presence-heading">Presence</h3>
+    <p class="text-muted small">Real-time presence features (simulated)</p>
+    <div class="demo-area">
+      <div class="websocket-demo__presence">
+        <div class="websocket-demo__presence-user">
+          <h4 class="websocket-demo__subsection-title">User Setup</h4>
+          <div class="websocket-demo__form-row">
+            <label for="presence-user-id" class="websocket-demo__label">User ID:</label>
+            <input type="text" id="presence-user-id" class="form-control form-control-sm" placeholder="user123" value="user123">
+          </div>
+          <div class="websocket-demo__form-row">
+            <label for="presence-user-name" class="websocket-demo__label">Name:</label>
+            <input type="text" id="presence-user-name" class="form-control form-control-sm" placeholder="John Doe" value="John Doe">
+          </div>
+          <div class="websocket-demo__form-actions">
+            <button type="button" class="btn btn-sm btn-secondary" id="btn-set-user">
+              <i class="fa-solid fa-user" aria-hidden="true"></i> Set User
+            </button>
+          </div>
+        </div>
+        <div class="websocket-demo__presence-channel">
+          <h4 class="websocket-demo__subsection-title">Channel Presence</h4>
+          <div class="websocket-demo__form-row">
+            <label for="presence-channel" class="websocket-demo__label">Channel:</label>
+            <input type="text" id="presence-channel" class="form-control form-control-sm" placeholder="room:lobby" value="room:lobby">
+          </div>
+          <div class="websocket-demo__form-actions">
+            <button type="button" class="btn btn-sm btn-success" id="btn-presence-join" disabled>
+              <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Join
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" id="btn-presence-leave" disabled>
+              <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Leave
+            </button>
+            <button type="button" class="btn btn-sm btn-info" id="btn-typing-start" disabled>
+              <i class="fa-solid fa-keyboard" aria-hidden="true"></i> Typing...
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-info" id="btn-typing-stop" disabled>
+              <i class="fa-solid fa-keyboard" aria-hidden="true"></i> Stop Typing
+            </button>
+          </div>
+        </div>
+        <div class="websocket-demo__presence-status">
+          <span class="websocket-demo__presence-label">Presence User:</span>
+          <span id="presence-user-display" class="text-muted">Not set</span>
+        </div>
+        <div class="websocket-demo__presence-channels-list">
+          <span class="websocket-demo__presence-label">Presence Channels:</span>
+          <div id="presence-channels-list">
+            <span class="text-muted small">None</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Debug State Section -->
+  <section class="demo-section" aria-labelledby="debug-heading">
+    <h3 id="debug-heading">Debug State</h3>
+    <p class="text-muted small">View internal simulated state</p>
+    <div class="demo-area">
+      <div class="websocket-demo__debug">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-show-debug">
+          <i class="fa-solid fa-bug" aria-hidden="true"></i> Show Debug State
+        </button>
+        <pre id="debug-output" class="websocket-demo__debug-output"></pre>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // ============================================
+  // SIMULATED STATE
+  // ============================================
+
+  var mockState = {
+    status: 'disconnected',
+    connectionId: null,
+    channels: [],
+    presenceUser: null,
+    presenceChannels: [],
+    latency: 45,
+    quality: 'excellent',
+    reconnectAttempts: 0
+  };
+
+  var eventLog = [];
+  var eventCount = 0;
+  var propsChangedHandler = null;
+  var reconnectTimer = null;
+
+  // ============================================
+  // HELPERS
+  // ============================================
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function formatTime() {
+    return new Date().toLocaleTimeString('en-US', { hour12: false });
+  }
+
+  function parseData(str) {
+    if (!str || str.trim() === '') return null;
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return str;
+    }
+  }
+
+  function generateConnectionId() {
+    return 'conn_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // ============================================
+  // UI UPDATES
+  // ============================================
+
+  function updateStatusUI() {
+    var statusDot = document.getElementById('status-dot');
+    var statusText = document.getElementById('status-text');
+    var connectionId = document.getElementById('connection-id');
+    var latencyValue = document.getElementById('latency-value');
+    var qualityBadge = document.getElementById('quality-badge');
+
+    var btnConnect = document.getElementById('btn-connect');
+    var btnDisconnect = document.getElementById('btn-disconnect');
+    var btnReconnect = document.getElementById('btn-reconnect');
+    var btnSubscribe = document.getElementById('btn-subscribe');
+    var btnUnsubscribe = document.getElementById('btn-unsubscribe');
+    var btnSend = document.getElementById('btn-send');
+    var btnReceive = document.getElementById('btn-receive');
+    var btnPresenceJoin = document.getElementById('btn-presence-join');
+    var btnPresenceLeave = document.getElementById('btn-presence-leave');
+    var btnTypingStart = document.getElementById('btn-typing-start');
+    var btnTypingStop = document.getElementById('btn-typing-stop');
+
+    // Status dot and text
+    if (statusDot) {
+      statusDot.className = 'websocket-demo__status-dot websocket-demo__status-dot--' + mockState.status;
+    }
+    if (statusText) {
+      var statusLabels = {
+        disconnected: 'Disconnected',
+        connecting: 'Connecting...',
+        connected: 'Connected',
+        reconnecting: 'Reconnecting...'
+      };
+      statusText.textContent = statusLabels[mockState.status] || mockState.status;
+    }
+
+    // Connection details
+    if (connectionId) {
+      connectionId.textContent = mockState.connectionId || '—';
+    }
+    if (latencyValue) {
+      latencyValue.textContent = mockState.status === 'connected' ? mockState.latency + 'ms' : '—';
+    }
+    if (qualityBadge) {
+      var qualityClasses = {
+        excellent: 'bg-success',
+        good: 'bg-info',
+        fair: 'bg-warning',
+        poor: 'bg-danger',
+        unknown: 'bg-secondary'
+      };
+      var quality = mockState.status === 'connected' ? mockState.quality : 'unknown';
+      qualityBadge.className = 'badge ' + (qualityClasses[quality] || 'bg-secondary');
+      qualityBadge.textContent = quality.charAt(0).toUpperCase() + quality.slice(1);
+    }
+
+    // Button states
+    var isConnected = mockState.status === 'connected';
+    var isConnecting = mockState.status === 'connecting' || mockState.status === 'reconnecting';
+
+    if (btnConnect) btnConnect.disabled = isConnected || isConnecting;
+    if (btnDisconnect) btnDisconnect.disabled = !isConnected && !isConnecting;
+    if (btnReconnect) btnReconnect.disabled = !isConnected;
+    if (btnSubscribe) btnSubscribe.disabled = !isConnected;
+    if (btnUnsubscribe) btnUnsubscribe.disabled = !isConnected;
+    if (btnSend) btnSend.disabled = !isConnected;
+    if (btnReceive) btnReceive.disabled = !isConnected;
+    if (btnPresenceJoin) btnPresenceJoin.disabled = !isConnected || !mockState.presenceUser;
+    if (btnPresenceLeave) btnPresenceLeave.disabled = !isConnected || mockState.presenceChannels.length === 0;
+    if (btnTypingStart) btnTypingStart.disabled = !isConnected || mockState.presenceChannels.length === 0;
+    if (btnTypingStop) btnTypingStop.disabled = !isConnected || mockState.presenceChannels.length === 0;
+  }
+
+  function updateSubscriptionsUI() {
+    var listEl = document.getElementById('subscriptions-list');
+    if (!listEl) return;
+
+    if (mockState.channels.length === 0) {
+      listEl.innerHTML = '<span class="text-muted small">None</span>';
+    } else {
+      listEl.innerHTML = mockState.channels.map(function(ch) {
+        return '<span class="badge bg-primary">' + escapeHtml(ch) + '</span>';
+      }).join(' ');
+    }
+  }
+
+  function updatePresenceUI() {
+    var userDisplay = document.getElementById('presence-user-display');
+    var channelsList = document.getElementById('presence-channels-list');
+
+    if (userDisplay) {
+      if (mockState.presenceUser) {
+        userDisplay.innerHTML = '<span class="badge bg-info">' + escapeHtml(mockState.presenceUser.name) + '</span> <code>' + escapeHtml(mockState.presenceUser.id) + '</code>';
+      } else {
+        userDisplay.innerHTML = '<span class="text-muted">Not set</span>';
+      }
+    }
+
+    if (channelsList) {
+      if (mockState.presenceChannels.length === 0) {
+        channelsList.innerHTML = '<span class="text-muted small">None</span>';
+      } else {
+        channelsList.innerHTML = mockState.presenceChannels.map(function(ch) {
+          return '<span class="badge bg-success">' + escapeHtml(ch) + '</span>';
+        }).join(' ');
+      }
+    }
+
+    updateStatusUI(); // Update button states
+  }
+
+  function updateEventLog() {
+    var logEl = document.getElementById('event-log');
+    var countEl = document.getElementById('event-count');
+
+    if (countEl) countEl.textContent = eventLog.length;
+
+    if (logEl) {
+      if (eventLog.length === 0) {
+        logEl.innerHTML = '<span class="text-muted">// Connect to see events</span>';
+      } else {
+        var html = eventLog.map(function(entry) {
+          var typeClass = getEventTypeClass(entry.type);
+          var dataStr = entry.data ? ' ' + JSON.stringify(entry.data) : '';
+          return '<span class="text-muted">' + entry.time + '</span> ' +
+                 '<span class="' + typeClass + '">[' + entry.direction + ']</span> ' +
+                 '<span class="text-info">' + escapeHtml(entry.type) + '</span>' +
+                 '<span class="text-secondary">' + escapeHtml(dataStr) + '</span>';
+        }).join('\n');
+        logEl.innerHTML = html;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+    }
+  }
+
+  function getEventTypeClass(type) {
+    if (type.indexOf('error') !== -1) return 'text-danger';
+    if (type.indexOf('presence:') === 0) return 'text-warning';
+    if (type === 'connected' || type === 'subscribed') return 'text-success';
+    if (type === 'disconnected' || type === 'unsubscribed') return 'text-danger';
+    return 'text-info';
+  }
+
+  function logEvent(type, data, direction) {
+    eventCount++;
+    eventLog.unshift({
+      time: formatTime(),
+      type: type,
+      data: data,
+      direction: direction || 'in'
+    });
+
+    if (eventLog.length > 50) eventLog.pop();
+
+    updateEventLog();
+    emit('event', { event: 'websocket:' + type, payload: data });
+  }
+
+  // ============================================
+  // SIMULATED WEBSOCKET OPERATIONS
+  // ============================================
+
+  function simulateConnect() {
+    if (mockState.status === 'connected' || mockState.status === 'connecting') return;
+
+    mockState.status = 'connecting';
+    updateStatusUI();
+    logEvent('status_changed', { status: 'connecting' }, 'sys');
+
+    // Simulate connection delay
+    setTimeout(function() {
+      var props = getProps();
+      mockState.status = 'connected';
+      mockState.connectionId = generateConnectionId();
+      mockState.latency = props.simulatedLatency || 45;
+      mockState.quality = props.simulatedQuality || 'excellent';
+      mockState.reconnectAttempts = 0;
+
+      updateStatusUI();
+      logEvent('connected', { connectionId: mockState.connectionId }, 'in');
+      logEvent('status_changed', { status: 'connected' }, 'sys');
+
+      Funky.Toast.success('WebSocket connected (simulated)');
+    }, 500);
+  }
+
+  function simulateDisconnect() {
+    if (mockState.status === 'disconnected') return;
+
+    clearTimeout(reconnectTimer);
+
+    // Leave all presence channels
+    mockState.presenceChannels = [];
+
+    mockState.status = 'disconnected';
+    mockState.connectionId = null;
+
+    updateStatusUI();
+    updatePresenceUI();
+    logEvent('disconnected', { code: 1000, reason: 'Client disconnect' }, 'out');
+    logEvent('status_changed', { status: 'disconnected' }, 'sys');
+
+    Funky.Toast.info('WebSocket disconnected');
+  }
+
+  function simulateReconnect() {
+    if (mockState.status !== 'connected') return;
+
+    // First disconnect
+    mockState.status = 'reconnecting';
+    mockState.connectionId = null;
+    mockState.reconnectAttempts = 1;
+
+    updateStatusUI();
+    logEvent('status_changed', { status: 'reconnecting', attempt: 1 }, 'sys');
+
+    Funky.Toast.warning('Connection lost, reconnecting...');
+
+    // Then reconnect after delay
+    reconnectTimer = setTimeout(function() {
+      mockState.reconnectAttempts = 2;
+      logEvent('status_changed', { status: 'reconnecting', attempt: 2 }, 'sys');
+
+      reconnectTimer = setTimeout(function() {
+        var props = getProps();
+        mockState.status = 'connected';
+        mockState.connectionId = generateConnectionId();
+        mockState.latency = props.simulatedLatency || 45;
+        mockState.reconnectAttempts = 0;
+
+        updateStatusUI();
+        logEvent('connected', { connectionId: mockState.connectionId, reconnected: true }, 'in');
+        logEvent('status_changed', { status: 'connected' }, 'sys');
+
+        Funky.Toast.success('Reconnected successfully!');
+      }, 1000);
+    }, 1500);
+  }
+
+  function simulateSubscribe(channel) {
+    if (!channel || mockState.status !== 'connected') return;
+    if (mockState.channels.indexOf(channel) !== -1) {
+      Funky.Toast.warning('Already subscribed to ' + channel);
+      return;
+    }
+
+    mockState.channels.push(channel);
+    updateSubscriptionsUI();
+    logEvent('subscribe', { channel: channel }, 'out');
+
+    setTimeout(function() {
+      logEvent('subscribed', { channel: channel }, 'in');
+    }, 100);
+  }
+
+  function simulateUnsubscribe(channel) {
+    if (!channel || mockState.status !== 'connected') return;
+    var idx = mockState.channels.indexOf(channel);
+    if (idx === -1) {
+      Funky.Toast.warning('Not subscribed to ' + channel);
+      return;
+    }
+
+    mockState.channels.splice(idx, 1);
+    updateSubscriptionsUI();
+    logEvent('unsubscribe', { channel: channel }, 'out');
+
+    setTimeout(function() {
+      logEvent('unsubscribed', { channel: channel }, 'in');
+    }, 100);
+  }
+
+  function simulateSend(type, data) {
+    if (mockState.status !== 'connected') return;
+
+    logEvent(type, data, 'out');
+    Funky.Toast.info('Message sent (simulated)');
+  }
+
+  function simulateReceive(type, data) {
+    if (mockState.status !== 'connected') return;
+
+    logEvent(type, data, 'in');
+  }
+
+  function setPresenceUser(id, name) {
+    mockState.presenceUser = { id: id, name: name };
+    updatePresenceUI();
+    logEvent('presence:user_set', { userId: id, name: name }, 'sys');
+    Funky.Toast.success('Presence user set');
+  }
+
+  function presenceJoin(channel) {
+    if (!channel || mockState.status !== 'connected' || !mockState.presenceUser) return;
+    if (mockState.presenceChannels.indexOf(channel) !== -1) return;
+
+    mockState.presenceChannels.push(channel);
+    updatePresenceUI();
+    logEvent('presence:join', { channel: channel, userId: mockState.presenceUser.id }, 'out');
+
+    setTimeout(function() {
+      logEvent('presence:user_joined', { channel: channel, user: mockState.presenceUser }, 'in');
+    }, 100);
+  }
+
+  function presenceLeave(channel) {
+    if (!channel || mockState.status !== 'connected') return;
+    var idx = mockState.presenceChannels.indexOf(channel);
+    if (idx === -1) return;
+
+    mockState.presenceChannels.splice(idx, 1);
+    updatePresenceUI();
+    logEvent('presence:leave', { channel: channel, userId: mockState.presenceUser.id }, 'out');
+
+    setTimeout(function() {
+      logEvent('presence:user_left', { channel: channel, userId: mockState.presenceUser.id }, 'in');
+    }, 100);
+  }
+
+  function presenceTyping(channel, isTyping) {
+    if (!channel || mockState.status !== 'connected' || !mockState.presenceUser) return;
+
+    logEvent('presence:typing', { channel: channel, userId: mockState.presenceUser.id, typing: isTyping }, 'out');
+  }
+
+  function showDebugState() {
+    var output = document.getElementById('debug-output');
+    if (!output) return;
+
+    var debugState = {
+      status: mockState.status,
+      connectionId: mockState.connectionId,
+      channels: mockState.channels.slice(),
+      presenceUser: mockState.presenceUser,
+      presenceChannels: mockState.presenceChannels.slice(),
+      latency: mockState.latency,
+      quality: mockState.quality,
+      reconnectAttempts: mockState.reconnectAttempts,
+      eventLogCount: eventLog.length
+    };
+
+    output.textContent = JSON.stringify(debugState, null, 2);
+  }
+
+  // ============================================
+  // EVENT BINDINGS
+  // ============================================
+
+  function bindEvents() {
+    // Connection
+    document.getElementById('btn-connect').addEventListener('click', simulateConnect);
+    document.getElementById('btn-disconnect').addEventListener('click', simulateDisconnect);
+    document.getElementById('btn-reconnect').addEventListener('click', simulateReconnect);
+
+    // Channels
+    document.getElementById('btn-subscribe').addEventListener('click', function() {
+      var channel = document.getElementById('channel-name').value.trim();
+      if (channel) simulateSubscribe(channel);
+    });
+    document.getElementById('btn-unsubscribe').addEventListener('click', function() {
+      var channel = document.getElementById('channel-name').value.trim();
+      if (channel) simulateUnsubscribe(channel);
+    });
+
+    // Send
+    document.getElementById('btn-send').addEventListener('click', function() {
+      var type = document.getElementById('send-type').value.trim();
+      var dataStr = document.getElementById('send-data').value.trim();
+      if (type) simulateSend(type, parseData(dataStr));
+    });
+
+    // Receive
+    document.getElementById('btn-receive').addEventListener('click', function() {
+      var type = document.getElementById('receive-type').value;
+      var dataStr = document.getElementById('receive-data').value.trim();
+      simulateReceive(type, parseData(dataStr));
+    });
+
+    // Presence
+    document.getElementById('btn-set-user').addEventListener('click', function() {
+      var id = document.getElementById('presence-user-id').value.trim();
+      var name = document.getElementById('presence-user-name').value.trim();
+      if (id && name) setPresenceUser(id, name);
+    });
+    document.getElementById('btn-presence-join').addEventListener('click', function() {
+      var channel = document.getElementById('presence-channel').value.trim();
+      if (channel) presenceJoin(channel);
+    });
+    document.getElementById('btn-presence-leave').addEventListener('click', function() {
+      var channel = document.getElementById('presence-channel').value.trim();
+      if (channel) presenceLeave(channel);
+    });
+    document.getElementById('btn-typing-start').addEventListener('click', function() {
+      var channel = document.getElementById('presence-channel').value.trim();
+      if (channel) presenceTyping(channel, true);
+    });
+    document.getElementById('btn-typing-stop').addEventListener('click', function() {
+      var channel = document.getElementById('presence-channel').value.trim();
+      if (channel) presenceTyping(channel, false);
+    });
+
+    // Clear log
+    document.getElementById('btn-clear-log').addEventListener('click', function() {
+      eventLog = [];
+      updateEventLog();
+    });
+
+    // Debug
+    document.getElementById('btn-show-debug').addEventListener('click', showDebugState);
+  }
+
+  // ============================================
+  // PROPS INTEGRATION
+  // ============================================
+
+  function syncFromProps() {
+    var props = getProps();
+
+    if (mockState.status === 'connected') {
+      mockState.latency = props.simulatedLatency || 45;
+      mockState.quality = props.simulatedQuality || 'excellent';
+      updateStatusUI();
+    }
+
+    if (props.autoConnect && mockState.status === 'disconnected') {
+      simulateConnect();
+    }
+  }
+
+  // ============================================
+  // PAGE REGISTRATION
+  // ============================================
+
+  Funky.Pages.register('component-websocket', {
+    init: function(state) {
+      var props = getProps();
+
+      // Initialize UI
+      updateStatusUI();
+      updateSubscriptionsUI();
+      updatePresenceUI();
+      updateEventLog();
+
+      // Bind events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          syncFromProps();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Auto-connect if prop set
+      if (props.autoConnect) {
+        simulateConnect();
+      }
+
+      emit('event', { event: 'websocket:demo:init', payload: props });
+    },
+
+    destroy: function() {
+      // Clear reconnect timer
+      clearTimeout(reconnectTimer);
+
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Reset state
+      mockState = {
+        status: 'disconnected',
+        connectionId: null,
+        channels: [],
+        presenceUser: null,
+        presenceChannels: [],
+        latency: 45,
+        quality: 'excellent',
+        reconnectAttempts: 0
+      };
+      eventLog = [];
+      eventCount = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,259 @@
+<div data-page="component-skeleton" class="component-demo">
+  <h2>Skeleton</h2>
+  <p class="text-muted">Placeholder loading states that mimic content structure while data loads.</p>
+
+  <section class="demo-section" aria-labelledby="skeleton-config-heading">
+    <h3 id="skeleton-config-heading">Props-Configured Skeleton</h3>
+    <p class="text-muted small">Configure type, rows, and columns using the props panel.</p>
+    <div class="demo-area" id="skeleton-configured" role="status" aria-label="Configurable skeleton" aria-busy="true"></div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skeleton-controls-heading">
+    <h3 id="skeleton-controls-heading">Controls</h3>
+    <p class="text-muted small">Toggle between skeleton and content states.</p>
+    <div class="demo-area">
+      <div class="skeleton-demo__button-grid" role="group" aria-label="Skeleton control buttons">
+        <button class="btn btn-primary" id="skeleton-toggle" type="button">
+          <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i> Toggle Content
+        </button>
+        <button class="btn btn-secondary" id="skeleton-refresh" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i> Refresh Skeleton
+        </button>
+        <button class="btn btn-outline-primary" id="skeleton-auto" type="button">
+          <i class="fas fa-clock me-1" aria-hidden="true"></i> Auto Hide (3s)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skeleton-wrap-heading">
+    <h3 id="skeleton-wrap-heading">Wrap Async</h3>
+    <p class="text-muted small">Skeleton automatically shows during async operations. Uses type from props.</p>
+    <div class="demo-area">
+      <button class="btn btn-success mb-3" id="skeleton-simulate" type="button">
+        <i class="fas fa-database me-1" aria-hidden="true"></i> Simulate Data Load
+      </button>
+      <div id="skeleton-async-container" class="skeleton-demo__async-container">
+        <p class="text-muted">Click button to simulate loading data...</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skeleton-types-heading">
+    <h3 id="skeleton-types-heading">Type Gallery</h3>
+    <p class="text-muted small">Reference examples of each skeleton type.</p>
+
+    <div class="demo-subsection" aria-labelledby="skeleton-table-heading">
+      <h4 id="skeleton-table-heading" class="h6 text-muted">Table</h4>
+      <div class="demo-area" id="skeleton-table" role="status" aria-label="Table loading placeholder" aria-busy="true"></div>
+    </div>
+
+    <div class="demo-subsection" aria-labelledby="skeleton-card-heading">
+      <h4 id="skeleton-card-heading" class="h6 text-muted">Cards</h4>
+      <div class="demo-area skeleton-demo__cards" id="skeleton-card" role="status" aria-label="Cards loading placeholder" aria-busy="true"></div>
+    </div>
+
+    <div class="demo-subsection" aria-labelledby="skeleton-list-heading">
+      <h4 id="skeleton-list-heading" class="h6 text-muted">List</h4>
+      <div class="demo-area" id="skeleton-list" role="status" aria-label="List loading placeholder" aria-busy="true"></div>
+    </div>
+
+    <div class="demo-subsection" aria-labelledby="skeleton-text-heading">
+      <h4 id="skeleton-text-heading" class="h6 text-muted">Text</h4>
+      <div class="demo-area" id="skeleton-text" role="status" aria-label="Text loading placeholder" aria-busy="true"></div>
+    </div>
+
+    <div class="demo-subsection" aria-labelledby="skeleton-avatar-heading">
+      <h4 id="skeleton-avatar-heading" class="h6 text-muted">Avatars</h4>
+      <div class="demo-area skeleton-demo__avatars" id="skeleton-avatar" role="status" aria-label="Avatar loading placeholder" aria-busy="true"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skeleton-log-heading">
+    <h3 id="skeleton-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="skeleton-log" class="skeleton-demo__log" aria-live="polite" aria-label="Skeleton event log">Interact with skeletons to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  Funky.Pages.register('component-skeleton', {
+    _logs: [],
+    _showingContent: false,
+
+    _log: function(message) {
+      this._logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+      if (this._logs.length > 10) this._logs.pop();
+      var logEl = document.getElementById('skeleton-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _renderConfiguredSkeleton: function() {
+      var props = getProps();
+      var type = props.type || 'table';
+      var rows = props.rows || 5;
+      var columns = props.columns || 4;
+
+      var el = document.getElementById('skeleton-configured');
+      if (!el) {
+        this._log('Error: skeleton-configured element not found');
+        return;
+      }
+
+      if (!Funky.Skeleton) {
+        this._log('Error: Funky.Skeleton not available');
+        return;
+      }
+
+      // Configurable skeleton (from props)
+      var configOpts = { type: type, rows: rows };
+      if (type === 'table') configOpts.columns = columns;
+      if (type === 'card' || type === 'avatar') configOpts.count = rows;
+
+      Funky.Skeleton.show(el, configOpts);
+      el.setAttribute('aria-busy', 'true');
+      this._showingContent = false;
+
+      this._log('Rendered ' + type + ' skeleton (rows=' + rows + ', columns=' + columns + ')');
+    },
+
+    _renderTypeGallery: function() {
+      if (!Funky.Skeleton) return;
+
+      // Type examples (fixed for reference)
+      var tableEl = document.getElementById('skeleton-table');
+      var cardEl = document.getElementById('skeleton-card');
+      var listEl = document.getElementById('skeleton-list');
+      var textEl = document.getElementById('skeleton-text');
+      var avatarEl = document.getElementById('skeleton-avatar');
+
+      if (tableEl) Funky.Skeleton.show(tableEl, { type: 'table', rows: 3, columns: 4 });
+      if (cardEl) Funky.Skeleton.show(cardEl, { type: 'card', count: 3 });
+      if (listEl) Funky.Skeleton.show(listEl, { type: 'list', rows: 3 });
+      if (textEl) Funky.Skeleton.show(textEl, { type: 'text', rows: 3 });
+      if (avatarEl) Funky.Skeleton.show(avatarEl, { type: 'avatar', count: 4 });
+    },
+
+    _showConfiguredContent: function() {
+      var props = getProps();
+      var type = props.type || 'table';
+      var el = document.getElementById('skeleton-configured');
+
+      if (el) {
+        // First hide the skeleton properly
+        Funky.Skeleton.hide(el);
+        // Then set content
+        el.innerHTML = '<div class="alert alert-success mb-0"><i class="fas fa-check-circle me-2"></i> Content loaded! Skeleton type was: <strong>' + type + '</strong></div>';
+        el.setAttribute('aria-busy', 'false');
+      }
+      this._showingContent = true;
+    },
+
+    init: function(state) {
+      var self = this;
+
+      // Reset state on init
+      this._showingContent = false;
+      this._logs = [];
+
+      var props = getProps();
+      var type = props.type || 'table';
+      var rows = props.rows || 5;
+      var columns = props.columns || 4;
+
+      this._log('Init with type=' + type + ', rows=' + rows + ', columns=' + columns);
+      emit('event', { event: 'skeleton:init', payload: { type: type, rows: rows, columns: columns } });
+
+      // Render the props-configured skeleton
+      this._renderConfiguredSkeleton();
+
+      // Render the type gallery (always shows all types for reference)
+      this._renderTypeGallery();
+
+      // If autoHide is set, show skeleton then hide after delay
+      if (props.autoHide) {
+        var hideDelay = props.hideDelay || 3000;
+        setTimeout(function() {
+          self._showConfiguredContent();
+          self._log('Auto-hidden after ' + hideDelay + 'ms');
+          emit('event', { event: 'skeleton:auto-hide', payload: { delay: hideDelay } });
+        }, hideDelay);
+      }
+
+      // Toggle button
+      document.getElementById('skeleton-toggle').onclick = function() {
+        if (self._showingContent) {
+          self._renderConfiguredSkeleton();
+          self._log('Showing skeleton');
+          emit('event', { event: 'skeleton:show', payload: {} });
+        } else {
+          self._showConfiguredContent();
+          self._log('Showing content');
+          emit('event', { event: 'skeleton:hide', payload: {} });
+        }
+      };
+
+      // Refresh button
+      document.getElementById('skeleton-refresh').onclick = function() {
+        self._renderConfiguredSkeleton();
+        self._log('Refreshed skeleton');
+        emit('event', { event: 'skeleton:refresh', payload: {} });
+      };
+
+      // Auto hide button
+      document.getElementById('skeleton-auto').onclick = function() {
+        self._renderConfiguredSkeleton();
+        self._log('Started auto-hide (3s)');
+        emit('event', { event: 'skeleton:auto-start', payload: { delay: 3000 } });
+        setTimeout(function() {
+          self._showConfiguredContent();
+          self._log('Auto-hide complete');
+          emit('event', { event: 'skeleton:auto-complete', payload: {} });
+        }, 3000);
+      };
+
+      // Simulate async button
+      document.getElementById('skeleton-simulate').onclick = function() {
+        var props = getProps();
+        var container = document.getElementById('skeleton-async-container');
+        var type = props.type || 'list';
+        var rows = props.rows || 4;
+
+        if (container) {
+          Funky.Skeleton.show(container, { type: type, rows: rows });
+          container.setAttribute('aria-busy', 'true');
+          self._log('Simulating data load with ' + type + ' skeleton...');
+          emit('event', { event: 'skeleton:async-start', payload: { type: type } });
+
+          setTimeout(function() {
+            Funky.Skeleton.hide(container);
+            container.setAttribute('aria-busy', 'false');
+            container.innerHTML = '<div class="alert alert-info mb-0"><i class="fas fa-database me-2"></i> Data loaded successfully! Fetched 42 records.</div>';
+            self._log('Data load complete');
+            emit('event', { event: 'skeleton:async-complete', payload: { records: 42 } });
+          }, 2000);
+        }
+      };
+    },
+
+    destroy: function() {
+      // Clean up skeletons
+      if (Funky.Skeleton) {
+        var ids = ['skeleton-configured', 'skeleton-table', 'skeleton-card', 'skeleton-list', 'skeleton-text', 'skeleton-avatar', 'skeleton-async-container'];
+        ids.forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) Funky.Skeleton.hide(el);
+        });
+      }
+      this._showingContent = false;
+      this._logs = [];
+      return {};
+    }
+  });
+})();
+</script>

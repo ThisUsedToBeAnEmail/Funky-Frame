@@ -1,0 +1,483 @@
+<div data-page="component-signature" class="signature-demo">
+  <h2>Signature</h2>
+  <p class="text-muted">Canvas-based signature capture with pressure sensitivity, touch support, and export capabilities.</p>
+
+  <!-- Current State -->
+  <section class="signature-demo__section" aria-labelledby="signature-state-heading">
+    <h3 id="signature-state-heading">Current State</h3>
+    <div class="signature-demo__state">
+      <div class="signature-demo__state-item">
+        <span class="signature-demo__state-label">Mode</span>
+        <span class="signature-demo__state-value" id="state-mode">draw</span>
+      </div>
+      <div class="signature-demo__state-item">
+        <span class="signature-demo__state-label">Strokes</span>
+        <span class="signature-demo__state-value" id="state-strokes">0</span>
+      </div>
+      <div class="signature-demo__state-item">
+        <span class="signature-demo__state-label">Status</span>
+        <span class="signature-demo__state-value" id="state-status">empty</span>
+      </div>
+      <div class="signature-demo__state-item">
+        <span class="signature-demo__state-label">Pen Colour</span>
+        <span class="signature-demo__state-value" id="state-pen-colour">#000000</span>
+      </div>
+      <div class="signature-demo__state-item">
+        <span class="signature-demo__state-label">Size</span>
+        <span class="signature-demo__state-value" id="state-size">400×200</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signature Pad -->
+  <section class="signature-demo__section" aria-labelledby="signature-pad-heading">
+    <h3 id="signature-pad-heading">Signature Pad</h3>
+    <p class="signature-demo__hint"><i class="fas fa-pen-nib" aria-hidden="true"></i> Draw your signature below. Supports mouse, touch, and pressure-sensitive stylus input.</p>
+    <div class="signature-demo__pad-container signature-demo__pad-container--centered">
+      <div id="signature-container" class="signature-demo__pad"></div>
+    </div>
+    <div class="signature-demo__controls">
+      <button class="btn btn-outline-danger btn-sm" id="btn-clear" type="button">
+        <i class="fas fa-eraser me-1" aria-hidden="true"></i> Clear
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="btn-undo" type="button">
+        <i class="fas fa-undo me-1" aria-hidden="true"></i> Undo
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="btn-mode-draw" type="button">
+        <i class="fas fa-pen me-1" aria-hidden="true"></i> Draw Mode
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="btn-mode-type" type="button">
+        <i class="fas fa-keyboard me-1" aria-hidden="true"></i> Type Mode
+      </button>
+    </div>
+  </section>
+
+  <!-- Export Options -->
+  <section class="signature-demo__section" aria-labelledby="signature-export-heading">
+    <h3 id="signature-export-heading">Export</h3>
+    <p class="signature-demo__hint"><i class="fas fa-download" aria-hidden="true"></i> Export signature in various formats</p>
+    <div class="signature-demo__export">
+      <div class="signature-demo__export-buttons">
+        <button class="btn btn-primary btn-sm" id="btn-export-png" type="button">
+          <i class="fas fa-image me-1" aria-hidden="true"></i> PNG
+        </button>
+        <button class="btn btn-primary btn-sm" id="btn-export-jpeg" type="button">
+          <i class="fas fa-file-image me-1" aria-hidden="true"></i> JPEG
+        </button>
+        <button class="btn btn-primary btn-sm" id="btn-export-svg" type="button">
+          <i class="fas fa-vector-square me-1" aria-hidden="true"></i> SVG
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-export-json" type="button">
+          <i class="fas fa-code me-1" aria-hidden="true"></i> JSON Data
+        </button>
+      </div>
+      <div class="signature-demo__preview">
+        <h4>Preview</h4>
+        <div id="export-preview" class="signature-demo__preview-area">
+          <span class="text-muted">Export preview will appear here</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Validation -->
+  <section class="signature-demo__section" aria-labelledby="signature-validation-heading">
+    <h3 id="signature-validation-heading">Validation</h3>
+    <p class="signature-demo__hint"><i class="fas fa-check-circle" aria-hidden="true"></i> Test signature validation</p>
+    <div class="signature-demo__validation">
+      <div class="signature-demo__validation-controls">
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" id="opt-required">
+          <span class="form-check-label">Required</span>
+        </label>
+        <button class="btn btn-outline-success btn-sm" id="btn-validate" type="button">
+          <i class="fas fa-check me-1" aria-hidden="true"></i> Validate
+        </button>
+      </div>
+      <div id="validation-result" class="signature-demo__validation-result"></div>
+    </div>
+  </section>
+
+  <!-- Pen Options -->
+  <section class="signature-demo__section" aria-labelledby="signature-pen-heading">
+    <h3 id="signature-pen-heading">Pen Options</h3>
+    <div class="signature-demo__pen-options">
+      <div class="signature-demo__pen-option">
+        <label class="signature-demo__pen-label">Pen Colour</label>
+        <div class="signature-demo__colour-swatches">
+          <button class="signature-demo__colour-swatch active" data-colour="#000000" type="button" aria-label="Black"></button>
+          <button class="signature-demo__colour-swatch" data-colour="#0d6efd" type="button" aria-label="Blue"></button>
+          <button class="signature-demo__colour-swatch" data-colour="#dc3545" type="button" aria-label="Red"></button>
+          <button class="signature-demo__colour-swatch" data-colour="#198754" type="button" aria-label="Green"></button>
+          <button class="signature-demo__colour-swatch" data-colour="#6f42c1" type="button" aria-label="Purple"></button>
+        </div>
+      </div>
+      <div class="signature-demo__pen-option">
+        <label class="signature-demo__pen-label">Background</label>
+        <div class="signature-demo__colour-swatches">
+          <button class="signature-demo__bg-swatch active" data-colour="#ffffff" type="button" aria-label="White"></button>
+          <button class="signature-demo__bg-swatch" data-colour="#f8f9fa" type="button" aria-label="Light Grey"></button>
+          <button class="signature-demo__bg-swatch" data-colour="#fffbeb" type="button" aria-label="Cream"></button>
+          <button class="signature-demo__bg-swatch" data-colour="#f0f9ff" type="button" aria-label="Light Blue"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="signature-demo__section" aria-labelledby="signature-log-heading">
+    <h3 id="signature-log-heading">Event Log</h3>
+    <div class="signature-demo__log-controls">
+      <button class="btn btn-outline-secondary btn-sm" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+    <pre id="signature-log" class="signature-demo__log" aria-live="polite" aria-label="Signature event log">Initializing Signature component...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var propsChangedHandler = null;
+
+  Funky.Pages.register('component-signature', {
+    _logs: [],
+    _instance: null,
+
+    _log: function(message, data) {
+      var entry = new Date().toLocaleTimeString() + ' - ' + message;
+      if (data) entry += ': ' + JSON.stringify(data);
+      this._logs.unshift(entry);
+      if (this._logs.length > 20) this._logs.pop();
+      var logEl = document.getElementById('signature-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _updateState: function(key, value) {
+      var el = document.getElementById('state-' + key);
+      if (el) el.textContent = value;
+    },
+
+    _updateStatus: function() {
+      if (!this._instance) return;
+      var isEmpty = this._instance.isEmpty();
+      var strokes = this._instance.getStrokeCount();
+      this._updateState('status', isEmpty ? 'empty' : 'signed');
+      this._updateState('strokes', strokes);
+    },
+
+    init: function(state) {
+      var self = this;
+      var props = getProps();
+
+      self._logs = [];
+      self._log('Initializing Signature demo');
+
+      // Get configuration from props
+      var width = props.width || 400;
+      var height = props.height || 200;
+      var penColour = props.penColour || '#000000';
+      var penWidth = props.penWidth || 2;
+      var backgroundColour = props.backgroundColour || '#ffffff';
+      var showTypedOption = props.showTypedOption !== false;
+      var required = props.required || false;
+      var minWidth = props.minWidth || 0.5;
+      var maxWidth = props.maxWidth || 2.5;
+
+      self._updateState('size', width + '×' + height);
+      self._updateState('pen-colour', penColour);
+      self._updateState('mode', 'draw');
+
+      // Create signature instance
+      if (Funky.Signature) {
+        self._instance = Funky.Signature.init('#signature-container', {
+          width: width,
+          height: height,
+          penColour: penColour,
+          penWidth: penWidth,
+          backgroundColour: backgroundColour,
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          showTypedOption: showTypedOption,
+          required: required,
+          onBegin: function() {
+            self._log('Drawing started');
+            emit('event', { event: 'funky:signature:begin', payload: {} });
+          },
+          onChange: function() {
+            self._updateStatus();
+            emit('event', { event: 'funky:signature:change', payload: { isEmpty: self._instance.isEmpty(), strokes: self._instance.getStrokeCount() } });
+          },
+          onEnd: function() {
+            self._log('Stroke completed', { strokes: self._instance.getStrokeCount() });
+            emit('event', { event: 'funky:signature:end', payload: { strokes: self._instance.getStrokeCount() } });
+          }
+        });
+
+        self._log('Signature initialized', { width: width, height: height });
+        emit('event', { event: 'funky:signature:init', payload: { width: width, height: height } });
+      } else {
+        self._log('ERROR: Funky.Signature not available');
+      }
+
+      // Clear button
+      document.getElementById('btn-clear').onclick = function() {
+        if (self._instance) {
+          self._instance.clear();
+          self._log('Signature cleared');
+          self._updateStatus();
+          document.getElementById('export-preview').innerHTML = '<span class="text-muted">Export preview will appear here</span>';
+          emit('event', { event: 'funky:signature:clear', payload: {} });
+        }
+      };
+
+      // Undo button
+      document.getElementById('btn-undo').onclick = function() {
+        if (self._instance) {
+          var undone = self._instance.undo();
+          if (undone) {
+            self._log('Stroke undone', { strokes: self._instance.getStrokeCount() });
+            self._updateStatus();
+            emit('event', { event: 'funky:signature:undo', payload: { strokes: self._instance.getStrokeCount() } });
+          } else {
+            self._log('Nothing to undo');
+          }
+        }
+      };
+
+      // Mode buttons
+      document.getElementById('btn-mode-draw').onclick = function() {
+        if (self._instance) {
+          self._instance.setMode('draw');
+          self._updateState('mode', 'draw');
+          self._log('Mode changed to draw');
+          emit('event', { event: 'funky:signature:mode', payload: { mode: 'draw' } });
+        }
+      };
+
+      document.getElementById('btn-mode-type').onclick = function() {
+        if (self._instance) {
+          self._instance.setMode('type');
+          self._updateState('mode', 'type');
+          self._log('Mode changed to type');
+          emit('event', { event: 'funky:signature:mode', payload: { mode: 'type' } });
+        }
+      };
+
+      // Export PNG
+      document.getElementById('btn-export-png').onclick = function() {
+        if (self._instance && !self._instance.isEmpty()) {
+          var dataUrl = self._instance.toDataURL('image/png');
+          document.getElementById('export-preview').innerHTML = '<img src="' + dataUrl + '" alt="Signature preview" class="signature-demo__preview-image">';
+          self._log('Exported as PNG');
+          emit('event', { event: 'funky:signature:export', payload: { format: 'png' } });
+          if (Funky.Toast) Funky.Toast.success('Exported as PNG');
+        } else {
+          self._log('Cannot export empty signature');
+          if (Funky.Toast) Funky.Toast.warning('Please provide a signature first');
+        }
+      };
+
+      // Export JPEG
+      document.getElementById('btn-export-jpeg').onclick = function() {
+        if (self._instance && !self._instance.isEmpty()) {
+          var dataUrl = self._instance.toDataURL('image/jpeg', 0.9);
+          document.getElementById('export-preview').innerHTML = '<img src="' + dataUrl + '" alt="Signature preview" class="signature-demo__preview-image">';
+          self._log('Exported as JPEG');
+          emit('event', { event: 'funky:signature:export', payload: { format: 'jpeg' } });
+          if (Funky.Toast) Funky.Toast.success('Exported as JPEG');
+        } else {
+          self._log('Cannot export empty signature');
+          if (Funky.Toast) Funky.Toast.warning('Please provide a signature first');
+        }
+      };
+
+      // Export SVG
+      document.getElementById('btn-export-svg').onclick = function() {
+        if (self._instance && !self._instance.isEmpty()) {
+          var svg = self._instance.toSVG();
+          var blob = new Blob([svg], { type: 'image/svg+xml' });
+          var url = URL.createObjectURL(blob);
+          document.getElementById('export-preview').innerHTML = '<img src="' + url + '" alt="Signature preview" class="signature-demo__preview-image">';
+          self._log('Exported as SVG');
+          emit('event', { event: 'funky:signature:export', payload: { format: 'svg' } });
+          if (Funky.Toast) Funky.Toast.success('Exported as SVG');
+        } else {
+          self._log('Cannot export empty signature');
+          if (Funky.Toast) Funky.Toast.warning('Please provide a signature first');
+        }
+      };
+
+      // Export JSON
+      document.getElementById('btn-export-json').onclick = function() {
+        if (self._instance && !self._instance.isEmpty()) {
+          var json = self._instance.toJSON();
+          document.getElementById('export-preview').innerHTML = '<pre class="signature-demo__json-preview">' + json.substring(0, 500) + (json.length > 500 ? '...' : '') + '</pre>';
+          self._log('Exported as JSON', { length: json.length });
+          emit('event', { event: 'funky:signature:export', payload: { format: 'json' } });
+          if (Funky.Toast) Funky.Toast.success('Exported as JSON');
+        } else {
+          self._log('Cannot export empty signature');
+          if (Funky.Toast) Funky.Toast.warning('Please provide a signature first');
+        }
+      };
+
+      // Validation
+      document.getElementById('btn-validate').onclick = function() {
+        if (self._instance) {
+          var isRequired = document.getElementById('opt-required').checked;
+          self._instance.options.required = isRequired;
+          var result = self._instance.validate();
+          var resultEl = document.getElementById('validation-result');
+          if (result.valid) {
+            resultEl.innerHTML = '<span class="signature-demo__valid"><i class="fas fa-check-circle me-1"></i> Valid</span>';
+            self._log('Validation passed');
+          } else {
+            resultEl.innerHTML = '<span class="signature-demo__invalid"><i class="fas fa-times-circle me-1"></i> ' + result.errors.join(', ') + '</span>';
+            self._log('Validation failed', { errors: result.errors });
+          }
+          emit('event', { event: 'funky:signature:validate', payload: result });
+        }
+      };
+
+      // Required checkbox
+      document.getElementById('opt-required').checked = required;
+
+      // Colour swatches
+      document.querySelectorAll('.signature-demo__colour-swatch').forEach(function(swatch) {
+        var colour = swatch.dataset.colour;
+        swatch.style.backgroundColor = colour;
+        swatch.onclick = function() {
+          document.querySelectorAll('.signature-demo__colour-swatch').forEach(function(s) {
+            s.classList.remove('active');
+          });
+          swatch.classList.add('active');
+          if (self._instance) {
+            self._instance.options.penColour = colour;
+            self._updateState('pen-colour', colour);
+            self._log('Pen colour changed', { colour: colour });
+            emit('event', { event: 'funky:signature:penColour', payload: { colour: colour } });
+          }
+        };
+      });
+
+      // Background swatches
+      document.querySelectorAll('.signature-demo__bg-swatch').forEach(function(swatch) {
+        var colour = swatch.dataset.colour;
+        swatch.style.backgroundColor = colour;
+        swatch.onclick = function() {
+          document.querySelectorAll('.signature-demo__bg-swatch').forEach(function(s) {
+            s.classList.remove('active');
+          });
+          swatch.classList.add('active');
+          if (self._instance) {
+            self._instance.options.backgroundColour = colour;
+            self._instance.clear();
+            self._log('Background colour changed', { colour: colour });
+            emit('event', { event: 'funky:signature:backgroundColour', payload: { colour: colour } });
+          }
+        };
+      });
+
+      // Clear log
+      document.getElementById('btn-clear-log').onclick = function() {
+        self._logs = [];
+        document.getElementById('signature-log').textContent = 'Log cleared';
+      };
+
+      // Listen for props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          self._log('Props changed', newProps);
+
+          // Resize if size changed
+          if ((newProps.width !== undefined || newProps.height !== undefined) && self._instance) {
+            var newWidth = newProps.width !== undefined ? newProps.width : self._instance.options.width;
+            var newHeight = newProps.height !== undefined ? newProps.height : self._instance.options.height;
+            self._instance.resize(newWidth, newHeight, true);
+            self._updateState('size', newWidth + '×' + newHeight);
+            self._log('Signature resized', { width: newWidth, height: newHeight });
+          }
+
+          // Update pen colour
+          if (newProps.penColour !== undefined && self._instance) {
+            self._instance.options.penColour = newProps.penColour;
+            self._updateState('pen-colour', newProps.penColour);
+            // Update swatch selection
+            document.querySelectorAll('.signature-demo__colour-swatch').forEach(function(s) {
+              s.classList.toggle('active', s.dataset.colour === newProps.penColour);
+            });
+          }
+
+          // Update pen width
+          if (newProps.penWidth !== undefined && self._instance) {
+            self._instance.options.penWidth = newProps.penWidth;
+            self._log('Pen width changed', { penWidth: newProps.penWidth });
+          }
+
+          // Update min/max width
+          if (newProps.minWidth !== undefined && self._instance) {
+            self._instance.options.minWidth = newProps.minWidth;
+          }
+          if (newProps.maxWidth !== undefined && self._instance) {
+            self._instance.options.maxWidth = newProps.maxWidth;
+          }
+
+          // Update background colour
+          if (newProps.backgroundColour !== undefined && self._instance) {
+            self._instance.options.backgroundColour = newProps.backgroundColour;
+            // Redraw with new background
+            if (self._instance.mode === 'draw') {
+              self._instance._redraw();
+            } else if (self._instance.typedCtx) {
+              self._instance._renderTypedSignature();
+            }
+            // Update swatch selection
+            document.querySelectorAll('.signature-demo__bg-swatch').forEach(function(s) {
+              s.classList.toggle('active', s.dataset.colour === newProps.backgroundColour);
+            });
+            self._log('Background colour changed', { colour: newProps.backgroundColour });
+          }
+
+          // Update required
+          if (newProps.required !== undefined) {
+            document.getElementById('opt-required').checked = newProps.required;
+            if (self._instance) {
+              self._instance.options.required = newProps.required;
+            }
+          }
+
+          // Update showTypedOption
+          if (newProps.showTypedOption !== undefined && self._instance && self._instance.modeToggle) {
+            self._instance.modeToggle.el.style.display = newProps.showTypedOption ? 'flex' : 'none';
+          }
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      self._log('Demo ready');
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy signature instance
+      if (this._instance && this._instance.destroy) {
+        this._instance.destroy();
+      }
+
+      this._logs = [];
+      this._instance = null;
+
+      return {};
+    }
+  });
+})();
+</script>

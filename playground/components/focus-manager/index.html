@@ -1,0 +1,818 @@
+<div data-page="component-focus-manager" class="component-demo">
+  <h2>FocusManager</h2>
+  <p class="text-muted">Centralized focus history and navigation with region support, focus trapping, and screen reader announcements.</p>
+
+  <!-- Focus History Section -->
+  <section class="demo-section" aria-labelledby="history-heading">
+    <h3 id="history-heading">Focus History</h3>
+    <p class="text-muted small">Push focus to history stack and navigate back. Click buttons to build history, then pop to return.</p>
+
+    <div class="demo-area">
+      <div class="focus-manager-demo__history">
+        <div class="focus-manager-demo__history-controls">
+          <button type="button" id="focus-btn-a" class="btn btn-outline-primary">Button A</button>
+          <button type="button" id="focus-btn-b" class="btn btn-outline-primary">Button B</button>
+          <input type="text" id="focus-input-c" class="form-control focus-manager-demo__inline-input" placeholder="Input C">
+        </div>
+
+        <div class="focus-manager-demo__history-actions">
+          <button type="button" id="push-focus" class="btn btn-primary">
+            <i class="fas fa-arrow-right" aria-hidden="true"></i> Focus And Push
+          </button>
+          <button type="button" id="pop-focus" class="btn btn-warning">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Pop Focus
+          </button>
+          <button type="button" id="clear-history" class="btn btn-danger btn-sm">
+            <i class="fas fa-trash" aria-hidden="true"></i> Clear
+          </button>
+          <span id="history-count" class="badge bg-secondary">0 items</span>
+        </div>
+
+        <div id="history-status" class="focus-manager-demo__status" aria-live="polite">
+          Click "Focus And Push" to push current focus and move to next element
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Region Navigation Section -->
+  <section class="demo-section" aria-labelledby="regions-heading">
+    <h3 id="regions-heading">Region Navigation</h3>
+    <p class="text-muted small">Navigate between page regions using F6-style navigation. Regions are defined with data-nav-region attributes.</p>
+
+    <div class="demo-area">
+      <div class="focus-manager-demo__regions">
+        <div class="focus-manager-demo__region-controls">
+          <button type="button" id="discover-regions" class="btn btn-secondary btn-sm">
+            <i class="fas fa-search" aria-hidden="true"></i> Discover Regions
+          </button>
+          <button type="button" id="prev-region" class="btn btn-primary">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i> Previous
+          </button>
+          <button type="button" id="next-region" class="btn btn-primary">
+            Next <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+          <span id="region-count" class="badge bg-info">0 regions</span>
+        </div>
+
+        <div class="focus-manager-demo__region-select">
+          <label for="region-dropdown" class="form-label">Focus Region:</label>
+          <select id="region-dropdown" class="form-select">
+            <option value="">-- Select Region --</option>
+          </select>
+        </div>
+
+        <div class="focus-manager-demo__region-grid">
+          <div data-nav-region="header" data-nav-order="1" class="focus-manager-demo__region" tabindex="-1">
+            <h4>Header Region</h4>
+            <div class="focus-manager-demo__region-content">
+              <button type="button" class="btn btn-sm btn-outline-secondary">Nav 1</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">Nav 2</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">Nav 3</button>
+            </div>
+          </div>
+
+          <div data-nav-region="sidebar" data-nav-order="2" class="focus-manager-demo__region" tabindex="-1">
+            <h4>Sidebar Region</h4>
+            <div class="focus-manager-demo__region-content">
+              <input type="text" class="form-control form-control-sm" placeholder="Search...">
+              <button type="button" class="btn btn-sm btn-outline-primary">Filter</button>
+            </div>
+          </div>
+
+          <div data-nav-region="main" data-nav-order="3" class="focus-manager-demo__region" tabindex="-1">
+            <h4>Main Region</h4>
+            <div class="focus-manager-demo__region-content">
+              <button type="button" class="btn btn-sm btn-primary">Action 1</button>
+              <button type="button" class="btn btn-sm btn-secondary">Action 2</button>
+              <input type="text" class="form-control form-control-sm" placeholder="Main input">
+            </div>
+          </div>
+
+          <div data-nav-region="footer" data-nav-order="4" class="focus-manager-demo__region" tabindex="-1">
+            <h4>Footer Region</h4>
+            <div class="focus-manager-demo__region-content">
+              <button type="button" class="btn btn-sm btn-outline-secondary">Help</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">About</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="region-status" class="focus-manager-demo__status" aria-live="polite">
+          Click "Discover Regions" to scan for data-nav-region elements
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Focus Trap Section -->
+  <section class="demo-section" aria-labelledby="trap-heading">
+    <h3 id="trap-heading">Focus Trap</h3>
+    <p class="text-muted small">Trap focus within a container. Tab/Shift+Tab cycles through elements without escaping.</p>
+
+    <div class="demo-area">
+      <div class="focus-manager-demo__trap-demo">
+        <button type="button" id="trap-toggle" class="btn btn-primary">
+          <i class="fas fa-lock" aria-hidden="true"></i> Enable Focus Trap
+        </button>
+
+        <div id="trap-container" class="focus-manager-demo__trap-container">
+          <p class="focus-manager-demo__trap-label">Trap Container</p>
+          <input type="text" class="form-control form-control-sm" placeholder="First input">
+          <button type="button" class="btn btn-sm btn-secondary">Button 1</button>
+          <button type="button" class="btn btn-sm btn-secondary">Button 2</button>
+          <input type="text" class="form-control form-control-sm" placeholder="Last input">
+        </div>
+
+        <div id="trap-status" class="focus-manager-demo__status" aria-live="polite">
+          Trap is <strong>disabled</strong>. Click "Enable Focus Trap" to activate.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Input Completion Section -->
+  <section class="demo-section" aria-labelledby="input-heading">
+    <h3 id="input-heading">Input Completion</h3>
+    <p class="text-muted small">Handle filter/search input completion with mobile keyboard dismissal.</p>
+
+    <div class="demo-area">
+      <div class="focus-manager-demo__input-demo">
+        <div class="focus-manager-demo__input-row">
+          <input type="search" id="filter-input" class="form-control" data-filter-input placeholder="Type to filter..." aria-label="Filter input">
+          <button type="button" id="check-filter" class="btn btn-secondary btn-sm">
+            <i class="fas fa-question" aria-hidden="true"></i> Is Filter?
+          </button>
+          <button type="button" id="complete-input" class="btn btn-primary">
+            <i class="fas fa-check" aria-hidden="true"></i> Complete Input
+          </button>
+        </div>
+
+        <div id="input-status" class="focus-manager-demo__status" aria-live="polite">
+          Focus the input and click "Complete Input" to dismiss keyboard and return focus
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Utility Functions Section -->
+  <section class="demo-section" aria-labelledby="utility-heading">
+    <h3 id="utility-heading">Utility Functions</h3>
+    <p class="text-muted small">Inspect focusable elements and check focusability.</p>
+
+    <div class="demo-area">
+      <div class="focus-manager-demo__utility">
+        <div class="focus-manager-demo__utility-container" id="utility-container">
+          <button type="button" class="btn btn-sm btn-secondary">Btn</button>
+          <input type="text" class="form-control form-control-sm" placeholder="Input">
+          <a href="#" class="focus-manager-demo__link">Link</a>
+          <span class="focus-manager-demo__span">Plain span (not focusable)</span>
+          <div tabindex="0" class="focus-manager-demo__custom-focusable">Custom [tabindex=0]</div>
+          <button type="button" class="btn btn-sm btn-secondary" disabled>Disabled Btn</button>
+        </div>
+
+        <div class="focus-manager-demo__utility-actions">
+          <button type="button" id="get-focusables" class="btn btn-primary">
+            <i class="fas fa-list" aria-hidden="true"></i> Get Focusable Elements
+          </button>
+          <button type="button" id="check-focused" class="btn btn-secondary">
+            <i class="fas fa-eye" aria-hidden="true"></i> Check Current Focus
+          </button>
+        </div>
+
+        <div id="utility-result" class="focus-manager-demo__utility-result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="events-heading">
+    <h3 id="events-heading">Event Log</h3>
+    <p class="text-muted small">Real-time FocusManager events from PubSub.</p>
+
+    <div class="demo-area">
+      <div class="focus-manager-demo__log-header">
+        <span id="log-count" class="badge bg-secondary">0 events</span>
+        <button type="button" id="clear-log" class="btn btn-sm btn-outline-danger">
+          <i class="fas fa-trash" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+      <div id="event-log" class="focus-manager-demo__log" aria-live="polite">
+        <div class="focus-manager-demo__log-empty">No events yet. Interact with the demos above.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var eventLog = [];
+  var eventHandlers = [];
+  var propsChangedHandler = null;
+  var trapCleanup = null;
+  var focusTargetIndex = 0;
+
+  // Focus targets for push demo
+  var focusTargets = ['focus-btn-a', 'focus-btn-b', 'focus-input-c'];
+  // Track the last focused demo element (so we can push it when button is clicked)
+  var lastFocusedDemoElement = null;
+
+  function trackDemoElementFocus(e) {
+    // Only track the demo elements (Button A, B, Input C)
+    if (focusTargets.indexOf(e.target.id) !== -1) {
+      lastFocusedDemoElement = e.target;
+    }
+  }
+
+  function logEvent(eventName, data) {
+    var now = new Date();
+    var timestamp = now.toLocaleTimeString();
+
+    var entry = {
+      timestamp: timestamp,
+      event: eventName,
+      data: data
+    };
+
+    eventLog.unshift(entry);
+    if (eventLog.length > 30) eventLog.pop();
+    renderLog();
+    emit('event', { event: eventName, payload: data });
+  }
+
+  function renderLog() {
+    var container = document.getElementById('event-log');
+    var countBadge = document.getElementById('log-count');
+    if (!container) return;
+
+    if (eventLog.length === 0) {
+      container.innerHTML = '<div class="focus-manager-demo__log-empty">No events yet. Interact with the demos above.</div>';
+      countBadge.textContent = '0 events';
+      return;
+    }
+
+    countBadge.textContent = eventLog.length + ' event' + (eventLog.length !== 1 ? 's' : '');
+
+    var html = eventLog.map(function(entry) {
+      var dataStr = '';
+      if (entry.data) {
+        if (entry.data.element) {
+          dataStr = 'element: ' + describeElement(entry.data.element);
+        } else if (entry.data.current) {
+          dataStr = 'region: ' + entry.data.current;
+        } else if (entry.data.historyLength !== undefined) {
+          dataStr = 'historyLength: ' + entry.data.historyLength;
+        } else {
+          dataStr = JSON.stringify(entry.data);
+        }
+      }
+
+      return '<div class="focus-manager-demo__log-entry">' +
+        '<span class="focus-manager-demo__log-time">' + entry.timestamp + '</span>' +
+        '<span class="focus-manager-demo__log-event">' + entry.event + '</span>' +
+        '<span class="focus-manager-demo__log-data">' + dataStr + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function describeElement(el) {
+    if (!el) return 'null';
+    var tag = el.tagName ? el.tagName.toLowerCase() : 'unknown';
+    var id = el.id ? '#' + el.id : '';
+    var className = el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : '';
+    return tag + id + className;
+  }
+
+  function updateHistoryCount() {
+    var count = Funky.FocusManager.getHistoryLength();
+    var badge = document.getElementById('history-count');
+    if (badge) {
+      badge.textContent = count + ' item' + (count !== 1 ? 's' : '');
+    }
+  }
+
+  function updateHistoryStatus(message) {
+    var status = document.getElementById('history-status');
+    if (status) {
+      status.textContent = message;
+    }
+  }
+
+  // Track elements with programmatic focus class for cleanup
+  var programmaticFocusElements = [];
+
+  function addProgrammaticFocus(element) {
+    // Remove from any previous elements
+    programmaticFocusElements.forEach(function(el) {
+      el.classList.remove('focus-programmatic');
+      el.removeEventListener('blur', handleProgrammaticBlur);
+    });
+    programmaticFocusElements = [];
+
+    // Add to new element
+    element.classList.add('focus-programmatic');
+    element.addEventListener('blur', handleProgrammaticBlur);
+    programmaticFocusElements.push(element);
+  }
+
+  function handleProgrammaticBlur(e) {
+    e.target.classList.remove('focus-programmatic');
+    e.target.removeEventListener('blur', handleProgrammaticBlur);
+    programmaticFocusElements = programmaticFocusElements.filter(function(el) {
+      return el !== e.target;
+    });
+  }
+
+  function handlePushFocus() {
+    var targetId = focusTargets[focusTargetIndex];
+    var target = document.getElementById(targetId);
+
+    if (target) {
+      // If we have a previously focused demo element, push it to history first
+      // This simulates the real use case: push current focus, then move to new element
+      if (lastFocusedDemoElement && lastFocusedDemoElement !== target) {
+        // Temporarily focus the last element so focusAndPush captures it
+        lastFocusedDemoElement.focus();
+      }
+
+      Funky.FocusManager.focusAndPush(target, {
+        label: targetId.replace('focus-', '').toUpperCase()
+      });
+
+      // Add visual focus indicator for programmatic focus
+      addProgrammaticFocus(target);
+
+      // Update tracking
+      lastFocusedDemoElement = target;
+      focusTargetIndex = (focusTargetIndex + 1) % focusTargets.length;
+      updateHistoryCount();
+      updateHistoryStatus('Pushed focus to ' + targetId + '. History: ' + Funky.FocusManager.getHistoryLength() + ' items.');
+      logEvent('demo:focusPush', { target: targetId });
+    }
+  }
+
+  function handlePopFocus() {
+    var success = Funky.FocusManager.popFocus();
+    updateHistoryCount();
+
+    if (success) {
+      // Add visual focus indicator to the element that received focus
+      // Use requestAnimationFrame to ensure focus has been applied
+      requestAnimationFrame(function() {
+        var focusedElement = document.activeElement;
+        if (focusedElement && focusedElement !== document.body) {
+          addProgrammaticFocus(focusedElement);
+        }
+      });
+      updateHistoryStatus('Popped focus. Returned to previous element. History: ' + Funky.FocusManager.getHistoryLength() + ' items.');
+      logEvent('demo:focusPop', { success: true });
+    } else {
+      updateHistoryStatus('History is empty. Nothing to pop.');
+      logEvent('demo:focusPop', { success: false });
+    }
+  }
+
+  function handleClearHistory() {
+    Funky.FocusManager.clearHistory();
+    updateHistoryCount();
+    updateHistoryStatus('History cleared.');
+    logEvent('demo:historyClear', {});
+  }
+
+  // Region functions
+  function updateRegionUI() {
+    var regions = Funky.FocusManager.getRegions();
+    var countBadge = document.getElementById('region-count');
+    var dropdown = document.getElementById('region-dropdown');
+    var status = document.getElementById('region-status');
+
+    if (countBadge) {
+      countBadge.textContent = regions.length + ' region' + (regions.length !== 1 ? 's' : '');
+    }
+
+    if (dropdown) {
+      dropdown.innerHTML = '<option value="">-- Select Region --</option>';
+      regions.forEach(function(region) {
+        var option = document.createElement('option');
+        option.value = region.name;
+        option.textContent = region.name + ' (order: ' + region.order + ')';
+        dropdown.appendChild(option);
+      });
+    }
+
+    if (status) {
+      status.textContent = 'Found ' + regions.length + ' regions: ' + regions.map(function(r) { return r.name; }).join(', ');
+    }
+
+    // Apply visual indicators if enabled
+    var props = getProps();
+    if (props.showRegionIndicators !== false) {
+      applyRegionIndicators();
+    }
+  }
+
+  function applyRegionIndicators() {
+    // Remove existing indicators
+    var existing = document.querySelectorAll('.focus-manager-demo__region');
+    existing.forEach(function(el) {
+      el.classList.remove('focus-manager-demo__region--active');
+    });
+
+    // Mark current region
+    var current = Funky.FocusManager.getCurrentRegion();
+    if (current && current.element) {
+      current.element.classList.add('focus-manager-demo__region--active');
+    }
+  }
+
+  function handleDiscoverRegions() {
+    Funky.FocusManager.discoverRegions();
+    var regions = Funky.FocusManager.getRegions();
+    updateRegionUI();
+    logEvent('demo:discoverRegions', { count: regions.length, regions: regions.map(function(r) { return r.name; }) });
+
+    // Debug: log what was found
+    console.log('[FocusManager Demo] Discovered regions:', regions);
+  }
+
+  function handleNextRegion() {
+    var regions = Funky.FocusManager.getRegions();
+    var currentBefore = Funky.FocusManager.getCurrentRegion();
+
+    console.log('[FocusManager Demo] nextRegion called. Regions:', regions.length, 'Current before:', currentBefore ? currentBefore.name : 'none');
+
+    if (regions.length === 0) {
+      updateRegionStatus('No regions registered. Click "Discover Regions" first.');
+      logEvent('demo:nextRegion', { success: false, error: 'no regions' });
+      return;
+    }
+
+    var success = Funky.FocusManager.nextRegion();
+    applyRegionIndicators();
+    var current = Funky.FocusManager.getCurrentRegion();
+
+    console.log('[FocusManager Demo] nextRegion result:', success, 'Current after:', current ? current.name : 'none');
+
+    if (success) {
+      updateRegionStatus('Moved to region: ' + (current ? current.name : 'unknown'));
+      // Add programmatic focus indicator to the focused element
+      requestAnimationFrame(function() {
+        var focusedElement = document.activeElement;
+        if (focusedElement && focusedElement !== document.body) {
+          addProgrammaticFocus(focusedElement);
+        }
+      });
+    } else {
+      updateRegionStatus('Failed to move to next region');
+    }
+
+    logEvent('demo:nextRegion', { success: success, current: current ? current.name : null });
+  }
+
+  function handlePrevRegion() {
+    var regions = Funky.FocusManager.getRegions();
+
+    if (regions.length === 0) {
+      updateRegionStatus('No regions registered. Click "Discover Regions" first.');
+      logEvent('demo:prevRegion', { success: false, error: 'no regions' });
+      return;
+    }
+
+    var success = Funky.FocusManager.prevRegion();
+    applyRegionIndicators();
+    var current = Funky.FocusManager.getCurrentRegion();
+
+    if (success) {
+      updateRegionStatus('Moved to region: ' + (current ? current.name : 'unknown'));
+      // Add programmatic focus indicator to the focused element
+      requestAnimationFrame(function() {
+        var focusedElement = document.activeElement;
+        if (focusedElement && focusedElement !== document.body) {
+          addProgrammaticFocus(focusedElement);
+        }
+      });
+    } else {
+      updateRegionStatus('Failed to move to previous region');
+    }
+
+    logEvent('demo:prevRegion', { success: success, current: current ? current.name : null });
+  }
+
+  function updateRegionStatus(message) {
+    var status = document.getElementById('region-status');
+    if (status) {
+      status.textContent = message;
+    }
+  }
+
+  function handleRegionSelect(e) {
+    var regionName = e.target.value;
+    if (regionName) {
+      var success = Funky.FocusManager.focusRegion(regionName);
+      applyRegionIndicators();
+
+      if (success) {
+        updateRegionStatus('Focused region: ' + regionName);
+        // Add programmatic focus indicator
+        requestAnimationFrame(function() {
+          var focusedElement = document.activeElement;
+          if (focusedElement && focusedElement !== document.body) {
+            addProgrammaticFocus(focusedElement);
+          }
+        });
+      } else {
+        updateRegionStatus('Failed to focus region: ' + regionName);
+      }
+
+      logEvent('demo:focusRegion', { region: regionName, success: success });
+    }
+  }
+
+  // Focus trap functions
+  function handleTrapToggle() {
+    var container = document.getElementById('trap-container');
+    var btn = document.getElementById('trap-toggle');
+    var status = document.getElementById('trap-status');
+
+    if (trapCleanup) {
+      // Disable trap
+      trapCleanup();
+      trapCleanup = null;
+
+      if (btn) {
+        btn.innerHTML = '<i class="fas fa-lock" aria-hidden="true"></i> Enable Focus Trap';
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-primary');
+      }
+      if (container) {
+        container.classList.remove('focus-manager-demo__trap-container--active');
+      }
+      if (status) {
+        status.innerHTML = 'Trap is <strong>disabled</strong>. Click "Enable Focus Trap" to activate.';
+      }
+      logEvent('demo:trapDisabled', {});
+    } else {
+      // Enable trap
+      trapCleanup = Funky.FocusManager.trapFocus(container, {
+        autoFocus: true
+      });
+
+      if (btn) {
+        btn.innerHTML = '<i class="fas fa-unlock" aria-hidden="true"></i> Disable Focus Trap';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-danger');
+      }
+      if (container) {
+        container.classList.add('focus-manager-demo__trap-container--active');
+      }
+      if (status) {
+        status.innerHTML = 'Trap is <strong>active</strong>. Tab cycles within the container. Click "Disable" to release.';
+      }
+      logEvent('demo:trapEnabled', {});
+    }
+  }
+
+  // Input completion functions
+  function handleCheckFilter() {
+    var input = document.getElementById('filter-input');
+    var status = document.getElementById('input-status');
+
+    if (input) {
+      var isFilter = Funky.FocusManager.isFilterInput(input);
+      if (status) {
+        status.textContent = isFilter
+          ? 'Yes, this is a filter input (has data-filter-input or type="search")'
+          : 'No, this is not recognized as a filter input';
+      }
+      logEvent('demo:checkFilter', { isFilter: isFilter });
+    }
+  }
+
+  function handleCompleteInput() {
+    var input = document.getElementById('filter-input');
+    var status = document.getElementById('input-status');
+
+    if (input) {
+      Funky.FocusManager.completeInput({
+        element: input,
+        returnFocus: true,
+        clearValue: false
+      });
+
+      if (status) {
+        status.textContent = 'Input completed. Focus returned to previous element (mobile keyboard dismissed).';
+      }
+      logEvent('demo:completeInput', {});
+    }
+  }
+
+  // Utility functions
+  function handleGetFocusables() {
+    var container = document.getElementById('utility-container');
+    var result = document.getElementById('utility-result');
+
+    if (container && result) {
+      var focusables = Funky.FocusManager.getFocusableElements(container);
+      var descriptions = [];
+
+      for (var i = 0; i < focusables.length; i++) {
+        descriptions.push((i + 1) + '. ' + describeElement(focusables[i]));
+      }
+
+      result.innerHTML = '<strong>Found ' + focusables.length + ' focusable elements:</strong><br>' +
+        descriptions.join('<br>');
+
+      logEvent('demo:getFocusables', { count: focusables.length });
+    }
+  }
+
+  function handleCheckFocused() {
+    var result = document.getElementById('utility-result');
+    var active = document.activeElement;
+
+    if (result) {
+      var isFocusable = Funky.FocusManager.isFocusable(active);
+
+      result.innerHTML = '<strong>Currently focused:</strong> ' + describeElement(active) + '<br>' +
+        '<strong>Is focusable:</strong> ' + (isFocusable ? 'Yes' : 'No');
+
+      logEvent('demo:checkFocused', { element: describeElement(active), isFocusable: isFocusable });
+    }
+  }
+
+  // Sanitize event data to remove DOM elements (can't be cloned for postMessage)
+  function sanitizeEventData(data) {
+    if (!data) return {};
+
+    var sanitized = {};
+
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        var val = data[key];
+        // Convert DOM elements to descriptions
+        if (val && val.nodeType === 1) {
+          sanitized[key] = describeElement(val);
+        } else if (typeof val !== 'function') {
+          sanitized[key] = val;
+        }
+      }
+    }
+
+    return sanitized;
+  }
+
+  function setupEventListeners() {
+    var events = ['funky:focus:push', 'funky:focus:pop', 'funky:region:change'];
+
+    events.forEach(function(eventName) {
+      var handler = function(data) {
+        // Sanitize data to remove DOM elements before logging
+        logEvent(eventName, sanitizeEventData(data));
+        updateHistoryCount();
+        applyRegionIndicators();
+      };
+      Funky.PubSub.on(eventName, handler);
+      eventHandlers.push({ event: eventName, handler: handler });
+    });
+  }
+
+  function syncFromProps(newProps) {
+    var props = newProps || getProps();
+
+    // Apply region indicators based on prop
+    if (props.showRegionIndicators !== false) {
+      applyRegionIndicators();
+    } else {
+      // Remove all active indicators
+      var regions = document.querySelectorAll('.focus-manager-demo__region--active');
+      regions.forEach(function(el) {
+        el.classList.remove('focus-manager-demo__region--active');
+      });
+    }
+
+    // Auto-discover if enabled
+    if (props.autoDiscoverRegions !== false) {
+      Funky.FocusManager.discoverRegions();
+      updateRegionUI();
+    }
+  }
+
+  function bindEvents() {
+    // Track focus on demo elements (Button A, B, Input C)
+    var historyContainer = document.querySelector('.focus-manager-demo__history-controls');
+    if (historyContainer) {
+      historyContainer.addEventListener('focusin', trackDemoElementFocus);
+    }
+
+    // History controls
+    var pushBtn = document.getElementById('push-focus');
+    var popBtn = document.getElementById('pop-focus');
+    var clearBtn = document.getElementById('clear-history');
+
+    if (pushBtn) pushBtn.addEventListener('click', handlePushFocus);
+    if (popBtn) popBtn.addEventListener('click', handlePopFocus);
+    if (clearBtn) clearBtn.addEventListener('click', handleClearHistory);
+
+    // Region controls
+    var discoverBtn = document.getElementById('discover-regions');
+    var prevBtn = document.getElementById('prev-region');
+    var nextBtn = document.getElementById('next-region');
+    var regionDropdown = document.getElementById('region-dropdown');
+
+    if (discoverBtn) discoverBtn.addEventListener('click', handleDiscoverRegions);
+    if (prevBtn) prevBtn.addEventListener('click', handlePrevRegion);
+    if (nextBtn) nextBtn.addEventListener('click', handleNextRegion);
+    if (regionDropdown) regionDropdown.addEventListener('change', handleRegionSelect);
+
+    // Trap controls
+    var trapToggle = document.getElementById('trap-toggle');
+    if (trapToggle) trapToggle.addEventListener('click', handleTrapToggle);
+
+    // Input controls
+    var checkFilter = document.getElementById('check-filter');
+    var completeInput = document.getElementById('complete-input');
+
+    if (checkFilter) checkFilter.addEventListener('click', handleCheckFilter);
+    if (completeInput) completeInput.addEventListener('click', handleCompleteInput);
+
+    // Utility controls
+    var getFocusables = document.getElementById('get-focusables');
+    var checkFocused = document.getElementById('check-focused');
+
+    if (getFocusables) getFocusables.addEventListener('click', handleGetFocusables);
+    if (checkFocused) checkFocused.addEventListener('click', handleCheckFocused);
+
+    // Clear log
+    var clearLog = document.getElementById('clear-log');
+    if (clearLog) {
+      clearLog.addEventListener('click', function() {
+        eventLog = [];
+        renderLog();
+      });
+    }
+  }
+
+  Funky.Pages.register('component-focus-manager', {
+    init: function(state) {
+      // Initialize
+      bindEvents();
+      setupEventListeners();
+      syncFromProps();
+      updateHistoryCount();
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          syncFromProps(newProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'focusManager:init', payload: {} });
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Unsubscribe from FocusManager events
+      eventHandlers.forEach(function(item) {
+        if (Funky.PubSub) {
+          Funky.PubSub.off(item.event, item.handler);
+        }
+      });
+      eventHandlers = [];
+
+      // Cleanup focus trap if active
+      if (trapCleanup) {
+        trapCleanup();
+        trapCleanup = null;
+      }
+
+      // Cleanup programmatic focus classes
+      programmaticFocusElements.forEach(function(el) {
+        el.classList.remove('focus-programmatic');
+        el.removeEventListener('blur', handleProgrammaticBlur);
+      });
+      programmaticFocusElements = [];
+
+      // Reset state
+      eventLog = [];
+      focusTargetIndex = 0;
+      lastFocusedDemoElement = null;
+
+      return {};
+    }
+  });
+})();
+</script>

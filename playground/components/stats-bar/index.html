@@ -1,0 +1,381 @@
+<div data-page="component-stats-bar" class="stats-bar-demo">
+  <h2>Stats Bar</h2>
+  <p class="text-muted">Display key metrics with icons, trends, and real-time updates.</p>
+
+  <!-- Current State -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-state-heading">
+    <h3 id="stats-state-heading">Current State</h3>
+    <div class="stats-bar-demo__state">
+      <div class="stats-bar-demo__state-item">
+        <span class="stats-bar-demo__state-label">Stats Count</span>
+        <span class="stats-bar-demo__state-value" id="state-count">4</span>
+      </div>
+      <div class="stats-bar-demo__state-item">
+        <span class="stats-bar-demo__state-label">Layout</span>
+        <span class="stats-bar-demo__state-value" id="state-layout">stretch</span>
+      </div>
+      <div class="stats-bar-demo__state-item">
+        <span class="stats-bar-demo__state-label">Last Update</span>
+        <span class="stats-bar-demo__state-value" id="state-last-update">-</span>
+      </div>
+      <div class="stats-bar-demo__state-item">
+        <span class="stats-bar-demo__state-label">Updates</span>
+        <span class="stats-bar-demo__state-value" id="state-update-count">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Stats Bar -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-main-heading">
+    <h3 id="stats-main-heading">Stats Bar</h3>
+    <p class="stats-bar-demo__hint"><i class="fas fa-info-circle" aria-hidden="true"></i> Click on any stat card to see its details. Uses <code>Funky.StatsBar</code> component.</p>
+    <div id="demo-stats-bar" class="stats-bar stats-bar-stretch" role="region" aria-label="Statistics dashboard"></div>
+  </section>
+
+  <!-- Controls -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-controls-heading">
+    <h3 id="stats-controls-heading">Controls</h3>
+    <div class="stats-bar-demo__controls">
+      <div class="stats-bar-demo__control-group">
+        <span class="stats-bar-demo__control-label">Values:</span>
+        <div class="stats-bar-demo__control-buttons">
+          <button class="btn btn-primary btn-sm" id="btn-randomize" type="button">
+            <i class="fas fa-random me-1" aria-hidden="true"></i> Randomize
+          </button>
+          <button class="btn btn-success btn-sm" id="btn-increment" type="button">
+            <i class="fas fa-plus me-1" aria-hidden="true"></i> Increment All
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" id="btn-reset" type="button">
+            <i class="fas fa-undo me-1" aria-hidden="true"></i> Reset
+          </button>
+        </div>
+      </div>
+      <div class="stats-bar-demo__control-group">
+        <span class="stats-bar-demo__control-label">Auto Update:</span>
+        <div class="stats-bar-demo__control-buttons">
+          <button class="btn btn-outline-primary btn-sm" id="btn-auto-start" type="button">
+            <i class="fas fa-play me-1" aria-hidden="true"></i> Start
+          </button>
+          <button class="btn btn-outline-danger btn-sm" id="btn-auto-stop" type="button" disabled>
+            <i class="fas fa-stop me-1" aria-hidden="true"></i> Stop
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Grid Variant -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-grid-heading">
+    <h3 id="stats-grid-heading">Grid Layout</h3>
+    <p class="stats-bar-demo__hint"><i class="fas fa-th" aria-hidden="true"></i> Alternative 4-column grid layout using <code>.stats-grid-4</code></p>
+    <div id="demo-stats-grid" class="stats-grid stats-grid-4" role="region" aria-label="Grid statistics"></div>
+  </section>
+
+  <!-- Inline Stats -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-inline-heading">
+    <h3 id="stats-inline-heading">Inline Stats</h3>
+    <p class="stats-bar-demo__hint"><i class="fas fa-grip-lines" aria-hidden="true"></i> Compact inline format for headers/toolbars</p>
+    <div class="stats-bar-demo__inline-container">
+      <div class="stat-inline">
+        <span class="stat-value" id="inline-total">1,234</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-inline">
+        <span class="stat-value" id="inline-active">987</span>
+        <span class="stat-label">Active</span>
+      </div>
+      <div class="stat-inline">
+        <span class="stat-value" id="inline-pending">45</span>
+        <span class="stat-label">Pending</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Values -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-values-heading">
+    <h3 id="stats-values-heading">Current Values</h3>
+    <pre id="stats-values" class="stats-bar-demo__values" aria-label="Current stats values">{}</pre>
+  </section>
+
+  <!-- Event Log -->
+  <section class="stats-bar-demo__section" aria-labelledby="stats-log-heading">
+    <h3 id="stats-log-heading">Event Log</h3>
+    <div class="stats-bar-demo__log-controls">
+      <button class="btn btn-outline-secondary btn-sm" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+    <pre id="stats-log" class="stats-bar-demo__log" aria-live="polite" aria-label="Stats event log">Initializing stats bar...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  Funky.Pages.register('component-stats-bar', {
+    _logs: [],
+    _autoInterval: null,
+    _updateCount: 0,
+    _currentValues: {},
+    _statsBarInstance: null,
+    _statsGridInstance: null,
+
+    _log: function(message, data) {
+      var entry = new Date().toLocaleTimeString() + ' - ' + message;
+      if (data) entry += ': ' + JSON.stringify(data);
+      this._logs.unshift(entry);
+      if (this._logs.length > 15) this._logs.pop();
+      var logEl = document.getElementById('stats-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _updateValuesDisplay: function() {
+      var valuesEl = document.getElementById('stats-values');
+      if (valuesEl) {
+        valuesEl.textContent = JSON.stringify(this._currentValues, null, 2);
+      }
+    },
+
+    _updateStateDisplay: function() {
+      var countEl = document.getElementById('state-update-count');
+      var lastEl = document.getElementById('state-last-update');
+      if (countEl) countEl.textContent = this._updateCount;
+      if (lastEl) lastEl.textContent = new Date().toLocaleTimeString();
+    },
+
+    _getDefaultStats: function() {
+      var props = getProps();
+      return [
+        { id: 'users', icon: 'fa-users', label: props.label1 || 'Total Users', variant: props.variant1 || 'primary' },
+        { id: 'revenue', icon: 'fa-dollar-sign', label: props.label2 || 'Revenue', variant: props.variant2 || 'success' },
+        { id: 'orders', icon: 'fa-shopping-cart', label: props.label3 || 'Orders', variant: props.variant3 || 'warning' },
+        { id: 'growth', icon: 'fa-chart-line', label: props.label4 || 'Growth', variant: props.variant4 || 'info' }
+      ];
+    },
+
+    _getDefaultValues: function() {
+      return {
+        users: 12543,
+        revenue: 45678,
+        orders: 892,
+        growth: 23
+      };
+    },
+
+    _randomizeValues: function() {
+      return {
+        users: Math.floor(Math.random() * 50000) + 1000,
+        revenue: Math.floor(Math.random() * 100000) + 10000,
+        orders: Math.floor(Math.random() * 2000) + 100,
+        growth: Math.floor(Math.random() * 50) + 1
+      };
+    },
+
+    _updateStats: function(values) {
+      var self = this;
+      this._currentValues = values;
+      this._updateCount++;
+
+      // Update main stats bar
+      if (Funky.StatsBar) {
+        Funky.StatsBar.update('demo-stats-bar', values, { announce: false });
+        Funky.StatsBar.update('demo-stats-grid', values, { announce: false });
+      }
+
+      // Update inline stats
+      document.getElementById('inline-total').textContent = values.users.toLocaleString();
+      document.getElementById('inline-active').textContent = Math.floor(values.users * 0.8).toLocaleString();
+      document.getElementById('inline-pending').textContent = Math.floor(values.orders * 0.05).toLocaleString();
+
+      this._updateValuesDisplay();
+      this._updateStateDisplay();
+      this._log('Stats updated', values);
+      emit('event', { event: 'stats-bar:update', payload: values });
+    },
+
+    init: function(state) {
+      var self = this;
+      var props = getProps();
+
+      this._logs = [];
+      this._updateCount = 0;
+      this._currentValues = this._getDefaultValues();
+
+      this._log('Initializing StatsBar demo');
+
+      // Update state display
+      var layoutEl = document.getElementById('state-layout');
+      if (layoutEl) layoutEl.textContent = props.layout || 'stretch';
+
+      // Initialize main stats bar
+      if (Funky.StatsBar) {
+        this._statsBarInstance = Funky.StatsBar.init('#demo-stats-bar', {
+          id: 'demo-stats-bar',
+          stats: this._getDefaultStats()
+        });
+
+        // Initialize grid variant
+        this._statsGridInstance = Funky.StatsBar.init('#demo-stats-grid', {
+          id: 'demo-stats-grid',
+          stats: this._getDefaultStats()
+        });
+
+        // Set initial values
+        Funky.StatsBar.update('demo-stats-bar', this._currentValues);
+        Funky.StatsBar.update('demo-stats-grid', this._currentValues);
+
+        this._log('StatsBar instances created');
+        emit('event', { event: 'stats-bar:init', payload: { stats: this._getDefaultStats() } });
+      } else {
+        this._log('ERROR: Funky.StatsBar not available');
+      }
+
+      // Make stat cards clickable
+      document.querySelectorAll('.stat-card-pro').forEach(function(card) {
+        card.style.cursor = 'pointer';
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+
+        var handleClick = function() {
+          var valueEl = card.querySelector('.stat-value');
+          var labelEl = card.querySelector('.stat-label');
+          var statId = valueEl ? valueEl.getAttribute('data-stat-id') : 'unknown';
+          var label = labelEl ? labelEl.textContent : statId;
+          var value = valueEl ? valueEl.textContent : '-';
+
+          self._log('Stat clicked: ' + label, { id: statId, value: value });
+          emit('event', { event: 'stats-bar:click', payload: { id: statId, label: label, value: value } });
+
+          if (Funky.Toast) {
+            Funky.Toast.info(label + ': ' + value, 'Stat Details');
+          }
+        };
+
+        card.onclick = handleClick;
+        card.onkeydown = function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        };
+      });
+
+      // Randomize button
+      document.getElementById('btn-randomize').onclick = function() {
+        var newValues = self._randomizeValues();
+        self._updateStats(newValues);
+        self._log('Values randomized');
+      };
+
+      // Increment button
+      document.getElementById('btn-increment').onclick = function() {
+        var newValues = {
+          users: self._currentValues.users + Math.floor(Math.random() * 100) + 10,
+          revenue: self._currentValues.revenue + Math.floor(Math.random() * 1000) + 100,
+          orders: self._currentValues.orders + Math.floor(Math.random() * 10) + 1,
+          growth: Math.min(self._currentValues.growth + 1, 100)
+        };
+        self._updateStats(newValues);
+        self._log('Values incremented');
+      };
+
+      // Reset button
+      document.getElementById('btn-reset').onclick = function() {
+        self._updateStats(self._getDefaultValues());
+        self._log('Values reset to defaults');
+      };
+
+      // Auto update start
+      document.getElementById('btn-auto-start').onclick = function() {
+        if (self._autoInterval) return;
+
+        self._autoInterval = setInterval(function() {
+          var newValues = self._randomizeValues();
+          self._updateStats(newValues);
+        }, 2000);
+
+        document.getElementById('btn-auto-start').disabled = true;
+        document.getElementById('btn-auto-stop').disabled = false;
+        self._log('Auto-update started (2s interval)');
+        emit('event', { event: 'stats-bar:auto-start', payload: {} });
+      };
+
+      // Auto update stop
+      document.getElementById('btn-auto-stop').onclick = function() {
+        if (self._autoInterval) {
+          clearInterval(self._autoInterval);
+          self._autoInterval = null;
+        }
+
+        document.getElementById('btn-auto-start').disabled = false;
+        document.getElementById('btn-auto-stop').disabled = true;
+        self._log('Auto-update stopped');
+        emit('event', { event: 'stats-bar:auto-stop', payload: {} });
+      };
+
+      // Clear log
+      document.getElementById('btn-clear-log').onclick = function() {
+        self._logs = [];
+        document.getElementById('stats-log').textContent = 'Log cleared';
+      };
+
+      // Listen for props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          if (data.component === 'StatsBar') {
+            self._log('Props changed', data.props);
+            // Reinitialize with new props
+            if (Funky.StatsBar) {
+              Funky.StatsBar.destroy('demo-stats-bar');
+              Funky.StatsBar.destroy('demo-stats-grid');
+
+              self._statsBarInstance = Funky.StatsBar.init('#demo-stats-bar', {
+                id: 'demo-stats-bar',
+                stats: self._getDefaultStats()
+              });
+
+              self._statsGridInstance = Funky.StatsBar.init('#demo-stats-grid', {
+                id: 'demo-stats-grid',
+                stats: self._getDefaultStats()
+              });
+
+              Funky.StatsBar.update('demo-stats-bar', self._currentValues);
+              Funky.StatsBar.update('demo-stats-grid', self._currentValues);
+            }
+          }
+        });
+      }
+
+      this._updateValuesDisplay();
+      this._log('Demo ready');
+    },
+
+    destroy: function() {
+      // Stop auto-update
+      if (this._autoInterval) {
+        clearInterval(this._autoInterval);
+        this._autoInterval = null;
+      }
+
+      // Destroy StatsBar instances
+      if (Funky.StatsBar) {
+        Funky.StatsBar.destroy('demo-stats-bar');
+        Funky.StatsBar.destroy('demo-stats-grid');
+      }
+
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && Funky.PubSub.off) {
+        Funky.PubSub.off('playground:propsChanged');
+      }
+
+      this._logs = [];
+      this._updateCount = 0;
+      this._currentValues = {};
+
+      return {};
+    }
+  });
+})();
+</script>

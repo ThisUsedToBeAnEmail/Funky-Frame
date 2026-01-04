@@ -1,0 +1,691 @@
+/**
+ * Funky.MorphPanel Styles
+ * Smooth trigger-to-panel morphing component
+ * 
+ * Uses --pro-* CSS variables for theme consistency.
+ */
+
+/* ==========================================================================
+   CSS Variables
+   ========================================================================== */
+
+.funky-morph-panel {
+    /* Structure */
+    --morph-panel-border-radius: var(--pro-border-radius-lg, 12px);
+    --morph-panel-spacing: var(--pro-spacing-md, 1rem);
+    --morph-panel-header-height: 56px;
+    --morph-panel-footer-height: 64px;
+    
+    /* Colors - inherit from theme */
+    --morph-panel-bg: var(--pro-bg-primary);
+    --morph-panel-header-bg: var(--pro-bg-secondary);
+    --morph-panel-border-color: var(--pro-border-color);
+    --morph-panel-text-color: var(--pro-text-primary);
+    --morph-panel-text-muted: var(--pro-text-secondary);
+    
+    /* Shadow */
+    --morph-panel-shadow: var(--pro-shadow-lg, 0 25px 50px -12px rgba(0, 0, 0, 0.25));
+    
+    /* Animation */
+    --morph-panel-duration: 300ms;
+    --morph-panel-timing: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Sizing */
+    --morph-panel-width-sm: 400px;
+    --morph-panel-width-md: 600px;
+    --morph-panel-width-lg: 800px;
+    --morph-panel-width-xl: 1000px;
+}
+
+/* ==========================================================================
+   Backdrop
+   ========================================================================== */
+
+.funky-morph-panel__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: var(--pro-z-modal-backdrop, 1040);
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color var(--morph-panel-duration) var(--morph-panel-timing);
+    pointer-events: none;
+}
+
+.funky-morph-panel__backdrop--visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+}
+
+/* ==========================================================================
+   Panel Container
+   ========================================================================== */
+
+.funky-morph-panel {
+    position: fixed;
+    z-index: var(--pro-z-modal, 1050);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--morph-panel-bg);
+    border: 1px solid var(--morph-panel-border-color);
+    border-radius: var(--morph-panel-border-radius);
+    box-shadow: var(--morph-panel-shadow);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: 
+        opacity var(--morph-panel-duration) var(--morph-panel-timing),
+        visibility var(--morph-panel-duration) var(--morph-panel-timing),
+        transform var(--morph-panel-duration) var(--morph-panel-timing);
+}
+
+.funky-morph-panel--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.funky-morph-panel--morphing {
+    /* During morph animation, Funky.Morph handles positioning */
+    transition: none;
+}
+
+/* ==========================================================================
+   Position Variants
+   ========================================================================== */
+
+/* Center (default) - uses inset + margin auto for centering (no transform needed) */
+.funky-morph-panel--center {
+    inset: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    max-width: 90vw;
+    max-height: 90vh;
+    transform: scale(0.95);
+    transform-origin: center center;
+}
+
+.funky-morph-panel--center.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+    transform: scale(1);
+}
+
+/* Left */
+.funky-morph-panel--left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--morph-panel-width-md);
+    max-width: 90vw;
+    height: 100vh;
+    border-radius: 0;
+    border-left: none;
+    transform: translateX(-100%);
+}
+
+.funky-morph-panel--left.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+    transform: translateX(0);
+}
+
+/* Right */
+.funky-morph-panel--right {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--morph-panel-width-md);
+    max-width: 90vw;
+    height: 100vh;
+    border-radius: 0;
+    border-right: none;
+    transform: translateX(100%);
+}
+
+.funky-morph-panel--right.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+    transform: translateX(0);
+}
+
+/* Top */
+.funky-morph-panel--top {
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--morph-panel-width-lg);
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 0 0 var(--morph-panel-border-radius) var(--morph-panel-border-radius);
+    border-top: none;
+    transform: translateY(-100%);
+}
+
+.funky-morph-panel--top.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+    transform: translateY(0);
+}
+
+/* Bottom */
+.funky-morph-panel--bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--morph-panel-width-lg);
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: var(--morph-panel-border-radius) var(--morph-panel-border-radius) 0 0;
+    border-bottom: none;
+    transform: translateY(100%);
+}
+
+.funky-morph-panel--bottom.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Size Variants
+   ========================================================================== */
+
+.funky-morph-panel--sm {
+    --morph-panel-width: var(--morph-panel-width-sm);
+}
+
+.funky-morph-panel--md {
+    --morph-panel-width: var(--morph-panel-width-md);
+}
+
+.funky-morph-panel--lg {
+    --morph-panel-width: var(--morph-panel-width-lg);
+}
+
+.funky-morph-panel--xl {
+    --morph-panel-width: var(--morph-panel-width-xl);
+}
+
+.funky-morph-panel--full {
+    --morph-panel-width: 100vw;
+}
+
+/* Apply width to side panels */
+.funky-morph-panel--left,
+.funky-morph-panel--right {
+    width: var(--morph-panel-width, var(--morph-panel-width-md));
+}
+
+/* Apply width to center/top/bottom */
+.funky-morph-panel--center,
+.funky-morph-panel--top,
+.funky-morph-panel--bottom {
+    width: var(--morph-panel-width, auto);
+}
+
+/* Full size overrides */
+.funky-morph-panel--full.funky-morph-panel--left,
+.funky-morph-panel--full.funky-morph-panel--right {
+    width: 100vw;
+    max-width: 100vw;
+}
+
+.funky-morph-panel--full.funky-morph-panel--center {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.funky-morph-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--morph-panel-header-height);
+    padding: var(--morph-panel-spacing);
+    background-color: var(--morph-panel-header-bg);
+    border-bottom: 1px solid var(--morph-panel-border-color);
+    flex-shrink: 0;
+}
+
+.funky-morph-panel__title {
+    margin: 0;
+    font-size: var(--pro-font-size-lg, 1.125rem);
+    font-weight: 600;
+    color: var(--morph-panel-text-color);
+    line-height: 1.25;
+}
+
+.funky-morph-panel__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--morph-panel-text-muted);
+    border-radius: var(--pro-border-radius, 6px);
+    cursor: pointer;
+    transition: 
+        background-color 150ms ease,
+        color 150ms ease;
+}
+
+.funky-morph-panel__close:hover {
+    background-color: var(--pro-bg-hover);
+    color: var(--morph-panel-text-color);
+}
+
+.funky-morph-panel__close:focus-visible {
+    outline: 2px solid var(--pro-accent-primary);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Body
+   ========================================================================== */
+
+.funky-morph-panel__body {
+    flex: 1;
+    padding: var(--morph-panel-spacing);
+    overflow-y: auto;
+    color: var(--morph-panel-text-color);
+}
+
+/* Scrollbar styling */
+.funky-morph-panel__body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.funky-morph-panel__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.funky-morph-panel__body::-webkit-scrollbar-thumb {
+    background-color: var(--pro-scrollbar-thumb, rgba(128, 128, 128, 0.3));
+    border-radius: 4px;
+}
+
+.funky-morph-panel__body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--pro-scrollbar-thumb-hover, rgba(128, 128, 128, 0.5));
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.funky-morph-panel__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--pro-spacing-sm, 0.5rem);
+    min-height: var(--morph-panel-footer-height);
+    padding: var(--morph-panel-spacing);
+    background-color: var(--morph-panel-header-bg);
+    border-top: 1px solid var(--morph-panel-border-color);
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Drag Handle (for mobile swipe-to-dismiss)
+   ========================================================================== */
+
+.funky-morph-panel__drag-handle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* Show drag handle on bottom/center panels on mobile */
+    .funky-morph-panel--bottom .funky-morph-panel__drag-handle,
+    .funky-morph-panel--center .funky-morph-panel__drag-handle {
+        display: flex;
+        justify-content: center;
+        padding: 8px 0;
+        cursor: grab;
+        touch-action: none;
+    }
+    
+    .funky-morph-panel__drag-handle::before {
+        content: '';
+        width: 36px;
+        height: 4px;
+        background-color: var(--pro-border-color);
+        border-radius: 2px;
+    }
+    
+    .funky-morph-panel__drag-handle:active {
+        cursor: grabbing;
+    }
+    
+    .funky-morph-panel__drag-handle:active::before {
+        background-color: var(--pro-text-muted);
+    }
+}
+
+/* ==========================================================================
+   Form Mode
+   ========================================================================== */
+
+.funky-morph-panel--form .funky-morph-panel__body {
+    padding: 0;
+}
+
+.funky-morph-panel--form .funky-morph-panel__footer {
+    display: flex;
+}
+
+/* Form wrapper inside panel */
+.funky-morph-panel__form {
+    padding: var(--morph-panel-spacing);
+}
+
+.funky-morph-panel__form .funky-form {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Loading State
+   ========================================================================== */
+
+.funky-morph-panel--loading {
+    pointer-events: none;
+}
+
+.funky-morph-panel--loading .funky-morph-panel__body {
+    position: relative;
+}
+
+.funky-morph-panel--loading .funky-morph-panel__body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--morph-panel-bg);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.funky-morph-panel--loading .funky-morph-panel__footer {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* Side panels become full width on mobile */
+    .funky-morph-panel--left,
+    .funky-morph-panel--right {
+        width: 100vw;
+        max-width: 100vw;
+    }
+    
+    /* Top/bottom panels become full width */
+    .funky-morph-panel--top,
+    .funky-morph-panel--bottom {
+        width: 100vw;
+        max-width: 100vw;
+        left: 0;
+        transform: translateY(-100%);
+    }
+    
+    .funky-morph-panel--bottom {
+        transform: translateY(100%);
+    }
+    
+    .funky-morph-panel--top.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+        transform: translateY(0);
+    }
+    
+    .funky-morph-panel--bottom.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+        transform: translateY(0);
+    }
+    
+    /* Center panels become bottom sheets on mobile */
+    .funky-morph-panel--center {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 90vh;
+        border-radius: var(--morph-panel-border-radius) var(--morph-panel-border-radius) 0 0;
+        transform: translateY(100%);
+    }
+    
+    .funky-morph-panel--center.funky-morph-panel--visible:not(.funky-morph-panel--morphing) {
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .funky-morph-panel,
+    .funky-morph-panel__backdrop {
+        transition-duration: 0ms;
+    }
+}
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+
+@media print {
+    .funky-morph-panel__backdrop {
+        display: none;
+    }
+
+    .funky-morph-panel {
+        position: static;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        border: 1px solid #000;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+}
+
+/* ==========================================================================
+   MORPH PANEL PLAYGROUND DEMO
+   ========================================================================== */
+
+/* Trigger Grid */
+.morph-panel-demo__trigger-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.morph-panel-demo__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+/* Card Trigger */
+.morph-panel-demo__card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: var(--pro-radius-md, 8px);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.morph-panel-demo__card:hover {
+    background: var(--pro-bg-hover, rgba(255, 255, 255, 0.05));
+    border-color: var(--pro-accent-primary, #2f81f7);
+    transform: translateY(-2px);
+}
+
+.morph-panel-demo__card:focus-visible {
+    outline: 2px solid var(--pro-accent-primary, #2f81f7);
+    outline-offset: 2px;
+}
+
+.morph-panel-demo__card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+    border-radius: var(--pro-radius-sm, 6px);
+    color: var(--pro-accent-primary, #2f81f7);
+    font-size: 1.125rem;
+}
+
+.morph-panel-demo__card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.morph-panel-demo__card-title {
+    font-weight: 600;
+    color: var(--pro-text-primary, #e0e0e0);
+    font-size: 0.875rem;
+}
+
+.morph-panel-demo__card-subtitle {
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary, #888);
+}
+
+/* Size Buttons */
+.morph-panel-demo__size-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* API Buttons */
+.morph-panel-demo__api-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Settings Display */
+.morph-panel-demo__settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.morph-panel-demo__settings .badge {
+    font-weight: 400;
+}
+
+.morph-panel-demo__settings .badge strong {
+    font-weight: 600;
+}
+
+/* Panel Content Styles */
+.morph-panel-demo__panel-content {
+    padding: 0.5rem;
+}
+
+.morph-panel-demo__panel-intro {
+    margin-bottom: 1rem;
+    color: var(--pro-text-secondary, #888);
+}
+
+.morph-panel-demo__panel-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border-radius: var(--pro-radius-sm, 6px);
+}
+
+.morph-panel-demo__panel-info-item {
+    font-size: 0.875rem;
+    color: var(--pro-text-primary, #e0e0e0);
+}
+
+.morph-panel-demo__panel-info-item strong {
+    color: var(--pro-text-secondary, #888);
+    font-weight: 500;
+    margin-right: 0.25rem;
+}
+
+.morph-panel-demo__features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.morph-panel-demo__features-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--pro-text-primary, #e0e0e0);
+}
+
+.morph-panel-demo__features-list i {
+    color: var(--pro-color-success, #22c55e);
+    font-size: 0.75rem;
+}
+
+/* Light Theme */
+[data-theme="light"] .morph-panel-demo__card {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .morph-panel-demo__card:hover {
+    background: var(--pro-bg-hover, rgba(0, 0, 0, 0.03));
+}
+
+[data-theme="light"] .morph-panel-demo__panel-info {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .morph-panel-demo__trigger-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .morph-panel-demo__size-buttons,
+    .morph-panel-demo__api-buttons {
+        flex-direction: column;
+    }
+
+    .morph-panel-demo__size-buttons .btn,
+    .morph-panel-demo__api-buttons .btn {
+        width: 100%;
+    }
+
+    .morph-panel-demo__settings {
+        flex-direction: column;
+    }
+
+    .morph-panel-demo__panel-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

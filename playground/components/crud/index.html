@@ -1,0 +1,620 @@
+<div data-page="component-crud" class="component-demo crud-demo">
+  <h2>CRUD</h2>
+  <p class="text-muted">Complete CRUD controller orchestrating Table, FormModal, ViewModal, StatsBar, and bulk actions with optimized row-level updates.</p>
+
+  <div class="crud-demo__disclaimer">
+    <i class="fas fa-info-circle" aria-hidden="true"></i>
+    <span><strong>Demo Mode:</strong> This demo simulates CRUD operations with client-side mock data. In production, <code>Funky.CRUD</code> integrates with real API endpoints.</span>
+  </div>
+
+  <section class="demo-section" aria-labelledby="crud-stats-heading">
+    <h3 id="crud-stats-heading">Stats Bar</h3>
+    <p class="text-muted small">Real-time computed statistics from table data.</p>
+    <div class="demo-area">
+      <div class="crud-demo__stats stats-bar stats-bar-stretch" id="crud-stats" role="region" aria-label="Statistics">
+        <div class="stat-card-pro stat-card-primary">
+          <div class="stat-icon" aria-hidden="true"><i class="fas fa-box"></i></div>
+          <div class="stat-content">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Items</div>
+          </div>
+        </div>
+        <div class="stat-card-pro stat-card-success">
+          <div class="stat-icon" aria-hidden="true"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-content">
+            <div class="stat-value" id="stat-active">0</div>
+            <div class="stat-label">Active</div>
+          </div>
+        </div>
+        <div class="stat-card-pro stat-card-warning">
+          <div class="stat-icon" aria-hidden="true"><i class="fas fa-clock"></i></div>
+          <div class="stat-content">
+            <div class="stat-value" id="stat-pending">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+        <div class="stat-card-pro stat-card-danger">
+          <div class="stat-icon" aria-hidden="true"><i class="fas fa-times-circle"></i></div>
+          <div class="stat-content">
+            <div class="stat-value" id="stat-inactive">0</div>
+            <div class="stat-label">Inactive</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="crud-table-heading">
+    <h3 id="crud-table-heading">Data Table</h3>
+    <p class="text-muted small">Full-featured table with CRUD actions, selection, and context menu. Right-click rows for context menu.</p>
+    <div class="demo-area">
+      <div class="crud-demo__toolbar" role="toolbar" aria-label="CRUD actions">
+        <button class="btn btn-success btn-sm" id="crud-create" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i>Create
+        </button>
+        <button class="btn btn-danger btn-sm" id="crud-bulk-delete" type="button" disabled>
+          <i class="fas fa-trash me-1" aria-hidden="true"></i>Delete Selected (<span id="crud-selected-count">0</span>)
+        </button>
+        <button class="btn btn-info btn-sm" id="crud-reload" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i>Reload
+        </button>
+      </div>
+      <div id="crud-table-container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="crud-api-heading">
+    <h3 id="crud-api-heading">API Methods</h3>
+    <p class="text-muted small">Programmatic CRUD operations and efficient row-level updates.</p>
+    <div class="demo-area crud-demo__button-grid" role="group" aria-label="API control buttons">
+      <button class="btn btn-outline-primary btn-sm" id="crud-view-first" type="button">
+        <i class="fas fa-eye me-1" aria-hidden="true"></i>View First
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="crud-edit-first" type="button">
+        <i class="fas fa-edit me-1" aria-hidden="true"></i>Edit First
+      </button>
+      <button class="btn btn-outline-success btn-sm" id="crud-update-row" type="button">
+        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>updateRowAnimated()
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="crud-insert-row" type="button">
+        <i class="fas fa-plus-circle me-1" aria-hidden="true"></i>insertRowAnimated()
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="crud-remove-row" type="button">
+        <i class="fas fa-minus-circle me-1" aria-hidden="true"></i>removeRowAnimated()
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="crud-log-heading">
+    <h3 id="crud-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="crud-log" class="crud-demo__log" aria-live="polite" aria-label="Event log">Interact with the CRUD table to see events...</pre>
+      <button class="btn btn-sm btn-outline-secondary mt-2" id="crud-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i>Clear Log
+      </button>
+    </div>
+  </section>
+
+  <!-- View Modal -->
+  <div class="modal fade" id="crud-view-modal" tabindex="-1" role="dialog" aria-labelledby="crud-view-modal-title">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crud-view-modal-title">
+            <i class="fas fa-eye" aria-hidden="true"></i> View Item
+          </h5>
+          <button type="button" class="btn-close" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="crud-view-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-funky-modal-close>Close</button>
+          <button type="button" class="btn btn-primary" id="crud-view-edit">
+            <i class="fas fa-edit me-1" aria-hidden="true"></i>Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Modal -->
+  <div class="modal fade" id="crud-form-modal" tabindex="-1" role="dialog" aria-labelledby="crud-form-modal-title">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crud-form-modal-title">
+            <i class="fas fa-plus" aria-hidden="true"></i> Create Item
+          </h5>
+          <button type="button" class="btn-close" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="crud-form" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="crud-form-name">Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="crud-form-name" name="name" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="crud-form-code">Code</label>
+                <input type="text" class="form-control" id="crud-form-code" name="code" placeholder="Auto-generated if empty">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="crud-form-price">Price</label>
+                <div class="input-group">
+                  <span class="input-group-text">£</span>
+                  <input type="number" class="form-control" id="crud-form-price" name="price" step="0.01" min="0">
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="crud-form-quantity">Quantity</label>
+                <input type="number" class="form-control" id="crud-form-quantity" name="quantity" min="0">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="crud-form-status">Status</label>
+                <select class="form-select" id="crud-form-status" name="status">
+                  <option value="pending">Pending</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="crud-form-featured" name="featured">
+              <label class="form-check-label" for="crud-form-featured">
+                <i class="fas fa-star text-warning" aria-hidden="true"></i> Featured Item
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-funky-modal-close>Cancel</button>
+          <button type="button" class="btn btn-primary" id="crud-form-save">
+            <i class="fas fa-save me-1" aria-hidden="true"></i>Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="crud-delete-modal" tabindex="-1" role="dialog" aria-labelledby="crud-delete-modal-title">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header crud-demo__delete-header">
+          <h5 class="modal-title" id="crud-delete-modal-title">
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Confirm Delete
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="crud-delete-body">
+          <p>Are you sure you want to delete this item?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-funky-modal-close>Cancel</button>
+          <button type="button" class="btn btn-danger" id="crud-delete-confirm">
+            <i class="fas fa-trash me-1" aria-hidden="true"></i>Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var funkyTable = null;
+  var mockData = [];
+  var nextId = 1;
+  var logs = [];
+  var currentItem = null;
+  var deleteTargetIds = [];
+  var propsChangedHandler = null;
+
+  // Status badge renderer
+  function statusBadge(status) {
+    var colors = { active: 'success', inactive: 'secondary', pending: 'warning' };
+    return '<span class="badge bg-' + (colors[status] || 'secondary') + '">' + status + '</span>';
+  }
+
+  // Generate mock data
+  function generateMockData(count) {
+    var names = ['Widget Pro', 'Gadget Max', 'Tool Elite', 'Device Ultra', 'Gizmo Prime'];
+    var statuses = ['active', 'pending', 'inactive'];
+    var data = [];
+    for (var i = 0; i < count; i++) {
+      data.push({
+        id: nextId++,
+        name: names[i % names.length] + ' ' + nextId,
+        code: 'ITEM-' + String(nextId).padStart(4, '0'),
+        price: (Math.random() * 100 + 10).toFixed(2),
+        quantity: Math.floor(Math.random() * 100),
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        featured: Math.random() > 0.7,
+        created_at: new Date().toISOString()
+      });
+    }
+    return data;
+  }
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('crud-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStats() {
+    var total = mockData.length;
+    var active = mockData.filter(function(d) { return d.status === 'active'; }).length;
+    var pending = mockData.filter(function(d) { return d.status === 'pending'; }).length;
+    var inactive = mockData.filter(function(d) { return d.status === 'inactive'; }).length;
+
+    var statTotal = document.getElementById('stat-total');
+    var statActive = document.getElementById('stat-active');
+    var statPending = document.getElementById('stat-pending');
+    var statInactive = document.getElementById('stat-inactive');
+
+    if (statTotal) statTotal.textContent = total;
+    if (statActive) statActive.textContent = active;
+    if (statPending) statPending.textContent = pending;
+    if (statInactive) statInactive.textContent = inactive;
+  }
+
+  function updateSelectionUI() {
+    var countEl = document.getElementById('crud-selected-count');
+    var deleteBtn = document.getElementById('crud-bulk-delete');
+    var ids = funkyTable && funkyTable.getSelectedIds ? funkyTable.getSelectedIds() : [];
+    if (countEl) countEl.textContent = ids.length;
+    if (deleteBtn) deleteBtn.disabled = ids.length === 0;
+  }
+
+  function showViewModal(row) {
+    currentItem = row;
+    var body = document.getElementById('crud-view-body');
+    body.innerHTML =
+      '<dl class="view-details">' +
+        '<dt>ID</dt><dd>' + row.id + '</dd>' +
+        '<dt>Name</dt><dd>' + row.name + '</dd>' +
+        '<dt>Code</dt><dd><code>' + row.code + '</code></dd>' +
+        '<dt>Price</dt><dd>£' + parseFloat(row.price).toFixed(2) + '</dd>' +
+        '<dt>Quantity</dt><dd>' + row.quantity + '</dd>' +
+        '<dt>Status</dt><dd>' + statusBadge(row.status) + '</dd>' +
+        '<dt>Featured</dt><dd>' + (row.featured ? '<i class="fas fa-star text-warning"></i> Yes' : 'No') + '</dd>' +
+      '</dl>';
+    document.getElementById('crud-view-modal-title').innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> ' + row.name;
+    Funky.Modal.show('#crud-view-modal');
+    log('Viewed: ' + row.name);
+    emit('event', { event: 'crud:view', payload: { id: row.id } });
+  }
+
+  function showFormModal(mode, row) {
+    var title = document.getElementById('crud-form-modal-title');
+    var form = document.getElementById('crud-form');
+
+    if (mode === 'create') {
+      title.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i> Create Item';
+      form.reset();
+      currentItem = null;
+    } else {
+      title.innerHTML = '<i class="fas fa-edit" aria-hidden="true"></i> Edit: ' + row.name;
+      currentItem = row;
+      form.elements.name.value = row.name || '';
+      form.elements.code.value = row.code || '';
+      form.elements.price.value = row.price || '';
+      form.elements.quantity.value = row.quantity || '';
+      form.elements.status.value = row.status || 'pending';
+      form.elements.featured.checked = !!row.featured;
+    }
+    Funky.Modal.show('#crud-form-modal');
+    log((mode === 'create' ? 'Creating' : 'Editing') + (row ? ': ' + row.name : ' new item'));
+  }
+
+  function showDeleteModal(ids) {
+    deleteTargetIds = Array.isArray(ids) ? ids : [ids];
+    var body = document.getElementById('crud-delete-body');
+    body.innerHTML = deleteTargetIds.length === 1
+      ? '<p>Are you sure you want to delete this item?</p>'
+      : '<p>Are you sure you want to delete <strong>' + deleteTargetIds.length + '</strong> items?</p>';
+    Funky.Modal.show('#crud-delete-modal');
+  }
+
+  function doDelete() {
+    deleteTargetIds.forEach(function(id) {
+      var idx = mockData.findIndex(function(d) { return d.id === id; });
+      if (idx !== -1) {
+        var name = mockData[idx].name;
+        mockData.splice(idx, 1);
+        if (funkyTable && funkyTable.removeRowAnimated) {
+          funkyTable.removeRowAnimated(id);
+        }
+        log('Deleted: ' + name);
+        emit('event', { event: 'crud:delete', payload: { id: id } });
+      }
+    });
+    Funky.Modal.hide('#crud-delete-modal');
+    updateStats();
+    updateSelectionUI();
+    if (Funky.Toast) Funky.Toast.success(deleteTargetIds.length === 1 ? 'Item deleted' : deleteTargetIds.length + ' items deleted');
+    deleteTargetIds = [];
+  }
+
+  function saveForm() {
+    var form = document.getElementById('crud-form');
+    if (!form.elements.name.value.trim()) {
+      form.elements.name.classList.add('is-invalid');
+      return;
+    }
+    form.elements.name.classList.remove('is-invalid');
+
+    var data = {
+      name: form.elements.name.value,
+      code: form.elements.code.value || 'ITEM-' + String(nextId).padStart(4, '0'),
+      price: parseFloat(form.elements.price.value) || 0,
+      quantity: parseInt(form.elements.quantity.value, 10) || 0,
+      status: form.elements.status.value,
+      featured: form.elements.featured.checked
+    };
+
+    if (currentItem) {
+      // Update existing
+      Object.assign(currentItem, data);
+      if (funkyTable && funkyTable.updateRowAnimated) {
+        funkyTable.updateRowAnimated(currentItem);
+      }
+      log('Updated: ' + data.name);
+      emit('event', { event: 'crud:update', payload: { id: currentItem.id } });
+      if (Funky.Toast) Funky.Toast.success('Item updated');
+    } else {
+      // Create new
+      data.id = nextId++;
+      data.created_at = new Date().toISOString();
+      mockData.unshift(data);
+      if (funkyTable && funkyTable.insertRowAnimated) {
+        funkyTable.insertRowAnimated(data, { position: 'top', highlight: true });
+      }
+      log('Created: ' + data.name);
+      emit('event', { event: 'crud:create', payload: { id: data.id } });
+      if (Funky.Toast) Funky.Toast.success('Item created');
+    }
+
+    Funky.Modal.hide('#crud-form-modal');
+    updateStats();
+    currentItem = null;
+  }
+
+  function createTable() {
+    var props = getProps();
+    var container = document.getElementById('crud-table-container');
+    if (!container) return;
+
+    // Destroy existing
+    if (funkyTable && funkyTable.destroy) {
+      funkyTable.destroy();
+      funkyTable = null;
+    }
+    container.innerHTML = '';
+
+    // Generate data
+    nextId = 1;
+    mockData = generateMockData(25);
+
+    var columns = [
+      { data: 'id', title: 'ID', className: 'text-center', width: '60px', responsivePriority: 1 },
+      { data: 'name', title: 'Name', responsivePriority: 1 },
+      { data: 'code', title: 'Code', className: 'text-muted', responsivePriority: 5 },
+      {
+        data: 'price',
+        title: 'Price',
+        className: 'text-end',
+        responsivePriority: 2,
+        render: function(v) { return '£' + parseFloat(v || 0).toFixed(2); }
+      },
+      {
+        data: 'quantity',
+        title: 'Qty',
+        className: 'text-center',
+        responsivePriority: 3,
+        render: function(v) { return '<span class="' + (v < 10 ? 'text-danger fw-bold' : '') + '">' + v + '</span>'; }
+      },
+      {
+        data: 'status',
+        title: 'Status',
+        responsivePriority: 2,
+        render: function(v) { return statusBadge(v); }
+      },
+      {
+        data: null,
+        title: 'Actions',
+        orderable: false,
+        responsivePriority: 1,
+        className: 'text-center',
+        render: function(data, type, row) {
+          return '<div class="btn-group btn-group-sm">' +
+            '<button class="btn btn-outline-info crud-action-view" data-id="' + row.id + '" title="View"><i class="fas fa-eye"></i></button>' +
+            '<button class="btn btn-outline-warning crud-action-edit" data-id="' + row.id + '" title="Edit"><i class="fas fa-edit"></i></button>' +
+            '<button class="btn btn-outline-danger crud-action-delete" data-id="' + row.id + '" title="Delete"><i class="fas fa-trash"></i></button>' +
+          '</div>';
+        }
+      }
+    ];
+
+    var tableConfig = {
+      data: mockData.slice(),
+      columns: columns,
+      pageLength: props.pageLength || 10,
+      serverSide: false,
+      responsive: true,
+      select: props.bulkEnabled !== false ? 'multi' : false,
+      selectAllCheckbox: props.bulkEnabled !== false,
+      striped: true,
+      hover: true,
+      enableExport: props.exportEnabled !== false,
+      animations: { enabled: true, highlightDuration: 2000 },
+      onSelect: function() { updateSelectionUI(); },
+      onDeselect: function() { updateSelectionUI(); },
+      contextMenu: {
+        enabled: true,
+        selectOnContextMenu: true,
+        items: [
+          { label: 'View', icon: 'fas fa-eye', action: function(row) { showViewModal(row); } },
+          { label: 'Edit', icon: 'fas fa-edit', action: function(row) { showFormModal('edit', row); } },
+          { type: 'divider' },
+          { label: 'Delete', icon: 'fas fa-trash', className: 'text-danger', action: function(row) { showDeleteModal(row.id); } }
+        ]
+      }
+    };
+
+    if (Funky.Table) {
+      funkyTable = Funky.Table.init('#crud-table-container', tableConfig);
+      log('Table initialized with ' + mockData.length + ' items');
+      emit('event', { event: 'crud:init', payload: { count: mockData.length } });
+      updateStats();
+      updateSelectionUI();
+
+      // Delegate action clicks
+      container.addEventListener('click', function(e) {
+        var btn = e.target.closest('button[data-id]');
+        if (!btn) return;
+        var id = parseInt(btn.dataset.id, 10);
+        var row = mockData.find(function(r) { return r.id === id; });
+        if (!row) return;
+
+        if (btn.classList.contains('crud-action-view')) showViewModal(row);
+        else if (btn.classList.contains('crud-action-edit')) showFormModal('edit', row);
+        else if (btn.classList.contains('crud-action-delete')) showDeleteModal(row.id);
+      });
+    }
+  }
+
+  Funky.Pages.register('component-crud', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+
+      log('Init with pageLength=' + (props.pageLength || 10));
+      emit('event', { event: 'crud:init', payload: props });
+
+      createTable();
+
+      // Props change listener
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - recreating table');
+          createTable();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Toolbar buttons
+      document.getElementById('crud-create').onclick = function() { showFormModal('create'); };
+
+      document.getElementById('crud-bulk-delete').onclick = function() {
+        var ids = funkyTable && funkyTable.getSelectedIds ? funkyTable.getSelectedIds() : [];
+        if (ids.length > 0) showDeleteModal(ids);
+      };
+
+      document.getElementById('crud-reload').onclick = function() {
+        createTable();
+        if (Funky.Toast) Funky.Toast.info('Table reloaded');
+        log('Table reloaded');
+      };
+
+      // API buttons
+      document.getElementById('crud-view-first').onclick = function() {
+        if (mockData.length > 0) showViewModal(mockData[0]);
+      };
+
+      document.getElementById('crud-edit-first').onclick = function() {
+        if (mockData.length > 0) showFormModal('edit', mockData[0]);
+      };
+
+      document.getElementById('crud-update-row').onclick = function() {
+        if (mockData.length > 0 && funkyTable) {
+          var row = mockData[0];
+          row.quantity = Math.floor(Math.random() * 100);
+          row.price = (Math.random() * 100 + 10).toFixed(2);
+          if (funkyTable.updateRowAnimated) funkyTable.updateRowAnimated(row);
+          log('updateRowAnimated: ' + row.name);
+          emit('event', { event: 'crud:updateRowAnimated', payload: { id: row.id } });
+          if (Funky.Toast) Funky.Toast.info('Row updated with animation');
+          updateStats();
+        }
+      };
+
+      document.getElementById('crud-insert-row').onclick = function() {
+        if (funkyTable) {
+          var newRow = {
+            id: nextId++,
+            name: 'New Item #' + nextId,
+            code: 'ITEM-' + String(nextId).padStart(4, '0'),
+            price: (Math.random() * 100).toFixed(2),
+            quantity: Math.floor(Math.random() * 100),
+            status: 'pending',
+            featured: false,
+            created_at: new Date().toISOString()
+          };
+          mockData.unshift(newRow);
+          if (funkyTable.insertRowAnimated) funkyTable.insertRowAnimated(newRow, { position: 'top', highlight: true });
+          log('insertRowAnimated: ' + newRow.name);
+          emit('event', { event: 'crud:insertRowAnimated', payload: { id: newRow.id } });
+          if (Funky.Toast) Funky.Toast.success('Row inserted with animation');
+          updateStats();
+        }
+      };
+
+      document.getElementById('crud-remove-row').onclick = function() {
+        if (mockData.length > 0 && funkyTable) {
+          var row = mockData[mockData.length - 1];
+          mockData.pop();
+          if (funkyTable.removeRowAnimated) funkyTable.removeRowAnimated(row.id);
+          log('removeRowAnimated: ' + row.name);
+          emit('event', { event: 'crud:removeRowAnimated', payload: { id: row.id } });
+          if (Funky.Toast) Funky.Toast.warning('Row removed with animation');
+          updateStats();
+        }
+      };
+
+      document.getElementById('crud-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('crud-log').textContent = 'Log cleared...';
+      };
+
+      // Modal buttons
+      document.getElementById('crud-form-save').onclick = saveForm;
+      document.getElementById('crud-delete-confirm').onclick = doDelete;
+      document.getElementById('crud-view-edit').onclick = function() {
+        Funky.Modal.hide('#crud-view-modal');
+        if (currentItem) showFormModal('edit', currentItem);
+      };
+
+      // Close buttons
+      document.querySelectorAll('[data-funky-modal-close]').forEach(function(btn) {
+        btn.onclick = function() {
+          var modal = btn.closest('.modal');
+          if (modal) Funky.Modal.hide('#' + modal.id);
+        };
+      });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      if (funkyTable && funkyTable.destroy) {
+        funkyTable.destroy();
+      }
+      funkyTable = null;
+      mockData = [];
+      logs = [];
+      currentItem = null;
+      deleteTargetIds = [];
+      return {};
+    }
+  });
+})();
+</script>

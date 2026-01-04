@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable" data-animations="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4361ee">
+  <title>Funky Frame - Playground</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Prevent flash of wrong theme -->
+  <script src="../js/theme-init.js"></script>
+
+  <!-- Vendor CSS: Bootstrap first, then FontAwesome -->
+  <link href="../vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <!-- Funky CSS: Component styles first, themes.css MUST be last -->
+  <link href="../css/layout.css" rel="stylesheet">
+  <link href="../css/navigation.css" rel="stylesheet">
+  <link href="../css/cards.css" rel="stylesheet">
+  <link href="../css/forms.css" rel="stylesheet">
+  <link href="../css/buttons.css" rel="stylesheet">
+  <link href="../css/modals.css" rel="stylesheet">
+  <link href="../css/toasts.css" rel="stylesheet">
+  <link href="../css/sidenav.css" rel="stylesheet">
+  <link href="../css/playground.css" rel="stylesheet">
+  <link href="../css/code-preview.css" rel="stylesheet">
+  <link href="../css/command-palette.css" rel="stylesheet">
+  <link href="../css/selectable-list.css" rel="stylesheet">
+  <link href="../css/keyboard.css" rel="stylesheet">
+  <link href="../css/skip-links.css" rel="stylesheet">
+  <link href="../css/splash.css" rel="stylesheet">
+  <link href="../css/animate.css" rel="stylesheet">
+  <link href="../css/skeleton.css" rel="stylesheet">
+  <link href="../css/tree-view.css" rel="stylesheet">
+  <link href="../css/tables.css" rel="stylesheet">
+  <link href="../css/markdown.css" rel="stylesheet">
+  <link href="../css/docs.css" rel="stylesheet">
+  <link href="../css/test-runner.css" rel="stylesheet">
+  <link href="../css/morph.css" rel="stylesheet">
+  <link href="../css/tour.css" rel="stylesheet">
+  <link href="../css/combobox.css" rel="stylesheet">
+  <link href="../css/format.css" rel="stylesheet">
+  <!-- themes.css MUST load last -->
+  <link href="../css/themes.css" rel="stylesheet">
+</head>
+<body data-theme="dark" data-nav-position="top">
+
+  <!-- Skip Links Container (must be first focusable element) -->
+  <nav id="skip-links" class="skip-links" aria-label="Skip links"></nav>
+
+  <!-- Live Region for Announcements -->
+  <div id="spa-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo">
+        <span class="sidebar-logo-text">Funky Frame</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- About -->
+      <li class="nav-standalone">
+        <a href="/about/" class="nav-link" data-tooltip="About">
+          <span class="nav-icon"><i class="fas fa-home"></i></span>
+          <span class="nav-text">About</span>
+        </a>
+      </li>
+
+      <!-- Documentation -->
+      <li class="nav-standalone">
+        <a href="/docs/" class="nav-link" data-tooltip="Documentation">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          <span class="nav-text">Docs</span>
+        </a>
+      </li>
+
+      <!-- Playground -->
+      <li class="nav-standalone">
+        <a href="/playground/" class="nav-link active" data-tooltip="Playground">
+          <span class="nav-icon"><i class="fas fa-flask"></i></span>
+          <span class="nav-text">Playground</span>
+        </a>
+      </li>
+
+      <!-- Test Runner -->
+      <li class="nav-standalone">
+        <a href="/test-runner/" class="nav-link" data-tooltip="Test Runner">
+          <span class="nav-icon"><i class="fas fa-vial"></i></span>
+          <span class="nav-text">Test Runner</span>
+        </a>
+      </li>
+    </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+      <span class="toggle-icon">◀</span>
+    </button>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <h1 class="page-title">Playground</h1>
+      </div>
+
+      <div class="header-right">
+        <a href="https://github.com/ThisUsedToBeAnEmail/Funky-Frame" class="btn btn-funky btn-sm" target="_blank">
+          <i class="fab fa-github"></i>
+          <span class="d-none d-sm-inline ms-1">GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="spaContent" class="main-content" data-page="playground" data-breadcrumb-title="Component Playground" data-skip-target="main" data-skip-label="main content">
+
+      <!-- Playground Container -->
+      <div class="playground-container">
+
+        <!-- Left Sidebar: Component Selector -->
+        <aside class="playground-sidebar">
+          <div id="componentSideNav" class="funky-sidenav"></div>
+        </aside>
+
+        <!-- Main Canvas Area -->
+        <main class="playground-main">
+          <!-- Toolbar -->
+          <div class="playground-toolbar">
+            <div class="toolbar-left">
+              <span class="current-component" id="currentComponentName">Select a component</span>
+            </div>
+            <div class="toolbar-center">
+              <div class="viewport-controls">
+                <button class="viewport-btn" data-viewport="mobile" title="Mobile (375px)">
+                  <i class="fas fa-mobile-alt"></i>
+                </button>
+                <button class="viewport-btn" data-viewport="tablet" title="Tablet (768px)">
+                  <i class="fas fa-tablet-alt"></i>
+                </button>
+                <button class="viewport-btn" data-viewport="desktop" title="Desktop (1280px)">
+                  <i class="fas fa-desktop"></i>
+                </button>
+                <button class="viewport-btn active" data-viewport="full" title="Full Width">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canvas Container -->
+          <div class="playground-canvas-wrapper">
+            <div class="playground-canvas" id="playgroundCanvas">
+              <iframe id="playgroundIframe" src="/playground/canvas" class="playground-iframe" allow="notifications; autoplay"></iframe>
+            </div>
+          </div>
+        </main>
+
+        <!-- Right Panel: Props & Events -->
+        <aside class="playground-panel">
+          <!-- Tabs -->
+          <div class="panel-tabs">
+            <button class="panel-tab active" data-panel="props">Props</button>
+            <button class="panel-tab" data-panel="events">Events</button>
+            <button class="panel-tab" data-panel="code">Code</button>
+          </div>
+
+          <!-- Props Panel -->
+          <div class="panel-content" id="propsPanel">
+            <div class="panel-header">
+              <span>Configuration</span>
+              <div class="funky-header-actions">
+                <button class="btn-funky btn-funky-secondary btn-sm" id="resetPropsBtn" title="Reset to defaults">
+                  <i class="fas fa-undo"></i>
+                </button>
+              </div>
+            </div>
+            <div class="props-editor" id="propsEditor">
+              <p class="empty-state">Select a component to configure</p>
+            </div>
+          </div>
+
+          <!-- Events Panel -->
+          <div class="panel-content" id="eventsPanel" style="display: none;">
+            <div class="panel-header">
+              <span>Event Log</span>
+              <button class="panel-btn" id="clearEventsBtn" title="Clear log">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <div class="events-log" id="eventsLog">
+              <p class="empty-state">Events will appear here</p>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="panel-content" id="codePanel" style="display: none;">
+            <div class="panel-header">
+              <span>Usage Example</span>
+            </div>
+            <div class="code-example-container" id="codeExample">
+              <!-- CodePreview will render here -->
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Page Registration (must be inside #spaContent for SPA navigation) -->
+      <script>
+        (function() {
+          function initPlayground() {
+            if (typeof Funky !== 'undefined' && Funky.Playground) {
+              Funky.Playground.init('#playgroundCanvas');
+            }
+          }
+
+          if (typeof Funky !== 'undefined' && Funky.Pages) {
+            // SPA navigation - register page lifecycle
+            Funky.Pages.register('playground', {
+              init: function(state) {
+                console.log('[Playground] Page initialized');
+                initPlayground();
+              },
+              destroy: function() {
+                console.log('[Playground] Page destroyed');
+                if (typeof Funky !== 'undefined' && Funky.Playground && Funky.Playground.destroy) {
+                  Funky.Playground.destroy();
+                }
+                return {};
+              }
+            });
+          } else {
+            // Direct page load - init on DOMContentLoaded
+            if (document.readyState !== 'loading') {
+              initPlayground();
+            } else {
+              document.addEventListener('DOMContentLoaded', initPlayground);
+            }
+          }
+        })();
+      </script>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- Core Scripts -->
+  <script src="../js/core/namespace.js"></script>
+  <script src="../js/core/registry.js"></script>
+  <script src="../js/core/util.js"></script>
+  <script src="../js/core/dom.js"></script>
+  <script src="../js/core/events.js"></script>
+  <script src="../js/core/pubsub.js"></script>
+  <script src="../js/core/storage.js"></script>
+  <script src="../js/core/vdom.js"></script>
+  <script src="../js/core/keyboard.js"></script>
+  <script src="../js/core/tooltip.js"></script>
+  <script src="../js/core/announce.js"></script>
+  <script src="../js/core/a11y-enhancer.js"></script>
+  <script src="../js/core/fuzzy-search.js"></script>
+  <script src="../js/core/selectable-list.js"></script>
+  <script src="../js/core/spa.js"></script>
+  <script src="../js/core/animate.js"></script>
+  <script src="../js/core/modal.js"></script>
+  <script src="../js/core/navigation.js"></script>
+  <script src="../js/core/pages.js"></script>
+
+  <!-- Service Worker Client Module -->
+  <script src="../js/core/service-worker.js"></script>
+
+  <!-- Components used by playground shell -->
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/sidenav.js"></script>
+  <script src="../js/components/clock.js"></script>
+  <script src="../js/components/morph.js"></script>
+  <script src="../js/components/tour.js"></script>
+  <script src="../js/components/code-preview.js"></script>
+  <script src="../js/components/command-palette.js"></script>
+  <script src="../js/components/skip-link.js"></script>
+  <script src="../js/components/page-animate.js"></script>
+  <script src="../js/components/skeleton.js"></script>
+  <script src="../js/components/tree-view.js"></script>
+  <script src="../js/components/scroll-tracker.js"></script>
+  <script src="../js/components/table.js"></script>
+  <script src="../js/components/markdown.js"></script>
+  <script src="../js/components/iframe.js"></script>
+  <script src="../js/components/combobox.js"></script>
+
+  <!-- Mock API (for component demos) -->
+  <script src="/mock-api.js"></script>
+
+  <!-- Playground Component -->
+  <script src="../js/components/playground.js"></script>
+
+  <!-- Test Runner -->
+  <script src="../js/dev/test-manifest.js"></script>
+  <script src="../js/dev/test-runner-ui.js"></script>
+
+  <!-- Shared App Logic -->
+  <script src="../js/app.js"></script>
+
+  <!-- Cross-Page Tour -->
+  <script src="../js/funky-tour.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "name": "funky-frame",
+  "version": "1.0.0",
+  "description": "Lightweight, no-build JavaScript UI framework with 86+ components, PWA support, and zero dependencies",
+  "main": "js/core/namespace.js",
+  "browser": "js/core/namespace.js",
+  "files": [
+    "js/core/",
+    "js/components/",
+    "js/sw/",
+    "renderers/",
+    "css/",
+    "fonts/",
+    "icons/",
+    "vendor/",
+    "docs/",
+    "md/",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "playground": "npx serve . -p 3000 --open /playground/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThisUsedToBeAnEmail/Funky-Frame.git"
+  },
+  "keywords": [
+    "ui",
+    "framework",
+    "components",
+    "javascript",
+    "es5",
+    "no-build",
+    "playground",
+    "vanilla-js",
+    "dom",
+    "spa",
+    "pwa",
+    "ui-components",
+    "no-dependencies",
+    "bootstrap",
+    "accessibility",
+    "wcag"
+  ],
+  "author": "LNATION",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ThisUsedToBeAnEmail/Funky-Frame/issues"
+  },
+  "homepage": "https://github.com/ThisUsedToBeAnEmail/Funky-Frame#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

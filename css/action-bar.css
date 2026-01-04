@@ -1,0 +1,335 @@
+/**
+ * ActionBar Component Styles
+ * 
+ * Layout and component-specific styles only.
+ * Button variants are defined in buttons.css
+ */
+
+/* ─────────────────────────────────────────────────────────────
+   Base Layout
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+    padding: var(--pro-spacing-sm, 0.5rem) 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Action-specific button styling
+   ───────────────────────────────────────────────────────────── */
+
+/* Create action uses primary styling by default */
+.action-bar > button[data-action="create"] {
+    color: var(--pro-text-inverse, #fff);
+    background-color: var(--pro-accent-primary, #2f81f7);
+    border-color: var(--pro-accent-primary, #2f81f7);
+}
+
+.action-bar > button[data-action="create"]:hover {
+    background-color: var(--pro-accent-primary-hover, #388bfd);
+    border-color: var(--pro-accent-primary-hover, #388bfd);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Icons
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar > button i,
+.action-bar > .btn i {
+    font-size: 0.875em;
+}
+
+/* Hide text on small screens, show only icon */
+@media (max-width: 575.98px) {
+    .action-bar > button span,
+    .action-bar > .btn span {
+        display: none;
+    }
+    
+    .action-bar > button,
+    .action-bar > .btn {
+        padding: var(--pro-btn-padding-y, 0.375rem);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Loading State
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar > button.is-loading,
+.action-bar > .btn.is-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+/* Hide icon and label text while loading */
+.action-bar > button.is-loading > i,
+.action-bar > button.is-loading > .btn-label,
+.action-bar > .btn.is-loading > i,
+.action-bar > .btn.is-loading > .btn-label {
+    visibility: hidden;
+}
+
+.action-bar > button.is-loading::after,
+.action-bar > .btn.is-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1em;
+    height: 1em;
+    margin-top: -0.5em;
+    margin-left: -0.5em;
+    border: 2px solid var(--pro-text-muted, #8b949e);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: action-bar-spin 0.75s linear infinite;
+}
+
+/* Primary button spinner uses inverse color */
+.action-bar > button[data-action="create"].is-loading::after {
+    border-color: var(--pro-text-inverse, #fff);
+    border-right-color: transparent;
+}
+
+@keyframes action-bar-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Filter Badge
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar > button .badge {
+    margin-left: var(--pro-spacing-xs, 0.25rem);
+    padding: 0.2em 0.5em;
+    font-size: 0.75em;
+    font-weight: var(--pro-font-weight-bold, 700);
+    color: var(--pro-btn-primary-text, #fff);
+    background-color: var(--pro-accent-primary, #2f81f7);
+    border-radius: var(--pro-border-radius-pill, 50rem);
+}
+
+.action-bar > button.has-active-filters {
+    border-color: var(--pro-accent-primary, #2f81f7);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Button Groups
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar .btn-group {
+    display: inline-flex;
+}
+
+.action-bar .btn-group > button:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px;
+}
+
+.action-bar .btn-group > button:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Separator
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar .separator {
+    width: 1px;
+    height: 1.5rem;
+    background-color: var(--pro-border-color, #30363d);
+    margin: 0 var(--pro-spacing-xs, 0.25rem);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Right-aligned Actions
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar .action-bar-end {
+    margin-left: auto;
+    display: flex;
+    gap: var(--pro-spacing-sm, 0.5rem);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Density Modes
+   ───────────────────────────────────────────────────────────── */
+
+/* Compact */
+[data-density="compact"] .action-bar > button,
+[data-density="compact"] .action-bar > .btn,
+.action-bar.action-bar-compact > button,
+.action-bar.action-bar-compact > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: var(--pro-font-size-xs, 0.75rem);
+}
+
+/* Comfortable */
+[data-density="comfortable"] .action-bar > button,
+[data-density="comfortable"] .action-bar > .btn,
+.action-bar.action-bar-comfortable > button,
+.action-bar.action-bar-comfortable > .btn {
+    padding: 0.5rem 1rem;
+    font-size: var(--pro-font-size-base, 1rem);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Playground Demo Styles
+   ───────────────────────────────────────────────────────────── */
+
+.action-bar-demo {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    width: 100%;
+}
+
+.action-bar-demo__section {
+    margin-bottom: var(--pro-spacing-xl, 2rem);
+}
+
+.action-bar-demo__section h3 {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-text, #c9d1d9);
+    font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+.action-bar-demo__section h4 {
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+    color: var(--pro-text-muted, #8b949e);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+}
+
+.action-bar-demo__area {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary, #161b22);
+    border: 1px solid var(--pro-border-color, #30363d);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+/* State Display */
+.action-bar-demo__state {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary, #161b22);
+    border: 1px solid var(--pro-border-color, #30363d);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.action-bar-demo__state-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.action-bar-demo__state-label {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-muted, #8b949e);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.action-bar-demo__state-value {
+    font-size: var(--pro-font-size-base, 1rem);
+    color: var(--pro-text, #c9d1d9);
+    font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* Controls */
+.action-bar-demo__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--pro-spacing-lg, 1.5rem);
+}
+
+.action-bar-demo__control-group {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary, #161b22);
+    border: 1px solid var(--pro-border-color, #30363d);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.action-bar-demo__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Info Box */
+.action-bar-demo__info {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary, #161b22);
+    border: 1px solid var(--pro-border-color, #30363d);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.action-bar-demo__info p {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-text, #c9d1d9);
+}
+
+.action-bar-demo__info ul {
+    margin: 0;
+    padding-left: var(--pro-spacing-lg, 1.5rem);
+    color: var(--pro-text-muted, #8b949e);
+}
+
+.action-bar-demo__info li {
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+.action-bar-demo__info kbd {
+    display: inline-block;
+    padding: 0.15em 0.4em;
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    font-family: var(--pro-font-mono, monospace);
+    color: var(--pro-text, #c9d1d9);
+    background-color: var(--pro-bg-tertiary, #21262d);
+    border: 1px solid var(--pro-border-color, #30363d);
+    border-radius: var(--pro-border-radius-sm, 3px);
+    box-shadow: inset 0 -1px 0 var(--pro-border-color, #30363d);
+}
+
+/* Event Log */
+.action-bar-demo__log-controls {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.action-bar-demo__log {
+    margin: 0;
+    padding: var(--pro-spacing-md, 1rem);
+    max-height: 200px;
+    overflow: auto;
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-family: var(--pro-font-mono, monospace);
+    color: var(--pro-text-muted, #8b949e);
+    background-color: var(--pro-bg-secondary, #161b22);
+    border: 1px solid var(--pro-border-color, #30363d);
+    border-radius: var(--pro-border-radius, 6px);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .action-bar-demo {
+        padding: var(--pro-spacing-md, 1rem);
+    }
+
+    .action-bar-demo__controls {
+        grid-template-columns: 1fr;
+    }
+
+    .action-bar-demo__state {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

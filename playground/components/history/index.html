@@ -1,0 +1,444 @@
+<div data-page="component-history" class="component-demo">
+  <h2>History</h2>
+  <p class="text-muted">LRU history tracking with persistence and batch operations</p>
+
+  <section class="demo-section" aria-labelledby="history-items-heading">
+    <h3 id="history-items-heading">History Items</h3>
+    <p class="text-muted small">Most recent items are shown first (LRU ordering)</p>
+    <div class="demo-area">
+      <div class="history-demo__list" id="history-list" role="list" aria-label="History items">
+        <div class="history-demo__empty">History is empty</div>
+      </div>
+      <div class="history-demo__stats">
+        <span id="history-count">0</span> / <span id="history-max">5</span> items
+        <span class="history-demo__persist-badge" id="history-persist-badge">
+          <i class="fas fa-database" aria-hidden="true"></i> Persisted
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="history-add-heading">
+    <h3 id="history-add-heading">Add Item</h3>
+    <p class="text-muted small">Add new items to history</p>
+    <div class="demo-area">
+      <div class="history-demo__add-form">
+        <label for="history-input" class="visually-hidden">New item</label>
+        <input type="text" id="history-input" class="form-control" placeholder="Enter item text..." autocomplete="off">
+        <button type="button" id="history-add-btn" class="btn btn-primary">
+          <i class="fas fa-plus" aria-hidden="true"></i> Add
+        </button>
+      </div>
+      <div class="history-demo__quick-add">
+        <span class="history-demo__quick-label">Quick add:</span>
+        <button type="button" class="btn btn-outline-secondary btn-sm history-demo__quick-btn" data-value="Dashboard">Dashboard</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm history-demo__quick-btn" data-value="Settings">Settings</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm history-demo__quick-btn" data-value="Profile">Profile</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm history-demo__quick-btn" data-value="Reports">Reports</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm history-demo__quick-btn" data-value="Analytics">Analytics</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="history-actions-heading">
+    <h3 id="history-actions-heading">Actions</h3>
+    <div class="demo-area">
+      <div class="history-demo__actions">
+        <button type="button" id="history-pop-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-up" aria-hidden="true"></i> Pop (remove first)
+        </button>
+        <button type="button" id="history-shift-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-down" aria-hidden="true"></i> Shift (remove last)
+        </button>
+        <button type="button" id="history-clear-btn" class="btn btn-outline-danger">
+          <i class="fas fa-trash" aria-hidden="true"></i> Clear All
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="history-traverse-heading">
+    <h3 id="history-traverse-heading">Traversal (Cursor)</h3>
+    <p class="text-muted small">Navigate through history using cursor-based traversal</p>
+    <div class="demo-area">
+      <div class="history-demo__traverse">
+        <div class="history-demo__traverse-controls">
+          <button type="button" id="history-prev-btn" class="btn btn-outline-secondary" disabled>
+            <i class="fas fa-chevron-left" aria-hidden="true"></i> Prev (newer)
+          </button>
+          <div class="history-demo__cursor">
+            <span class="history-demo__cursor-label">Cursor:</span>
+            <span class="history-demo__cursor-value" id="history-cursor">-1</span>
+          </div>
+          <button type="button" id="history-next-btn" class="btn btn-outline-secondary">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i> Next (older)
+          </button>
+        </div>
+        <div class="history-demo__current">
+          <span class="history-demo__current-label">Current item:</span>
+          <span class="history-demo__current-value" id="history-current">-</span>
+        </div>
+        <button type="button" id="history-reset-cursor-btn" class="btn btn-outline-secondary btn-sm">
+          <i class="fas fa-undo" aria-hidden="true"></i> Reset Cursor
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="history-settings-heading">
+    <h3 id="history-settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="history-demo__settings" id="history-settings">
+        <div class="history-demo__setting">
+          <span class="history-demo__setting-label">Key:</span>
+          <code class="history-demo__setting-value" id="setting-key">demo_history</code>
+        </div>
+        <div class="history-demo__setting">
+          <span class="history-demo__setting-label">Max Items:</span>
+          <span class="history-demo__setting-value" id="setting-max">5</span>
+        </div>
+        <div class="history-demo__setting">
+          <span class="history-demo__setting-label">Persist:</span>
+          <span class="history-demo__setting-value" id="setting-persist">Yes</span>
+        </div>
+        <div class="history-demo__setting">
+          <span class="history-demo__setting-label">Dedupe:</span>
+          <span class="history-demo__setting-value" id="setting-dedupe">Yes</span>
+        </div>
+        <div class="history-demo__setting">
+          <span class="history-demo__setting-label">Emit Events:</span>
+          <span class="history-demo__setting-value" id="setting-events">Yes</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="history-log-heading">
+    <h3 id="history-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="history-log" class="history-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var historyInstance = null;
+  var logs = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('history-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      key: props.key || 'demo_history',
+      namespace: props.namespace || '',
+      maxItems: props.maxItems || 5,
+      persist: props.persist !== false,
+      dedupe: props.dedupe !== false,
+      emitEvents: props.emitEvents !== false
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+    var el;
+
+    el = document.getElementById('setting-key');
+    if (el) el.textContent = opts.key;
+
+    el = document.getElementById('setting-max');
+    if (el) el.textContent = opts.maxItems;
+
+    el = document.getElementById('history-max');
+    if (el) el.textContent = opts.maxItems;
+
+    el = document.getElementById('setting-persist');
+    if (el) el.textContent = opts.persist ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-dedupe');
+    if (el) el.textContent = opts.dedupe ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-events');
+    if (el) el.textContent = opts.emitEvents ? 'Yes' : 'No';
+
+    // Update persist badge visibility
+    var badge = document.getElementById('history-persist-badge');
+    if (badge) {
+      badge.style.display = opts.persist ? 'inline-flex' : 'none';
+    }
+  }
+
+  function renderHistoryList() {
+    var listEl = document.getElementById('history-list');
+    var countEl = document.getElementById('history-count');
+
+    if (!listEl || !historyInstance) return;
+
+    var items = historyInstance.getAll();
+    var cursor = historyInstance.cursor();
+
+    if (items.length === 0) {
+      listEl.innerHTML = '<div class="history-demo__empty">History is empty</div>';
+      if (countEl) countEl.textContent = '0';
+      return;
+    }
+
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+      var isActive = cursor === i;
+      html += '<div class="history-demo__item' + (isActive ? ' history-demo__item--active' : '') + '" role="listitem" data-index="' + i + '">';
+      html += '<span class="history-demo__item-index">' + i + '</span>';
+      html += '<span class="history-demo__item-text">' + items[i] + '</span>';
+      html += '<button type="button" class="history-demo__item-remove btn btn-sm" data-item="' + items[i] + '" aria-label="Remove ' + items[i] + '">';
+      html += '<i class="fas fa-times" aria-hidden="true"></i>';
+      html += '</button>';
+      html += '</div>';
+    }
+
+    listEl.innerHTML = html;
+    if (countEl) countEl.textContent = items.length;
+
+    // Bind remove buttons
+    var removeButtons = listEl.querySelectorAll('.history-demo__item-remove');
+    removeButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = this.getAttribute('data-item');
+        if (historyInstance) {
+          historyInstance.remove(item);
+          log('Removed: ' + item);
+          emit('event', { event: 'history:remove', payload: { item: item } });
+          renderHistoryList();
+          updateCursorDisplay();
+        }
+      });
+    });
+
+    // Bind item click for goto
+    var itemEls = listEl.querySelectorAll('.history-demo__item');
+    itemEls.forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        if (e.target.closest('.history-demo__item-remove')) return;
+        var index = parseInt(this.getAttribute('data-index'), 10);
+        if (historyInstance) {
+          historyInstance.goto(index);
+          log('Cursor moved to index: ' + index);
+          renderHistoryList();
+          updateCursorDisplay();
+        }
+      });
+    });
+  }
+
+  function updateCursorDisplay() {
+    var cursorEl = document.getElementById('history-cursor');
+    var currentEl = document.getElementById('history-current');
+    var prevBtn = document.getElementById('history-prev-btn');
+    var nextBtn = document.getElementById('history-next-btn');
+
+    if (!historyInstance) return;
+
+    var cursor = historyInstance.cursor();
+    var current = historyInstance.current();
+
+    if (cursorEl) cursorEl.textContent = cursor;
+    if (currentEl) currentEl.textContent = current || '-';
+
+    if (prevBtn) prevBtn.disabled = !historyInstance.hasPrev();
+    if (nextBtn) nextBtn.disabled = historyInstance.isEmpty() || (cursor >= 0 && !historyInstance.hasNext());
+  }
+
+  function createHistoryInstance() {
+    var opts = getOptions();
+
+    // Destroy existing instance
+    if (historyInstance) {
+      historyInstance.destroy();
+    }
+
+    // Create new instance with onChange callback
+    historyInstance = Funky.History.create({
+      key: opts.key,
+      namespace: opts.namespace,
+      maxItems: opts.maxItems,
+      persist: opts.persist,
+      dedupe: opts.dedupe,
+      emitEvents: opts.emitEvents,
+      onChange: function(action, data) {
+        log('Event: ' + action + ' (size: ' + data.size + ')');
+      }
+    });
+
+    renderHistoryList();
+    updateCursorDisplay();
+    log('History instance created: ' + opts.key);
+  }
+
+  function setupEventListeners() {
+    var inputEl = document.getElementById('history-input');
+    var addBtn = document.getElementById('history-add-btn');
+    var popBtn = document.getElementById('history-pop-btn');
+    var shiftBtn = document.getElementById('history-shift-btn');
+    var clearBtn = document.getElementById('history-clear-btn');
+    var prevBtn = document.getElementById('history-prev-btn');
+    var nextBtn = document.getElementById('history-next-btn');
+    var resetCursorBtn = document.getElementById('history-reset-cursor-btn');
+    var quickBtns = document.querySelectorAll('.history-demo__quick-btn');
+
+    // Add item
+    function addItem() {
+      if (!inputEl || !historyInstance) return;
+      var value = inputEl.value.trim();
+      if (!value) return;
+
+      historyInstance.add(value);
+      log('Added: ' + value);
+      emit('event', { event: 'history:add', payload: { item: value } });
+      inputEl.value = '';
+      inputEl.focus();
+      renderHistoryList();
+      updateCursorDisplay();
+    }
+
+    if (addBtn) addBtn.addEventListener('click', addItem);
+    if (inputEl) {
+      inputEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') addItem();
+      });
+    }
+
+    // Quick add buttons
+    quickBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var value = this.getAttribute('data-value');
+        if (historyInstance && value) {
+          historyInstance.add(value);
+          log('Added: ' + value);
+          emit('event', { event: 'history:add', payload: { item: value } });
+          renderHistoryList();
+          updateCursorDisplay();
+        }
+      });
+    });
+
+    // Pop (remove first/most recent)
+    if (popBtn) {
+      popBtn.addEventListener('click', function() {
+        if (!historyInstance || historyInstance.isEmpty()) return;
+        var item = historyInstance.pop();
+        log('Popped: ' + item);
+        emit('event', { event: 'history:pop', payload: { item: item } });
+        renderHistoryList();
+        updateCursorDisplay();
+      });
+    }
+
+    // Shift (remove last/oldest)
+    if (shiftBtn) {
+      shiftBtn.addEventListener('click', function() {
+        if (!historyInstance || historyInstance.isEmpty()) return;
+        var item = historyInstance.shift();
+        log('Shifted: ' + item);
+        emit('event', { event: 'history:shift', payload: { item: item } });
+        renderHistoryList();
+        updateCursorDisplay();
+      });
+    }
+
+    // Clear all
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        if (!historyInstance) return;
+        historyInstance.clear();
+        log('History cleared');
+        emit('event', { event: 'history:clear', payload: {} });
+        renderHistoryList();
+        updateCursorDisplay();
+      });
+    }
+
+    // Prev (newer)
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        if (!historyInstance) return;
+        var item = historyInstance.prev();
+        if (item !== undefined) {
+          log('Prev: ' + item + ' (cursor: ' + historyInstance.cursor() + ')');
+          renderHistoryList();
+          updateCursorDisplay();
+        }
+      });
+    }
+
+    // Next (older)
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        if (!historyInstance) return;
+        var item = historyInstance.next();
+        if (item !== undefined) {
+          log('Next: ' + item + ' (cursor: ' + historyInstance.cursor() + ')');
+          renderHistoryList();
+          updateCursorDisplay();
+        }
+      });
+    }
+
+    // Reset cursor
+    if (resetCursorBtn) {
+      resetCursorBtn.addEventListener('click', function() {
+        if (!historyInstance) return;
+        historyInstance.resetCursor();
+        log('Cursor reset');
+        renderHistoryList();
+        updateCursorDisplay();
+      });
+    }
+  }
+
+  Funky.Pages.register('component-history', {
+    init: function(state) {
+      updateSettingsDisplay();
+      createHistoryInstance();
+      setupEventListeners();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          createHistoryInstance();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'history:init', payload: { key: getOptions().key } });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      if (historyInstance) {
+        historyInstance.destroy();
+        historyInstance = null;
+      }
+
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

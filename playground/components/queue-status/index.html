@@ -1,0 +1,643 @@
+<div data-page="component-queue-status" class="queue-status-demo">
+  <h2>QueueStatus</h2>
+  <p class="text-muted">Visual indicator showing offline queue status with sync monitoring and job management.</p>
+
+  <!-- Current State -->
+  <section class="queue-status-demo__section" aria-labelledby="queue-state-heading">
+    <h3 id="queue-state-heading">Current State</h3>
+    <div class="queue-status-demo__state">
+      <div class="queue-status-demo__state-item">
+        <span class="queue-status-demo__state-label">Position</span>
+        <span class="queue-status-demo__state-value" id="state-position">inline</span>
+      </div>
+      <div class="queue-status-demo__state-item">
+        <span class="queue-status-demo__state-label">Pending</span>
+        <span class="queue-status-demo__state-value" id="state-pending">0</span>
+      </div>
+      <div class="queue-status-demo__state-item">
+        <span class="queue-status-demo__state-label">Processing</span>
+        <span class="queue-status-demo__state-value" id="state-processing">0</span>
+      </div>
+      <div class="queue-status-demo__state-item">
+        <span class="queue-status-demo__state-label">Failed</span>
+        <span class="queue-status-demo__state-value" id="state-failed">0</span>
+      </div>
+      <div class="queue-status-demo__state-item">
+        <span class="queue-status-demo__state-label">Online</span>
+        <span class="queue-status-demo__state-value" id="state-online">true</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- QueueStatus Indicator -->
+  <section class="queue-status-demo__section" aria-labelledby="queue-indicator-heading">
+    <h3 id="queue-indicator-heading">Queue Status Indicator</h3>
+    <p class="queue-status-demo__hint"><i class="fas fa-info-circle" aria-hidden="true"></i> Click the indicator to view the queue modal. Changes in props will update the indicator dynamically.</p>
+    <div class="queue-status-demo__indicator-container">
+      <div id="queue-status-container" class="queue-status-demo__indicator-wrapper"></div>
+    </div>
+  </section>
+
+  <!-- Queue Controls -->
+  <section class="queue-status-demo__section" aria-labelledby="queue-controls-heading" id="controls-section">
+    <h3 id="queue-controls-heading">Queue Controls</h3>
+    <p class="queue-status-demo__hint"><i class="fas fa-cog" aria-hidden="true"></i> Add test jobs to see the indicator update in real-time.</p>
+    <div class="queue-status-demo__controls">
+      <button class="btn btn-success btn-sm" id="btn-add-job" type="button">
+        <i class="fas fa-plus me-1" aria-hidden="true"></i> Add Job
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="btn-process-job" type="button">
+        <i class="fas fa-play me-1" aria-hidden="true"></i> Process Next
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="btn-fail-job" type="button">
+        <i class="fas fa-times me-1" aria-hidden="true"></i> Fail Next
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="btn-clear-queue" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear All
+      </button>
+    </div>
+  </section>
+
+  <!-- Status Simulation -->
+  <section class="queue-status-demo__section" aria-labelledby="queue-simulation-heading">
+    <h3 id="queue-simulation-heading">Status Simulation</h3>
+    <p class="queue-status-demo__hint"><i class="fas fa-flask" aria-hidden="true"></i> Simulate different queue states to see the indicator change.</p>
+    <div class="queue-status-demo__simulation">
+      <button class="btn btn-outline-info btn-sm" id="btn-simulate-syncing" type="button">
+        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i> Syncing
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="btn-simulate-offline" type="button">
+        <i class="fas fa-wifi-slash me-1" aria-hidden="true"></i> Go Offline
+      </button>
+      <button class="btn btn-outline-success btn-sm" id="btn-simulate-online" type="button">
+        <i class="fas fa-wifi me-1" aria-hidden="true"></i> Go Online
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="btn-simulate-error" type="button">
+        <i class="fas fa-exclamation-triangle me-1" aria-hidden="true"></i> Error
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="btn-simulate-conflict" type="button">
+        <i class="fas fa-code-branch me-1" aria-hidden="true"></i> Conflict
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="btn-simulate-reset" type="button">
+        <i class="fas fa-undo me-1" aria-hidden="true"></i> Reset
+      </button>
+    </div>
+  </section>
+
+  <!-- Active Jobs -->
+  <section class="queue-status-demo__section" aria-labelledby="queue-jobs-heading">
+    <h3 id="queue-jobs-heading">Job Queue</h3>
+    <div class="queue-status-demo__jobs" id="job-list">
+      <div class="queue-status-demo__empty-state" id="empty-state">
+        <i class="fas fa-inbox" aria-hidden="true"></i>
+        <span>No jobs in queue</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="queue-status-demo__section" aria-labelledby="queue-log-heading">
+    <h3 id="queue-log-heading">Event Log</h3>
+    <div class="queue-status-demo__log-controls">
+      <button class="btn btn-outline-secondary btn-sm" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+    <pre id="queue-log" class="queue-status-demo__log" aria-live="polite" aria-label="Queue event log">Initializing QueueStatus demo...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var propsChangedHandler = null;
+
+  Funky.Pages.register('component-queue-status', {
+    _logs: [],
+    _instance: null,
+    _mockQueue: null,
+    _jobs: [],
+    _jobId: 0,
+
+    _log: function(message, data) {
+      var entry = new Date().toLocaleTimeString() + ' - ' + message;
+      if (data) entry += ': ' + JSON.stringify(data);
+      this._logs.unshift(entry);
+      if (this._logs.length > 20) this._logs.pop();
+      var logEl = document.getElementById('queue-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _updateState: function(key, value) {
+      var el = document.getElementById('state-' + key);
+      if (el) el.textContent = String(value);
+    },
+
+    _updateStats: function() {
+      var pending = this._jobs.filter(function(j) { return j.status === 'pending'; }).length;
+      var processing = this._jobs.filter(function(j) { return j.status === 'processing'; }).length;
+      var failed = this._jobs.filter(function(j) { return j.status === 'failed'; }).length;
+
+      this._updateState('pending', pending);
+      this._updateState('processing', processing);
+      this._updateState('failed', failed);
+
+      // Update indicator if we have mocked job count
+      if (this._instance && this._instance.refresh) {
+        this._instance.refresh();
+      }
+    },
+
+    _renderJobs: function() {
+      var self = this;
+      var container = document.getElementById('job-list');
+      var emptyState = document.getElementById('empty-state');
+
+      if (!container) return;
+
+      // Remove existing job cards (but keep empty state)
+      var cards = container.querySelectorAll('.queue-status-demo__job-card');
+      cards.forEach(function(card) { card.remove(); });
+
+      if (self._jobs.length === 0) {
+        if (emptyState) emptyState.style.display = 'flex';
+        return;
+      }
+
+      if (emptyState) emptyState.style.display = 'none';
+
+      self._jobs.forEach(function(job) {
+        var card = document.createElement('div');
+        card.className = 'queue-status-demo__job-card queue-status-demo__job-card--' + job.status;
+        card.dataset.jobId = job.id;
+
+        var statusClass = {
+          pending: 'bg-warning text-dark',
+          processing: 'bg-primary',
+          failed: 'bg-danger',
+          completed: 'bg-success'
+        }[job.status] || 'bg-secondary';
+
+        card.innerHTML =
+          '<div class="queue-status-demo__job-info">' +
+            '<span class="queue-status-demo__job-name">' + job.name + '</span>' +
+            '<span class="badge ' + statusClass + '">' + job.status + '</span>' +
+          '</div>' +
+          '<div class="queue-status-demo__job-meta">' +
+            '<small class="text-muted">ID: ' + job.id + ' • Created: ' + job.created + '</small>' +
+          '</div>';
+
+        container.appendChild(card);
+      });
+    },
+
+    _createMockQueue: function() {
+      var self = this;
+
+      // Create a mock queue that simulates JobQueue for demo purposes
+      return {
+        name: 'demo-queue',
+
+        count: function(status) {
+          if (!status) return self._jobs.length;
+          return self._jobs.filter(function(j) { return j.status === status; }).length;
+        },
+
+        getAll: function() {
+          return self._jobs.map(function(job) {
+            return {
+              id: job.id,
+              type: 'TASK',
+              status: job.status,
+              data: {
+                description: job.name
+              }
+            };
+          });
+        },
+
+        getConflicts: function() {
+          return self._jobs.filter(function(j) { return j.conflict; });
+        },
+
+        isOnline: function() {
+          return !self._isOffline;
+        },
+
+        sync: function() {
+          self._log('Sync requested - jobs: ' + self._jobs.length);
+          emit('event', { event: 'queue:sync', payload: {} });
+
+          // Process all pending jobs
+          var pendingJobs = self._jobs.filter(function(j) { return j.status === 'pending'; });
+          self._log('Found ' + pendingJobs.length + ' pending jobs');
+          if (pendingJobs.length === 0) {
+            self._log('No pending jobs to sync');
+            if (Funky.Toast) Funky.Toast.info('No pending jobs to sync');
+            return;
+          }
+
+          // Set syncing state on indicator
+          var indicatorEl = document.querySelector('.queue-status');
+          if (indicatorEl) {
+            indicatorEl.classList.add('queue-status--syncing');
+          }
+
+          self._log('Processing ' + pendingJobs.length + ' pending job(s)');
+          if (Funky.Toast) Funky.Toast.info('Syncing ' + pendingJobs.length + ' job(s)...');
+
+          // Process each pending job with simulated delay
+          var processNext = function(index) {
+            if (index >= pendingJobs.length) {
+              // All done - remove syncing state
+              if (indicatorEl) {
+                indicatorEl.classList.remove('queue-status--syncing');
+                indicatorEl.classList.add('queue-status--success');
+                setTimeout(function() {
+                  if (indicatorEl) indicatorEl.classList.remove('queue-status--success');
+                }, 1000);
+              }
+              self._log('Sync complete');
+              if (Funky.Toast) Funky.Toast.success('Sync complete!');
+              return;
+            }
+
+            var job = pendingJobs[index];
+            job.status = 'processing';
+            self._updateStats();
+            self._renderJobs();
+
+            setTimeout(function() {
+              // Complete the job
+              self._jobs = self._jobs.filter(function(j) { return j.id !== job.id; });
+              self._log('Job completed: ' + job.name);
+              emit('event', { event: 'queue:complete', payload: { id: job.id, name: job.name } });
+              self._updateStats();
+              self._renderJobs();
+
+              // Process next
+              processNext(index + 1);
+            }, 800);
+          };
+
+          processNext(0);
+        },
+
+        retryAll: function() {
+          self._jobs.forEach(function(job) {
+            if (job.status === 'failed') {
+              job.status = 'pending';
+            }
+          });
+          self._log('Retrying all failed jobs');
+          self._updateStats();
+          self._renderJobs();
+          emit('event', { event: 'queue:retryAll', payload: {} });
+        },
+
+        retry: function(id) {
+          var job = self._jobs.find(function(j) { return j.id === id; });
+          if (job && job.status === 'failed') {
+            job.status = 'pending';
+            self._log('Retrying job', { id: id });
+            self._updateStats();
+            self._renderJobs();
+          }
+        },
+
+        remove: function(id) {
+          self._jobs = self._jobs.filter(function(j) { return j.id !== id; });
+          self._log('Job removed', { id: id });
+          self._updateStats();
+          self._renderJobs();
+          emit('event', { event: 'queue:remove', payload: { id: id } });
+        },
+
+        clear: function() {
+          self._jobs = [];
+          self._log('Queue cleared');
+          self._updateStats();
+          self._renderJobs();
+          emit('event', { event: 'queue:clear', payload: {} });
+        }
+      };
+    },
+
+    _initIndicator: function(props) {
+      var self = this;
+
+      // Destroy existing instance
+      if (self._instance && self._instance.destroy) {
+        self._instance.destroy();
+      }
+
+      // Clear container
+      var container = document.getElementById('queue-status-container');
+      if (container) container.innerHTML = '';
+
+      if (!Funky.QueueStatus) {
+        self._log('ERROR: Funky.QueueStatus not available');
+        return;
+      }
+
+      // Initialize QueueStatus with mock queue
+      Funky.QueueStatus.init({
+        container: '#queue-status-container',
+        position: props.position || 'inline',
+        showWhenEmpty: props.showWhenEmpty !== false,
+        clickAction: props.clickAction || 'modal',
+        animations: props.animated !== false,
+        queue: self._mockQueue
+      });
+
+      self._instance = Funky.QueueStatus;
+      self._updateState('position', props.position || 'inline');
+
+      // Show/hide controls section based on showControls prop
+      var controlsSection = document.getElementById('controls-section');
+      if (controlsSection) {
+        controlsSection.style.display = props.showControls !== false ? '' : 'none';
+      }
+
+      self._log('QueueStatus initialized', {
+        position: props.position || 'inline',
+        showWhenEmpty: props.showWhenEmpty !== false,
+        clickAction: props.clickAction || 'modal',
+        showControls: props.showControls !== false
+      });
+
+      emit('event', { event: 'funky:queue-status:init', payload: props });
+    },
+
+    init: function(state) {
+      var self = this;
+      var props = getProps();
+
+      self._logs = [];
+      self._jobs = [];
+      self._jobId = 0;
+      self._isOffline = false;
+      self._log('Initializing QueueStatus demo');
+
+      // Create mock queue
+      self._mockQueue = self._createMockQueue();
+
+      // Initialize indicator
+      self._initIndicator(props);
+
+      // Add job button
+      document.getElementById('btn-add-job').onclick = function() {
+        self._jobId++;
+        var jobNames = ['Data Export', 'Backup Task', 'Report Generation', 'Sync Operation', 'File Import'];
+        var job = {
+          id: self._jobId,
+          name: jobNames[Math.floor(Math.random() * jobNames.length)] + ' #' + self._jobId,
+          status: 'pending',
+          created: new Date().toLocaleTimeString(),
+          conflict: false
+        };
+        self._jobs.push(job);
+        self._log('Job added', { id: job.id, name: job.name });
+        self._updateStats();
+        self._renderJobs();
+        emit('event', { event: 'queue:add', payload: job });
+        if (Funky.Toast) Funky.Toast.success('Job added: ' + job.name);
+      };
+
+      // Process next job
+      document.getElementById('btn-process-job').onclick = function() {
+        var pendingJob = self._jobs.find(function(j) { return j.status === 'pending'; });
+        if (pendingJob) {
+          pendingJob.status = 'processing';
+          self._log('Processing job', { id: pendingJob.id });
+          self._updateStats();
+          self._renderJobs();
+          emit('event', { event: 'queue:process', payload: { id: pendingJob.id } });
+
+          // Simulate processing time
+          setTimeout(function() {
+            var job = self._jobs.find(function(j) { return j.id === pendingJob.id; });
+            if (job && job.status === 'processing') {
+              job.status = 'completed';
+              self._jobs = self._jobs.filter(function(j) { return j.id !== job.id; });
+              self._log('Job completed', { id: job.id });
+              self._updateStats();
+              self._renderJobs();
+              emit('event', { event: 'queue:complete', payload: { id: job.id } });
+              if (Funky.Toast) Funky.Toast.success('Job completed: ' + job.name);
+            }
+          }, 2000);
+        } else {
+          self._log('No pending jobs to process');
+          if (Funky.Toast) Funky.Toast.info('No pending jobs');
+        }
+      };
+
+      // Fail next job
+      document.getElementById('btn-fail-job').onclick = function() {
+        var pendingJob = self._jobs.find(function(j) { return j.status === 'pending' || j.status === 'processing'; });
+        if (pendingJob) {
+          pendingJob.status = 'failed';
+          self._log('Job failed', { id: pendingJob.id });
+          self._updateStats();
+          self._renderJobs();
+          emit('event', { event: 'queue:fail', payload: { id: pendingJob.id } });
+          if (Funky.Toast) Funky.Toast.error('Job failed: ' + pendingJob.name);
+        } else {
+          self._log('No jobs to fail');
+          if (Funky.Toast) Funky.Toast.info('No pending jobs');
+        }
+      };
+
+      // Clear queue
+      document.getElementById('btn-clear-queue').onclick = function() {
+        self._mockQueue.clear();
+        if (Funky.Toast) Funky.Toast.success('Queue cleared');
+      };
+
+      // Simulation buttons
+      document.getElementById('btn-simulate-syncing').onclick = function() {
+        var indicatorEl = document.querySelector('.queue-status');
+        if (indicatorEl) {
+          indicatorEl.classList.add('queue-status--syncing');
+          var iconEl = indicatorEl.querySelector('.queue-status__icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" class="spinning"><path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>';
+          }
+        }
+        self._log('Simulating syncing state');
+        emit('event', { event: 'queue:syncing', payload: {} });
+      };
+
+      document.getElementById('btn-simulate-offline').onclick = function() {
+        self._isOffline = true;
+        self._updateState('online', 'false');
+        var indicatorEl = document.querySelector('.queue-status');
+        if (indicatorEl) {
+          indicatorEl.classList.add('queue-status--offline');
+          indicatorEl.classList.remove('queue-status--online', 'queue-status--syncing');
+          var iconEl = indicatorEl.querySelector('.queue-status__icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4c-1.48 0-2.85.43-4.01 1.17l1.46 1.46C10.21 6.23 11.08 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3 0 1.13-.64 2.11-1.56 2.62l1.45 1.45C23.16 18.16 24 16.68 24 15c0-2.64-2.05-4.78-4.65-4.96zM3 5.27l2.75 2.74C2.56 8.15 0 10.77 0 14c0 3.31 2.69 6 6 6h11.73l2 2L21 20.73 4.27 4 3 5.27zM7.73 10l8 8H6c-2.21 0-4-1.79-4-4s1.79-4 4-4h1.73z"/></svg>';
+          }
+        }
+        self._log('Simulating offline state');
+        emit('event', { event: 'queue:offline', payload: {} });
+        if (Funky.Toast) Funky.Toast.warning('Connection lost');
+      };
+
+      document.getElementById('btn-simulate-online').onclick = function() {
+        self._isOffline = false;
+        self._updateState('online', 'true');
+        var indicatorEl = document.querySelector('.queue-status');
+        if (indicatorEl) {
+          indicatorEl.classList.remove('queue-status--offline', 'queue-status--error', 'queue-status--conflict', 'queue-status--syncing');
+          indicatorEl.classList.add('queue-status--online');
+          var iconEl = indicatorEl.querySelector('.queue-status__icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>';
+          }
+        }
+        self._log('Simulating online state');
+        emit('event', { event: 'queue:online', payload: {} });
+        if (Funky.Toast) Funky.Toast.success('Connection restored');
+      };
+
+      document.getElementById('btn-simulate-error').onclick = function() {
+        var indicatorEl = document.querySelector('.queue-status');
+        if (indicatorEl) {
+          indicatorEl.classList.remove('queue-status--syncing', 'queue-status--conflict');
+          indicatorEl.classList.add('queue-status--error');
+          var iconEl = indicatorEl.querySelector('.queue-status__icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>';
+          }
+        }
+        self._log('Simulating error state');
+        emit('event', { event: 'queue:error', payload: {} });
+        if (Funky.Toast) Funky.Toast.error('Sync error occurred');
+      };
+
+      document.getElementById('btn-simulate-conflict').onclick = function() {
+        // Add a conflict job
+        self._jobId++;
+        var job = {
+          id: self._jobId,
+          name: 'Conflicting Update #' + self._jobId,
+          status: 'pending',
+          created: new Date().toLocaleTimeString(),
+          conflict: true
+        };
+        self._jobs.push(job);
+
+        var indicatorEl = document.querySelector('.queue-status');
+        if (indicatorEl) {
+          indicatorEl.classList.remove('queue-status--syncing', 'queue-status--error');
+          indicatorEl.classList.add('queue-status--conflict');
+          var iconEl = indicatorEl.querySelector('.queue-status__icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
+          }
+        }
+        self._log('Simulating conflict state', { jobId: job.id });
+        self._updateStats();
+        self._renderJobs();
+        emit('event', { event: 'queue:conflict', payload: { job: job } });
+        if (Funky.Toast) Funky.Toast.warning('Conflict detected');
+      };
+
+      document.getElementById('btn-simulate-reset').onclick = function() {
+        self._isOffline = false;
+        self._updateState('online', 'true');
+        var indicatorEl = document.querySelector('.queue-status');
+        if (indicatorEl) {
+          indicatorEl.classList.remove('queue-status--offline', 'queue-status--error', 'queue-status--conflict', 'queue-status--syncing', 'queue-status--success');
+          var iconEl = indicatorEl.querySelector('.queue-status__icon');
+          if (iconEl) {
+            iconEl.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>';
+          }
+        }
+        // Clear conflict jobs
+        self._jobs = self._jobs.filter(function(j) { return !j.conflict; });
+        self._log('Reset to normal state');
+        self._updateStats();
+        self._renderJobs();
+        emit('event', { event: 'queue:reset', payload: {} });
+      };
+
+      // Clear log
+      document.getElementById('btn-clear-log').onclick = function() {
+        self._logs = [];
+        document.getElementById('queue-log').textContent = 'Log cleared';
+      };
+
+      // Listen for props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          self._log('Props changed', newProps);
+
+          var needsReinit = false;
+
+          // Position change requires reinit
+          if (newProps.position !== undefined) {
+            needsReinit = true;
+            self._updateState('position', newProps.position);
+          }
+
+          // These also require reinit
+          if (newProps.clickAction !== undefined || newProps.showWhenEmpty !== undefined || newProps.showControls !== undefined) {
+            needsReinit = true;
+          }
+
+          // Animation changes can be handled without reinit
+          if (newProps.animated !== undefined && !needsReinit) {
+            // Animation is a visual preference, just log it
+            self._log('Animation preference changed', { animated: newProps.animated });
+          }
+
+          if (needsReinit) {
+            // Merge new props with existing
+            var currentProps = getProps();
+            for (var key in newProps) {
+              if (newProps.hasOwnProperty(key)) {
+                currentProps[key] = newProps[key];
+              }
+            }
+            self._initIndicator(currentProps);
+            self._updateStats();
+          }
+
+          emit('event', { event: 'funky:queue-status:propsChanged', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      self._log('Demo ready');
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy QueueStatus instance
+      if (Funky.QueueStatus && Funky.QueueStatus.destroy) {
+        Funky.QueueStatus.destroy();
+      }
+
+      this._logs = [];
+      this._instance = null;
+      this._mockQueue = null;
+      this._jobs = [];
+      this._jobId = 0;
+      this._isOffline = false;
+
+      return {};
+    }
+  });
+})();
+</script>

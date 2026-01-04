@@ -1,0 +1,503 @@
+<div data-page="component-typewriter" class="typewriter-demo">
+  <!-- Current State -->
+  <section class="typewriter-demo__section">
+    <h3>Current State</h3>
+    <div class="typewriter-demo__state">
+      <div class="typewriter-demo__state-item">
+        <span class="typewriter-demo__state-label">Status:</span>
+        <span class="typewriter-demo__state-value" id="state-status">idle</span>
+      </div>
+      <div class="typewriter-demo__state-item">
+        <span class="typewriter-demo__state-label">Mode:</span>
+        <span class="typewriter-demo__state-value" id="state-mode">letter</span>
+      </div>
+      <div class="typewriter-demo__state-item">
+        <span class="typewriter-demo__state-label">Speed:</span>
+        <span class="typewriter-demo__state-value" id="state-speed">50ms</span>
+      </div>
+      <div class="typewriter-demo__state-item">
+        <span class="typewriter-demo__state-label">Cursor:</span>
+        <span class="typewriter-demo__state-value" id="state-cursor">bar</span>
+      </div>
+      <div class="typewriter-demo__state-item">
+        <span class="typewriter-demo__state-label">Loop:</span>
+        <span class="typewriter-demo__state-value" id="state-loop">off</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero Demo -->
+  <section class="typewriter-demo__section">
+    <h3>Hero Typewriter</h3>
+    <div class="typewriter-demo__hero">
+      <div id="typewriter-hero" class="typewriter-demo__hero-text"></div>
+    </div>
+  </section>
+
+  <!-- Looping Sequence -->
+  <section class="typewriter-demo__section">
+    <h3>Looping Sequence</h3>
+    <div class="typewriter-demo__area">
+      <div id="typewriter-loop" class="typewriter-demo__loop-text"></div>
+    </div>
+  </section>
+
+  <!-- Code Typing -->
+  <section class="typewriter-demo__section">
+    <h3>Code Typing (Monospace)</h3>
+    <div class="typewriter-demo__code-area">
+      <pre id="typewriter-code" class="typewriter-demo__code"></pre>
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <section class="typewriter-demo__section">
+    <h3>Controls</h3>
+    <div class="typewriter-demo__controls">
+      <div class="typewriter-demo__control-group">
+        <h4>Playback</h4>
+        <div class="typewriter-demo__buttons">
+          <button type="button" class="btn btn-sm btn-primary" data-method="start">
+            <i class="fas fa-play"></i> Start
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="pause">
+            <i class="fas fa-pause"></i> Pause
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="resume">
+            <i class="fas fa-play"></i> Resume
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" data-method="clear">
+            <i class="fas fa-eraser"></i> Clear
+          </button>
+        </div>
+      </div>
+      <div class="typewriter-demo__control-group">
+        <h4>Mode</h4>
+        <div class="typewriter-demo__buttons">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="mode-letter">Letter</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="mode-word">Word</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="mode-line">Line</button>
+        </div>
+      </div>
+      <div class="typewriter-demo__control-group">
+        <h4>Cursor Style</h4>
+        <div class="typewriter-demo__buttons">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="cursor-bar">Bar</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="cursor-underscore">Underscore</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="cursor-block">Block</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-method="cursor-none">None</button>
+        </div>
+      </div>
+      <div class="typewriter-demo__control-group">
+        <h4>Options</h4>
+        <div class="typewriter-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-loop">Toggle Loop</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-blink">Toggle Blink</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speed Control -->
+  <section class="typewriter-demo__section">
+    <h3>Speed Control</h3>
+    <div class="typewriter-demo__slider-area">
+      <div class="typewriter-demo__slider-row">
+        <i class="fas fa-turtle"></i>
+        <input type="range" class="typewriter-demo__slider" id="speed-slider" min="10" max="200" value="50" aria-label="Typing speed">
+        <i class="fas fa-rabbit"></i>
+        <span class="typewriter-demo__slider-value" id="speed-value">50ms</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Type Custom Text -->
+  <section class="typewriter-demo__section">
+    <h3>Type Custom Text</h3>
+    <div class="typewriter-demo__input-area">
+      <input type="text" class="form-control typewriter-demo__input" id="custom-text" placeholder="Enter text to type..." value="Hello, Funky Framework!">
+      <button type="button" class="btn btn-primary" data-method="type-custom">
+        <i class="fas fa-keyboard"></i> Type It
+      </button>
+    </div>
+  </section>
+
+  <!-- Features Info -->
+  <section class="typewriter-demo__section">
+    <h3>Features</h3>
+    <div class="typewriter-demo__info">
+      <p>The Typewriter component provides animated typing effects:</p>
+      <ul>
+        <li><strong>Modes:</strong> Type by letter, word, or line</li>
+        <li><strong>Cursor Styles:</strong> Bar, underscore, block, or none</li>
+        <li><strong>Looping:</strong> Cycle through multiple text sequences</li>
+        <li><strong>Size Variants:</strong> xs, sm, md, lg, xl, 2xl, 3xl, 4xl</li>
+        <li><strong>Callbacks:</strong> onStart, onType, onComplete, onLoop, onDelete</li>
+      </ul>
+      <p>Accessibility: Respects <kbd>prefers-reduced-motion</kbd> - shows text instantly.</p>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="typewriter-demo__section">
+    <h3>Event Log</h3>
+    <div class="typewriter-demo__log-controls">
+      <button type="button" class="btn btn-sm btn-secondary" data-method="clear-log">Clear Log</button>
+    </div>
+    <pre id="typewriter-log" class="typewriter-demo__log" role="log" aria-live="polite">Ready...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var instances = {};
+  var eventHandlers = [];
+  var pubsubHandler = null;
+  var currentOptions = {
+    text: 'Hello, I am a typewriter effect...',
+    mode: 'letter',
+    speed: 50,
+    cursor: true,
+    cursorStyle: 'bar',
+    cursorBlink: true,
+    loop: false,
+    deleteSpeed: 30,
+    pauseOnComplete: 1000,
+    size: '2xl',
+    mono: false
+  };
+
+  var loopTexts = [
+    'Building beautiful UIs...',
+    'With minimal effort...',
+    'And maximum impact!'
+  ];
+  var codeText = 'function greet(name) {\n  return "Hello, " + name + "!";\n}\n\nconsole.log(greet("World"));';
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('typewriter-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function applyProps(props) {
+    if (!props) return;
+
+    // Apply props to currentOptions
+    if (props.text !== undefined) currentOptions.text = props.text;
+    if (props.mode !== undefined) currentOptions.mode = props.mode;
+    if (props.speed !== undefined) currentOptions.speed = props.speed;
+    if (props.cursor !== undefined) currentOptions.cursor = props.cursor;
+    if (props.cursorStyle !== undefined) currentOptions.cursorStyle = props.cursorStyle;
+    if (props.cursorBlink !== undefined) currentOptions.cursorBlink = props.cursorBlink;
+    if (props.loop !== undefined) currentOptions.loop = props.loop;
+    if (props.deleteSpeed !== undefined) currentOptions.deleteSpeed = props.deleteSpeed;
+    if (props.pauseOnComplete !== undefined) currentOptions.pauseOnComplete = props.pauseOnComplete;
+    if (props.size !== undefined) currentOptions.size = props.size;
+    if (props.mono !== undefined) currentOptions.mono = props.mono;
+
+    // Update speed slider to match
+    var speedSlider = document.getElementById('speed-slider');
+    var speedValue = document.getElementById('speed-value');
+    if (speedSlider) speedSlider.value = currentOptions.speed;
+    if (speedValue) speedValue.textContent = currentOptions.speed + 'ms';
+  }
+
+  function updateStateDisplay() {
+    var statusEl = document.getElementById('state-status');
+    var modeEl = document.getElementById('state-mode');
+    var speedEl = document.getElementById('state-speed');
+    var cursorEl = document.getElementById('state-cursor');
+    var loopEl = document.getElementById('state-loop');
+
+    if (modeEl) modeEl.textContent = currentOptions.mode;
+    if (speedEl) speedEl.textContent = currentOptions.speed + 'ms';
+    if (cursorEl) cursorEl.textContent = currentOptions.cursorStyle;
+    if (loopEl) loopEl.textContent = currentOptions.loop ? 'on' : 'off';
+
+    // Determine status from hero instance
+    if (instances.hero) {
+      if (instances.hero.isTyping) {
+        statusEl.textContent = 'typing';
+      } else if (instances.hero.isDeleting) {
+        statusEl.textContent = 'deleting';
+      } else if (instances.hero.isPaused) {
+        statusEl.textContent = 'paused';
+      } else if (instances.hero.isComplete) {
+        statusEl.textContent = 'complete';
+      } else {
+        statusEl.textContent = 'idle';
+      }
+    }
+  }
+
+  function parseText(text) {
+    // Handle pipe-separated text sequences
+    if (typeof text === 'string' && text.includes('|')) {
+      return text.split('|').map(function(s) { return s.trim(); });
+    }
+    return text;
+  }
+
+  function createInstances() {
+    // Destroy existing instances
+    Object.keys(instances).forEach(function(key) {
+      if (instances[key] && instances[key].destroy) {
+        instances[key].destroy();
+      }
+    });
+    instances = {};
+
+    if (!Funky.Typewriter) {
+      log('Funky.Typewriter not available');
+      return;
+    }
+
+    // Hero typewriter - uses props from playground panel
+    var heroText = parseText(currentOptions.text);
+    instances.hero = Funky.Typewriter.create('#typewriter-hero', {
+      text: heroText,
+      mode: currentOptions.mode,
+      speed: currentOptions.speed,
+      cursor: currentOptions.cursor,
+      cursorStyle: currentOptions.cursorStyle,
+      cursorBlink: currentOptions.cursorBlink,
+      loop: currentOptions.loop,
+      deleteSpeed: currentOptions.deleteSpeed,
+      pauseOnComplete: currentOptions.pauseOnComplete,
+      size: currentOptions.size,
+      mono: currentOptions.mono,
+      autoStart: true,
+      onStart: function() {
+        log('Hero: Started');
+        updateStateDisplay();
+        emit('event', { event: 'typewriter:start', payload: { instance: 'hero' } });
+      },
+      onComplete: function() {
+        log('Hero: Complete');
+        updateStateDisplay();
+        emit('event', { event: 'typewriter:complete', payload: { instance: 'hero' } });
+      },
+      onLoop: function(count) {
+        log('Hero: Loop ' + count);
+        emit('event', { event: 'typewriter:loop', payload: { instance: 'hero', count: count } });
+      }
+    });
+
+    // Loop typewriter - fixed demo
+    instances.loop = Funky.Typewriter.create('#typewriter-loop', {
+      text: loopTexts,
+      mode: 'letter',
+      speed: 40,
+      cursor: true,
+      cursorStyle: 'bar',
+      cursorBlink: true,
+      loop: true,
+      loopDelay: 1500,
+      deleteSpeed: 25,
+      pauseOnComplete: 1000,
+      size: 'xl',
+      autoStart: true,
+      onLoop: function(count) {
+        log('Loop: Cycle ' + count);
+        emit('event', { event: 'typewriter:loop', payload: { count: count } });
+      }
+    });
+
+    // Code typewriter - fixed demo
+    instances.code = Funky.Typewriter.create('#typewriter-code', {
+      text: codeText,
+      mode: 'letter',
+      speed: 25,
+      cursor: true,
+      cursorStyle: 'underscore',
+      cursorBlink: true,
+      loop: false,
+      mono: true,
+      autoStart: true,
+      startDelay: 500,
+      onComplete: function() {
+        log('Code: Complete');
+        emit('event', { event: 'typewriter:complete', payload: { instance: 'code' } });
+      }
+    });
+
+    updateStateDisplay();
+  }
+
+  function handleControlClick(e) {
+    var btn = e.target.closest('[data-method]');
+    if (!btn) return;
+
+    var method = btn.dataset.method;
+
+    switch (method) {
+      case 'start':
+        if (instances.hero) {
+          instances.hero.clear();
+          instances.hero.start();
+          log('API: start()');
+        }
+        updateStateDisplay();
+        break;
+
+      case 'pause':
+        Object.keys(instances).forEach(function(key) {
+          if (instances[key] && instances[key].pause) {
+            instances[key].pause();
+          }
+        });
+        log('API: pause()');
+        updateStateDisplay();
+        emit('event', { event: 'typewriter:pause', payload: {} });
+        break;
+
+      case 'resume':
+        Object.keys(instances).forEach(function(key) {
+          if (instances[key] && instances[key].resume) {
+            instances[key].resume();
+          }
+        });
+        log('API: resume()');
+        updateStateDisplay();
+        emit('event', { event: 'typewriter:resume', payload: {} });
+        break;
+
+      case 'clear':
+        Object.keys(instances).forEach(function(key) {
+          if (instances[key] && instances[key].clear) {
+            instances[key].clear();
+          }
+        });
+        log('API: clear()');
+        updateStateDisplay();
+        break;
+
+      case 'mode-letter':
+      case 'mode-word':
+      case 'mode-line':
+        currentOptions.mode = method.split('-')[1];
+        log('Mode: ' + currentOptions.mode);
+        createInstances();
+        break;
+
+      case 'cursor-bar':
+      case 'cursor-underscore':
+      case 'cursor-block':
+      case 'cursor-none':
+        currentOptions.cursorStyle = method.split('-')[1];
+        log('Cursor: ' + currentOptions.cursorStyle);
+        createInstances();
+        break;
+
+      case 'toggle-loop':
+        currentOptions.loop = !currentOptions.loop;
+        log('Loop: ' + (currentOptions.loop ? 'on' : 'off'));
+        createInstances();
+        break;
+
+      case 'toggle-blink':
+        currentOptions.cursorBlink = !currentOptions.cursorBlink;
+        log('Blink: ' + (currentOptions.cursorBlink ? 'on' : 'off'));
+        createInstances();
+        break;
+
+      case 'type-custom':
+        var customText = document.getElementById('custom-text').value;
+        if (customText && instances.hero) {
+          instances.hero.type(customText);
+          log('API: type("' + customText.substring(0, 20) + '...")');
+        }
+        break;
+
+      case 'clear-log':
+        logs = [];
+        var logEl = document.getElementById('typewriter-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+        break;
+    }
+  }
+
+  function handleSpeedChange(e) {
+    if (e.target.id !== 'speed-slider') return;
+    currentOptions.speed = parseInt(e.target.value, 10);
+    document.getElementById('speed-value').textContent = currentOptions.speed + 'ms';
+    log('Speed: ' + currentOptions.speed + 'ms');
+    updateStateDisplay();
+    // Note: Speed changes require recreating instances
+    createInstances();
+  }
+
+  Funky.Pages.register('component-typewriter', {
+    init: function(state) {
+      log('Typewriter demo ready');
+
+      // Apply initial props from playground panel
+      var props = getProps();
+      applyProps(props);
+
+      document.addEventListener('click', handleControlClick);
+      eventHandlers.push({ event: 'click', handler: handleControlClick });
+
+      document.addEventListener('input', handleSpeedChange);
+      eventHandlers.push({ event: 'input', handler: handleSpeedChange });
+
+      // Subscribe to prop changes from playground panel
+      if (Funky.PubSub) {
+        pubsubHandler = Funky.PubSub.on('playground:propsChanged', function(newProps) {
+          log('Props updated from panel');
+          applyProps(newProps);
+          createInstances();
+        });
+      }
+
+      // Create initial instances
+      createInstances();
+    },
+
+    destroy: function() {
+      // Destroy typewriter instances
+      Object.keys(instances).forEach(function(key) {
+        if (instances[key] && instances[key].destroy) {
+          instances[key].destroy();
+        }
+      });
+      instances = {};
+
+      // Remove event handlers
+      eventHandlers.forEach(function(h) {
+        document.removeEventListener(h.event, h.handler);
+      });
+      eventHandlers = [];
+
+      // Unsubscribe from pubsub
+      if (pubsubHandler && Funky.PubSub) {
+        Funky.PubSub.off('playground:propsChanged', pubsubHandler);
+        pubsubHandler = null;
+      }
+
+      logs = [];
+      currentOptions = {
+        text: 'Hello, I am a typewriter effect...',
+        mode: 'letter',
+        speed: 50,
+        cursor: true,
+        cursorStyle: 'bar',
+        cursorBlink: true,
+        loop: false,
+        deleteSpeed: 30,
+        pauseOnComplete: 1000,
+        size: '2xl',
+        mono: false
+      };
+
+      return {};
+    }
+  });
+})();
+</script>

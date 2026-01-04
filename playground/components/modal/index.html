@@ -1,0 +1,420 @@
+<div data-page="component-modal" class="component-demo">
+  <h2>Modal</h2>
+  <p class="text-muted">Flexible modal dialogs for displaying content, forms, confirmations, alerts, and prompts.</p>
+
+  <section class="demo-section" aria-labelledby="modal-configured-heading">
+    <h3 id="modal-configured-heading">Props-Configured Modal</h3>
+    <p class="text-muted small">Opens a modal with settings from the props panel (title, body, size, centered, scrollable, backdrop).</p>
+    <div class="demo-area" role="group" aria-label="Props-configured modal">
+      <button class="btn btn-primary btn-lg" id="modal-props" type="button">
+        <i class="fas fa-window-restore me-1" aria-hidden="true"></i> Open Configured Modal
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="modal-types-heading">
+    <h3 id="modal-types-heading">Dialog Types</h3>
+    <p class="text-muted small">Different modal types for various use cases.</p>
+    <div class="demo-area modal-demo__button-grid" role="group" aria-label="Modal type buttons">
+      <button class="btn btn-primary" id="modal-basic" type="button">
+        <i class="fas fa-window-maximize me-1" aria-hidden="true"></i> Basic Modal
+      </button>
+      <button class="btn btn-success" id="modal-confirm" type="button">
+        <i class="fas fa-question-circle me-1" aria-hidden="true"></i> Confirm Dialog
+      </button>
+      <button class="btn btn-danger" id="modal-delete" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Delete Confirmation
+      </button>
+      <button class="btn btn-info" id="modal-alert" type="button">
+        <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i> Alert Dialog
+      </button>
+      <button class="btn btn-warning" id="modal-prompt" type="button">
+        <i class="fas fa-keyboard me-1" aria-hidden="true"></i> Prompt Dialog
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="modal-sizes-heading">
+    <h3 id="modal-sizes-heading">Modal Sizes</h3>
+    <p class="text-muted small">Different sizes from small to fullscreen. Uses centered/scrollable from props.</p>
+    <div class="demo-area modal-demo__button-grid" role="group" aria-label="Modal size buttons">
+      <button class="btn btn-outline-primary" id="modal-sm" type="button">Small</button>
+      <button class="btn btn-outline-primary" id="modal-md" type="button">Medium</button>
+      <button class="btn btn-outline-primary" id="modal-lg" type="button">Large</button>
+      <button class="btn btn-outline-primary" id="modal-xl" type="button">Extra Large</button>
+      <button class="btn btn-outline-primary" id="modal-fullscreen" type="button">Fullscreen</button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="modal-options-heading">
+    <h3 id="modal-options-heading">Advanced Options</h3>
+    <p class="text-muted small">Centered, static backdrop, and scrollable content.</p>
+    <div class="demo-area modal-demo__button-grid" role="group" aria-label="Modal option buttons">
+      <button class="btn btn-outline-secondary" id="modal-centered" type="button">
+        <i class="fas fa-arrows-alt-v me-1" aria-hidden="true"></i> Centered
+      </button>
+      <button class="btn btn-outline-secondary" id="modal-static" type="button">
+        <i class="fas fa-lock me-1" aria-hidden="true"></i> Static Backdrop
+      </button>
+      <button class="btn btn-outline-secondary" id="modal-scrollable" type="button">
+        <i class="fas fa-scroll me-1" aria-hidden="true"></i> Scrollable Content
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="modal-form-heading">
+    <h3 id="modal-form-heading">Form Modal</h3>
+    <p class="text-muted small">Modal with embedded form. Uses size from props.</p>
+    <div class="demo-area" role="group" aria-label="Form modal">
+      <button class="btn btn-warning" id="modal-form" type="button">
+        <i class="fas fa-edit me-1" aria-hidden="true"></i> Open Form Modal
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="modal-control-heading">
+    <h3 id="modal-control-heading">Modal Control</h3>
+    <p class="text-muted small">Manage all active modals.</p>
+    <div class="demo-area" role="group" aria-label="Modal control buttons">
+      <button class="btn btn-outline-danger" id="modal-hide-all" type="button">
+        <i class="fas fa-times-circle me-1" aria-hidden="true"></i> Hide All Modals
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="modal-log-heading">
+    <h3 id="modal-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="modal-log" class="modal-demo__log" aria-live="polite" aria-label="Modal event log">Click buttons to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  Funky.Pages.register('component-modal', {
+    _logs: [],
+
+    _log: function(message) {
+      this._logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+      if (this._logs.length > 10) this._logs.pop();
+      var logEl = document.getElementById('modal-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _getBackdropValue: function(props) {
+      if (props.backdrop === 'static') return 'static';
+      if (props.backdrop === 'false') return false;
+      return true;
+    },
+
+    init: function(state) {
+      var self = this;
+      this._logs = [];
+
+      var props = getProps();
+      var title = props.title || 'Modal Title';
+      var body = props.body || 'This is the modal body content.';
+      var size = props.size || 'md';
+      var centered = props.centered || false;
+      var scrollable = props.scrollable || false;
+
+      this._log('Init with size=' + size + ', centered=' + centered + ', scrollable=' + scrollable);
+      emit('event', { event: 'modal:init', payload: { size: size, centered: centered, scrollable: scrollable } });
+
+      // Props-configured modal button
+      document.getElementById('modal-props').onclick = function() {
+        var props = getProps();
+        var modalTitle = props.title || 'Modal Title';
+        var modalBody = props.body || 'This is the modal body content.';
+        var modalSize = props.size || 'md';
+        var modalCentered = props.centered || false;
+        var modalScrollable = props.scrollable || false;
+        var backdropValue = self._getBackdropValue(props);
+
+        Funky.Modal.create({
+          id: 'demoPropsModal',
+          title: modalTitle,
+          body: '<p>' + modalBody + '</p>',
+          size: modalSize,
+          centered: modalCentered,
+          scrollable: modalScrollable,
+          footerButtons: [
+            { text: 'Close', class: 'btn btn-secondary', close: true },
+            { text: 'Save Changes', class: 'btn btn-primary', onClick: function() {
+              Funky.Toast.success('Changes saved!');
+              Funky.Modal.hide('#demoPropsModal');
+              self._log('Props modal: Save clicked');
+              emit('event', { event: 'modal:save', payload: {} });
+            }}
+          ]
+        });
+
+        var instance = Funky.Modal.getOrCreateInstance('#demoPropsModal', {
+          backdrop: backdropValue,
+          keyboard: backdropValue !== 'static'
+        });
+        instance.show();
+
+        self._log('Opened props modal: size=' + modalSize + ', centered=' + modalCentered);
+        emit('event', { event: 'modal:show', payload: { type: 'props', size: modalSize, centered: modalCentered } });
+      };
+
+      // Basic modal - uses props for size/centered/scrollable
+      document.getElementById('modal-basic').onclick = function() {
+        var props = getProps();
+        Funky.Modal.create({
+          id: 'demoBasicModal',
+          title: 'Basic Modal',
+          body: '<p>This is a basic modal with some content.</p><p>You can put any HTML content here, including forms, tables, or custom components.</p>',
+          size: props.size || 'md',
+          centered: props.centered || false,
+          scrollable: props.scrollable || false,
+          footerButtons: [
+            { text: 'Close', class: 'btn btn-secondary', close: true }
+          ]
+        });
+        Funky.Modal.show('#demoBasicModal');
+        self._log('Showed basic modal (size=' + (props.size || 'md') + ')');
+        emit('event', { event: 'modal:show', payload: { type: 'basic' } });
+      };
+
+      // Confirm dialog
+      document.getElementById('modal-confirm').onclick = function() {
+        Funky.Modal.confirm({
+          title: 'Confirm Action',
+          message: 'Are you sure you want to proceed with this action?',
+          confirmText: 'Yes, Proceed',
+          cancelText: 'Cancel',
+          onConfirm: function() {
+            Funky.Toast.success('Action confirmed!');
+            self._log('Confirm: Yes clicked');
+            emit('event', { event: 'modal:confirm', payload: { result: 'confirmed' } });
+          },
+          onCancel: function() {
+            self._log('Confirm: Cancel clicked');
+            emit('event', { event: 'modal:confirm', payload: { result: 'cancelled' } });
+          }
+        });
+        self._log('Showed confirm dialog');
+        emit('event', { event: 'modal:show', payload: { type: 'confirm' } });
+      };
+
+      // Delete confirmation (danger styling)
+      document.getElementById('modal-delete').onclick = function() {
+        Funky.Modal.confirm({
+          title: 'Delete Item',
+          message: 'Are you sure you want to delete this item? This action cannot be undone.',
+          confirmText: 'Delete',
+          confirmClass: 'btn btn-danger',
+          cancelText: 'Cancel',
+          danger: true,
+          onConfirm: function() {
+            Funky.Toast.success('Item deleted');
+            self._log('Delete: Confirmed');
+            emit('event', { event: 'modal:delete', payload: { result: 'deleted' } });
+          },
+          onCancel: function() {
+            self._log('Delete: Cancelled');
+            emit('event', { event: 'modal:delete', payload: { result: 'cancelled' } });
+          }
+        });
+        self._log('Showed delete confirmation');
+        emit('event', { event: 'modal:show', payload: { type: 'delete' } });
+      };
+
+      // Alert dialog
+      document.getElementById('modal-alert').onclick = function() {
+        Funky.Modal.alert({
+          title: 'Information',
+          message: 'This is an important message that requires your attention.',
+          type: 'info',
+          buttonText: 'Got it!',
+          onClose: function() {
+            self._log('Alert: Closed');
+            emit('event', { event: 'modal:alert', payload: { closed: true } });
+          }
+        });
+        self._log('Showed alert dialog');
+        emit('event', { event: 'modal:show', payload: { type: 'alert' } });
+      };
+
+      // Prompt dialog
+      document.getElementById('modal-prompt').onclick = function() {
+        Funky.Modal.prompt({
+          title: 'Enter Your Name',
+          message: 'Please enter your name below:',
+          placeholder: 'John Doe',
+          defaultValue: '',
+          submitText: 'Submit',
+          cancelText: 'Cancel',
+          onSubmit: function(value) {
+            Funky.Toast.success('Hello, ' + (value || 'Anonymous') + '!');
+            self._log('Prompt: Submitted "' + value + '"');
+            emit('event', { event: 'modal:prompt', payload: { value: value } });
+          },
+          onCancel: function() {
+            self._log('Prompt: Cancelled');
+            emit('event', { event: 'modal:prompt', payload: { cancelled: true } });
+          }
+        });
+        self._log('Showed prompt dialog');
+        emit('event', { event: 'modal:show', payload: { type: 'prompt' } });
+      };
+
+      // Size modals - use centered/scrollable from props
+      ['sm', 'md', 'lg', 'xl', 'fullscreen'].forEach(function(size) {
+        document.getElementById('modal-' + size).onclick = function() {
+          var props = getProps();
+          Funky.Modal.create({
+            id: 'demoSizeModal',
+            title: size.toUpperCase() + ' Modal',
+            body: '<p>This is a <strong>' + size + '</strong> sized modal.</p><p>Modal sizes help you control how much screen real estate the dialog occupies.</p>',
+            size: size,
+            centered: props.centered || false,
+            scrollable: props.scrollable || false,
+            footerButtons: [
+              { text: 'Close', class: 'btn btn-secondary', close: true }
+            ]
+          });
+          Funky.Modal.show('#demoSizeModal');
+          self._log('Showed ' + size + ' modal');
+          emit('event', { event: 'modal:show', payload: { size: size } });
+        };
+      });
+
+      // Centered modal
+      document.getElementById('modal-centered').onclick = function() {
+        var props = getProps();
+        Funky.Modal.create({
+          id: 'demoCenteredModal',
+          title: 'Centered Modal',
+          body: '<p>This modal is vertically centered in the viewport.</p>',
+          size: props.size || 'md',
+          centered: true,
+          footerButtons: [
+            { text: 'Close', class: 'btn btn-secondary', close: true }
+          ]
+        });
+        Funky.Modal.show('#demoCenteredModal');
+        self._log('Showed centered modal');
+        emit('event', { event: 'modal:show', payload: { centered: true } });
+      };
+
+      // Static backdrop modal
+      document.getElementById('modal-static').onclick = function() {
+        var props = getProps();
+        Funky.Modal.create({
+          id: 'demoStaticModal',
+          title: 'Static Backdrop',
+          body: '<p>Click outside or press ESC - the modal will shake but not close.</p><p>Use the close button to dismiss.</p>',
+          size: props.size || 'md',
+          centered: props.centered || false,
+          footerButtons: [
+            { text: 'Close', class: 'btn btn-primary', close: true }
+          ]
+        });
+        var instance = Funky.Modal.getOrCreateInstance('#demoStaticModal', { backdrop: 'static', keyboard: false });
+        instance.show();
+        self._log('Showed static backdrop modal');
+        emit('event', { event: 'modal:show', payload: { backdrop: 'static' } });
+      };
+
+      // Scrollable content modal
+      document.getElementById('modal-scrollable').onclick = function() {
+        var props = getProps();
+        var longContent = '<p>This modal has a lot of content that requires scrolling.</p>';
+        for (var i = 0; i < 10; i++) {
+          longContent += '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>';
+        }
+        Funky.Modal.create({
+          id: 'demoScrollableModal',
+          title: 'Scrollable Modal',
+          body: longContent,
+          size: props.size || 'md',
+          centered: props.centered || false,
+          scrollable: true,
+          footerButtons: [
+            { text: 'Close', class: 'btn btn-secondary', close: true }
+          ]
+        });
+        Funky.Modal.show('#demoScrollableModal');
+        self._log('Showed scrollable modal');
+        emit('event', { event: 'modal:show', payload: { scrollable: true } });
+      };
+
+      // Form modal - uses size from props
+      document.getElementById('modal-form').onclick = function() {
+        var props = getProps();
+        var formId = 'demoContactForm';
+        Funky.Modal.create({
+          id: 'demoFormModal',
+          title: 'Contact Form',
+          body: '<form id="' + formId + '">' +
+            '<div class="mb-3">' +
+            '<label class="form-label" for="form-name">Name</label>' +
+            '<input type="text" class="form-control" id="form-name" name="name" required>' +
+            '</div>' +
+            '<div class="mb-3">' +
+            '<label class="form-label" for="form-email">Email</label>' +
+            '<input type="email" class="form-control" id="form-email" name="email" required>' +
+            '</div>' +
+            '<div class="mb-3">' +
+            '<label class="form-label" for="form-message">Message</label>' +
+            '<textarea class="form-control" id="form-message" name="message" rows="3"></textarea>' +
+            '</div>' +
+            '</form>',
+          size: props.size || 'md',
+          centered: props.centered || false,
+          footerButtons: [
+            { text: 'Cancel', class: 'btn btn-secondary', close: true },
+            { text: 'Submit', class: 'btn btn-primary', id: 'demoFormSubmit' }
+          ]
+        });
+
+        // Bind submit handler
+        setTimeout(function() {
+          var submitBtn = document.getElementById('demoFormSubmit');
+          if (submitBtn) {
+            submitBtn.onclick = function() {
+              var form = document.getElementById(formId);
+              if (form && form.checkValidity()) {
+                var formData = new FormData(form);
+                var data = {};
+                formData.forEach(function(value, key) { data[key] = value; });
+                Funky.Modal.hide('#demoFormModal');
+                Funky.Toast.success('Form submitted!');
+                self._log('Form submitted: ' + JSON.stringify(data));
+                emit('event', { event: 'modal:form', payload: data });
+              } else if (form) {
+                form.reportValidity();
+              }
+            };
+          }
+        }, 100);
+
+        Funky.Modal.show('#demoFormModal');
+        self._log('Showed form modal (size=' + (props.size || 'md') + ')');
+        emit('event', { event: 'modal:show', payload: { type: 'form' } });
+      };
+
+      // Hide all modals
+      document.getElementById('modal-hide-all').onclick = function() {
+        Funky.Modal.hideAll();
+        self._log('Hidden all modals');
+        emit('event', { event: 'modal:hideAll', payload: {} });
+      };
+    },
+
+    destroy: function() {
+      // Clean up any modals we created
+      Funky.Modal.hideAll();
+      this._logs = [];
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,476 @@
+<div data-page="component-code-preview" class="component-demo code-preview-demo">
+  <h2>Code Preview</h2>
+  <p class="text-muted">Syntax-highlighted code display with line numbers, copy button, collapsible sections, and editable mode.</p>
+
+  <div class="demo-section">
+    <h3>Language Examples</h3>
+    <div class="demo-area">
+      <div class="code-preview-demo__tabs" role="tablist" aria-label="Language examples">
+        <button class="code-preview-demo__tab active" role="tab" aria-selected="true" data-lang="javascript">JavaScript</button>
+        <button class="code-preview-demo__tab" role="tab" aria-selected="false" data-lang="json">JSON</button>
+        <button class="code-preview-demo__tab" role="tab" aria-selected="false" data-lang="html">HTML</button>
+        <button class="code-preview-demo__tab" role="tab" aria-selected="false" data-lang="css">CSS</button>
+      </div>
+      <div id="code-language-example" class="code-preview-demo__container" role="tabpanel"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Features</h3>
+    <div class="demo-area">
+      <div class="code-preview-demo__grid">
+        <div class="code-preview-demo__feature">
+          <h4>Line Numbers</h4>
+          <div id="code-line-numbers" class="code-preview-demo__container"></div>
+        </div>
+        <div class="code-preview-demo__feature">
+          <h4>Collapsible</h4>
+          <div id="code-collapsible" class="code-preview-demo__container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Line Wrapping</h3>
+    <div class="demo-area">
+      <div id="code-wrap-lines" class="code-preview-demo__container"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Editable Code with Run</h3>
+    <p class="text-muted mb-3">Edit the code below and click Run to see the output.</p>
+    <div class="demo-area">
+      <div id="code-editable" class="code-preview-demo__container"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Search Highlighting</h3>
+    <div class="demo-area">
+      <div class="code-preview-demo__search-controls">
+        <input type="text" id="highlight-search" class="form-control" placeholder="Search terms (e.g., function, return)" aria-label="Search code">
+        <button id="highlight-btn" class="btn btn-secondary" type="button">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <span>Highlight</span>
+        </button>
+        <button id="clear-highlight-btn" class="btn btn-outline-secondary" type="button">
+          <i class="fas fa-times" aria-hidden="true"></i>
+          <span>Clear</span>
+        </button>
+      </div>
+      <div id="code-highlight" class="code-preview-demo__container"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>API Methods</h3>
+    <div class="demo-area">
+      <div class="code-preview-demo__api-controls">
+        <button id="api-set-code" class="btn btn-primary" type="button">setCode()</button>
+        <button id="api-copy" class="btn btn-secondary" type="button">copy()</button>
+        <button id="api-toggle" class="btn btn-secondary" type="button">toggleCollapse()</button>
+        <button id="api-get-code" class="btn btn-outline-primary" type="button">getCode()</button>
+      </div>
+      <div id="code-api-demo" class="code-preview-demo__container"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Static Generation</h3>
+    <p class="text-muted mb-3">Generate HTML strings for server-side rendering or templates.</p>
+    <div class="demo-area">
+      <div class="code-preview-demo__api-controls">
+        <button id="api-tohtml" class="btn btn-primary" type="button">toHTML()</button>
+        <button id="api-highlight-only" class="btn btn-secondary" type="button">highlight()</button>
+      </div>
+      <div id="code-static-output" class="code-preview-demo__container code-preview-demo__static-output"></div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="code-log" class="code-preview-demo__log" aria-live="polite" aria-label="Events log">Interact with the demos above to see events</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = {};
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('code-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  // Sample code for different languages
+  var CODE_SAMPLES = {
+    javascript: [
+      '// Initialize a data table with Funky ES5',
+      'var table = Funky.Table.apply(\'#my-table\', {',
+      '  columns: [',
+      '    { field: \'id\', title: \'ID\', width: 80 },',
+      '    { field: \'name\', title: \'Name\', sortable: true },',
+      '    { field: \'email\', title: \'Email\' }',
+      '  ],',
+      '  data: userData,',
+      '  pagination: { pageSize: 10 },',
+      '  searchable: true',
+      '});',
+      '',
+      '// Listen for selection changes',
+      'table.on(\'select\', function(rows) {',
+      '  console.log(\'Selected:\', rows);',
+      '});'
+    ].join('\n'),
+
+    json: [
+      '{',
+      '  "name": "funky-framework",',
+      '  "version": "2.0.0",',
+      '  "description": "ES5 component library",',
+      '  "dependencies": {},',
+      '  "features": ["tables", "forms", "modals"],',
+      '  "es5": true,',
+      '  "noBuildStep": true',
+      '}'
+    ].join('\n'),
+
+    html: [
+      '<div class="funky-card">',
+      '  <div class="funky-card-header">',
+      '    <h3>User Profile</h3>',
+      '  </div>',
+      '  <div class="funky-card-body">',
+      '    <p>Welcome to Funky!</p>',
+      '    <button class="btn btn-primary"',
+      '            data-action="get-started">',
+      '      Get Started',
+      '    </button>',
+      '  </div>',
+      '</div>'
+    ].join('\n'),
+
+    css: [
+      '.funky-card {',
+      '  background: var(--pro-bg-secondary);',
+      '  border-radius: 8px;',
+      '  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);',
+      '  overflow: hidden;',
+      '}',
+      '',
+      '.funky-card-header {',
+      '  padding: 1rem 1.5rem;',
+      '  border-bottom: 1px solid var(--pro-border);',
+      '}',
+      '',
+      '.funky-card-body {',
+      '  padding: 1.5rem;',
+      '}'
+    ].join('\n')
+  };
+
+  var EDITABLE_CODE = [
+    '// Try editing this code and click Run!',
+    'function greet(name) {',
+    '  return "Hello, " + name + "!";',
+    '}',
+    '',
+    'var message = greet("World");',
+    'return message;'
+  ].join('\n');
+
+  var LONG_LINE_CODE = [
+    '// This example demonstrates line wrapping behavior for very long lines of code',
+    'var config = { apiEndpoint: "https://api.example.com/v2/data", timeout: 30000, retryAttempts: 3, headers: { "Content-Type": "application/json", "Authorization": "Bearer YOUR_TOKEN_HERE" } };',
+    '',
+    'function fetchData(endpoint, options) {',
+    '  options = options || {};',
+    '  return Funky.Request.get(endpoint, Funky.Util.extend({}, config, options));',
+    '}'
+  ].join('\n');
+
+  var API_DEMO_CODE = [
+    '// Funky ES5 patterns - no build step required',
+    'function fibonacci(n) {',
+    '  if (n <= 1) return n;',
+    '  return fibonacci(n - 1) + fibonacci(n - 2);',
+    '}',
+    '',
+    '// Calculate first 10 Fibonacci numbers',
+    'for (var i = 0; i < 10; i++) {',
+    '  console.log(fibonacci(i));',
+    '}'
+  ].join('\n');
+
+  var SEARCH_CODE = [
+    '// Funky ES5 data processing pattern',
+    'function processItems(items) {',
+    '  // Validate input array',
+    '  if (!Array.isArray(items)) {',
+    '    throw new Error(\'Expected array\');',
+    '  }',
+    '',
+    '  // Transform and return results',
+    '  return items.map(function(item) {',
+    '    return Funky.Util.extend({}, item, {',
+    '      processed: true,',
+    '      timestamp: Date.now()',
+    '    });',
+    '  });',
+    '}'
+  ].join('\n');
+
+  Funky.Pages.register('component-code-preview', {
+    init: function(state) {
+      var props = getProps();
+
+      if (!Funky.CodePreview) {
+        log('Error: Funky.CodePreview not available');
+        return;
+      }
+
+      // Language tabs - default to JavaScript
+      var currentLang = 'javascript';
+      instances.langExample = Funky.CodePreview.render('#code-language-example', CODE_SAMPLES[currentLang], {
+        language: currentLang,
+        lineNumbers: props.lineNumbers !== false,
+        showCopy: props.showCopy !== false,
+        showLanguage: props.showLanguage !== false
+      });
+
+      // Tab switching
+      document.querySelectorAll('.code-preview-demo__tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var lang = this.dataset.lang;
+          currentLang = lang;
+
+          // Update tab states
+          document.querySelectorAll('.code-preview-demo__tab').forEach(function(t) {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          this.classList.add('active');
+          this.setAttribute('aria-selected', 'true');
+
+          // Update code
+          if (instances.langExample) {
+            instances.langExample.destroy();
+          }
+          instances.langExample = Funky.CodePreview.render('#code-language-example', CODE_SAMPLES[lang], {
+            language: lang,
+            lineNumbers: props.lineNumbers !== false,
+            showCopy: props.showCopy !== false,
+            showLanguage: props.showLanguage !== false
+          });
+
+          log('Language switched to: ' + lang);
+          emit('event', { event: 'code-preview:language', payload: { language: lang } });
+        });
+      });
+
+      // Line numbers example
+      instances.lineNumbers = Funky.CodePreview.render('#code-line-numbers', CODE_SAMPLES.javascript.split('\n').slice(0, 8).join('\n'), {
+        language: 'javascript',
+        lineNumbers: true,
+        showCopy: true,
+        showLanguage: false,
+        maxHeight: 200
+      });
+
+      // Collapsible example
+      instances.collapsible = Funky.CodePreview.render('#code-collapsible', CODE_SAMPLES.css, {
+        language: 'css',
+        collapsible: true,
+        collapsed: false,
+        showCopy: true,
+        showLanguage: true,
+        maxHeight: 200
+      });
+
+      // Line wrapping example
+      instances.wrapLines = Funky.CodePreview.render('#code-wrap-lines', LONG_LINE_CODE, {
+        language: 'javascript',
+        lineNumbers: true,
+        wrapLines: props.wrapLines !== false,
+        showCopy: true,
+        showLanguage: true
+      });
+
+      // Editable with run
+      instances.editable = Funky.CodePreview.render('#code-editable', EDITABLE_CODE, {
+        language: 'javascript',
+        editable: true,
+        showRun: true,
+        showOutput: true,
+        showErrors: true,
+        lineNumbers: false,
+        showLanguage: true,
+        onChange: function(code) {
+          log('Code changed (length: ' + code.length + ')');
+          emit('event', { event: 'code-preview:change', payload: { length: code.length } });
+        },
+        onRun: function(code) {
+          log('Running code...');
+          emit('event', { event: 'code-preview:run', payload: {} });
+          // Execute and return result
+          try {
+            var fn = new Function(code);
+            var result = fn();
+            log('Run completed: ' + JSON.stringify(result));
+            return result;
+          } catch (e) {
+            log('Run error: ' + e.message);
+            throw e;
+          }
+        }
+      });
+
+      // Search highlighting example
+      instances.highlight = Funky.CodePreview.render('#code-highlight', SEARCH_CODE, {
+        language: 'javascript',
+        lineNumbers: true,
+        showCopy: true,
+        showLanguage: false
+      });
+
+      // Highlight search controls
+      var highlightInput = document.getElementById('highlight-search');
+      var highlightBtn = document.getElementById('highlight-btn');
+      var clearHighlightBtn = document.getElementById('clear-highlight-btn');
+
+      if (highlightBtn) {
+        highlightBtn.addEventListener('click', function() {
+          var terms = highlightInput.value.trim();
+          if (terms && instances.highlight) {
+            instances.highlight.setHighlight(terms);
+            log('Highlighting: "' + terms + '"');
+            emit('event', { event: 'code-preview:highlight', payload: { terms: terms } });
+          }
+        });
+      }
+
+      if (clearHighlightBtn) {
+        clearHighlightBtn.addEventListener('click', function() {
+          if (instances.highlight) {
+            instances.highlight.setHighlight(null);
+            highlightInput.value = '';
+            log('Highlight cleared');
+            emit('event', { event: 'code-preview:highlight-clear', payload: {} });
+          }
+        });
+      }
+
+      if (highlightInput) {
+        highlightInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            highlightBtn.click();
+          }
+        });
+      }
+
+      // API demo instance
+      instances.apiDemo = Funky.CodePreview.render('#code-api-demo', API_DEMO_CODE, {
+        language: 'javascript',
+        lineNumbers: true,
+        collapsible: true,
+        showCopy: true,
+        showLanguage: true
+      });
+
+      // API method buttons
+      var setCodeBtn = document.getElementById('api-set-code');
+      var copyBtn = document.getElementById('api-copy');
+      var toggleBtn = document.getElementById('api-toggle');
+      var getCodeBtn = document.getElementById('api-get-code');
+
+      if (setCodeBtn) {
+        setCodeBtn.addEventListener('click', function() {
+          var newCode = '// Code updated at ' + new Date().toLocaleTimeString() + '\nconsole.log("Hello from setCode!");';
+          instances.apiDemo.setCode(newCode);
+          log('setCode() called');
+          emit('event', { event: 'code-preview:set-code', payload: {} });
+        });
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function() {
+          instances.apiDemo.copy();
+          log('copy() called');
+          emit('event', { event: 'code-preview:copy', payload: {} });
+        });
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          instances.apiDemo.toggleCollapse();
+          log('toggleCollapse() called');
+          emit('event', { event: 'code-preview:toggle', payload: {} });
+        });
+      }
+
+      if (getCodeBtn) {
+        getCodeBtn.addEventListener('click', function() {
+          var code = instances.apiDemo.getCode();
+          log('getCode() returned ' + code.length + ' chars');
+          emit('event', { event: 'code-preview:get-code', payload: { length: code.length } });
+          if (Funky.Toast) {
+            Funky.Toast.info('Code length: ' + code.length + ' characters');
+          }
+        });
+      }
+
+      // Static generation buttons
+      var toHtmlBtn = document.getElementById('api-tohtml');
+      var highlightOnlyBtn = document.getElementById('api-highlight-only');
+      var staticOutput = document.getElementById('code-static-output');
+
+      if (toHtmlBtn) {
+        toHtmlBtn.addEventListener('click', function() {
+          var html = Funky.CodePreview.toHTML('const x = 42;', { language: 'javascript' });
+          if (staticOutput) {
+            staticOutput.innerHTML = '<h5>Generated HTML:</h5><pre class="code-preview-demo__raw-output">' +
+              Funky.Util.escapeHtml(html) + '</pre><h5>Rendered:</h5>' + html;
+          }
+          log('toHTML() generated ' + html.length + ' chars');
+          emit('event', { event: 'code-preview:tohtml', payload: { length: html.length } });
+        });
+      }
+
+      if (highlightOnlyBtn) {
+        highlightOnlyBtn.addEventListener('click', function() {
+          var highlighted = Funky.CodePreview.highlight('function test() { return true; }', 'javascript');
+          if (staticOutput) {
+            staticOutput.innerHTML = '<h5>Highlighted HTML:</h5><pre class="code-preview-demo__raw-output">' +
+              Funky.Util.escapeHtml(highlighted) + '</pre><h5>Rendered:</h5><code>' + highlighted + '</code>';
+          }
+          log('highlight() generated syntax markup');
+          emit('event', { event: 'code-preview:highlight-static', payload: {} });
+        });
+      }
+
+      log('CodePreview demo initialized');
+    },
+
+    destroy: function() {
+      // Destroy all instances
+      Object.keys(instances).forEach(function(key) {
+        if (instances[key] && instances[key].destroy) {
+          instances[key].destroy();
+        }
+      });
+      instances = {};
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

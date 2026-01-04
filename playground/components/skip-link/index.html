@@ -1,0 +1,410 @@
+<div data-page="component-skip-link" class="component-demo">
+  <h2>Skip Link</h2>
+  <p class="text-muted">Accessible skip links for keyboard navigation to bypass repetitive content. Uses F-keys (F3-F12) for quick navigation.</p>
+
+  <section class="demo-section" aria-labelledby="skiplink-overview-heading">
+    <h3 id="skiplink-overview-heading">How It Works</h3>
+    <div class="demo-area">
+      <div class="alert alert-info mb-0">
+        <div class="d-flex align-items-start gap-2">
+          <i class="fas fa-keyboard mt-1" aria-hidden="true"></i>
+          <div>
+            <strong>Keyboard Navigation:</strong>
+            <ul class="mb-0 mt-2 ps-3">
+              <li>Press <kbd>Tab</kbd> at the top of any page - a "Keyboard shortcuts" link appears and the help modal opens</li>
+              <li>Use F-keys (<kbd>F3</kbd>-<kbd>F5</kbd>, <kbd>F7</kbd>-<kbd>F12</kbd>) to skip directly to registered targets</li>
+              <li><kbd>F6</kbd> is reserved for region navigation (standard accessibility shortcut)</li>
+              <li>Skip targets are auto-discovered via <code>data-skip-target</code> attribute</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skiplink-simulated-heading">
+    <h3 id="skiplink-simulated-heading">Simulated Page Layout</h3>
+    <p class="text-muted small">This container simulates a page with multiple skip targets. Use the F-keys shown to jump between sections.</p>
+    <div class="demo-area">
+      <div id="skip-link-demo-page" class="card" tabindex="-1" role="region" aria-label="Simulated page for skip link demo">
+        <header id="demo-header" class="card-header d-flex justify-content-between align-items-center" data-skip-target="header" data-skip-label="page header" data-skip-order="0">
+          <span><i class="fas fa-rocket me-2" aria-hidden="true"></i><strong>Demo App</strong></span>
+          <span id="fkey-header" class="badge bg-secondary font-monospace">F3</span>
+        </header>
+
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <nav id="demo-nav" class="card h-100" data-skip-target="navigation" data-skip-label="primary navigation" data-skip-order="1">
+                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                  <strong class="small">Navigation</strong>
+                  <span id="fkey-nav" class="badge bg-secondary font-monospace">F4</span>
+                </div>
+                <div class="card-body p-2">
+                  <nav class="nav flex-column nav-pills">
+                    <a href="#" class="nav-link py-1 px-2 small">Home</a>
+                    <a href="#" class="nav-link py-1 px-2 small">Products</a>
+                    <a href="#" class="nav-link py-1 px-2 small">Services</a>
+                    <a href="#" class="nav-link py-1 px-2 small">Contact</a>
+                  </nav>
+                </div>
+              </nav>
+            </div>
+
+            <div class="col-md-6">
+              <main id="demo-main" class="card h-100" data-skip-target="main" data-skip-label="main content" data-skip-order="2" tabindex="-1">
+                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                  <strong class="small">Main Content</strong>
+                  <span id="fkey-main" class="badge bg-primary font-monospace">F5</span>
+                </div>
+                <div class="card-body">
+                  <p class="small text-muted mb-2">This is the main content area. In a real application, this would contain the primary content.</p>
+                  <p class="small text-muted mb-0">Skip links allow keyboard users to bypass repetitive navigation and jump directly here.</p>
+                </div>
+              </main>
+            </div>
+
+            <div class="col-md-3">
+              <aside id="demo-sidebar" class="card h-100" data-skip-target="sidebar" data-skip-label="sidebar" data-skip-order="3">
+                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                  <strong class="small">Sidebar</strong>
+                  <span id="fkey-sidebar" class="badge bg-secondary font-monospace">F7</span>
+                </div>
+                <div class="card-body p-2">
+                  <ul class="list-unstyled small text-muted mb-0">
+                    <li class="py-1">Related Links</li>
+                    <li class="py-1">Quick Actions</li>
+                    <li class="py-1">Recent Items</li>
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        <footer id="demo-footer" class="card-footer d-flex justify-content-between align-items-center small text-muted" data-skip-target="footer" data-skip-label="page footer" data-skip-order="4">
+          <span>Footer Content</span>
+          <span id="fkey-footer" class="badge bg-secondary font-monospace">F8</span>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skiplink-targets-heading">
+    <h3 id="skiplink-targets-heading">Registered Targets</h3>
+    <p class="text-muted small">Currently registered skip link targets discovered from the page.</p>
+    <div class="demo-area">
+      <div id="skip-targets-list" class="d-flex flex-column gap-2" role="list" aria-label="Registered skip targets">
+        <div class="d-flex align-items-center gap-3 p-2 border rounded small">Loading targets...</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skiplink-api-heading">
+    <h3 id="skiplink-api-heading">API Methods</h3>
+    <p class="text-muted small">Test skip link functionality programmatically.</p>
+    <div class="demo-area d-flex flex-wrap gap-2" role="group" aria-label="API control buttons">
+      <button class="btn btn-primary btn-sm" id="btn-refresh" type="button">
+        <i class="fas fa-sync me-1" aria-hidden="true"></i>Refresh
+      </button>
+      <button class="btn btn-success btn-sm" id="btn-skip-main" type="button">
+        <i class="fas fa-arrow-down me-1" aria-hidden="true"></i>Skip to Main
+      </button>
+      <button class="btn btn-info btn-sm" id="btn-skip-nav" type="button">
+        <i class="fas fa-bars me-1" aria-hidden="true"></i>Skip to Nav
+      </button>
+      <button class="btn btn-secondary btn-sm" id="btn-register-custom" type="button">
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Register Custom
+      </button>
+      <button class="btn btn-dark btn-sm" id="btn-show-help" type="button">
+        <i class="fas fa-keyboard me-1" aria-hidden="true"></i>Show Help (F1)
+      </button>
+      <button class="btn btn-warning btn-sm" id="btn-destroy" type="button">
+        <i class="fas fa-stop me-1" aria-hidden="true"></i>Destroy
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="btn-reinit" type="button">
+        <i class="fas fa-play me-1" aria-hidden="true"></i>Re-Init
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skiplink-config-heading">
+    <h3 id="skiplink-config-heading">Configuration</h3>
+    <p class="text-muted small">Current SkipLink configuration from props panel.</p>
+    <div class="demo-area">
+      <div id="skip-config-display" class="d-flex flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">Scroll Behavior:</span>
+          <span id="config-scroll" class="badge bg-info">smooth</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">F-Key Start:</span>
+          <span id="config-fkey" class="badge bg-info">F3</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">Show Help on Tab:</span>
+          <span id="config-help" class="badge bg-success">Yes</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="skiplink-log-heading">
+    <h3 id="skiplink-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="skip-log" class="border rounded p-3 small font-monospace bg-body-tertiary" style="max-height: 200px; overflow: auto;" aria-live="polite" aria-label="Event log">Interact with skip links to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var propsChangedHandler = null;
+  var customTargetCount = 0;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('skip-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateConfigDisplay(props) {
+    var scrollEl = document.getElementById('config-scroll');
+    var fkeyEl = document.getElementById('config-fkey');
+    var helpEl = document.getElementById('config-help');
+
+    if (scrollEl) {
+      scrollEl.textContent = props.focusScrollBehavior || 'smooth';
+    }
+    if (fkeyEl) {
+      fkeyEl.textContent = 'F' + (props.fKeyStart || 3);
+    }
+    if (helpEl) {
+      var showHelp = props.showHelp !== false;
+      helpEl.textContent = showHelp ? 'Yes' : 'No';
+      helpEl.className = 'badge ' + (showHelp ? 'bg-success' : 'bg-secondary');
+    }
+  }
+
+  function updateTargetsList() {
+    var listEl = document.getElementById('skip-targets-list');
+    if (!listEl || !Funky.SkipLink) return;
+
+    var links = Funky.SkipLink.skipLinks || [];
+
+    if (links.length === 0) {
+      listEl.innerHTML = '<div class="d-flex align-items-center gap-3 p-2 border rounded small text-muted fst-italic">No targets registered</div>';
+      return;
+    }
+
+    var html = links.map(function(link) {
+      // Use the assigned fKey from the link object (set by registerKeyboardShortcuts)
+      var fKey = link.fKey ? 'F' + link.fKey : 'N/A';
+      return '<div class="d-flex align-items-center gap-3 p-2 border rounded small" role="listitem">' +
+        '<span class="badge bg-primary font-monospace" style="min-width: 2.5rem;">' + fKey + '</span>' +
+        '<span class="fw-medium flex-grow-1">' + link.label + '</span>' +
+        '<span class="text-muted font-monospace small">#' + link.id + '</span>' +
+      '</div>';
+    }).join('');
+
+    listEl.innerHTML = html;
+  }
+
+  // Update the F-key badges shown on the demo page sections
+  function updateFKeyBadges(fKeyStart) {
+    // Map section IDs to their badge element IDs (in order)
+    var sections = ['header', 'nav', 'main', 'sidebar', 'footer'];
+    var fKey = fKeyStart || 3;
+
+    sections.forEach(function(section) {
+      var badge = document.getElementById('fkey-' + section);
+      if (badge) {
+        // Skip F6 (reserved for region navigation)
+        if (fKey === 6) fKey++;
+        badge.textContent = 'F' + fKey;
+        fKey++;
+      }
+    });
+  }
+
+  function initDemo(props) {
+    // Update config display
+    updateConfigDisplay(props);
+
+    // Update F-key badges on demo sections
+    updateFKeyBadges(props.fKeyStart);
+
+    // Apply props to SkipLink if available
+    if (Funky.SkipLink) {
+      // Update config
+      Funky.SkipLink.config.focusScrollBehavior = props.focusScrollBehavior || 'smooth';
+      Funky.SkipLink.config.fKeyStart = props.fKeyStart || 3;
+      Funky.SkipLink.config.showHelpOnFirstTab = props.showHelp !== false;
+
+      // Reset hasShownHelp when toggling the feature on
+      if (props.showHelp !== false) {
+        Funky.SkipLink.hasShownHelp = false;
+      }
+
+      // Refresh to re-register shortcuts with new fKeyStart
+      Funky.SkipLink.refresh();
+
+      // Update targets list after refresh
+      updateTargetsList();
+
+      log('Config updated: scroll=' + (props.focusScrollBehavior || 'smooth') + ', F-Key start=F' + (props.fKeyStart || 3) + ', showHelp=' + (props.showHelp !== false));
+    }
+  }
+
+  Funky.Pages.register('component-skip-link', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+      customTargetCount = 0;
+
+      log('Init with focusScrollBehavior=' + (props.focusScrollBehavior || 'smooth') + ', fKeyStart=F' + (props.fKeyStart || 3));
+      emit('event', { event: 'skip-link:init', payload: props });
+
+      // Initial setup
+      initDemo(props);
+
+      // Prevent nav link default behavior
+      document.querySelectorAll('#demo-nav .nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          log('Nav link clicked: ' + this.textContent);
+        });
+      });
+
+      // API button: Refresh
+      document.getElementById('btn-refresh').addEventListener('click', function() {
+        if (Funky.SkipLink) {
+          Funky.SkipLink.refresh();
+          updateTargetsList();
+          log('SkipLink.refresh() called - targets rescanned');
+          emit('event', { event: 'skip-link:api-refresh', payload: {} });
+          Funky.Toast.success('Skip links refreshed');
+        }
+      });
+
+      // API button: Skip to Main
+      document.getElementById('btn-skip-main').addEventListener('click', function() {
+        if (Funky.SkipLink) {
+          Funky.SkipLink.skipTo('#demo-main');
+          log('SkipLink.skipTo("#demo-main") called');
+          emit('event', { event: 'skip-link:api-skip', payload: { target: '#demo-main' } });
+        }
+      });
+
+      // API button: Skip to Nav
+      document.getElementById('btn-skip-nav').addEventListener('click', function() {
+        if (Funky.SkipLink) {
+          Funky.SkipLink.skipTo('#demo-nav');
+          log('SkipLink.skipTo("#demo-nav") called');
+          emit('event', { event: 'skip-link:api-skip', payload: { target: '#demo-nav' } });
+        }
+      });
+
+      // API button: Show Help
+      document.getElementById('btn-show-help').addEventListener('click', function() {
+        if (Funky.Keyboard) {
+          Funky.Keyboard.showHelp();
+          log('Funky.Keyboard.showHelp() called');
+          emit('event', { event: 'skip-link:api-show-help', payload: {} });
+        }
+      });
+
+      // API button: Register Custom
+      document.getElementById('btn-register-custom').addEventListener('click', function() {
+        if (Funky.SkipLink) {
+          customTargetCount++;
+          var targetId = 'custom-target-' + customTargetCount;
+
+          // Create a custom target element in the demo page
+          var page = document.getElementById('skip-link-demo-page');
+          if (page) {
+            var customEl = document.createElement('div');
+            customEl.id = targetId;
+            customEl.className = 'custom-skip-target p-3 border-top d-flex align-items-center justify-content-between';
+            customEl.tabIndex = -1;
+            customEl.innerHTML = '<strong>Custom Target ' + customTargetCount + '</strong> <span class="badge bg-warning">Dynamic</span>';
+            page.appendChild(customEl);
+          }
+
+          // Register with SkipLink
+          Funky.SkipLink.register({
+            label: 'Custom Target ' + customTargetCount,
+            target: '#' + targetId,
+            order: 100 + customTargetCount
+          });
+
+          updateTargetsList();
+          log('Registered custom target: #' + targetId);
+          emit('event', { event: 'skip-link:api-register', payload: { target: '#' + targetId } });
+          Funky.Toast.info('Custom target registered');
+        }
+      });
+
+      // API button: Destroy
+      document.getElementById('btn-destroy').addEventListener('click', function() {
+        if (Funky.SkipLink) {
+          Funky.SkipLink.destroy();
+          updateTargetsList();
+          log('SkipLink.destroy() called - all shortcuts unregistered');
+          emit('event', { event: 'skip-link:api-destroy', payload: {} });
+          Funky.Toast.warning('Skip links destroyed');
+        }
+      });
+
+      // API button: Re-Init
+      document.getElementById('btn-reinit').addEventListener('click', function() {
+        if (Funky.SkipLink) {
+          // Reset initialized flag to allow re-init
+          Funky.SkipLink.initialized = false;
+          Funky.SkipLink.init({
+            focusScrollBehavior: props.focusScrollBehavior || 'smooth',
+            fKeyStart: props.fKeyStart || 3
+          });
+          updateTargetsList();
+          log('SkipLink.init() called - re-initialized');
+          emit('event', { event: 'skip-link:api-init', payload: {} });
+          Funky.Toast.success('Skip links re-initialized');
+        }
+      });
+
+      // Listen for props changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - updating configuration');
+          initDemo(newProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Remove any custom target elements
+      var customTargets = document.querySelectorAll('.custom-skip-target');
+      customTargets.forEach(function(el) {
+        el.remove();
+      });
+
+      logs = [];
+      customTargetCount = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

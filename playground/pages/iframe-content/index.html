@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iframe Demo Content</title>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --border-color: #30363d;
+      --accent-primary: #2f81f7;
+      --accent-success: #3fb950;
+      --accent-warning: #d29922;
+      --accent-danger: #f85149;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h1 .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(47, 129, 247, 0.15);
+      color: var(--accent-primary);
+      border-radius: 10px;
+      font-size: 1.25rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .message-list {
+      max-height: 150px;
+      overflow-y: auto;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .message-list:empty::before {
+      content: 'No messages received yet...';
+      font-style: italic;
+    }
+
+    .message-item {
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    .message-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .message-item.received {
+      background: rgba(47, 129, 247, 0.1);
+      border-left: 2px solid var(--accent-primary);
+    }
+
+    .message-item.sent {
+      background: rgba(63, 185, 80, 0.1);
+      border-left: 2px solid var(--accent-success);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1f6feb;
+    }
+
+    .btn-success {
+      background: var(--accent-success);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #2ea043;
+    }
+
+    .btn-warning {
+      background: var(--accent-warning);
+      color: #000;
+    }
+
+    .btn-warning:hover {
+      background: #bb8009;
+    }
+
+    .btn-danger {
+      background: var(--accent-danger);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #da3633;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.875rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.2);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .status-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+    }
+
+    .counter-value {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'SF Mono', monospace;
+      color: var(--accent-primary);
+    }
+
+    .counter-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <span class="icon">&#x1F4E6;</span>
+      Iframe Content
+    </h1>
+    <p class="subtitle">This page is loaded inside an iframe. It demonstrates postMessage communication with the parent window.</p>
+
+    <div class="section">
+      <div class="section-title">Received Messages</div>
+      <div class="message-list" id="messages"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Send Message to Parent</div>
+      <div class="input-group">
+        <input type="text" class="input" id="message-input" placeholder="Type a message...">
+        <button class="btn btn-primary" id="btn-send">Send</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Actions (Trigger Parent Events)</div>
+      <div class="actions-grid">
+        <button class="btn btn-success" id="btn-ready">Signal Ready</button>
+        <button class="btn btn-warning" id="btn-resize">Request Resize</button>
+        <button class="btn btn-danger" id="btn-close">Request Close</button>
+        <button class="btn btn-primary" id="btn-action">Custom Action</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Interactive Counter</div>
+      <div class="counter">
+        <button class="btn btn-primary counter-btn" id="btn-dec">-</button>
+        <span class="counter-value" id="counter">0</span>
+        <button class="btn btn-primary counter-btn" id="btn-inc">+</button>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="status-dot"></span>
+      <span class="status-text">Connected to parent window | Messages sent: <strong id="sent-count">0</strong></span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var messagesEl = document.getElementById('messages');
+      var sentCount = 0;
+
+      // Helper to send message to parent
+      function sendToParent(data) {
+        if (window.parent !== window) {
+          window.parent.postMessage(data, '*');
+          sentCount++;
+          document.getElementById('sent-count').textContent = sentCount;
+        }
+      }
+
+      // Helper to log received messages
+      function logMessage(message, type) {
+        var item = document.createElement('div');
+        item.className = 'message-item ' + type;
+        item.textContent = new Date().toLocaleTimeString() + ' - ' + (typeof message === 'object' ? JSON.stringify(message) : message);
+        messagesEl.insertBefore(item, messagesEl.firstChild);
+        if (messagesEl.children.length > 20) {
+          messagesEl.removeChild(messagesEl.lastChild);
+        }
+      }
+
+      // Listen for messages from parent
+      window.addEventListener('message', function(event) {
+        var data = event.data;
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data);
+          } catch (e) {
+            // Not JSON, use as-is
+          }
+        }
+        logMessage(data, 'received');
+
+        // Echo back to confirm receipt
+        sendToParent({ action: 'echo', original: data, timestamp: Date.now() });
+      });
+
+      // Send custom message
+      document.getElementById('btn-send').onclick = function() {
+        var input = document.getElementById('message-input');
+        var message = input.value.trim() || 'Hello from iframe!';
+        sendToParent({ action: 'message', text: message });
+        logMessage('Sent: ' + message, 'sent');
+        input.value = '';
+      };
+
+      // Enter key to send
+      document.getElementById('message-input').onkeypress = function(e) {
+        if (e.key === 'Enter') {
+          document.getElementById('btn-send').click();
+        }
+      };
+
+      // Signal ready
+      document.getElementById('btn-ready').onclick = function() {
+        sendToParent({ action: 'ready', timestamp: Date.now() });
+        logMessage('Sent: ready signal', 'sent');
+      };
+
+      // Request resize
+      document.getElementById('btn-resize').onclick = function() {
+        var height = document.body.scrollHeight + 50;
+        sendToParent({ action: 'resize', height: height });
+        logMessage('Sent: resize request (height: ' + height + ')', 'sent');
+      };
+
+      // Request close
+      document.getElementById('btn-close').onclick = function() {
+        sendToParent({ action: 'close' });
+        logMessage('Sent: close request', 'sent');
+      };
+
+      // Custom action
+      document.getElementById('btn-action').onclick = function() {
+        sendToParent({
+          action: 'action',
+          name: 'custom-event',
+          payload: { source: 'iframe', random: Math.floor(Math.random() * 1000) }
+        });
+        logMessage('Sent: custom action', 'sent');
+      };
+
+      // Counter
+      var counter = 0;
+      var counterEl = document.getElementById('counter');
+
+      document.getElementById('btn-inc').onclick = function() {
+        counter++;
+        counterEl.textContent = counter;
+        sendToParent({ action: 'counter', value: counter, direction: 'increment' });
+      };
+
+      document.getElementById('btn-dec').onclick = function() {
+        counter--;
+        counterEl.textContent = counter;
+        sendToParent({ action: 'counter', value: counter, direction: 'decrement' });
+      };
+
+      // Signal initial load
+      sendToParent({ action: 'loaded', url: window.location.href });
+
+    })();
+  </script>
+</body>
+</html>

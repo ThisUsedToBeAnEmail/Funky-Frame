@@ -1,0 +1,357 @@
+<div data-page="component-navigation" class="component-demo">
+  <h2>Navigation</h2>
+  <p class="text-muted">Funky.NavPosition provides position detection and modal slide direction utilities. Funky.Navigation handles scroll persistence for the sidebar.</p>
+
+  <!-- Position Control -->
+  <section class="demo-section" aria-labelledby="position-heading">
+    <h3 id="position-heading">Change Position</h3>
+    <p class="text-muted small">Set the navigation position via data-nav-position on body</p>
+
+    <div class="demo-area">
+      <div class="navigation-demo__position-buttons">
+        <button type="button" class="btn btn-outline-primary navigation-demo__position-btn" data-position="left">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Left
+        </button>
+        <button type="button" class="btn btn-outline-primary navigation-demo__position-btn" data-position="right">
+          <i class="fas fa-arrow-right" aria-hidden="true"></i> Right
+        </button>
+        <button type="button" class="btn btn-outline-primary navigation-demo__position-btn" data-position="top">
+          <i class="fas fa-arrow-up" aria-hidden="true"></i> Top
+        </button>
+        <button type="button" class="btn btn-outline-primary navigation-demo__position-btn" data-position="bottom">
+          <i class="fas fa-arrow-down" aria-hidden="true"></i> Bottom
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">NavPosition API</h3>
+    <p class="text-muted small">Call methods on Funky.NavPosition and see the results</p>
+
+    <div class="demo-area">
+      <div class="navigation-demo__api-grid">
+        <div class="navigation-demo__api-group">
+          <h4>Position Detection</h4>
+          <div class="navigation-demo__api-buttons">
+            <button type="button" class="btn btn-sm btn-secondary" data-api="getPosition">getPosition()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isHorizontal">isHorizontal()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isVertical">isVertical()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isLeft">isLeft()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isRight">isRight()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isTop">isTop()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isBottom">isBottom()</button>
+          </div>
+        </div>
+
+        <div class="navigation-demo__api-group">
+          <h4>Modal Slide Direction</h4>
+          <div class="navigation-demo__api-buttons">
+            <button type="button" class="btn btn-sm btn-secondary" data-api="getModalSlideDirection">getModalSlideDirection()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="getModalSlideClass">getModalSlideClass()</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="getOppositeSide">getOppositeSide()</button>
+          </div>
+        </div>
+
+        <div class="navigation-demo__api-group">
+          <h4>Sidebar State</h4>
+          <div class="navigation-demo__api-buttons">
+            <button type="button" class="btn btn-sm btn-secondary" data-api="isSidebarCollapsed">isSidebarCollapsed()</button>
+            <button type="button" class="btn btn-sm btn-primary" id="toggle-collapse-btn">
+              <i class="fas fa-compress-alt" aria-hidden="true"></i> toggleCollapse()
+            </button>
+          </div>
+        </div>
+
+        <div class="navigation-demo__api-group">
+          <h4>Scroll Persistence (Funky.Navigation)</h4>
+          <div class="navigation-demo__api-buttons">
+            <button type="button" class="btn btn-sm btn-secondary" data-api="saveScrollPosition">
+              <i class="fas fa-save" aria-hidden="true"></i> saveScrollPosition()
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" data-api="restoreScrollPosition">
+              <i class="fas fa-undo" aria-hidden="true"></i> restoreScrollPosition()
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Result -->
+  <section class="demo-section" aria-labelledby="result-heading">
+    <h3 id="result-heading">API Result</h3>
+    <div class="demo-area">
+      <div class="navigation-demo__result" id="api-result">
+        <span class="navigation-demo__result-empty">Click an API button above to see the result</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Playground Props -->
+  <section class="demo-section" aria-labelledby="props-heading">
+    <h3 id="props-heading">Playground Props</h3>
+    <div class="demo-area">
+      <div class="navigation-demo__settings">
+        <span class="badge bg-secondary">position: <strong id="setting-position">left</strong></span>
+        <span class="badge bg-secondary">collapsed: <strong id="setting-collapsed">false</strong></span>
+        <span class="badge bg-secondary">persistScroll: <strong id="setting-persist-scroll">true</strong></span>
+        <span class="badge bg-secondary">persistCollapse: <strong id="setting-persist-collapse">true</strong></span>
+        <span class="badge bg-secondary">storageKey: <strong id="setting-storage-key">nav-demo</strong></span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var pendingCallbacks = {};
+  var callbackId = 0;
+
+  function log(message, type) {
+    console.log('[Navigation Demo]', message);
+    emit('event', { event: 'navigation:' + (type || 'info'), payload: { message: message } });
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      position: props.position || 'left',
+      collapsed: props.collapsed === true,
+      persistScroll: props.persistScroll !== false,
+      persistCollapse: props.persistCollapse !== false,
+      storageKey: props.storageKey || 'nav-demo'
+    };
+  }
+
+  function updatePropsDisplay() {
+    var opts = getOptions();
+    var el = function(id) { return document.getElementById(id); };
+    if (el('setting-position')) el('setting-position').textContent = opts.position;
+    if (el('setting-collapsed')) el('setting-collapsed').textContent = String(opts.collapsed);
+    if (el('setting-persist-scroll')) el('setting-persist-scroll').textContent = String(opts.persistScroll);
+    if (el('setting-persist-collapse')) el('setting-persist-collapse').textContent = String(opts.persistCollapse);
+    if (el('setting-storage-key')) el('setting-storage-key').textContent = opts.storageKey;
+  }
+
+  function updateActiveButton() {
+    var position = document.body.getAttribute('data-nav-position') || 'left';
+    var btns = document.querySelectorAll('.navigation-demo__position-btn');
+    btns.forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.position === position);
+    });
+  }
+
+  function showApiResult(method, result) {
+    var resultEl = document.getElementById('api-result');
+    if (!resultEl) return;
+
+    var typeStr = typeof result;
+    var valueStr = JSON.stringify(result);
+
+    resultEl.innerHTML = '<div class="navigation-demo__result-content">' +
+      '<span class="navigation-demo__result-method">' + method + '</span>' +
+      '<span class="navigation-demo__result-arrow">→</span>' +
+      '<span class="navigation-demo__result-value navigation-demo__result-value--' + typeStr + '">' + valueStr + '</span>' +
+      '<span class="navigation-demo__result-type">(' + typeStr + ')</span>' +
+      '</div>';
+
+    log(method + ' = ' + valueStr, 'api');
+  }
+
+  // Call parent's NavPosition method via postMessage
+  function callParentNavMethod(namespace, method, callback) {
+    var id = ++callbackId;
+    pendingCallbacks[id] = callback;
+
+    try {
+      window.parent.postMessage({
+        type: 'funky-nav-call',
+        id: id,
+        namespace: namespace,
+        method: method
+      }, '*');
+    } catch (e) {
+      callback('Error: ' + e.message);
+      delete pendingCallbacks[id];
+    }
+  }
+
+  // Handle responses from parent
+  function handleMessage(event) {
+    if (event.data && event.data.type === 'funky-nav-response') {
+      var callback = pendingCallbacks[event.data.id];
+      if (callback) {
+        callback(event.data.result);
+        delete pendingCallbacks[event.data.id];
+      }
+    }
+  }
+
+  function setParentNavPosition(position) {
+    // Send message to parent to change its nav position
+    try {
+      window.parent.postMessage({
+        type: 'funky-nav-set-position',
+        position: position
+      }, '*');
+    } catch (e) {
+      console.warn('[Navigation Demo] Could not message parent:', e);
+    }
+  }
+
+  function setupPositionButtons() {
+    var btns = document.querySelectorAll('.navigation-demo__position-btn');
+    btns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var position = btn.dataset.position;
+        // Change parent's nav position
+        setParentNavPosition(position);
+        // Also update local for demo consistency
+        document.body.setAttribute('data-nav-position', position);
+        updateActiveButton();
+        log('Set position to: ' + position, 'position');
+      });
+    });
+  }
+
+  function setupApiButtons() {
+    var btns = document.querySelectorAll('[data-api]');
+
+    btns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var method = btn.dataset.api;
+        var namespace = method.indexOf('Scroll') >= 0 ? 'Navigation' : 'NavPosition';
+        var displayMethod = 'Funky.' + namespace + '.' + method + '()';
+
+        // First try local Funky namespace
+        var localResult = null;
+        try {
+          if (namespace === 'Navigation') {
+            if (Funky.Navigation && Funky.Navigation[method]) {
+              Funky.Navigation[method]();
+              localResult = 'Called (void)';
+            }
+          } else if (Funky.NavPosition && Funky.NavPosition[method]) {
+            localResult = Funky.NavPosition[method]();
+          }
+        } catch (e) {
+          // Ignore local errors, will try parent
+        }
+
+        if (localResult !== null) {
+          showApiResult(displayMethod, localResult);
+        } else {
+          // Try parent via postMessage
+          callParentNavMethod(namespace, method, function(result) {
+            showApiResult(displayMethod, result);
+          });
+        }
+      });
+    });
+  }
+
+  function applyPropsToParent() {
+    var opts = getOptions();
+
+    // Apply position to local and parent
+    document.body.setAttribute('data-nav-position', opts.position);
+    setParentNavPosition(opts.position);
+    updateActiveButton();
+
+    // Send collapsed state to parent
+    try {
+      window.parent.postMessage({
+        type: 'funky-nav-set-collapsed',
+        collapsed: opts.collapsed
+      }, '*');
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  // Track collapsed state locally for toggle
+  var isCollapsed = false;
+
+  function toggleCollapse() {
+    isCollapsed = !isCollapsed;
+
+    // Send to parent
+    try {
+      window.parent.postMessage({
+        type: 'funky-nav-set-collapsed',
+        collapsed: isCollapsed
+      }, '*');
+    } catch (e) {
+      // Ignore
+    }
+
+    // Update button icon
+    var btn = document.getElementById('toggle-collapse-btn');
+    if (btn) {
+      var icon = btn.querySelector('i');
+      if (icon) {
+        icon.className = isCollapsed ? 'fas fa-expand-alt' : 'fas fa-compress-alt';
+      }
+    }
+
+    showApiResult('toggleCollapse()', isCollapsed ? 'collapsed' : 'expanded');
+    log('Toggled collapse: ' + (isCollapsed ? 'collapsed' : 'expanded'), 'collapse');
+  }
+
+  function setupToggleCollapseButton() {
+    var btn = document.getElementById('toggle-collapse-btn');
+    if (btn) {
+      btn.addEventListener('click', toggleCollapse);
+    }
+  }
+
+  Funky.Pages.register('component-navigation', {
+    init: function(state) {
+      window.addEventListener('message', handleMessage);
+
+      // Sync collapsed state from props
+      var opts = getOptions();
+      isCollapsed = opts.collapsed;
+
+      updatePropsDisplay();
+      applyPropsToParent();
+      setupPositionButtons();
+      setupApiButtons();
+      setupToggleCollapseButton();
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updatePropsDisplay();
+          applyPropsToParent();
+          log('Props changed', 'props');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'navigation:init', payload: getOptions() });
+      log('Demo initialized', 'init');
+
+      return {};
+    },
+
+    destroy: function() {
+      window.removeEventListener('message', handleMessage);
+
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

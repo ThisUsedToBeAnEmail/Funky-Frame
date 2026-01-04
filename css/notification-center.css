@@ -1,0 +1,1282 @@
+/**
+ * Funky.NotificationCenter Styles
+ *
+ * In-app notification system with bell icon, dropdown panel,
+ * notification items, badges, and actions with full theme support.
+ *
+ * Uses --pro-* CSS custom properties for theming.
+ *
+ * @version 1.0.0
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+
+:root {
+	/* Layout */
+	--notif-dropdown-width: 380px;
+	--notif-dropdown-max-height: 480px;
+	--notif-item-padding: 0.75rem 1rem;
+	--notif-badge-size: 1.25rem;
+	--notif-icon-size: 2rem;
+
+	/* Animation */
+	--notif-transition: 0.2s ease-out;
+	--notif-easing: cubic-bezier(0.16, 1, 0.3, 1);
+
+	/* Colors - theme aware */
+	--notif-bg: var(--pro-bg-elevated, #2d333b);
+	--notif-border: var(--pro-border-color, #30363d);
+	--notif-shadow: var(--pro-shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.3));
+
+	--notif-trigger-bg-hover: var(--pro-bg-tertiary, #21262d);
+	--notif-trigger-color: var(--pro-text-secondary, #8b949e);
+
+	--notif-badge-bg: var(--pro-accent-danger, #f85149);
+	--notif-badge-text: #ffffff;
+
+	--notif-header-border: var(--pro-border-muted, #21262d);
+	--notif-header-text: var(--pro-text-primary, #e6edf3);
+
+	--notif-tab-text: var(--pro-text-muted, #6e7681);
+	--notif-tab-text-hover: var(--pro-text-primary, #e6edf3);
+	--notif-tab-active: var(--pro-accent-primary, #2f81f7);
+
+	--notif-item-border: var(--pro-border-muted, #21262d);
+	--notif-item-bg-hover: var(--pro-bg-tertiary, #21262d);
+	--notif-item-unread-bg: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+	--notif-item-unread-border: var(--pro-accent-primary, #2f81f7);
+
+	--notif-title-text: var(--pro-text-primary, #e6edf3);
+	--notif-body-text: var(--pro-text-secondary, #8b949e);
+	--notif-time-text: var(--pro-text-muted, #6e7681);
+
+	--notif-icon-bg: var(--pro-bg-tertiary, #21262d);
+
+	--notif-action-text: var(--pro-text-link, #58a6ff);
+	--notif-action-bg-hover: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+
+	--notif-dismiss-text: var(--pro-text-muted, #6e7681);
+	--notif-dismiss-text-hover: var(--pro-accent-danger, #f85149);
+	--notif-dismiss-bg-hover: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.15));
+
+	--notif-empty-text: var(--pro-text-muted, #6e7681);
+
+	--notif-group-bg: var(--pro-bg-secondary, #161b22);
+	--notif-group-text: var(--pro-text-muted, #6e7681);
+}
+
+/* ==========================================================================
+   Light Theme Overrides
+   ========================================================================== */
+
+[data-theme="light"] {
+	--notif-bg: var(--pro-bg-elevated, #ffffff);
+	--notif-border: var(--pro-border-color, #d0d7de);
+	--notif-shadow: var(--pro-shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.1));
+
+	--notif-trigger-bg-hover: var(--pro-bg-secondary, #f6f8fa);
+	--notif-trigger-color: var(--pro-text-secondary, #656d76);
+
+	--notif-header-border: var(--pro-border-color, #d0d7de);
+	--notif-header-text: var(--pro-text-primary, #1f2328);
+
+	--notif-tab-text: var(--pro-text-muted, #8c959f);
+	--notif-tab-text-hover: var(--pro-text-primary, #1f2328);
+	--notif-tab-active: var(--pro-accent-primary, #0969da);
+
+	--notif-item-border: var(--pro-border-muted, #eaeef2);
+	--notif-item-bg-hover: var(--pro-bg-secondary, #f6f8fa);
+	--notif-item-unread-bg: rgba(9, 105, 218, 0.08);
+	--notif-item-unread-border: var(--pro-accent-primary, #0969da);
+
+	--notif-title-text: var(--pro-text-primary, #1f2328);
+	--notif-body-text: var(--pro-text-secondary, #656d76);
+	--notif-time-text: var(--pro-text-muted, #8c959f);
+
+	--notif-icon-bg: var(--pro-bg-tertiary, #eaeef2);
+
+	--notif-action-text: var(--pro-text-link, #0969da);
+	--notif-action-bg-hover: rgba(9, 105, 218, 0.1);
+
+	--notif-dismiss-text: var(--pro-text-muted, #8c959f);
+
+	--notif-empty-text: var(--pro-text-muted, #8c959f);
+
+	--notif-group-bg: var(--pro-bg-secondary, #f6f8fa);
+	--notif-group-text: var(--pro-text-muted, #8c959f);
+}
+
+/* ==========================================================================
+   Even Funkyer Theme Overrides
+   ========================================================================== */
+
+[data-theme="even-funkyer"] {
+	--notif-bg: var(--pro-bg-elevated, #200040);
+	--notif-border: #ff00ff;
+	--notif-shadow: 0 0 30px rgba(255, 0, 255, 0.4), 0 0 60px rgba(0, 255, 255, 0.2);
+
+	--notif-trigger-bg-hover: rgba(255, 0, 255, 0.2);
+	--notif-trigger-color: #00ffff;
+
+	--notif-badge-bg: #00ffff;
+	--notif-badge-text: #000000;
+
+	--notif-header-border: #ff00ff;
+	--notif-header-text: #ffffff;
+
+	--notif-tab-text: #cc99ff;
+	--notif-tab-text-hover: #ffffff;
+	--notif-tab-active: #00ffff;
+
+	--notif-item-border: rgba(255, 0, 255, 0.3);
+	--notif-item-bg-hover: rgba(255, 0, 255, 0.15);
+	--notif-item-unread-bg: rgba(0, 255, 255, 0.1);
+	--notif-item-unread-border: #00ffff;
+
+	--notif-title-text: #ffffff;
+	--notif-body-text: #cc99ff;
+	--notif-time-text: #9966cc;
+
+	--notif-icon-bg: rgba(255, 0, 255, 0.2);
+
+	--notif-action-text: #00ffff;
+	--notif-action-bg-hover: rgba(0, 255, 255, 0.2);
+
+	--notif-dismiss-text: #ff66cc;
+	--notif-dismiss-text-hover: #ff0066;
+	--notif-dismiss-bg-hover: rgba(255, 0, 102, 0.2);
+
+	--notif-empty-text: #cc99ff;
+
+	--notif-group-bg: rgba(255, 0, 255, 0.1);
+	--notif-group-text: #00ffff;
+}
+
+/* ==========================================================================
+   High Contrast Theme Overrides
+   ========================================================================== */
+
+[data-theme="high-contrast"] {
+	--notif-bg: #000000;
+	--notif-border: #ffffff;
+	--notif-shadow: none;
+
+	--notif-trigger-bg-hover: #333333;
+	--notif-trigger-color: #ffffff;
+
+	--notif-badge-bg: #ffff00;
+	--notif-badge-text: #000000;
+
+	--notif-header-border: #ffffff;
+	--notif-header-text: #ffffff;
+
+	--notif-tab-text: #cccccc;
+	--notif-tab-text-hover: #ffffff;
+	--notif-tab-active: #ffff00;
+
+	--notif-item-border: #ffffff;
+	--notif-item-bg-hover: #333333;
+	--notif-item-unread-bg: #000000;
+	--notif-item-unread-border: #ffff00;
+
+	--notif-title-text: #ffffff;
+	--notif-body-text: #cccccc;
+	--notif-time-text: #aaaaaa;
+
+	--notif-icon-bg: #333333;
+
+	--notif-action-text: #ffff00;
+	--notif-action-bg-hover: #333333;
+
+	--notif-dismiss-text: #ffffff;
+	--notif-dismiss-text-hover: #ff0000;
+	--notif-dismiss-bg-hover: #330000;
+
+	--notif-empty-text: #cccccc;
+
+	--notif-group-bg: #111111;
+	--notif-group-text: #ffffff;
+}
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+
+.notification-center {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+
+/* ==========================================================================
+   Trigger Button
+   ========================================================================== */
+
+.notification-center__trigger {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	padding: 0;
+	color: var(--notif-trigger-color);
+	background: transparent;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: background-color var(--notif-transition), color var(--notif-transition);
+}
+
+.notification-center__trigger:hover {
+	background-color: var(--notif-trigger-bg-hover);
+	color: var(--notif-header-text);
+}
+
+.notification-center__trigger:focus-visible {
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color, var(--pro-accent-primary));
+	outline-offset: var(--focus-ring-offset, 2px);
+	box-shadow: var(--focus-ring-shadow);
+}
+
+.notification-center__trigger i {
+	font-size: 1.25rem;
+}
+
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+
+.notification-center__badge {
+	position: absolute;
+	top: 0;
+	right: 0;
+	min-width: var(--notif-badge-size);
+	height: var(--notif-badge-size);
+	padding: 0 0.25rem;
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: var(--notif-badge-size);
+	text-align: center;
+	color: var(--notif-badge-text);
+	background-color: var(--notif-badge-bg);
+	border-radius: 999px;
+	transform: translate(25%, -25%);
+	transition: transform 0.15s ease-out;
+}
+
+.notification-center__badge--empty {
+	display: none;
+}
+
+.notification-center__badge--pulse {
+	animation: notif-pulse 0.6s ease-out;
+}
+
+@keyframes notif-pulse {
+	0% { transform: translate(25%, -25%) scale(1); }
+	50% { transform: translate(25%, -25%) scale(1.2); }
+	100% { transform: translate(25%, -25%) scale(1); }
+}
+
+/* Even Funkyer badge glow */
+[data-theme="even-funkyer"] .notification-center__badge {
+	box-shadow: 0 0 10px var(--notif-badge-bg), 0 0 20px var(--notif-badge-bg);
+}
+
+/* ==========================================================================
+   Dropdown Panel
+   ========================================================================== */
+
+.notification-center__dropdown {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	z-index: 1050;
+	width: var(--notif-dropdown-width);
+	max-height: var(--notif-dropdown-max-height);
+	margin-top: 0.5rem;
+	background-color: var(--notif-bg);
+	border: 1px solid var(--notif-border);
+	border-radius: var(--pro-radius-lg, 0.5rem);
+	box-shadow: var(--notif-shadow);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-0.5rem);
+	transition:
+		opacity var(--notif-transition),
+		visibility var(--notif-transition),
+		transform var(--notif-transition);
+}
+
+.notification-center__dropdown[hidden] {
+	display: none;
+}
+
+.notification-center__dropdown--open {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+/* Even Funkyer dropdown glow */
+[data-theme="even-funkyer"] .notification-center__dropdown {
+	border-width: 2px;
+	animation: notif-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes notif-glow {
+	0% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.2); }
+	100% { box-shadow: 0 0 30px rgba(255, 0, 255, 0.5), 0 0 60px rgba(0, 255, 255, 0.3); }
+}
+
+/* High Contrast dropdown */
+[data-theme="high-contrast"] .notification-center__dropdown {
+	border-width: 2px;
+}
+
+/* Position variants */
+.notification-center--left .notification-center__dropdown {
+	right: auto;
+	left: 0;
+}
+
+.notification-center--center .notification-center__dropdown {
+	right: 50%;
+	transform: translateX(50%) translateY(-0.5rem);
+}
+
+.notification-center--center .notification-center__dropdown--open {
+	transform: translateX(50%) translateY(0);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.notification-center__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--notif-header-border);
+}
+
+.notification-center__header h2 {
+	margin: 0;
+	font-size: var(--pro-font-size-base, 1rem);
+	font-weight: var(--pro-font-weight-semibold, 600);
+	color: var(--notif-header-text);
+}
+
+/* Even Funkyer header */
+[data-theme="even-funkyer"] .notification-center__header h2 {
+	font-family: var(--pro-font-mono);
+	text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.notification-center__mark-all {
+	padding: 0.25rem 0.5rem;
+	font-size: var(--pro-font-size-xs, 0.75rem);
+	color: var(--notif-action-text);
+	background: transparent;
+	border: none;
+	border-radius: var(--pro-radius-sm, 0.25rem);
+	cursor: pointer;
+	transition: background-color var(--notif-transition);
+}
+
+.notification-center__mark-all:hover {
+	background-color: var(--notif-action-bg-hover);
+}
+
+.notification-center__mark-all:focus-visible {
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ==========================================================================
+   Tabs / Filters
+   ========================================================================== */
+
+.notification-center__tabs {
+	display: flex;
+	padding: 0 0.5rem;
+	border-bottom: 1px solid var(--notif-header-border);
+	overflow-x: auto;
+}
+
+.notification-center__tabs [role="tab"] {
+	flex-shrink: 0;
+	padding: 0.5rem 0.75rem;
+	font-size: var(--pro-font-size-sm, 0.8125rem);
+	color: var(--notif-tab-text);
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	cursor: pointer;
+	transition: color 0.15s, border-color 0.15s;
+}
+
+.notification-center__tabs [role="tab"]:hover {
+	color: var(--notif-tab-text-hover);
+}
+
+.notification-center__tabs [role="tab"][aria-selected="true"] {
+	color: var(--notif-tab-active);
+	border-bottom-color: var(--notif-tab-active);
+}
+
+.notification-center__tabs [role="tab"]:focus-visible {
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-inset, -2px);
+}
+
+/* Even Funkyer tabs */
+[data-theme="even-funkyer"] .notification-center__tabs [role="tab"][aria-selected="true"] {
+	text-shadow: 0 0 8px var(--notif-tab-active);
+}
+
+/* ==========================================================================
+   Notification List
+   ========================================================================== */
+
+.notification-center__list {
+	flex: 1;
+	overflow-y: auto;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.notification-center__list--scrollable {
+	max-height: 320px;
+}
+
+/* ==========================================================================
+   Notification Item
+   ========================================================================== */
+
+.notification-center__item {
+	display: flex;
+	gap: 0.75rem;
+	padding: var(--notif-item-padding);
+	border-bottom: 1px solid var(--notif-item-border);
+	cursor: pointer;
+	transition: background-color 0.15s;
+}
+
+.notification-center__item:hover {
+	background-color: var(--notif-item-bg-hover);
+}
+
+.notification-center__item:focus-visible {
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-inset, -2px);
+	box-shadow: var(--focus-ring-shadow-inset);
+}
+
+/* Unread indicator */
+.notification-center__item--unread {
+	background-color: var(--notif-item-unread-bg);
+	border-left: 3px solid var(--notif-item-unread-border);
+}
+
+.notification-center__item--unread:hover {
+	background-color: var(--notif-item-bg-hover);
+}
+
+/* High Contrast unread */
+[data-theme="high-contrast"] .notification-center__item--unread {
+	border-left-width: 4px;
+}
+
+/* Icon */
+.notification-center__icon {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--notif-icon-size);
+	height: var(--notif-icon-size);
+	border-radius: 50%;
+	background-color: var(--notif-icon-bg);
+}
+
+.notification-center__icon i {
+	font-size: 1rem;
+}
+
+/* Icon colors */
+.notification-center__icon .text-success {
+	color: var(--pro-accent-success, #3fb950);
+}
+
+.notification-center__icon .text-warning {
+	color: var(--pro-accent-warning, #d29922);
+}
+
+.notification-center__icon .text-danger {
+	color: var(--pro-accent-danger, #f85149);
+}
+
+.notification-center__icon .text-info {
+	color: var(--pro-accent-info, #58a6ff);
+}
+
+/* Content */
+.notification-center__content {
+	flex: 1;
+	min-width: 0;
+}
+
+.notification-center__title {
+	margin: 0 0 0.25rem;
+	font-size: var(--pro-font-size-sm, 0.875rem);
+	font-weight: var(--pro-font-weight-medium, 500);
+	line-height: var(--pro-line-height-tight, 1.3);
+	color: var(--notif-title-text);
+}
+
+.notification-center__body {
+	margin: 0 0 0.25rem;
+	font-size: var(--pro-font-size-xs, 0.8125rem);
+	line-height: var(--pro-line-height-normal, 1.4);
+	color: var(--notif-body-text);
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.notification-center__time {
+	font-size: var(--pro-font-size-xs, 0.75rem);
+	color: var(--notif-time-text);
+}
+
+/* Even Funkyer title */
+[data-theme="even-funkyer"] .notification-center__title {
+	font-family: var(--pro-font-mono);
+}
+
+/* ==========================================================================
+   Actions
+   ========================================================================== */
+
+.notification-center__actions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 0.25rem;
+	align-items: flex-start;
+}
+
+.notification-center__action {
+	padding: 0.25rem 0.5rem;
+	font-size: var(--pro-font-size-xs, 0.75rem);
+	color: var(--notif-action-text);
+	text-decoration: none;
+	background: transparent;
+	border: none;
+	border-radius: var(--pro-radius-sm, 0.25rem);
+	cursor: pointer;
+	transition: background-color var(--notif-transition);
+}
+
+.notification-center__action:hover {
+	background-color: var(--notif-action-bg-hover);
+}
+
+.notification-center__action:focus-visible {
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Even Funkyer action hover */
+[data-theme="even-funkyer"] .notification-center__action:hover {
+	text-shadow: 0 0 5px var(--notif-action-text);
+}
+
+/* Dismiss button */
+.notification-center__dismiss {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	padding: 0;
+	color: var(--notif-dismiss-text);
+	background: transparent;
+	border: none;
+	border-radius: var(--pro-radius-sm, 0.25rem);
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.15s, color 0.15s, background-color 0.15s;
+}
+
+.notification-center__item:hover .notification-center__dismiss,
+.notification-center__item:focus-within .notification-center__dismiss {
+	opacity: 1;
+}
+
+.notification-center__dismiss:hover {
+	color: var(--notif-dismiss-text-hover);
+	background-color: var(--notif-dismiss-bg-hover);
+}
+
+.notification-center__dismiss:focus-visible {
+	opacity: 1;
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.notification-center__empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	text-align: center;
+	color: var(--notif-empty-text);
+}
+
+.notification-center__empty i {
+	font-size: 2.5rem;
+	margin-bottom: 0.75rem;
+	opacity: 0.5;
+}
+
+.notification-center__empty p {
+	margin: 0;
+	font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.notification-center__footer {
+	padding: 0.75rem 1rem;
+	text-align: center;
+	border-top: 1px solid var(--notif-header-border);
+}
+
+.notification-center__footer a {
+	font-size: var(--pro-font-size-sm, 0.8125rem);
+	color: var(--notif-action-text);
+	text-decoration: none;
+}
+
+.notification-center__footer a:hover {
+	text-decoration: underline;
+}
+
+.notification-center__footer a:focus-visible {
+	outline: var(--focus-ring-width, 2px) var(--focus-ring-style, solid) var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ==========================================================================
+   Group Header
+   ========================================================================== */
+
+.notification-center__group-header {
+	padding: 0.5rem 1rem;
+	font-size: var(--pro-font-size-xs, 0.6875rem);
+	font-weight: var(--pro-font-weight-semibold, 600);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--notif-group-text);
+	background-color: var(--notif-group-bg);
+}
+
+/* ==========================================================================
+   More Indicator
+   ========================================================================== */
+
+.notification-center__more {
+	padding: 0.5rem 1rem;
+	font-size: var(--pro-font-size-xs, 0.75rem);
+	text-align: center;
+	color: var(--notif-empty-text);
+	background-color: var(--notif-group-bg);
+}
+
+/* ==========================================================================
+   Loading Indicator
+   ========================================================================== */
+
+.notification-center__loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 1rem;
+	color: var(--notif-empty-text);
+	font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+/* ==========================================================================
+   Screen Reader Only (Announcer)
+   ========================================================================== */
+
+.notification-center__announcer.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ==========================================================================
+   Responsive - Mobile Bottom Sheet
+   ========================================================================== */
+
+@media (max-width: 480px) {
+	.notification-center__dropdown {
+		position: fixed;
+		top: auto;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		max-height: 70vh;
+		margin-top: 0;
+		border-radius: var(--pro-radius-lg, 1rem) var(--pro-radius-lg, 1rem) 0 0;
+		transform: translateY(100%);
+	}
+
+	.notification-center__dropdown--open {
+		transform: translateY(0);
+	}
+
+	/* Handle for dragging on mobile */
+	.notification-center__dropdown::before {
+		content: '';
+		display: block;
+		width: 2rem;
+		height: 0.25rem;
+		margin: 0.5rem auto;
+		background-color: var(--notif-item-border);
+		border-radius: 999px;
+	}
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+	.notification-center__dropdown,
+	.notification-center__badge,
+	.notification-center__trigger,
+	.notification-center__item,
+	.notification-center__action,
+	.notification-center__dismiss {
+		transition: none;
+	}
+
+	.notification-center__badge--pulse {
+		animation: none;
+	}
+
+	[data-theme="even-funkyer"] .notification-center__dropdown {
+		animation: none;
+	}
+}
+
+/* ==========================================================================
+   High Contrast Media Query
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+	.notification-center__item--unread {
+		border-left-width: 4px;
+	}
+
+	.notification-center__item:focus-visible,
+	.notification-center__trigger:focus-visible {
+		outline-width: 3px;
+	}
+
+	.notification-center__dropdown {
+		border-width: 2px;
+	}
+}
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+
+@media print {
+	.notification-center {
+		display: none;
+	}
+}
+
+/* ==========================================================================
+   Presence Notifications
+   ========================================================================== */
+
+/* Base presence notification */
+.notification-center__item--presence {
+	border-left: 3px solid var(--pro-accent-success, #3fb950);
+}
+
+/* Presence join notification */
+.notification-center__item--presence-join {
+	border-left-color: var(--pro-accent-success, #3fb950);
+}
+
+.notification-center__item--presence-join .notification-center__icon {
+	background-color: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.15));
+}
+
+.notification-center__item--presence-join .notification-center__icon i {
+	color: var(--pro-accent-success, #3fb950);
+}
+
+/* Presence leave notification */
+.notification-center__item--presence-leave {
+	border-left-color: var(--pro-text-muted, #6e7681);
+}
+
+.notification-center__item--presence-leave .notification-center__icon {
+	background-color: var(--pro-bg-tertiary, #21262d);
+}
+
+.notification-center__item--presence-leave .notification-center__icon i {
+	color: var(--pro-text-muted, #6e7681);
+}
+
+/* Presence status notification */
+.notification-center__item--presence-status {
+	border-left-color: var(--pro-accent-info, #58a6ff);
+}
+
+.notification-center__item--presence-status .notification-center__icon {
+	background-color: var(--pro-accent-info-muted, rgba(88, 166, 255, 0.15));
+}
+
+.notification-center__item--presence-status .notification-center__icon i {
+	color: var(--pro-accent-info, #58a6ff);
+}
+
+/* Presence typing notification */
+.notification-center__item--presence-typing {
+	border-left-color: var(--pro-accent-warning, #d29922);
+}
+
+.notification-center__item--presence-typing .notification-center__icon {
+	background-color: var(--pro-accent-warning-muted, rgba(210, 153, 34, 0.15));
+}
+
+.notification-center__item--presence-typing .notification-center__icon i {
+	color: var(--pro-accent-warning, #d29922);
+}
+
+/* Transient notification animation */
+.notification-center__item--transient {
+	animation: notif-transient-fade 0.3s ease-out;
+}
+
+@keyframes notif-transient-fade {
+	0% {
+		opacity: 0;
+		transform: translateX(-10px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+/* Typing indicator dots */
+.notification-center__typing-dots {
+	display: inline-flex;
+	gap: 2px;
+	margin-left: 0.25rem;
+}
+
+.notification-center__typing-dots span {
+	width: 4px;
+	height: 4px;
+	background-color: var(--pro-accent-warning, #d29922);
+	border-radius: 50%;
+	animation: notif-typing-dot 1.4s infinite ease-in-out both;
+}
+
+.notification-center__typing-dots span:nth-child(1) {
+	animation-delay: -0.32s;
+}
+
+.notification-center__typing-dots span:nth-child(2) {
+	animation-delay: -0.16s;
+}
+
+@keyframes notif-typing-dot {
+	0%, 80%, 100% {
+		transform: scale(0.6);
+		opacity: 0.5;
+	}
+	40% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+/* Presence avatar in notification */
+.notification-center__presence-avatar {
+	width: var(--notif-icon-size);
+	height: var(--notif-icon-size);
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+/* Batch notification indicator */
+.notification-center__batch-indicator {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+	font-size: var(--pro-font-size-sm, 0.8125rem);
+	color: var(--notif-action-text);
+	background-color: var(--notif-group-bg);
+	border-bottom: 1px solid var(--notif-item-border);
+	cursor: pointer;
+	transition: background-color 0.15s;
+}
+
+.notification-center__batch-indicator:hover {
+	background-color: var(--notif-item-bg-hover);
+}
+
+.notification-center__batch-indicator i {
+	color: var(--pro-accent-info, #58a6ff);
+}
+
+/* ==========================================================================
+   Presence Notifications - Light Theme
+   ========================================================================== */
+
+[data-theme="light"] .notification-center__item--presence-join .notification-center__icon {
+	background-color: rgba(45, 164, 78, 0.1);
+}
+
+[data-theme="light"] .notification-center__item--presence-leave .notification-center__icon {
+	background-color: var(--pro-bg-secondary, #f6f8fa);
+}
+
+[data-theme="light"] .notification-center__item--presence-status .notification-center__icon {
+	background-color: rgba(9, 105, 218, 0.1);
+}
+
+[data-theme="light"] .notification-center__item--presence-typing .notification-center__icon {
+	background-color: rgba(154, 103, 0, 0.1);
+}
+
+/* ==========================================================================
+   Presence Notifications - Even Funkyer Theme
+   ========================================================================== */
+
+[data-theme="even-funkyer"] .notification-center__item--presence {
+	border-left-width: 2px;
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-join {
+	border-left-color: #00ff00;
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-join .notification-center__icon {
+	background-color: rgba(0, 255, 0, 0.15);
+	box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-join .notification-center__icon i {
+	color: #00ff00;
+	text-shadow: 0 0 8px #00ff00;
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-leave .notification-center__icon {
+	background-color: rgba(255, 0, 255, 0.15);
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-status {
+	border-left-color: #00ffff;
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-status .notification-center__icon {
+	background-color: rgba(0, 255, 255, 0.15);
+	box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-typing {
+	border-left-color: #ffff00;
+}
+
+[data-theme="even-funkyer"] .notification-center__item--presence-typing .notification-center__icon {
+	background-color: rgba(255, 255, 0, 0.15);
+}
+
+[data-theme="even-funkyer"] .notification-center__typing-dots span {
+	background-color: #ffff00;
+	box-shadow: 0 0 5px #ffff00;
+}
+
+/* ==========================================================================
+   Presence Notifications - High Contrast Theme
+   ========================================================================== */
+
+[data-theme="high-contrast"] .notification-center__item--presence {
+	border-left-width: 4px;
+}
+
+[data-theme="high-contrast"] .notification-center__item--presence-join {
+	border-left-color: #00ff00;
+}
+
+[data-theme="high-contrast"] .notification-center__item--presence-join .notification-center__icon i {
+	color: #00ff00;
+}
+
+[data-theme="high-contrast"] .notification-center__item--presence-leave {
+	border-left-color: #ffffff;
+}
+
+[data-theme="high-contrast"] .notification-center__item--presence-status {
+	border-left-color: #ffff00;
+}
+
+[data-theme="high-contrast"] .notification-center__item--presence-status .notification-center__icon i {
+	color: #ffff00;
+}
+
+[data-theme="high-contrast"] .notification-center__item--presence-typing {
+	border-left-color: #ff8800;
+}
+
+[data-theme="high-contrast"] .notification-center__typing-dots span {
+	background-color: #ff8800;
+}
+
+/* ==========================================================================
+   Presence Notifications - Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+	.notification-center__item--transient {
+		animation: none;
+	}
+
+	.notification-center__typing-dots span {
+		animation: none;
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* ==========================================================================
+   Playground Demo Styles
+   ========================================================================== */
+
+.notification-center-demo__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem;
+	background: var(--pro-bg-secondary);
+	border-radius: var(--pro-radius-md, 0.5rem);
+}
+
+.notification-center-demo__title {
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--pro-text-primary);
+}
+
+.notification-center-demo__bell-container {
+	display: inline-flex;
+	align-items: center;
+}
+
+.notification-center-demo__controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.notification-center-demo__stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+	padding: 1rem;
+	background: var(--pro-bg-secondary);
+	border-radius: var(--pro-radius-md, 0.5rem);
+}
+
+.notification-center-demo__stat {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.notification-center-demo__stat-label {
+	font-size: 0.875rem;
+	color: var(--pro-text-muted);
+}
+
+.notification-center-demo__stat-value {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--pro-text-primary);
+	padding: 0.125rem 0.5rem;
+	background: var(--pro-bg-tertiary);
+	border-radius: var(--pro-radius-sm, 0.25rem);
+}
+
+.notification-center-demo__stat-value--unread {
+	background: var(--pro-accent-primary);
+	color: #fff;
+}
+
+.notification-center-demo__filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.notification-center-demo__filter {
+	background: var(--pro-bg-tertiary);
+	border: 1px solid var(--pro-border);
+	color: var(--pro-text-secondary);
+	transition: all 0.15s ease;
+}
+
+.notification-center-demo__filter:hover {
+	background: var(--pro-bg-secondary);
+	border-color: var(--pro-accent-primary);
+	color: var(--pro-text-primary);
+}
+
+.notification-center-demo__filter--active {
+	background: var(--pro-accent-primary);
+	border-color: var(--pro-accent-primary);
+	color: #fff;
+}
+
+.notification-center-demo__filter--active:hover {
+	background: var(--pro-accent-primary);
+	color: #fff;
+}
+
+.notification-center-demo__desktop {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1rem;
+}
+
+.notification-center-demo__permission-status {
+	font-size: 0.875rem;
+	color: var(--pro-text-muted);
+}
+
+.notification-center-demo__permission-status strong {
+	color: var(--pro-text-primary);
+}
+
+.notification-center-demo__state {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 0.75rem;
+	padding: 1rem;
+	background: var(--pro-bg-secondary);
+	border-radius: var(--pro-radius-md, 0.5rem);
+}
+
+.notification-center-demo__state-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.notification-center-demo__state-label {
+	font-size: 0.8125rem;
+	color: var(--pro-text-muted);
+}
+
+.notification-center-demo__state-value {
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: var(--pro-text-primary);
+}
+
+.notification-center-demo__shortcuts {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem;
+	font-size: 0.875rem;
+	color: var(--pro-text-muted);
+}
+
+.notification-center-demo__shortcuts kbd {
+	display: inline-block;
+	padding: 0.125rem 0.375rem;
+	font-size: 0.75rem;
+	font-family: var(--pro-font-mono);
+	color: var(--pro-text-primary);
+	background: var(--pro-bg-tertiary);
+	border: 1px solid var(--pro-border);
+	border-radius: var(--pro-radius-sm, 0.25rem);
+	box-shadow: 0 1px 0 var(--pro-border);
+}
+
+.notification-center-demo__log {
+	background: var(--pro-bg-secondary);
+	padding: 1rem;
+	border-radius: var(--pro-radius-sm, 0.25rem);
+	max-height: 200px;
+	overflow: auto;
+	font-size: 0.8125rem;
+	font-family: var(--pro-font-mono);
+	color: var(--pro-text-secondary);
+	margin: 0;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+	.notification-center-demo__header {
+		flex-direction: column;
+		gap: 1rem;
+		text-align: center;
+	}
+
+	.notification-center-demo__stats {
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.notification-center-demo__state {
+		grid-template-columns: 1fr;
+	}
+
+	.notification-center-demo__shortcuts {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}

@@ -1,0 +1,545 @@
+<div data-page="component-breadcrumb" class="component-demo">
+  <h2>Breadcrumb</h2>
+  <p class="text-muted">Navigation breadcrumb trail with dynamic generation from URL paths and manual configuration.</p>
+
+  <!-- Interactive Demo Section -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to configure breadcrumb items and separator.</p>
+    <div class="demo-area">
+      <div class="breadcrumb-demo__interactive">
+        <nav id="interactive-breadcrumb" aria-label="Interactive breadcrumb"></nav>
+      </div>
+      <div class="breadcrumb-demo__config" id="config-display">
+        <!-- Config display populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Styles Section -->
+  <section class="demo-section" aria-labelledby="styles-heading">
+    <h3 id="styles-heading">Breadcrumb Styles</h3>
+    <p class="text-muted small">Different visual styles for breadcrumbs.</p>
+    <div class="demo-area">
+      <div class="breadcrumb-demo__styles">
+        <div class="breadcrumb-demo__style-item">
+          <span class="breadcrumb-demo__style-label">Default:</span>
+          <nav aria-label="Default breadcrumb">
+            <ol class="breadcrumb-pro" id="style-default">
+              <li class="breadcrumb-item"><a href="#" class="breadcrumb-home" title="Home" aria-label="Home"><i class="fas fa-home" aria-hidden="true"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Products</a></li>
+              <li class="breadcrumb-item"><a href="#">Category</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><span>Current Item</span></li>
+            </ol>
+          </nav>
+        </div>
+        <div class="breadcrumb-demo__style-item">
+          <span class="breadcrumb-demo__style-label">Boxed:</span>
+          <nav aria-label="Boxed breadcrumb">
+            <ol class="breadcrumb-pro breadcrumb-boxed" id="style-boxed">
+              <li class="breadcrumb-item"><a href="#" class="breadcrumb-home" title="Home" aria-label="Home"><i class="fas fa-home" aria-hidden="true"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Products</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><span>Current Item</span></li>
+            </ol>
+          </nav>
+        </div>
+        <div class="breadcrumb-demo__style-item">
+          <span class="breadcrumb-demo__style-label">Compact:</span>
+          <nav aria-label="Compact breadcrumb">
+            <ol class="breadcrumb-pro breadcrumb-compact" id="style-compact">
+              <li class="breadcrumb-item"><a href="#" class="breadcrumb-home" title="Home" aria-label="Home"><i class="fas fa-home" aria-hidden="true"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Products</a></li>
+              <li class="breadcrumb-item"><a href="#">Category</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><span>Current Item</span></li>
+            </ol>
+          </nav>
+        </div>
+        <div class="breadcrumb-demo__style-item">
+          <span class="breadcrumb-demo__style-label">Large:</span>
+          <nav aria-label="Large breadcrumb">
+            <ol class="breadcrumb-pro breadcrumb-large" id="style-large">
+              <li class="breadcrumb-item"><a href="#" class="breadcrumb-home" title="Home" aria-label="Home"><i class="fas fa-home" aria-hidden="true"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Products</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><span>Current Item</span></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test Funky.Breadcrumb API methods.</p>
+    <div class="demo-area">
+      <nav id="api-breadcrumb" aria-label="API demo breadcrumb" class="breadcrumb-demo__api-target"></nav>
+      <div class="breadcrumb-demo__api-buttons">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-render">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i>render()
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-generate">
+          <i class="fas fa-code me-1" aria-hidden="true"></i>generate()
+        </button>
+        <button type="button" class="btn btn-outline-success btn-sm" id="btn-set-data">
+          <i class="fas fa-database me-1" aria-hidden="true"></i>setData()
+        </button>
+        <button type="button" class="btn btn-outline-warning btn-sm" id="btn-add-labels">
+          <i class="fas fa-tags me-1" aria-hidden="true"></i>addLabels()
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Breadcrumb Section -->
+  <section class="demo-section" aria-labelledby="dynamic-heading">
+    <h3 id="dynamic-heading">Dynamic Breadcrumb</h3>
+    <p class="text-muted small">Add and remove breadcrumb levels dynamically.</p>
+    <div class="demo-area">
+      <div class="breadcrumb-demo__dynamic-controls">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-level">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i>Add Level
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-remove-level">
+          <i class="fas fa-minus me-1" aria-hidden="true"></i>Remove Level
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-reset">
+          <i class="fas fa-undo me-1" aria-hidden="true"></i>Reset
+        </button>
+      </div>
+      <nav id="dynamic-breadcrumb" aria-label="Dynamic breadcrumb"></nav>
+    </div>
+  </section>
+
+  <!-- State Display Section -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="breadcrumb-demo__state">
+        <div class="breadcrumb-demo__state-item">
+          <span class="breadcrumb-demo__state-label">Items:</span>
+          <span class="breadcrumb-demo__state-value" id="state-items">4</span>
+        </div>
+        <div class="breadcrumb-demo__state-item">
+          <span class="breadcrumb-demo__state-label">Separator:</span>
+          <span class="breadcrumb-demo__state-value" id="state-separator">/</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="events-heading">
+    <h3 id="events-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre class="breadcrumb-demo__log" id="event-log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var logs = [];
+  var dynamicLevel = 1;
+  var dynamicCrumbs = [
+    { label: 'Home', url: '#', icon: 'fa-home' },
+    { label: 'Page', url: null }
+  ];
+
+  /**
+   * Log an event to the event log
+   */
+  function logEvent(eventName, detail) {
+    var time = new Date().toLocaleTimeString();
+    var message = time + ' - ' + eventName;
+    if (detail) {
+      message += ': ' + JSON.stringify(detail);
+    }
+    logs.unshift(message);
+    if (logs.length > 15) logs.pop();
+
+    var logEl = document.getElementById('event-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+  }
+
+  /**
+   * Update state display from props
+   */
+  function updateStateDisplay(props) {
+    var items = props.items || [];
+    var separator = props.separator || '/';
+
+    var stateItems = document.getElementById('state-items');
+    var stateSeparator = document.getElementById('state-separator');
+
+    if (stateItems) stateItems.textContent = items.length;
+    if (stateSeparator) stateSeparator.textContent = separator;
+  }
+
+  /**
+   * Update config display
+   */
+  function updateConfigDisplay(props) {
+    var configEl = document.getElementById('config-display');
+    if (!configEl) return;
+
+    var items = props.items || [];
+    var separator = props.separator || '/';
+
+    var configItems = [
+      { label: 'Items', value: items.length + ' items' },
+      { label: 'Separator', value: separator }
+    ];
+
+    configEl.innerHTML = '';
+    configItems.forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'breadcrumb-demo__config-item';
+
+      var label = document.createElement('span');
+      label.className = 'breadcrumb-demo__config-label';
+      label.textContent = item.label + ':';
+
+      var value = document.createElement('span');
+      value.className = 'breadcrumb-demo__config-value';
+      value.textContent = item.value;
+
+      div.appendChild(label);
+      div.appendChild(value);
+      configEl.appendChild(div);
+    });
+  }
+
+  /**
+   * Render breadcrumbs to a container using Funky.Dom
+   */
+  function renderBreadcrumbs(container, items, separator) {
+    if (!container || !Funky.Dom) return;
+
+    var D = Funky.Dom;
+    var useCustomSeparator = separator && separator !== '/';
+    var olClass = useCustomSeparator ? 'breadcrumb-pro breadcrumb-custom-sep' : 'breadcrumb-pro';
+    var olEl = D.ol().class(olClass);
+
+    items.forEach(function(item, i) {
+      var isLast = i === items.length - 1;
+      var liEl = D.li().class(D.classes('breadcrumb-item', isLast && 'active'));
+
+      if (isLast) {
+        liEl.aria('current', 'page');
+      }
+
+      // Add custom separator data attribute for non-last items
+      if (!isLast && useCustomSeparator) {
+        liEl.data('separator', separator);
+      }
+
+      if (i === 0 && item.icon) {
+        liEl.child(
+          D.a()
+            .attr('href', item.url || '#')
+            .class('breadcrumb-home')
+            .attr('title', item.label)
+            .aria('label', item.label)
+            .child(D.icon('fas ' + item.icon).aria('hidden', 'true'))
+        );
+      } else if (item.url && !isLast) {
+        liEl.child(D.a().attr('href', item.url).text(item.label));
+      } else {
+        liEl.child(D.span().text(item.label));
+      }
+
+      olEl.child(liEl);
+    });
+
+    container.replaceChildren();
+    container.appendChild(olEl.el);
+
+    // Add click handlers
+    container.querySelectorAll('.breadcrumb-item a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var label = this.textContent.trim() || this.getAttribute('title') || 'Home';
+        logEvent('navigate', { label: label });
+        emit('event', { event: 'funky:breadcrumb:navigate', payload: { label: label } });
+      });
+    });
+  }
+
+  /**
+   * Parse items prop - handles both array and JSON string
+   */
+  function parseItems(items) {
+    var defaultItems = [
+      { label: 'Home', url: '#', icon: 'fa-home' },
+      { label: 'Products', url: '#' },
+      { label: 'Category', url: '#' },
+      { label: 'Current Item' }
+    ];
+
+    if (!items) return defaultItems;
+    if (Array.isArray(items)) return items;
+
+    // Parse JSON string
+    if (typeof items === 'string') {
+      try {
+        var parsed = JSON.parse(items);
+        return Array.isArray(parsed) ? parsed : defaultItems;
+      } catch (e) {
+        return defaultItems;
+      }
+    }
+
+    return defaultItems;
+  }
+
+  /**
+   * Create the interactive demo
+   */
+  function createInteractiveDemo(props) {
+    var container = document.getElementById('interactive-breadcrumb');
+    if (!container) return;
+
+    var items = parseItems(props.items);
+    var separator = props.separator || '/';
+
+    renderBreadcrumbs(container, items, separator);
+    updateConfigDisplay({ items: items, separator: separator });
+    updateStateDisplay({ items: items, separator: separator });
+  }
+
+  /**
+   * Render dynamic breadcrumb
+   */
+  function renderDynamicBreadcrumb() {
+    var container = document.getElementById('dynamic-breadcrumb');
+    if (!container) return;
+
+    // Update active state
+    dynamicCrumbs.forEach(function(crumb, i) {
+      crumb.url = i === dynamicCrumbs.length - 1 ? null : '#';
+    });
+
+    renderBreadcrumbs(container, dynamicCrumbs, '/');
+  }
+
+  /**
+   * Set up style section click handlers
+   */
+  function setupStyleHandlers() {
+    var styleContainers = ['style-default', 'style-boxed', 'style-compact', 'style-large'];
+
+    styleContainers.forEach(function(id) {
+      var container = document.getElementById(id);
+      if (container) {
+        container.querySelectorAll('.breadcrumb-item a').forEach(function(link) {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var label = this.textContent.trim() || this.getAttribute('title') || 'Home';
+            logEvent('style click', { style: id.replace('style-', ''), label: label });
+            emit('event', { event: 'funky:breadcrumb:click', payload: { style: id, label: label } });
+          });
+        });
+      }
+    });
+  }
+
+  /**
+   * Set up API method buttons
+   */
+  function setupApiButtons() {
+    var apiContainer = document.getElementById('api-breadcrumb');
+
+    // render() - Renders breadcrumbs from current URL
+    var btnRender = document.getElementById('btn-render');
+    if (btnRender) {
+      btnRender.onclick = function() {
+        if (Funky.Breadcrumb && Funky.Breadcrumb.render) {
+          Funky.Breadcrumb.render(apiContainer);
+          logEvent('API: render()');
+          emit('event', { event: 'funky:breadcrumb:api', payload: { method: 'render' } });
+        }
+      };
+    }
+
+    // generate() - Generates breadcrumbs from a path
+    var btnGenerate = document.getElementById('btn-generate');
+    if (btnGenerate) {
+      btnGenerate.onclick = function() {
+        if (Funky.Breadcrumb && Funky.Breadcrumb.generate) {
+          var crumbs = Funky.Breadcrumb.generate('/web/trades/123/edit');
+          logEvent('API: generate()', { path: '/web/trades/123/edit', result: crumbs.length + ' items' });
+          emit('event', { event: 'funky:breadcrumb:api', payload: { method: 'generate', crumbs: crumbs } });
+
+          // Display the result
+          renderBreadcrumbs(apiContainer, crumbs, '/');
+        }
+      };
+    }
+
+    // setData() - Sets breadcrumb data directly
+    var btnSetData = document.getElementById('btn-set-data');
+    if (btnSetData) {
+      btnSetData.onclick = function() {
+        var data = [
+          { label: 'Dashboard', url: '#', icon: 'fa-home' },
+          { label: 'Settings', url: '#' },
+          { label: 'Profile', url: null }
+        ];
+        if (Funky.Breadcrumb && Funky.Breadcrumb.setData) {
+          Funky.Breadcrumb.setData(data);
+          logEvent('API: setData()', { items: data.length });
+          emit('event', { event: 'funky:breadcrumb:api', payload: { method: 'setData', data: data } });
+        }
+
+        // Also render to the API container for visual feedback
+        renderBreadcrumbs(apiContainer, data, '/');
+      };
+    }
+
+    // addLabels() - Adds label mappings
+    var btnAddLabels = document.getElementById('btn-add-labels');
+    if (btnAddLabels) {
+      btnAddLabels.onclick = function() {
+        var labels = {
+          'playground': 'Playground',
+          'components': 'Components',
+          'breadcrumb': 'Breadcrumb Demo'
+        };
+        if (Funky.Breadcrumb && Funky.Breadcrumb.addLabels) {
+          Funky.Breadcrumb.addLabels(labels);
+          logEvent('API: addLabels()', { labels: Object.keys(labels) });
+          emit('event', { event: 'funky:breadcrumb:api', payload: { method: 'addLabels', labels: labels } });
+        }
+      };
+    }
+
+    // Initialize API breadcrumb with default items
+    var defaultItems = [
+      { label: 'Home', url: '#', icon: 'fa-home' },
+      { label: 'API Demo', url: null }
+    ];
+    renderBreadcrumbs(apiContainer, defaultItems, '/');
+  }
+
+  /**
+   * Set up dynamic breadcrumb buttons
+   */
+  function setupDynamicButtons() {
+    // Add Level
+    var btnAdd = document.getElementById('btn-add-level');
+    if (btnAdd) {
+      btnAdd.onclick = function() {
+        dynamicLevel++;
+        // Convert last item to have URL
+        if (dynamicCrumbs.length > 0) {
+          dynamicCrumbs[dynamicCrumbs.length - 1].url = '#';
+        }
+        dynamicCrumbs.push({ label: 'Level ' + dynamicLevel, url: null });
+        renderDynamicBreadcrumb();
+
+        logEvent('add level', { level: dynamicLevel, total: dynamicCrumbs.length });
+        emit('event', { event: 'funky:breadcrumb:add', payload: { level: dynamicLevel } });
+      };
+    }
+
+    // Remove Level
+    var btnRemove = document.getElementById('btn-remove-level');
+    if (btnRemove) {
+      btnRemove.onclick = function() {
+        if (dynamicCrumbs.length > 1) {
+          dynamicCrumbs.pop();
+          dynamicLevel = Math.max(1, dynamicLevel - 1);
+          // Make last item active (no URL)
+          if (dynamicCrumbs.length > 0) {
+            dynamicCrumbs[dynamicCrumbs.length - 1].url = null;
+          }
+          renderDynamicBreadcrumb();
+
+          logEvent('remove level', { level: dynamicLevel + 1, total: dynamicCrumbs.length });
+          emit('event', { event: 'funky:breadcrumb:remove', payload: { level: dynamicLevel + 1 } });
+        }
+      };
+    }
+
+    // Reset
+    var btnReset = document.getElementById('btn-reset');
+    if (btnReset) {
+      btnReset.onclick = function() {
+        dynamicLevel = 1;
+        dynamicCrumbs = [
+          { label: 'Home', url: '#', icon: 'fa-home' },
+          { label: 'Page', url: null }
+        ];
+        renderDynamicBreadcrumb();
+
+        logEvent('reset', { total: dynamicCrumbs.length });
+        emit('event', { event: 'funky:breadcrumb:reset', payload: {} });
+      };
+    }
+  }
+
+  Funky.Pages.register('component-breadcrumb', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create interactive demo
+      createInteractiveDemo(props);
+
+      // Set up style handlers
+      setupStyleHandlers();
+
+      // Set up API buttons
+      setupApiButtons();
+
+      // Set up dynamic buttons
+      setupDynamicButtons();
+
+      // Render dynamic breadcrumb
+      renderDynamicBreadcrumb();
+
+      // Log initialization
+      logEvent('Breadcrumb demo initialized');
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          createInteractiveDemo(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clear logs
+      logs = [];
+
+      // Reset dynamic state
+      dynamicLevel = 1;
+      dynamicCrumbs = [
+        { label: 'Home', url: '#', icon: 'fa-home' },
+        { label: 'Page', url: null }
+      ];
+
+      return {};
+    }
+  });
+})();
+</script>

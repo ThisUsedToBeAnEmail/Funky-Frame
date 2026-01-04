@@ -1,0 +1,373 @@
+<div data-page="component-badge" class="component-demo">
+  <h2>Badge</h2>
+  <p class="text-muted">Count and status indicators that attach to any element. Supports numeric counts, dots, and status types with animation.</p>
+
+  <!-- Badge Types Section -->
+  <section class="demo-section" aria-labelledby="types-heading">
+    <h3 id="types-heading">Badge Types</h3>
+    <p class="text-muted small">Different badge types for various use cases.</p>
+    <div class="demo-area">
+      <div class="badge-demo__type-grid">
+        <div class="badge-demo__target-wrapper">
+          <button type="button" class="btn btn-outline-secondary badge-demo__target" id="badge-count-target">
+            <i class="fas fa-bell" aria-hidden="true"></i>
+            <span class="visually-hidden">Notifications</span>
+          </button>
+          <span class="badge-demo__label">Count</span>
+        </div>
+        <div class="badge-demo__target-wrapper">
+          <button type="button" class="btn btn-outline-secondary badge-demo__target" id="badge-dot-target">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            <span class="visually-hidden">Messages</span>
+          </button>
+          <span class="badge-demo__label">Dot</span>
+        </div>
+        <div class="badge-demo__target-wrapper">
+          <button type="button" class="btn btn-outline-secondary badge-demo__target" id="badge-warning-target">
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+            <span class="visually-hidden">Warnings</span>
+          </button>
+          <span class="badge-demo__label">Warning</span>
+        </div>
+        <div class="badge-demo__target-wrapper">
+          <button type="button" class="btn btn-outline-secondary badge-demo__target" id="badge-success-target">
+            <i class="fas fa-check-circle" aria-hidden="true"></i>
+            <span class="visually-hidden">Completed</span>
+          </button>
+          <span class="badge-demo__label">Success</span>
+        </div>
+        <div class="badge-demo__target-wrapper">
+          <button type="button" class="btn btn-outline-secondary badge-demo__target" id="badge-info-target">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+            <span class="visually-hidden">Info</span>
+          </button>
+          <span class="badge-demo__label">Info</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo Section -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to customize the badge on this button.</p>
+    <div class="demo-area">
+      <div class="badge-demo__interactive">
+        <button type="button" class="btn btn-primary badge-demo__main-target" id="main-badge-target">
+          <i class="fas fa-inbox me-2" aria-hidden="true"></i>
+          Inbox
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test the Funky.Badge API methods.</p>
+    <div class="demo-area">
+      <div class="badge-demo__api-grid">
+        <button type="button" class="btn btn-outline-primary" id="btn-attach">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i>Attach
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-update">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i>Update (+1)
+        </button>
+        <button type="button" class="btn btn-outline-danger" id="btn-remove">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i>Remove
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-toggle-animate">
+          <i class="fas fa-magic me-1" aria-hidden="true"></i>Animate
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Position Demo Section -->
+  <section class="demo-section" aria-labelledby="position-heading">
+    <h3 id="position-heading">Badge Positions</h3>
+    <p class="text-muted small">Badges can be positioned at different corners of the parent element.</p>
+    <div class="demo-area">
+      <div class="badge-demo__position-grid">
+        <div class="badge-demo__position-target" id="pos-top-left">
+          <span class="badge-demo__position-label">top-left</span>
+        </div>
+        <div class="badge-demo__position-target" id="pos-top-right">
+          <span class="badge-demo__position-label">top-right</span>
+        </div>
+        <div class="badge-demo__position-target" id="pos-bottom-left">
+          <span class="badge-demo__position-label">bottom-left</span>
+        </div>
+        <div class="badge-demo__position-target" id="pos-bottom-right">
+          <span class="badge-demo__position-label">bottom-right</span>
+        </div>
+        <div class="badge-demo__position-target" id="pos-center">
+          <span class="badge-demo__position-label">center</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PubSub Integration Section -->
+  <section class="demo-section" aria-labelledby="pubsub-heading">
+    <h3 id="pubsub-heading">PubSub Integration</h3>
+    <p class="text-muted small">Badges can auto-update when subscribed to PubSub events.</p>
+    <div class="demo-area">
+      <div class="badge-demo__pubsub">
+        <div class="badge-demo__pubsub-wrapper">
+          <span class="badge-demo__pubsub-icon" id="pubsub-target">
+            <i class="fas fa-bell fa-lg" aria-hidden="true"></i>
+          </span>
+          <span class="badge-demo__pubsub-label">Notifications</span>
+        </div>
+        <button type="button" class="btn btn-outline-primary" id="btn-emit-event">
+          <i class="fas fa-paper-plane me-1" aria-hidden="true"></i>Emit Count Event
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="badge-demo__state">
+        <div class="badge-demo__state-item">
+          <span class="badge-demo__state-label">Type:</span>
+          <span class="badge-demo__state-value" id="state-type">count</span>
+        </div>
+        <div class="badge-demo__state-item">
+          <span class="badge-demo__state-label">Value:</span>
+          <span class="badge-demo__state-value" id="state-value">5</span>
+        </div>
+        <div class="badge-demo__state-item">
+          <span class="badge-demo__state-label">Max:</span>
+          <span class="badge-demo__state-value" id="state-max">99</span>
+        </div>
+        <div class="badge-demo__state-item">
+          <span class="badge-demo__state-label">Position:</span>
+          <span class="badge-demo__state-value" id="state-position">top-right</span>
+        </div>
+        <div class="badge-demo__state-item">
+          <span class="badge-demo__state-label">Animate:</span>
+          <span class="badge-demo__state-value" id="state-animate">true</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var subscriptionId = null;
+  var currentValue = 5;
+  var pubsubCount = 0;
+
+  /**
+   * Update state display from props
+   */
+  function updateStateDisplay(props) {
+    document.getElementById('state-type').textContent = props.type || 'count';
+    document.getElementById('state-value').textContent = props.value !== undefined ? props.value : 5;
+    document.getElementById('state-max').textContent = props.max || 99;
+    document.getElementById('state-position').textContent = props.position || 'top-right';
+    document.getElementById('state-animate').textContent = props.animate !== false ? 'true' : 'false';
+  }
+
+  /**
+   * Apply badge to main target using current props
+   */
+  function applyMainBadge(props) {
+    var target = document.getElementById('main-badge-target');
+    if (!target || !Funky.Badge) return;
+
+    currentValue = props.value !== undefined ? props.value : 5;
+
+    Funky.Badge.attach(target, {
+      value: currentValue,
+      type: props.type || 'count',
+      max: props.max || 99,
+      position: props.position || 'top-right',
+      animate: props.animate !== false
+    });
+
+    emit('event', {
+      event: 'funky:badge:attached',
+      payload: {
+        value: currentValue,
+        type: props.type || 'count',
+        position: props.position || 'top-right'
+      }
+    });
+  }
+
+  /**
+   * Initialize all type demo badges
+   */
+  function initTypeBadges() {
+    if (!Funky.Badge) return;
+
+    Funky.Badge.attach('#badge-count-target', { value: 5, type: 'count' });
+    Funky.Badge.attach('#badge-dot-target', { type: 'dot' });
+    Funky.Badge.attach('#badge-warning-target', { type: 'warning' });
+    Funky.Badge.attach('#badge-success-target', { type: 'success' });
+    Funky.Badge.attach('#badge-info-target', { type: 'info' });
+  }
+
+  /**
+   * Initialize position demo badges
+   */
+  function initPositionBadges() {
+    if (!Funky.Badge) return;
+
+    Funky.Badge.attach('#pos-top-left', { value: 1, type: 'count', position: 'top-left' });
+    Funky.Badge.attach('#pos-top-right', { value: 2, type: 'count', position: 'top-right' });
+    Funky.Badge.attach('#pos-bottom-left', { value: 3, type: 'count', position: 'bottom-left' });
+    Funky.Badge.attach('#pos-bottom-right', { value: 4, type: 'count', position: 'bottom-right' });
+    Funky.Badge.attach('#pos-center', { value: 5, type: 'count', position: 'center' });
+  }
+
+  /**
+   * Initialize PubSub subscription demo
+   */
+  function initPubSubDemo() {
+    if (!Funky.Badge) return;
+
+    // Initial badge
+    Funky.Badge.attach('#pubsub-target', { value: 0, type: 'count' });
+
+    // Subscribe to demo event
+    subscriptionId = Funky.Badge.subscribe('#pubsub-target', 'demo:badge:count', {
+      type: 'count',
+      animate: true
+    });
+  }
+
+  /**
+   * Set up button handlers
+   */
+  function setupHandlers(props) {
+    // Attach button
+    document.getElementById('btn-attach').onclick = function() {
+      applyMainBadge(getProps());
+      emit('event', { event: 'funky:badge:attached', payload: { action: 'attach' } });
+    };
+
+    // Update button (+1)
+    document.getElementById('btn-update').onclick = function() {
+      var currentProps = getProps();
+      currentValue++;
+      Funky.Badge.update('#main-badge-target', {
+        value: currentValue,
+        type: currentProps.type || 'count',
+        max: currentProps.max || 99,
+        position: currentProps.position || 'top-right',
+        animate: currentProps.animate !== false
+      });
+      emit('event', { event: 'funky:badge:updated', payload: { value: currentValue } });
+    };
+
+    // Remove button
+    document.getElementById('btn-remove').onclick = function() {
+      Funky.Badge.remove('#main-badge-target');
+      emit('event', { event: 'funky:badge:removed', payload: {} });
+    };
+
+    // Animate button
+    document.getElementById('btn-toggle-animate').onclick = function() {
+      var currentProps = getProps();
+      Funky.Badge.update('#main-badge-target', {
+        value: currentValue,
+        type: currentProps.type || 'count',
+        max: currentProps.max || 99,
+        position: currentProps.position || 'top-right',
+        animate: true
+      });
+      emit('event', { event: 'funky:badge:animated', payload: { value: currentValue } });
+    };
+
+    // Emit PubSub event button
+    document.getElementById('btn-emit-event').onclick = function() {
+      pubsubCount++;
+      if (Funky.PubSub) {
+        Funky.PubSub.emit('demo:badge:count', { count: pubsubCount });
+        emit('event', { event: 'demo:badge:count', payload: { count: pubsubCount } });
+      }
+    };
+  }
+
+  Funky.Pages.register('component-badge', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Initialize all demo badges
+      initTypeBadges();
+      initPositionBadges();
+      initPubSubDemo();
+
+      // Apply main badge from props
+      applyMainBadge(props);
+
+      // Set up button handlers
+      setupHandlers(props);
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          applyMainBadge(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Unsubscribe badge from PubSub demo
+      if (subscriptionId && Funky.Badge) {
+        Funky.Badge.unsubscribe(subscriptionId);
+        subscriptionId = null;
+      }
+
+      // Remove all badges
+      if (Funky.Badge) {
+        Funky.Badge.remove('#main-badge-target');
+        Funky.Badge.remove('#badge-count-target');
+        Funky.Badge.remove('#badge-dot-target');
+        Funky.Badge.remove('#badge-warning-target');
+        Funky.Badge.remove('#badge-success-target');
+        Funky.Badge.remove('#badge-info-target');
+        Funky.Badge.remove('#pos-top-left');
+        Funky.Badge.remove('#pos-top-right');
+        Funky.Badge.remove('#pos-bottom-left');
+        Funky.Badge.remove('#pos-bottom-right');
+        Funky.Badge.remove('#pos-center');
+        Funky.Badge.remove('#pubsub-target');
+      }
+
+      // Reset state
+      currentValue = 5;
+      pubsubCount = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

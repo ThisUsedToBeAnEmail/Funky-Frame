@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable" data-animations="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4361ee">
+  <title>Funky Frame - Documentation</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Prevent flash of wrong theme -->
+  <script>
+    (function() {
+      try {
+        var stored = localStorage.getItem('funky_playground_prefs');
+        var prefs = stored ? JSON.parse(stored) : {};
+        var theme = prefs.theme || 'dark';
+        var effectiveTheme = theme;
+        if (theme === 'system') {
+          effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
+        document.documentElement.setAttribute('data-density', prefs.density || 'comfortable');
+        document.documentElement.setAttribute('data-animations', prefs.animations === false ? 'off' : 'on');
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  <!-- Vendor CSS: Bootstrap first, then FontAwesome -->
+  <link href="../../vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../../vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <!-- Funky CSS: Component styles first, themes.css MUST be last -->
+  <link href="../css/layout.css" rel="stylesheet">
+  <link href="../css/navigation.css" rel="stylesheet">
+  <link href="../css/cards.css" rel="stylesheet">
+  <link href="../css/forms.css" rel="stylesheet">
+  <link href="../css/buttons.css" rel="stylesheet">
+  <link href="../css/modals.css" rel="stylesheet">
+  <link href="../css/toasts.css" rel="stylesheet">
+  <link href="../css/sidenav.css" rel="stylesheet">
+  <!-- themes.css MUST load last -->
+  <link href="../css/themes.css" rel="stylesheet">
+</head>
+<body data-theme="dark" data-nav-position="top">
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo">
+        <span class="sidebar-logo-text">Funky Frame</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- About -->
+      <li class="nav-standalone">
+        <a href="/about/" class="nav-link" data-tooltip="About">
+          <span class="nav-icon"><i class="fas fa-home"></i></span>
+          <span class="nav-text">About</span>
+        </a>
+      </li>
+
+      <!-- Documentation -->
+      <li class="nav-standalone">
+        <a href="/docs/" class="nav-link active" data-tooltip="Documentation">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          <span class="nav-text">Docs</span>
+        </a>
+      </li>
+
+      <!-- Playground -->
+      <li class="nav-standalone">
+        <a href="/playground/" class="nav-link" data-tooltip="Playground">
+          <span class="nav-icon"><i class="fas fa-flask"></i></span>
+          <span class="nav-text">Playground</span>
+        </a>
+      </li>
+
+      <!-- Test Runner -->
+      <li class="nav-standalone">
+        <a href="/test-runner/" class="nav-link" data-tooltip="Test Runner">
+          <span class="nav-icon"><i class="fas fa-vial"></i></span>
+          <span class="nav-text">Test Runner</span>
+        </a>
+      </li>
+    </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+      <span class="toggle-icon">◀</span>
+    </button>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <h1 class="page-title">Documentation</h1>
+      </div>
+
+      <div class="header-right">
+        <a href="https://github.com/ThisUsedToBeAnEmail/Funky-Frame" class="btn btn-funky btn-sm" target="_blank">
+          <i class="fab fa-github"></i>
+          <span class="d-none d-sm-inline ms-1">GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="spaContent" class="main-content" data-page="docs" data-breadcrumb-title="Documentation">
+      <div class="container-fluid py-4">
+        <div class="row">
+          <div class="col-lg-8">
+            <h2>Documentation</h2>
+            <p class="lead text-muted">
+              Learn how to use Funky Frame components and utilities.
+            </p>
+
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Core Modules</h5>
+                <ul>
+                  <li><strong>Namespace</strong> - Global Funky namespace</li>
+                  <li><strong>Registry</strong> - Component registration</li>
+                  <li><strong>DOM</strong> - DOM utilities</li>
+                  <li><strong>Events</strong> - Event handling</li>
+                  <li><strong>PubSub</strong> - Publish/Subscribe messaging</li>
+                  <li><strong>Storage</strong> - Local storage wrapper</li>
+                  <li><strong>SPA</strong> - Single Page Application router</li>
+                  <li><strong>Pages</strong> - Page lifecycle management</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Components</h5>
+                <p>Explore all 80+ components in the <a href="/playground/">Playground</a>.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Coming Soon</h5>
+                <p class="text-muted">Full documentation with examples, API references, and guides is in development.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- Core Scripts -->
+  <script src="../../js/core/namespace.js"></script>
+  <script src="../../js/core/registry.js"></script>
+  <script src="../../js/core/util.js"></script>
+  <script src="../../js/core/dom.js"></script>
+  <script src="../../js/core/events.js"></script>
+  <script src="../../js/core/pubsub.js"></script>
+  <script src="../../js/core/storage.js"></script>
+  <script src="../../js/core/keyboard.js"></script>
+  <script src="../../js/core/spa.js"></script>
+  <script src="../../js/core/pages.js"></script>
+
+  <!-- Components used by shell -->
+  <script src="../../js/components/toast.js"></script>
+
+  <!-- Shared App Logic -->
+  <script src="../js/app.js"></script>
+
+  <!-- Page Registration -->
+  <script>
+    (function() {
+      if (typeof Funky !== 'undefined' && Funky.Pages) {
+        Funky.Pages.register('docs', {
+          init: function(state) {
+            console.log('[Docs] Page initialized');
+          },
+          destroy: function() {
+            console.log('[Docs] Page destroyed');
+            return {};
+          }
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>

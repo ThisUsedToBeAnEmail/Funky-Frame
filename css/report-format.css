@@ -1,0 +1,317 @@
+/* ============================================
+   Report Format Builder
+   Two-column layout for format configuration
+   ============================================ */
+
+/* Format Builder Two-Column Layout */
+.format-builder {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  align-items: start;
+}
+
+.format-builder-left {
+  min-width: 0;
+}
+
+.format-builder-right {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 200px);
+  overflow-y: visible;
+}
+
+.format-builder-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.format-builder-right::-webkit-scrollbar-track {
+  background: var(--pro-bg-secondary);
+  border-radius: 3px;
+}
+
+.format-builder-right::-webkit-scrollbar-thumb {
+  background: var(--user-accent, var(--pro-accent-primary));
+  border-radius: 3px;
+}
+
+.sticky-panel .section-body {
+  max-height: none;
+}
+
+/* Available Columns Panel - Fixed height with scroll */
+#available-columns-panel {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+#available-columns-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+#available-columns-panel::-webkit-scrollbar-track {
+  background: var(--pro-bg-secondary);
+  border-radius: 4px;
+}
+
+#available-columns-panel::-webkit-scrollbar-thumb {
+  background: var(--user-accent, var(--pro-accent-primary));
+  border-radius: 4px;
+}
+
+#available-columns-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-orange);
+}
+
+/* Column Info Clickable Area */
+.column-info {
+  flex: 1;
+  cursor: pointer;
+  padding: 4px;
+  margin: -4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.column-info:hover {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.column-info:active {
+  background-color: rgba(40, 167, 69, 0.2);
+}
+
+/* Responsive - stack on smaller screens */
+@media (max-width: 1200px) {
+  .format-builder {
+    grid-template-columns: 1fr;
+  }
+  
+  .format-builder-right {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* Make Placeholder Grid Scrollable */
+.placeholder-grid {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.placeholder-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.placeholder-grid::-webkit-scrollbar-track {
+  background: var(--pro-bg-secondary);
+  border-radius: 4px;
+}
+
+.placeholder-grid::-webkit-scrollbar-thumb {
+  background: var(--user-accent, var(--pro-accent-primary));
+  border-radius: 4px;
+}
+
+.placeholder-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--user-accent-hover, var(--pro-accent-primary-hover));
+}
+
+/* Hide outer scrollbar on right panel when inner panels have scrollbars */
+.format-builder-right {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.format-builder-right::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ============================================
+   Field Input Group
+   Compact form controls for format fields
+   ============================================ */
+
+/* Field Type Select Styling */
+.field-type-select {
+  width: 80px;
+  flex-shrink: 0;
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.875rem;
+}
+
+.field-input-group .form-control,
+.field-input-group .form-select {
+  flex: 1;
+  min-width: 0;
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.875rem !important;
+}
+
+.field-input-group .btn-outline-danger {
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Select2 Column Picker
+   Rich dropdown for source column selection
+   ============================================ */
+
+/* Select2 Column Option Styling */
+.select2-column-option {
+  padding: 4px 0;
+}
+
+.select2-column-main {
+  margin-bottom: 2px;
+}
+
+.select2-column-main strong {
+  color: #ff9933;
+  font-weight: 600;
+}
+
+.select2-column-type {
+  color: #6c757d;
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+.select2-column-desc {
+  color: #adb5bd;
+  font-size: 0.85em;
+  margin-top: 2px;
+  padding-left: 8px;
+}
+
+.select2-column-example {
+  color: #28a745;
+  font-size: 0.8em;
+  margin-top: 2px;
+  padding-left: 8px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Make Select2 dropdowns fit the field-input-group */
+.field-input-group .select2-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.field-input-group .select2-container .select2-selection--single {
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  border-color: #495057;
+  background-color: #212529;
+  color: #fff;
+  padding: 0 !important;
+}
+
+.field-input-group .select2-container .select2-selection--single .select2-selection__rendered {
+  color: #fff;
+  line-height: calc(1.5em + 0.5rem) !important;
+  padding: 0 0.8em !important;
+}
+
+.field-input-group .select2-container .select2-selection--single .select2-selection__arrow {
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  top: 0 !important;
+}
+
+/* Format Builder Select2 Source Fields - Specific Styling */
+.format-builder .field-input-group .select2-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.format-builder .field-input-group .select2-container--open {
+  z-index: 9999;
+}
+
+.format-builder .field-input-group .select2-container .select2-selection--single {
+  border-radius: 0.25rem;
+}
+
+.format-builder .field-input-group .select2-container .select2-selection--single .select2-selection__rendered {
+  padding-right: 2rem !important;
+}
+
+.format-builder .field-input-group .select2-container .select2-selection--single .select2-selection__arrow {
+  right: 1px;
+}
+
+/* Override default Select2 Bootstrap 5 theme sizing */
+.format-builder .field-input-group .select2-container--bootstrap-5 .select2-selection {
+  min-height: auto !important;
+  height: calc(1.5em + 0.5rem + 2px) !important;
+}
+
+.format-builder .field-input-group .select2-container--bootstrap-5 .select2-selection--single {
+  border-radius: 8px !important;
+  min-height: auto !important;
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  padding: 0 !important;
+}
+
+/* Modal format builder - override modal Select2 sizing */
+.modal .format-builder .field-input-group .select2-container--bootstrap-5 .select2-selection,
+.modal .format-builder .field-input-group .select2-container--bootstrap-5 .select2-selection--single {
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  min-height: auto !important;
+  padding: 0 !important;
+}
+
+.modal .format-builder .field-input-group .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+  height: calc(1.5em + 0.5rem + 2px) !important;
+}
+
+.modal .format-builder .field-input-group .form-control,
+.modal .format-builder .field-input-group .form-select {
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  min-height: auto !important;
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .format-builder-right {
+    border: 2px solid currentColor;
+    padding: 12px;
+  }
+
+  #available-columns-panel {
+    border: 2px solid currentColor;
+    padding: 8px;
+  }
+
+  .column-info:focus-visible {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+
+  .placeholder-grid {
+    border: 2px solid currentColor;
+  }
+
+  .field-input-group .form-control,
+  .field-input-group .form-select {
+    border-width: 2px;
+  }
+
+  .field-input-group .form-control:focus,
+  .field-input-group .form-select:focus {
+    outline: 3px solid;
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
+  .field-input-group .select2-container .select2-selection--single {
+    border-width: 2px;
+  }
+}

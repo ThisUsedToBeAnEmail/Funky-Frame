@@ -1,0 +1,813 @@
+/**
+ * Funky TreeView Styles
+ * 
+ * Hierarchical tree display with expand/collapse, icons, and guide lines.
+ * Theme and density aware using Funky design system.
+ */
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+
+.funky-tree-view {
+  width: 100%;
+  overflow: auto;
+  font-family: var(--pro-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  color: var(--pro-text-primary);
+  background: var(--pro-bg-primary);
+}
+
+.tree-view-container {
+  min-width: max-content;
+}
+
+/* Empty state */
+.tree-view-empty {
+  padding: var(--pro-spacing-lg, 1.5rem);
+  text-align: center;
+  color: var(--pro-text-secondary);
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Search Input
+   ========================================================================== */
+
+.tree-view-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: var(--pro-border-radius, 6px);
+  background: var(--pro-bg-secondary, rgba(255, 255, 255, 0.05));
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tree-view-search:focus-within {
+  border-color: var(--pro-accent-primary, #0d6efd);
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.tree-view-search-icon {
+  color: var(--pro-text-secondary);
+  flex-shrink: 0;
+}
+
+.tree-view-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--pro-text-primary);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  outline: none;
+  min-width: 0;
+}
+
+.tree-view-search-input::placeholder {
+  color: var(--pro-text-muted, rgba(255, 255, 255, 0.4));
+}
+
+.tree-view-search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--pro-bg-tertiary, rgba(255, 255, 255, 0.1));
+  color: var(--pro-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tree-view-search-clear:hover {
+  background: var(--pro-bg-hover, rgba(255, 255, 255, 0.15));
+  color: var(--pro-text-primary);
+}
+
+/* ==========================================================================
+   Match Highlighting
+   ========================================================================== */
+
+.tree-view-highlight {
+  background: var(--pro-warning-bg, rgba(255, 193, 7, 0.3));
+  color: inherit;
+  padding: 0 0.125rem;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Loading & Error States
+   ========================================================================== */
+
+/* Loading state */
+.tree-view-node.tree-view-loading > .tree-view-row {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.tree-view-loading-placeholder {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  color: var(--pro-text-secondary);
+  font-style: italic;
+  font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+/* Error state */
+.tree-view-node.tree-view-error > .tree-view-row .tree-view-chevron i {
+  color: var(--pro-danger, #dc3545);
+}
+
+.tree-view-error-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  color: var(--pro-danger, #dc3545);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+.tree-view-retry-btn {
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+  border: 1px solid var(--pro-danger, #dc3545);
+  border-radius: var(--pro-border-radius-sm, 4px);
+  background: transparent;
+  color: var(--pro-danger, #dc3545);
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tree-view-retry-btn:hover {
+  background: var(--pro-danger, #dc3545);
+  color: #fff;
+}
+
+/* ==========================================================================
+   Drag and Drop
+   ========================================================================== */
+
+/* Draggable cursor */
+.tree-view-draggable {
+  cursor: grab;
+}
+
+.tree-view-draggable:active {
+  cursor: grabbing;
+}
+
+/* Node being dragged */
+.tree-view-dragging {
+  opacity: 0.5;
+}
+
+/* Container during drag */
+.tree-view-drag-active .tree-view-row:not(.tree-view-dragging) {
+  transition: transform 0.1s ease;
+}
+
+/* Drop target base */
+.tree-view-drop-target {
+  position: relative;
+}
+
+/* Drop before indicator */
+.tree-view-drop-before::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--pro-accent-primary, #0d6efd);
+  z-index: 10;
+}
+
+/* Drop after indicator */
+.tree-view-drop-after::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--pro-accent-primary, #0d6efd);
+  z-index: 10;
+}
+
+/* Drop inside indicator */
+.tree-view-drop-inside {
+  background: var(--pro-accent-primary-light, rgba(13, 110, 253, 0.2)) !important;
+  outline: 2px dashed var(--pro-accent-primary, #0d6efd);
+  outline-offset: -2px;
+}
+
+/* Drag ghost */
+.tree-view-drag-ghost {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+  padding: 0.375rem 0.75rem;
+  background: var(--pro-bg-elevated, #2d2d4a);
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.15));
+  border-radius: var(--pro-border-radius, 6px);
+  color: var(--pro-text-primary);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ==========================================================================
+   No Results State
+   ========================================================================== */
+
+.tree-view-no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: var(--pro-spacing-lg, 1.5rem);
+  text-align: center;
+  color: var(--pro-text-secondary);
+}
+
+.tree-view-no-results-clear {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.15));
+  border-radius: var(--pro-border-radius, 6px);
+  background: transparent;
+  color: var(--pro-accent-primary, #0d6efd);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.tree-view-no-results-clear:hover {
+  background: var(--pro-accent-primary-light, rgba(13, 110, 253, 0.15));
+  border-color: var(--pro-accent-primary, #0d6efd);
+}
+
+/* ==========================================================================
+   Node Structure
+   ========================================================================== */
+
+.tree-view-node {
+  position: relative;
+}
+
+.tree-view-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+  border-radius: var(--pro-border-radius-sm, 4px);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+  min-height: 2rem;
+}
+
+.tree-view-row:hover {
+  background: var(--pro-bg-secondary);
+}
+
+.tree-view-row:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset-inset);
+  box-shadow: var(--focus-ring-shadow-inset);
+}
+
+/* ==========================================================================
+   Chevron (Expand/Collapse)
+   ========================================================================== */
+
+.tree-view-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--pro-text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.tree-view-chevron i {
+  font-size: 0.625rem;
+}
+
+.tree-view-chevron-expanded {
+  transform: rotate(90deg);
+}
+
+.tree-view-chevron-empty {
+  visibility: hidden;
+}
+
+.tree-view-row:hover .tree-view-chevron {
+  color: var(--pro-text-primary);
+}
+
+/* ==========================================================================
+   Checkbox (Multi-Select Mode)
+   ========================================================================== */
+
+.tree-view-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--pro-text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.tree-view-checkbox i {
+  font-size: 0.875rem;
+}
+
+.tree-view-checkbox:hover {
+  color: var(--pro-accent-primary, #0d6efd);
+}
+
+.tree-view-checkbox-checked {
+  color: var(--pro-accent-primary, #0d6efd);
+}
+
+.tree-view-checkbox-checked:hover {
+  color: var(--pro-accent-primary-dark, #0a58ca);
+}
+
+.tree-view-checkbox-indeterminate {
+  color: var(--pro-accent-warning, #f59e0b);
+}
+
+.tree-view-checkbox-indeterminate:hover {
+  color: var(--pro-accent-warning, #d97706);
+}
+
+/* ==========================================================================
+   Icon
+   ========================================================================== */
+
+.tree-view-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  flex-shrink: 0;
+  color: var(--pro-accent-primary, #0d6efd);
+}
+
+.tree-view-icon i {
+  font-size: 0.875rem;
+}
+
+/* Folder icons */
+.tree-view-icon .fa-folder,
+.tree-view-icon .fa-folder-open {
+  color: var(--pro-accent-warning, #f59e0b);
+}
+
+/* File icons */
+.tree-view-icon .fa-file,
+.tree-view-icon .fa-file-alt {
+  color: var(--pro-text-secondary);
+}
+
+/* ==========================================================================
+   Label
+   ========================================================================== */
+
+.tree-view-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--pro-text-primary);
+}
+
+/* ==========================================================================
+   Children Container
+   ========================================================================== */
+
+.tree-view-children {
+  overflow: hidden;
+  transition: max-height 0.2s ease-out, opacity 0.2s ease-out;
+  max-height: 5000px; /* Large enough for most trees */
+  opacity: 1;
+}
+
+.tree-view-children-collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ==========================================================================
+   Guide Lines
+   ========================================================================== */
+
+.tree-view-guides .tree-view-node {
+  position: relative;
+}
+
+/* Vertical guide line */
+.tree-view-guides .tree-view-node::before {
+  content: '';
+  position: absolute;
+  left: calc(0.625rem - 1px); /* Align with chevron center */
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--pro-border-color);
+  pointer-events: none;
+}
+
+/* Hide guide for root nodes */
+.tree-view-guides > .tree-view-node::before,
+.tree-view-guides .tree-view-container > .tree-view-node::before {
+  display: none;
+}
+
+/* Hide guide below last node */
+.tree-view-guides .tree-view-node-last::before {
+  bottom: calc(100% - 1rem);
+}
+
+/* Horizontal connector */
+.tree-view-guides .tree-view-children .tree-view-row::before {
+  content: '';
+  position: absolute;
+  left: calc(-0.625rem - 10px);
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: var(--pro-border-color);
+  pointer-events: none;
+}
+
+/* Adjust guides based on depth (handled via inline padding) */
+
+/* ==========================================================================
+   Selection States
+   ========================================================================== */
+
+.tree-view-row.tree-view-selected {
+  background: var(--pro-accent-primary-light, rgba(13, 110, 253, 0.15));
+  color: var(--pro-accent-primary);
+}
+
+.tree-view-row.tree-view-selected:hover {
+  background: var(--pro-accent-primary-light, rgba(13, 110, 253, 0.2));
+}
+
+/* ==========================================================================
+   Focus States (Keyboard Navigation)
+   ========================================================================== */
+
+/* Focus ring - visible for keyboard navigation */
+.tree-view-row:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset-inset);
+  box-shadow: var(--focus-ring-shadow-inset);
+}
+
+/* Focused state (keyboard) */
+.tree-view-row.tree-view-focused {
+  background: var(--pro-bg-tertiary, rgba(255, 255, 255, 0.08));
+}
+
+.tree-view-row.tree-view-focused.tree-view-selected {
+  background: var(--pro-accent-primary-light, rgba(13, 110, 253, 0.2));
+}
+
+/* Hide focus ring for mouse clicks */
+.tree-view-mouse-focus .tree-view-row:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Container focus - subtle border when tree has focus */
+.tree-view-container:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* Live region - hidden visually but available for screen readers */
+.tree-view-live-region {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Theme Support
+   ========================================================================== */
+
+/* Light theme */
+[data-theme="light"] .funky-tree-view {
+  background: var(--pro-bg-primary, #ffffff);
+}
+
+[data-theme="light"] .tree-view-row:hover {
+  background: var(--pro-bg-secondary, #f8f9fa);
+}
+
+[data-theme="light"] .tree-view-guides .tree-view-node::before,
+[data-theme="light"] .tree-view-guides .tree-view-row::before {
+  background: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .tree-view-search {
+  background: var(--pro-bg-secondary, #f8f9fa);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .tree-view-highlight {
+  background: rgba(255, 193, 7, 0.4);
+}
+
+/* Dark theme (default) */
+[data-theme="dark"] .funky-tree-view {
+  background: var(--pro-bg-primary, #1a1a2e);
+}
+
+[data-theme="dark"] .tree-view-row:hover {
+  background: var(--pro-bg-secondary, #252542);
+}
+
+[data-theme="dark"] .tree-view-guides .tree-view-node::before,
+[data-theme="dark"] .tree-view-guides .tree-view-row::before {
+  background: var(--pro-border-color, #3d3d5c);
+}
+
+/* Even Funkyer theme */
+[data-theme="even-funkyer"] .funky-tree-view {
+  background: var(--pro-bg-primary);
+}
+
+[data-theme="even-funkyer"] .tree-view-icon .fa-folder,
+[data-theme="even-funkyer"] .tree-view-icon .fa-folder-open {
+  color: var(--pro-accent-secondary, #e879f9);
+}
+
+[data-theme="even-funkyer"] .tree-view-row:hover {
+  background: var(--pro-bg-elevated);
+}
+
+/* ==========================================================================
+   Density Support
+   ========================================================================== */
+
+/* Compact */
+[data-density="compact"] .tree-view-row {
+  padding: 0.25rem 0.5rem;
+  gap: 0.375rem;
+  min-height: 1.5rem;
+  font-size: var(--pro-font-size-xs, 0.75rem);
+}
+
+[data-density="compact"] .tree-view-chevron,
+[data-density="compact"] .tree-view-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+[data-density="compact"] .tree-view-chevron i {
+  font-size: 0.5rem;
+}
+
+[data-density="compact"] .tree-view-icon i {
+  font-size: 0.75rem;
+}
+
+/* Comfortable (default - no overrides needed) */
+
+/* Spacious */
+[data-density="spacious"] .tree-view-row {
+  padding: 0.5rem 1rem;
+  gap: 0.625rem;
+  min-height: 2.5rem;
+  font-size: var(--pro-font-size-md, 1rem);
+}
+
+[data-density="spacious"] .tree-view-chevron,
+[data-density="spacious"] .tree-view-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+[data-density="spacious"] .tree-view-chevron i {
+  font-size: 0.75rem;
+}
+
+[data-density="spacious"] .tree-view-icon i {
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Touch devices - larger tap targets */
+@media (pointer: coarse) {
+  .tree-view-row {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .tree-view-chevron,
+  .tree-view-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .tree-view-row {
+    padding: 0.5rem 0.5rem;
+  }
+  
+  .funky-tree-view {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+  }
+}
+
+/* Small mobile */
+@media (max-width: 576px) {
+  .tree-view-row {
+    gap: 0.375rem;
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-view-chevron,
+  .tree-view-row,
+  .tree-view-children {
+    transition: none;
+  }
+  
+  .tree-view-children-collapsed {
+    /* Instant hide without animation */
+    display: none;
+  }
+  
+  .tree-view-children:not(.tree-view-children-collapsed) {
+    display: block;
+    max-height: none;
+  }
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+  .tree-view-row:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+  }
+
+  .tree-view-container:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .tree-view-guides .tree-view-node::before,
+  .tree-view-guides .tree-view-row::before {
+    background: var(--pro-text-primary);
+  }
+
+  .tree-view-row.tree-view-selected {
+    background: var(--pro-text-primary);
+    color: var(--pro-bg-primary);
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+  .funky-tree-view {
+    background: white;
+    color: black;
+  }
+
+  .tree-view-children-collapsed {
+    display: block;
+    max-height: none;
+    opacity: 1;
+  }
+
+  .tree-view-chevron {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Playground Demo Styles
+   ========================================================================== */
+
+.tree-demo__container {
+  min-height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: var(--pro-border-radius, 6px);
+  background: var(--pro-bg-secondary, rgba(255, 255, 255, 0.03));
+}
+
+.tree-demo__button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pro-spacing-sm, 0.75rem);
+  align-items: flex-start;
+}
+
+.tree-demo__button-grid .btn {
+  flex-shrink: 0;
+}
+
+.tree-demo__log {
+  font-family: var(--pro-font-mono, 'Monaco', 'Menlo', 'Consolas', monospace);
+  font-size: var(--pro-font-size-sm, 0.8125rem);
+  line-height: 1.6;
+  padding: var(--pro-spacing-md, 1rem);
+  margin: 0;
+  background: var(--pro-bg-tertiary, var(--pro-bg-secondary));
+  color: var(--pro-text-muted, var(--pro-text-secondary));
+  border-radius: var(--pro-radius-md, 6px);
+  border: 1px solid var(--pro-border-color);
+  min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Light theme demo styles */
+[data-theme="light"] .tree-demo__container {
+  background: var(--pro-bg-secondary, #f8f9fa);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .tree-demo__log {
+  background: var(--pro-bg-tertiary, #e9ecef);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tree-demo__button-grid {
+    gap: var(--pro-spacing-xs, 0.5rem);
+  }
+
+  .tree-demo__button-grid .btn {
+    flex: 1 1 calc(50% - var(--pro-spacing-xs, 0.5rem));
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tree-demo__button-grid .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .tree-demo__log {
+    border-width: 2px;
+  }
+}
+
+[data-theme="high-contrast"] .tree-demo__log {
+  border: 2px solid #ffffff;
+  background: #000000;
+  color: #ffffff;
+}

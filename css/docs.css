@@ -1,0 +1,223 @@
+/**
+ * Documentation Page Styles
+ * Layout with collapsible sidebar for markdown documentation
+ */
+
+/* =========================================================================
+   DOCS CONTAINER LAYOUT
+   ========================================================================= */
+
+/* Prevent window scroll - docs has its own scroll in .docs-content */
+.main-content[data-page="docs"] {
+	overflow: hidden;
+	height: calc(100vh - var(--header-height, 60px));
+}
+
+.docs-container {
+	display: flex;
+	height: 100%;
+	position: relative;
+	overflow: hidden;
+}
+
+/* =========================================================================
+   DOCS SIDEBAR
+   ========================================================================= */
+
+.docs-sidebar {
+	width: 280px;
+	flex-shrink: 0;
+	border-right: 1px solid var(--pro-border-color);
+	overflow-y: auto;
+	background: var(--pro-bg-secondary);
+	transition: width 0.3s ease;
+}
+
+.docs-sidebar.collapsed {
+	width: 0;
+	overflow: hidden;
+	border-right: none;
+}
+
+.docs-sidebar .funky-sidenav {
+	height: 100%;
+}
+
+/* =========================================================================
+   DOCS CONTENT AREA
+   ========================================================================= */
+
+.docs-content {
+	flex: 1;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: var(--pro-spacing-lg);
+	position: relative;
+}
+
+/* =========================================================================
+   SIDEBAR TOGGLE BUTTON
+   ========================================================================= */
+
+.docs-sidebar-toggle {
+	position: absolute;
+	left: 280px;
+	top: 0;
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	background: var(--pro-bg-secondary);
+	border: 1px solid var(--pro-border-color);
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+	cursor: pointer;
+	transition: left 0.3s ease, background-color 0.2s ease;
+	color: var(--pro-text-secondary);
+	font-size: var(--pro-font-size-xs);
+}
+
+.docs-sidebar-toggle:hover {
+	background: var(--pro-bg-tertiary);
+	color: var(--pro-text-primary);
+}
+
+.docs-sidebar-toggle:focus-visible {
+	outline: 2px solid var(--pro-accent-primary);
+	outline-offset: 2px;
+}
+
+.docs-container.sidebar-collapsed .docs-sidebar-toggle {
+	left: 0;
+	border-left: 1px solid var(--pro-border-color);
+	border-radius: 4px;
+}
+
+.docs-sidebar-toggle .toggle-icon {
+	display: inline-block;
+	transition: transform 0.3s ease;
+}
+
+.docs-container.sidebar-collapsed .docs-sidebar-toggle .toggle-icon {
+	transform: rotate(180deg);
+}
+
+/* =========================================================================
+   LOADING STATE
+   ========================================================================= */
+
+.docs-content.loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.docs-content.loading::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 32px;
+	height: 32px;
+	margin: -16px 0 0 -16px;
+	border: 3px solid var(--pro-border-color);
+	border-top-color: var(--pro-accent-primary);
+	border-radius: 50%;
+	animation: docs-spin 0.8s linear infinite;
+}
+
+@keyframes docs-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* =========================================================================
+   EMPTY STATE
+   ========================================================================= */
+
+.docs-empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 300px;
+	text-align: center;
+	color: var(--pro-text-muted);
+	padding: var(--pro-spacing-lg);
+}
+
+.docs-empty-state i {
+	font-size: var(--pro-font-size-4xl);
+	margin-bottom: var(--pro-spacing-md);
+	opacity: 0.5;
+}
+
+.docs-empty-state h3 {
+	margin: 0 0 var(--pro-spacing-xs) 0;
+	color: var(--pro-text-primary);
+	font-weight: var(--pro-font-weight-medium);
+}
+
+.docs-empty-state p {
+	margin: 0;
+	font-size: var(--pro-font-size-sm);
+}
+
+/* =========================================================================
+   RESPONSIVE - MOBILE
+   ========================================================================= */
+
+@media (max-width: 768px) {
+	.docs-sidebar {
+		position: fixed;
+		left: 0;
+		top: var(--header-height, 60px);
+		height: calc(100vh - var(--header-height, 60px));
+		z-index: 200;
+		transform: translateX(-100%);
+		width: 280px;
+	}
+
+	.docs-sidebar:not(.collapsed) {
+		transform: translateX(0);
+	}
+
+	.docs-sidebar.collapsed {
+		transform: translateX(-100%);
+		width: 280px;
+	}
+
+	.docs-sidebar-toggle {
+		left: 0;
+		position: fixed;
+		top: calc(var(--header-height, 60px) + var(--pro-spacing-sm));
+		border-radius: 0 4px 4px 0;
+		border-left: none;
+	}
+
+	.docs-sidebar:not(.collapsed) ~ .docs-sidebar-toggle {
+		left: 280px;
+	}
+
+	/* Overlay when sidebar open on mobile */
+	.docs-overlay {
+		display: none;
+		position: fixed;
+		top: var(--header-height, 60px);
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: var(--pro-bg-overlay);
+		z-index: 199;
+	}
+
+	.docs-sidebar:not(.collapsed) ~ .docs-overlay {
+		display: block;
+	}
+
+	.docs-content {
+		padding: var(--pro-spacing-md);
+	}
+}

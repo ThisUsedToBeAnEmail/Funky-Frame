@@ -1,0 +1,586 @@
+<div data-page="component-dashboard-grid" class="dashboard-grid-demo">
+  <!-- State Display -->
+  <section class="dashboard-grid-demo__section" aria-labelledby="grid-state-heading">
+    <h3 id="grid-state-heading">State</h3>
+    <div class="dashboard-grid-demo__state" role="status" aria-live="polite">
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Edit Mode</span>
+        <span id="state-edit-mode" class="dashboard-grid-demo__state-value">Off</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Editable</span>
+        <span id="state-editable" class="dashboard-grid-demo__state-value">Yes</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Columns</span>
+        <span id="state-columns" class="dashboard-grid-demo__state-value">12</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Row Height</span>
+        <span id="state-row-height" class="dashboard-grid-demo__state-value">80px</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Gap</span>
+        <span id="state-gap" class="dashboard-grid-demo__state-value">16px</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Animate</span>
+        <span id="state-animate" class="dashboard-grid-demo__state-value">Yes</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Widgets</span>
+        <span id="state-widget-count" class="dashboard-grid-demo__state-value">0</span>
+      </div>
+      <div class="dashboard-grid-demo__state-item">
+        <span class="dashboard-grid-demo__state-label">Palette</span>
+        <span id="state-palette" class="dashboard-grid-demo__state-value">Hidden</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Buttons -->
+  <section class="dashboard-grid-demo__section" aria-labelledby="grid-controls-heading">
+    <h3 id="grid-controls-heading">API Controls</h3>
+    <div class="dashboard-grid-demo__controls">
+      <div class="dashboard-grid-demo__control-group">
+        <span class="dashboard-grid-demo__control-label">Edit Mode</span>
+        <div class="dashboard-grid-demo__control-buttons">
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="enable-edit" aria-label="Enable edit mode">
+            <i class="fas fa-edit" aria-hidden="true"></i> Enable
+          </button>
+          <button type="button" class="btn btn-funky-secondary btn-sm" data-action="disable-edit" aria-label="Disable edit mode">
+            <i class="fas fa-lock" aria-hidden="true"></i> Disable
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="toggle-edit" aria-label="Toggle edit mode">
+            <i class="fas fa-exchange-alt" aria-hidden="true"></i> Toggle
+          </button>
+        </div>
+      </div>
+      <div class="dashboard-grid-demo__control-group">
+        <span class="dashboard-grid-demo__control-label">Add Widgets</span>
+        <div class="dashboard-grid-demo__control-buttons">
+          <button type="button" class="btn btn-funky-success btn-sm" data-action="open-catalog" aria-label="Open widget catalog">
+            <i class="fas fa-th-large" aria-hidden="true"></i> Catalog
+          </button>
+          <button type="button" class="btn btn-funky-info btn-sm" data-action="toggle-palette" aria-label="Toggle widget palette">
+            <i class="fas fa-columns" aria-hidden="true"></i> Palette
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="add-widget" aria-label="Add random widget">
+            <i class="fas fa-plus" aria-hidden="true"></i> Random
+          </button>
+        </div>
+      </div>
+      <div class="dashboard-grid-demo__control-group">
+        <span class="dashboard-grid-demo__control-label">Manage</span>
+        <div class="dashboard-grid-demo__control-buttons">
+          <button type="button" class="btn btn-funky-danger btn-sm" data-action="remove-last" aria-label="Remove last widget">
+            <i class="fas fa-minus" aria-hidden="true"></i> Remove Last
+          </button>
+          <button type="button" class="btn btn-funky-warning btn-sm" data-action="clear-all" aria-label="Clear all widgets">
+            <i class="fas fa-trash" aria-hidden="true"></i> Clear All
+          </button>
+        </div>
+      </div>
+      <div class="dashboard-grid-demo__control-group">
+        <span class="dashboard-grid-demo__control-label">Layout</span>
+        <div class="dashboard-grid-demo__control-buttons">
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="get-layout" aria-label="Get layout JSON">
+            <i class="fas fa-code" aria-hidden="true"></i> Get Layout
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="reset-layout" aria-label="Reset to default layout">
+            <i class="fas fa-undo" aria-hidden="true"></i> Reset
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="export" aria-label="Export layout to JSON">
+            <i class="fas fa-download" aria-hidden="true"></i> Export
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Grid Container -->
+  <section class="dashboard-grid-demo__section" aria-labelledby="grid-main-heading">
+    <h3 id="grid-main-heading">Dashboard Grid</h3>
+    <p class="dashboard-grid-demo__hint">
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
+      Enable edit mode to drag widgets and resize using corner handles. Use the Catalog or Palette to add widgets.
+    </p>
+    <div id="dashboard-grid-wrapper" class="dashboard-grid-demo__wrapper">
+      <div id="dashboard-grid-container" class="dashboard-grid-demo__grid-container" role="region" aria-label="Dashboard grid"></div>
+    </div>
+  </section>
+
+  <!-- Events Log -->
+  <section class="dashboard-grid-demo__section" aria-labelledby="grid-log-heading">
+    <h3 id="grid-log-heading">Events Log</h3>
+    <div class="dashboard-grid-demo__log-controls">
+      <button type="button" class="btn btn-funky-outline btn-sm" data-action="clear-log" aria-label="Clear log">
+        <i class="fas fa-eraser" aria-hidden="true"></i> Clear
+      </button>
+    </div>
+    <pre id="grid-log" class="dashboard-grid-demo__log" role="log" aria-live="polite" aria-label="Event log">Waiting for events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var gridInstance = null;
+  var paletteInstance = null;
+  var catalogInstance = null;
+  var clockInterval = null;
+  var widgetCounter = 0;
+  var logs = [];
+  var currentOptions = {
+    columns: 12,
+    rowHeight: 80,
+    gap: 16,
+    editable: true,
+    editMode: true,
+    animate: true
+  };
+
+  // Initial widget configurations
+  var defaultWidgets = [
+    { id: 'stats-widget', title: 'Statistics', type: 'html', col: 1, row: 1, width: 4, height: 2,
+      html: '<div class="widget-stats"><span class="widget-stats__value">1,234</span><span class="widget-stats__label">Active Users</span><span class="widget-stats__trend widget-stats__trend--up"><i class="fas fa-arrow-up"></i> 12%</span></div>' },
+    { id: 'chart-widget', title: 'Sales Chart', type: 'html', col: 5, row: 1, width: 5, height: 2,
+      html: '<div class="widget-chart widget-chart--placeholder"><div class="widget-chart__placeholder"><i class="fas fa-chart-bar"></i><span>Chart Placeholder</span></div></div>' },
+    { id: 'clock-widget', title: 'Clock', type: 'html', col: 10, row: 1, width: 3, height: 2,
+      html: '<div class="widget-clock"><span class="widget-clock__time" id="demo-clock">--:--:--</span></div>' },
+    { id: 'list-widget', title: 'Recent Activity', type: 'html', col: 1, row: 3, width: 4, height: 3,
+      html: '<div class="widget-list"><ul class="widget-list__items"><li class="widget-list__item"><i class="fas fa-user widget-list__item-icon"></i> User signed up</li><li class="widget-list__item"><i class="fas fa-shopping-cart widget-list__item-icon"></i> Order placed</li><li class="widget-list__item"><i class="fas fa-comment widget-list__item-icon"></i> New comment</li><li class="widget-list__item"><i class="fas fa-star widget-list__item-icon"></i> Review added</li></ul></div>' },
+    { id: 'info-widget', title: 'Quick Info', type: 'html', col: 5, row: 3, width: 4, height: 2,
+      html: '<div class="widget-info"><i class="fas fa-lightbulb widget-info__icon"></i><div class="widget-info__title">Pro Tip</div><div class="widget-info__content">Drag widgets in edit mode to rearrange your dashboard layout.</div></div>' }
+  ];
+
+  function log(message, type) {
+    type = type || 'info';
+    var timestamp = new Date().toLocaleTimeString();
+    var prefix = type === 'event' ? '[EVENT]' : type === 'api' ? '[API]' : '[INFO]';
+    logs.unshift(timestamp + ' ' + prefix + ' ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('grid-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+    emit('log', { message: message, type: type });
+  }
+
+  function updateState() {
+    var editModeEl = document.getElementById('state-edit-mode');
+    var editableEl = document.getElementById('state-editable');
+    var columnsEl = document.getElementById('state-columns');
+    var rowHeightEl = document.getElementById('state-row-height');
+    var gapEl = document.getElementById('state-gap');
+    var animateEl = document.getElementById('state-animate');
+    var widgetCountEl = document.getElementById('state-widget-count');
+    var paletteEl = document.getElementById('state-palette');
+
+    if (editModeEl) editModeEl.textContent = gridInstance && gridInstance.isEditMode() ? 'On' : 'Off';
+    if (editableEl) editableEl.textContent = currentOptions.editable ? 'Yes' : 'No';
+    if (columnsEl) columnsEl.textContent = currentOptions.columns;
+    if (rowHeightEl) rowHeightEl.textContent = currentOptions.rowHeight + 'px';
+    if (gapEl) gapEl.textContent = currentOptions.gap + 'px';
+    if (animateEl) animateEl.textContent = currentOptions.animate ? 'Yes' : 'No';
+    if (widgetCountEl) widgetCountEl.textContent = gridInstance ? gridInstance.getAllWidgets().length : 0;
+    if (paletteEl) paletteEl.textContent = paletteInstance && !paletteInstance.isCollapsed() ? 'Visible' : 'Hidden';
+  }
+
+  function updateClock() {
+    var clockEl = document.getElementById('demo-clock');
+    if (clockEl) {
+      var now = new Date();
+      clockEl.textContent = now.toLocaleTimeString();
+    }
+  }
+
+  function createPalette() {
+    if (!Funky.WidgetPalette || !gridInstance) {
+      log('WidgetPalette not available', 'info');
+      return;
+    }
+
+    var wrapper = document.getElementById('dashboard-grid-wrapper');
+    if (!wrapper) return;
+
+    paletteInstance = Funky.WidgetPalette.init({
+      grid: gridInstance,
+      position: 'left',
+      collapsed: true,
+      container: wrapper
+    });
+
+    log('WidgetPalette created', 'api');
+  }
+
+  function createCatalog() {
+    if (!Funky.WidgetCatalog || !gridInstance) {
+      log('WidgetCatalog not available', 'info');
+      return;
+    }
+
+    catalogInstance = Funky.WidgetCatalog.init({
+      grid: gridInstance,
+      onAdd: function(type, config) {
+        log('Widget added from catalog: ' + type, 'event');
+        updateState();
+        emit('event', { event: 'catalog-add', payload: { type: type } });
+      },
+      onClose: function() {
+        log('Catalog closed', 'event');
+      }
+    });
+
+    log('WidgetCatalog created', 'api');
+  }
+
+  function createGrid() {
+    var container = document.getElementById('dashboard-grid-container');
+    if (!container || !Funky.DashboardGrid) {
+      log('Cannot create grid - container or Funky.DashboardGrid missing');
+      return;
+    }
+
+    // Destroy existing instances
+    if (paletteInstance && paletteInstance.destroy) {
+      paletteInstance.destroy();
+      paletteInstance = null;
+    }
+    if (catalogInstance && catalogInstance.destroy) {
+      catalogInstance.destroy();
+      catalogInstance = null;
+    }
+    if (gridInstance) {
+      gridInstance.destroy();
+      gridInstance = null;
+    }
+
+    // Create new grid
+    gridInstance = Funky.DashboardGrid.init(container, {
+      columns: currentOptions.columns,
+      rowHeight: currentOptions.rowHeight,
+      gap: currentOptions.gap,
+      editable: currentOptions.editable,
+      animate: currentOptions.animate,
+      widgets: defaultWidgets
+    });
+
+    // Set edit mode if needed
+    if (currentOptions.editMode) {
+      gridInstance.enableEditMode();
+    }
+
+    // Attach event listeners
+    attachGridEvents(container);
+
+    // Create palette and catalog
+    createPalette();
+    createCatalog();
+
+    // Update widget counter
+    widgetCounter = defaultWidgets.length;
+
+    updateState();
+    log('Grid created with ' + defaultWidgets.length + ' widgets', 'api');
+
+    // Start clock update
+    if (clockInterval) clearInterval(clockInterval);
+    clockInterval = setInterval(updateClock, 1000);
+    updateClock();
+  }
+
+  function attachGridEvents(container) {
+    var Events = Funky.Events;
+    if (!Events || !container) return;
+
+    Events.on(container, 'funky.dashboard-grid.widget-add', function(e) {
+      log('Widget added: ' + (e.detail.widgetId || 'unknown'), 'event');
+      updateState();
+      emit('event', { event: 'widget-add', payload: e.detail });
+    });
+
+    Events.on(container, 'funky.dashboard-grid.widget-remove', function(e) {
+      log('Widget removed: ' + (e.detail.widgetId || 'unknown'), 'event');
+      updateState();
+      emit('event', { event: 'widget-remove', payload: e.detail });
+    });
+
+    Events.on(container, 'funky.dashboard-grid.widget-move', function(e) {
+      var d = e.detail;
+      log('Widget moved: ' + d.widgetId + ' to col ' + d.newCol + ', row ' + d.newRow, 'event');
+      emit('event', { event: 'widget-move', payload: e.detail });
+    });
+
+    Events.on(container, 'funky.dashboard-grid.widget-resize', function(e) {
+      var d = e.detail;
+      log('Widget resized: ' + d.widgetId + ' to ' + d.newWidth + 'x' + d.newHeight, 'event');
+      emit('event', { event: 'widget-resize', payload: e.detail });
+    });
+
+    Events.on(container, 'funky.dashboard-grid.layout-change', function(e) {
+      log('Layout changed', 'event');
+      emit('event', { event: 'layout-change', payload: { widgetCount: gridInstance ? gridInstance.getAllWidgets().length : 0 } });
+    });
+
+    Events.on(container, 'funky.dashboard-grid.edit-mode', function(e) {
+      log('Edit mode: ' + (e.detail.enabled ? 'enabled' : 'disabled'), 'event');
+      updateState();
+      emit('event', { event: 'edit-mode', payload: e.detail });
+    });
+  }
+
+  function applyProps(props) {
+    if (!props) return;
+
+    var needsRecreate = false;
+    var container = document.getElementById('dashboard-grid-container');
+
+    // Check if grid structure props changed
+    if (props.columns !== undefined && props.columns !== currentOptions.columns) {
+      currentOptions.columns = props.columns;
+      needsRecreate = true;
+    }
+    if (props.rowHeight !== undefined && props.rowHeight !== currentOptions.rowHeight) {
+      currentOptions.rowHeight = props.rowHeight;
+      needsRecreate = true;
+    }
+    if (props.gap !== undefined && props.gap !== currentOptions.gap) {
+      currentOptions.gap = props.gap;
+      needsRecreate = true;
+    }
+    if (props.editable !== undefined) {
+      currentOptions.editable = props.editable;
+    }
+    if (props.animate !== undefined) {
+      currentOptions.animate = props.animate;
+      // Apply animation class immediately
+      if (container) {
+        var gridEl = container.querySelector('.dashboard-grid');
+        if (gridEl) {
+          if (props.animate) {
+            gridEl.classList.add('dashboard-grid--animated');
+          } else {
+            gridEl.classList.remove('dashboard-grid--animated');
+          }
+        }
+      }
+    }
+    if (props.editMode !== undefined) {
+      currentOptions.editMode = props.editMode;
+    }
+
+    if (needsRecreate && gridInstance) {
+      // Store current layout before recreation
+      var currentLayout = gridInstance.getLayout();
+      createGrid();
+      // Restore layout if we had one
+      if (currentLayout && currentLayout.widgets) {
+        gridInstance.setLayout(currentLayout);
+      }
+      log('Grid recreated with new options', 'api');
+    } else if (gridInstance) {
+      // Apply editMode change
+      if (currentOptions.editMode && !gridInstance.isEditMode()) {
+        gridInstance.enableEditMode();
+        log('Edit mode enabled via prop', 'api');
+      } else if (!currentOptions.editMode && gridInstance.isEditMode()) {
+        gridInstance.disableEditMode();
+        log('Edit mode disabled via prop', 'api');
+      }
+
+      // Apply editable change (controls whether edit mode can be enabled)
+      if (!currentOptions.editable && gridInstance.isEditMode()) {
+        gridInstance.disableEditMode();
+        log('Edit mode disabled (editable=false)', 'api');
+      }
+    }
+
+    updateState();
+    emit('state', { options: currentOptions });
+  }
+
+  function addRandomWidget() {
+    if (!gridInstance) return;
+
+    widgetCounter++;
+    var types = ['stats', 'chart', 'info', 'list', 'clock'];
+    var type = types[Math.floor(Math.random() * types.length)];
+    var icons = { stats: 'chart-pie', chart: 'chart-line', info: 'info-circle', list: 'list', clock: 'clock' };
+
+    var widget = {
+      id: 'widget-' + widgetCounter,
+      title: 'Widget ' + widgetCounter,
+      type: 'html',
+      col: 1,
+      row: 1,
+      width: 3,
+      height: 2,
+      html: '<div class="widget-info"><i class="fas fa-' + icons[type] + ' widget-info__icon"></i><div class="widget-info__title">' + type.charAt(0).toUpperCase() + type.slice(1) + '</div><div class="widget-info__content">Widget #' + widgetCounter + '</div></div>'
+    };
+
+    gridInstance.addWidget(widget);
+    log('Added widget: ' + widget.id, 'api');
+  }
+
+  function removeLastWidget() {
+    if (!gridInstance) return;
+
+    var widgets = gridInstance.getAllWidgets();
+    if (widgets.length > 0) {
+      var last = widgets[widgets.length - 1];
+      gridInstance.removeWidget(last.id);
+      log('Removed widget: ' + last.id, 'api');
+    } else {
+      log('No widgets to remove', 'api');
+    }
+  }
+
+  function setupButtonHandlers() {
+    var actions = {
+      'enable-edit': function() {
+        if (gridInstance) {
+          gridInstance.enableEditMode();
+          log('enableEditMode() called', 'api');
+        }
+      },
+      'disable-edit': function() {
+        if (gridInstance) {
+          gridInstance.disableEditMode();
+          log('disableEditMode() called', 'api');
+        }
+      },
+      'toggle-edit': function() {
+        if (gridInstance) {
+          var newState = gridInstance.toggleEditMode();
+          log('toggleEditMode() -> ' + newState, 'api');
+        }
+      },
+      'open-catalog': function() {
+        if (catalogInstance && catalogInstance.open) {
+          catalogInstance.open();
+          log('Catalog opened', 'api');
+        } else {
+          log('Catalog not available', 'api');
+          if (Funky.Toast) Funky.Toast.warning('WidgetCatalog not available');
+        }
+      },
+      'toggle-palette': function() {
+        if (paletteInstance && paletteInstance.toggle) {
+          paletteInstance.toggle();
+          updateState();
+          log('Palette toggled: ' + (paletteInstance.isCollapsed() ? 'hidden' : 'visible'), 'api');
+        } else {
+          log('Palette not available', 'api');
+          if (Funky.Toast) Funky.Toast.warning('WidgetPalette not available');
+        }
+      },
+      'add-widget': addRandomWidget,
+      'remove-last': removeLastWidget,
+      'clear-all': function() {
+        if (gridInstance) {
+          gridInstance.clearAll();
+          log('clearAll() called', 'api');
+        }
+      },
+      'get-layout': function() {
+        if (gridInstance) {
+          var layout = gridInstance.getLayout();
+          log('getLayout() -> ' + layout.widgets.length + ' widgets', 'api');
+          console.log('Layout:', layout);
+          if (Funky.Toast) {
+            Funky.Toast.info('Layout logged to console (' + layout.widgets.length + ' widgets)');
+          }
+        }
+      },
+      'reset-layout': function() {
+        if (gridInstance) {
+          gridInstance.setLayout({ widgets: defaultWidgets });
+          widgetCounter = defaultWidgets.length;
+          log('resetLayout() called', 'api');
+        }
+      },
+      'export': function() {
+        if (gridInstance) {
+          var json = gridInstance.export();
+          log('export() -> JSON copied to clipboard', 'api');
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(json);
+            if (Funky.Toast) {
+              Funky.Toast.success('Layout JSON copied to clipboard');
+            }
+          }
+        }
+      },
+      'clear-log': function() {
+        logs = [];
+        var logEl = document.getElementById('grid-log');
+        if (logEl) logEl.textContent = 'Log cleared';
+      }
+    };
+
+    document.querySelectorAll('[data-action]').forEach(function(btn) {
+      var action = btn.getAttribute('data-action');
+      if (actions[action]) {
+        btn.addEventListener('click', actions[action]);
+      }
+    });
+  }
+
+  Funky.Pages.register('component-dashboard-grid', {
+    init: function(state) {
+      // Get initial props
+      var props = getProps();
+      if (props.columns !== undefined) currentOptions.columns = props.columns;
+      if (props.rowHeight !== undefined) currentOptions.rowHeight = props.rowHeight;
+      if (props.gap !== undefined) currentOptions.gap = props.gap;
+      if (props.editable !== undefined) currentOptions.editable = props.editable;
+      if (props.editMode !== undefined) currentOptions.editMode = props.editMode;
+      if (props.animate !== undefined) currentOptions.animate = props.animate;
+
+      // Create the grid
+      createGrid();
+
+      // Setup button handlers
+      setupButtonHandlers();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          // Handle both { props: {...} } and direct props object
+          var props = data && data.props ? data.props : data;
+          if (props && typeof props === 'object') {
+            log('Props changed: ' + Object.keys(props).join(', '), 'info');
+            applyProps(props);
+          }
+        });
+      }
+
+      log('Dashboard Grid demo initialized', 'info');
+    },
+    destroy: function() {
+      if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+      }
+      if (paletteInstance && paletteInstance.destroy) {
+        paletteInstance.destroy();
+        paletteInstance = null;
+      }
+      if (catalogInstance && catalogInstance.destroy) {
+        catalogInstance.destroy();
+        catalogInstance = null;
+      }
+      if (gridInstance) {
+        gridInstance.destroy();
+        gridInstance = null;
+      }
+      logs = [];
+      widgetCounter = 0;
+      return {};
+    }
+  });
+})();
+</script>

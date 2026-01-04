@@ -1,0 +1,855 @@
+<div data-page="component-date" class="component-demo">
+  <h2>Date</h2>
+  <p class="text-muted">Date utilities for manipulation, comparison, formatting, and calendar grid generation. A comprehensive date engine without external dependencies.</p>
+
+  <!-- Section 1: Current Date Info -->
+  <section class="demo-section" aria-labelledby="current-heading">
+    <h3 id="current-heading">Current Date Info</h3>
+    <p class="text-muted small">Information about the current date and time.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__current-info" id="current-info">
+        <div class="date-demo__info-card">
+          <div class="date-demo__info-label">Today</div>
+          <div class="date-demo__info-value" id="info-today">-</div>
+        </div>
+        <div class="date-demo__info-card">
+          <div class="date-demo__info-label">ISO Week</div>
+          <div class="date-demo__info-value" id="info-week">-</div>
+        </div>
+        <div class="date-demo__info-card">
+          <div class="date-demo__info-label">Day of Week</div>
+          <div class="date-demo__info-value" id="info-dow">-</div>
+        </div>
+        <div class="date-demo__info-card">
+          <div class="date-demo__info-label">Is Weekend</div>
+          <div class="date-demo__info-value" id="info-weekend">-</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Comparison Methods -->
+  <section class="demo-section" aria-labelledby="compare-heading">
+    <h3 id="compare-heading">Comparison Methods</h3>
+    <p class="text-muted small">Compare dates for equality, ordering, and range membership.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__compare-form">
+        <div class="date-demo__input-group">
+          <label for="compare-date1">Date 1</label>
+          <input type="date" id="compare-date1" class="form-control">
+        </div>
+        <div class="date-demo__input-group">
+          <label for="compare-date2">Date 2</label>
+          <input type="date" id="compare-date2" class="form-control">
+        </div>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-secondary" id="compare-same-day">
+          <i class="fas fa-equals" aria-hidden="true"></i> isSameDay
+        </button>
+        <button type="button" class="btn btn-secondary" id="compare-before">
+          <i class="fas fa-less-than" aria-hidden="true"></i> isBefore
+        </button>
+        <button type="button" class="btn btn-secondary" id="compare-after">
+          <i class="fas fa-greater-than" aria-hidden="true"></i> isAfter
+        </button>
+        <button type="button" class="btn btn-secondary" id="compare-today">
+          <i class="fas fa-calendar-check" aria-hidden="true"></i> isToday
+        </button>
+        <button type="button" class="btn btn-secondary" id="compare-weekend">
+          <i class="fas fa-umbrella-beach" aria-hidden="true"></i> isWeekend
+        </button>
+      </div>
+
+      <div id="compare-result" class="date-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 3: Boundary Methods -->
+  <section class="demo-section" aria-labelledby="boundary-heading">
+    <h3 id="boundary-heading">Boundary Methods</h3>
+    <p class="text-muted small">Get start/end of day, week, or month.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__boundary-form">
+        <div class="date-demo__input-group">
+          <label for="boundary-date">Input Date</label>
+          <input type="datetime-local" id="boundary-date" class="form-control">
+        </div>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-secondary" id="boundary-start-day">startOfDay</button>
+        <button type="button" class="btn btn-secondary" id="boundary-end-day">endOfDay</button>
+        <button type="button" class="btn btn-secondary" id="boundary-start-week">startOfWeek</button>
+        <button type="button" class="btn btn-secondary" id="boundary-end-week">endOfWeek</button>
+        <button type="button" class="btn btn-secondary" id="boundary-start-month">startOfMonth</button>
+        <button type="button" class="btn btn-secondary" id="boundary-end-month">endOfMonth</button>
+      </div>
+
+      <div id="boundary-result" class="date-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 4: Arithmetic Methods -->
+  <section class="demo-section" aria-labelledby="arithmetic-heading">
+    <h3 id="arithmetic-heading">Arithmetic Methods</h3>
+    <p class="text-muted small">Add or subtract days, months, and years.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__arithmetic-form">
+        <div class="date-demo__input-group">
+          <label for="arithmetic-date">Base Date</label>
+          <input type="date" id="arithmetic-date" class="form-control">
+        </div>
+        <div class="date-demo__input-group">
+          <label for="arithmetic-amount">Amount</label>
+          <input type="number" id="arithmetic-amount" class="form-control" value="7">
+        </div>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-primary" id="arithmetic-add-days">
+          <i class="fas fa-plus" aria-hidden="true"></i> Add Days
+        </button>
+        <button type="button" class="btn btn-primary" id="arithmetic-add-months">
+          <i class="fas fa-plus" aria-hidden="true"></i> Add Months
+        </button>
+        <button type="button" class="btn btn-primary" id="arithmetic-add-years">
+          <i class="fas fa-plus" aria-hidden="true"></i> Add Years
+        </button>
+        <button type="button" class="btn btn-secondary" id="arithmetic-days-in-month">
+          <i class="fas fa-hashtag" aria-hidden="true"></i> Days in Month
+        </button>
+      </div>
+
+      <div id="arithmetic-result" class="date-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 5: Formatting Methods -->
+  <section class="demo-section" aria-labelledby="format-heading">
+    <h3 id="format-heading">Formatting Methods</h3>
+    <p class="text-muted small">Format dates for display with various locales and options.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__format-form">
+        <div class="date-demo__input-group">
+          <label for="format-date">Date</label>
+          <input type="datetime-local" id="format-date" class="form-control">
+        </div>
+        <div class="date-demo__input-group">
+          <label for="format-locale">Locale</label>
+          <select id="format-locale" class="form-control">
+            <option value="en-US">en-US (English US)</option>
+            <option value="en-GB">en-GB (English UK)</option>
+            <option value="de-DE">de-DE (German)</option>
+            <option value="fr-FR">fr-FR (French)</option>
+            <option value="es-ES">es-ES (Spanish)</option>
+            <option value="ja-JP">ja-JP (Japanese)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="date-demo__format-results" id="format-results">
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">toDateString()</span>
+          <span class="date-demo__format-output" id="fmt-date-string">-</span>
+        </div>
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">toTimeString()</span>
+          <span class="date-demo__format-output" id="fmt-time-string">-</span>
+        </div>
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">format({ dateStyle: 'full' })</span>
+          <span class="date-demo__format-output" id="fmt-full">-</span>
+        </div>
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">format({ dateStyle: 'long' })</span>
+          <span class="date-demo__format-output" id="fmt-long">-</span>
+        </div>
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">format({ dateStyle: 'medium' })</span>
+          <span class="date-demo__format-output" id="fmt-medium">-</span>
+        </div>
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">format({ dateStyle: 'short' })</span>
+          <span class="date-demo__format-output" id="fmt-short">-</span>
+        </div>
+        <div class="date-demo__format-row">
+          <span class="date-demo__format-method">format({ weekday: 'long', month: 'long', day: 'numeric' })</span>
+          <span class="date-demo__format-output" id="fmt-custom">-</span>
+        </div>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-primary" id="format-update">
+          <i class="fas fa-sync-alt" aria-hidden="true"></i> Update Formats
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Parsing Methods -->
+  <section class="demo-section" aria-labelledby="parse-heading">
+    <h3 id="parse-heading">Parsing Methods</h3>
+    <p class="text-muted small">Parse various input formats into Date objects.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__parse-form">
+        <div class="date-demo__input-group date-demo__input-group--wide">
+          <label for="parse-input">Input Value</label>
+          <input type="text" id="parse-input" class="form-control" placeholder="2025-01-15, 1705312800, ISO string...">
+        </div>
+      </div>
+
+      <div class="date-demo__parse-presets">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-value="2025-01-15">ISO Date</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-value="2025-01-15T14:30:00">ISO DateTime</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-value="1705312800">Unix (seconds)</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-value="1705312800000">Unix (ms)</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-value="January 15, 2025">Text</button>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-primary" id="parse-btn">
+          <i class="fas fa-code" aria-hidden="true"></i> Parse
+        </button>
+      </div>
+
+      <div id="parse-result" class="date-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 7: Localization -->
+  <section class="demo-section" aria-labelledby="locale-heading">
+    <h3 id="locale-heading">Localization</h3>
+    <p class="text-muted small">Get localized day and month names.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__locale-form">
+        <div class="date-demo__input-group">
+          <label for="locale-select">Locale</label>
+          <select id="locale-select" class="form-control">
+            <option value="en-US">en-US (English US)</option>
+            <option value="en-GB">en-GB (English UK)</option>
+            <option value="de-DE">de-DE (German)</option>
+            <option value="fr-FR">fr-FR (French)</option>
+            <option value="es-ES">es-ES (Spanish)</option>
+            <option value="ja-JP">ja-JP (Japanese)</option>
+          </select>
+        </div>
+        <div class="date-demo__input-group">
+          <label for="locale-format">Format</label>
+          <select id="locale-format" class="form-control">
+            <option value="long">Long</option>
+            <option value="short">Short</option>
+            <option value="narrow">Narrow</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="date-demo__locale-results">
+        <div class="date-demo__locale-section">
+          <h4>Day Names</h4>
+          <div class="date-demo__day-names" id="locale-days">-</div>
+        </div>
+        <div class="date-demo__locale-section">
+          <h4>Month Names</h4>
+          <div class="date-demo__month-names" id="locale-months">-</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Month Grid -->
+  <section class="demo-section" aria-labelledby="grid-heading">
+    <h3 id="grid-heading">Month Grid Generator</h3>
+    <p class="text-muted small">Generate a 6-week calendar grid for any month.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__grid-form">
+        <div class="date-demo__input-group">
+          <label for="grid-month">Month</label>
+          <input type="month" id="grid-month" class="form-control">
+        </div>
+        <div class="date-demo__input-group">
+          <label for="grid-week-starts">Week Starts</label>
+          <select id="grid-week-starts" class="form-control">
+            <option value="0">Sunday</option>
+            <option value="1">Monday</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-secondary" id="grid-prev">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i> Prev
+        </button>
+        <button type="button" class="btn btn-primary" id="grid-generate">
+          <i class="fas fa-th" aria-hidden="true"></i> Generate Grid
+        </button>
+        <button type="button" class="btn btn-secondary" id="grid-next">
+          Next <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="date-demo__calendar-grid" id="calendar-grid" aria-label="Calendar grid">
+        <div class="date-demo__grid-placeholder">Click "Generate Grid" to see the month calendar</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 9: Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Log of all date operations performed.</p>
+
+    <div class="demo-area">
+      <div class="date-demo__event-log" id="event-log" aria-live="off">
+        <div class="date-demo__log-empty">No operations yet. Use the controls above.</div>
+      </div>
+
+      <div class="date-demo__button-row">
+        <button type="button" class="btn btn-outline-secondary" id="log-clear">
+          <i class="fas fa-trash-alt" aria-hidden="true"></i> Clear Log
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var eventLog = [];
+  var propsChangedHandler = null;
+
+  function logEvent(method, input, output) {
+    var now = new Date();
+    var timestamp = now.toLocaleTimeString();
+
+    var entry = {
+      timestamp: timestamp,
+      method: method,
+      input: input,
+      output: output
+    };
+
+    eventLog.unshift(entry);
+    if (eventLog.length > 30) eventLog.pop();
+
+    renderEventLog();
+    emit('event', { event: 'date:' + method, payload: entry });
+  }
+
+  function renderEventLog() {
+    var container = document.getElementById('event-log');
+    if (!container) return;
+
+    if (eventLog.length === 0) {
+      container.innerHTML = '<div class="date-demo__log-empty">No operations yet. Use the controls above.</div>';
+      return;
+    }
+
+    var html = eventLog.map(function(entry) {
+      return '<div class="date-demo__log-entry">' +
+        '<span class="date-demo__log-time">' + entry.timestamp + '</span> ' +
+        '<span class="date-demo__log-method">' + entry.method + '</span>' +
+        '<div class="date-demo__log-detail">' +
+        '<span class="date-demo__log-label">Input:</span> ' + escapeHtml(String(entry.input)) +
+        '</div>' +
+        '<div class="date-demo__log-detail">' +
+        '<span class="date-demo__log-label">Output:</span> ' + escapeHtml(String(entry.output)) +
+        '</div>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showResult(elementId, content, type) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+    el.className = 'date-demo__result date-demo__result--' + (type || 'info');
+    el.textContent = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
+  }
+
+  function formatDateOutput(date) {
+    if (!date) return 'null';
+    return Funky.Date.toDateString(date) + ' ' + Funky.Date.toTimeString(date, true);
+  }
+
+  // =========================================================================
+  // Current Date Info
+  // =========================================================================
+
+  function updateCurrentInfo() {
+    var now = new Date();
+    var props = getProps();
+    var locale = props.locale || 'en-US';
+
+    document.getElementById('info-today').textContent = Funky.Date.toDateString(now);
+    document.getElementById('info-week').textContent = 'Week ' + Funky.Date.getWeekNumber(now);
+    document.getElementById('info-dow').textContent = Funky.Date.format(now, { weekday: 'long' }, locale);
+    document.getElementById('info-weekend').textContent = Funky.Date.isWeekend(now) ? 'Yes' : 'No';
+  }
+
+  // =========================================================================
+  // Comparison Methods
+  // =========================================================================
+
+  function getCompareDate(id) {
+    var input = document.getElementById(id);
+    if (!input || !input.value) return null;
+    return Funky.Date.parse(input.value);
+  }
+
+  function handleCompareSameDay() {
+    var d1 = getCompareDate('compare-date1');
+    var d2 = getCompareDate('compare-date2');
+    if (!d1 || !d2) {
+      showResult('compare-result', 'Please select both dates', 'error');
+      return;
+    }
+    var result = Funky.Date.isSameDay(d1, d2);
+    showResult('compare-result', 'isSameDay: ' + result, result ? 'success' : 'info');
+    logEvent('isSameDay', Funky.Date.toDateString(d1) + ' vs ' + Funky.Date.toDateString(d2), result);
+  }
+
+  function handleCompareBefore() {
+    var d1 = getCompareDate('compare-date1');
+    var d2 = getCompareDate('compare-date2');
+    if (!d1 || !d2) {
+      showResult('compare-result', 'Please select both dates', 'error');
+      return;
+    }
+    var result = Funky.Date.isBefore(d1, d2);
+    showResult('compare-result', 'isBefore: ' + result + ' (Date 1 < Date 2)', result ? 'success' : 'info');
+    logEvent('isBefore', Funky.Date.toDateString(d1) + ' < ' + Funky.Date.toDateString(d2), result);
+  }
+
+  function handleCompareAfter() {
+    var d1 = getCompareDate('compare-date1');
+    var d2 = getCompareDate('compare-date2');
+    if (!d1 || !d2) {
+      showResult('compare-result', 'Please select both dates', 'error');
+      return;
+    }
+    var result = Funky.Date.isAfter(d1, d2);
+    showResult('compare-result', 'isAfter: ' + result + ' (Date 1 > Date 2)', result ? 'success' : 'info');
+    logEvent('isAfter', Funky.Date.toDateString(d1) + ' > ' + Funky.Date.toDateString(d2), result);
+  }
+
+  function handleCompareToday() {
+    var d1 = getCompareDate('compare-date1');
+    if (!d1) {
+      showResult('compare-result', 'Please select Date 1', 'error');
+      return;
+    }
+    var result = Funky.Date.isToday(d1);
+    showResult('compare-result', 'isToday: ' + result, result ? 'success' : 'info');
+    logEvent('isToday', Funky.Date.toDateString(d1), result);
+  }
+
+  function handleCompareWeekend() {
+    var d1 = getCompareDate('compare-date1');
+    if (!d1) {
+      showResult('compare-result', 'Please select Date 1', 'error');
+      return;
+    }
+    var result = Funky.Date.isWeekend(d1);
+    showResult('compare-result', 'isWeekend: ' + result, result ? 'success' : 'info');
+    logEvent('isWeekend', Funky.Date.toDateString(d1), result);
+  }
+
+  // =========================================================================
+  // Boundary Methods
+  // =========================================================================
+
+  function getBoundaryDate() {
+    var input = document.getElementById('boundary-date');
+    if (!input || !input.value) return new Date();
+    return new Date(input.value);
+  }
+
+  function handleBoundary(method) {
+    var date = getBoundaryDate();
+    var props = getProps();
+    var weekStarts = props.weekStarts || 0;
+
+    var result;
+    if (method === 'startOfWeek' || method === 'endOfWeek') {
+      result = Funky.Date[method](date, weekStarts);
+    } else {
+      result = Funky.Date[method](date);
+    }
+
+    var output = formatDateOutput(result);
+    showResult('boundary-result', method + ': ' + output, 'success');
+    logEvent(method, formatDateOutput(date), output);
+  }
+
+  // =========================================================================
+  // Arithmetic Methods
+  // =========================================================================
+
+  function getArithmeticDate() {
+    var input = document.getElementById('arithmetic-date');
+    if (!input || !input.value) return new Date();
+    return Funky.Date.parse(input.value);
+  }
+
+  function getArithmeticAmount() {
+    var input = document.getElementById('arithmetic-amount');
+    return parseInt(input.value, 10) || 0;
+  }
+
+  function handleArithmeticAddDays() {
+    var date = getArithmeticDate();
+    var amount = getArithmeticAmount();
+    var result = Funky.Date.addDays(date, amount);
+    var output = Funky.Date.toDateString(result);
+    showResult('arithmetic-result', 'addDays(' + amount + '): ' + output, 'success');
+    logEvent('addDays', Funky.Date.toDateString(date) + ' + ' + amount + ' days', output);
+  }
+
+  function handleArithmeticAddMonths() {
+    var date = getArithmeticDate();
+    var amount = getArithmeticAmount();
+    var result = Funky.Date.addMonths(date, amount);
+    var output = Funky.Date.toDateString(result);
+    showResult('arithmetic-result', 'addMonths(' + amount + '): ' + output, 'success');
+    logEvent('addMonths', Funky.Date.toDateString(date) + ' + ' + amount + ' months', output);
+  }
+
+  function handleArithmeticAddYears() {
+    var date = getArithmeticDate();
+    var amount = getArithmeticAmount();
+    var result = Funky.Date.addYears(date, amount);
+    var output = Funky.Date.toDateString(result);
+    showResult('arithmetic-result', 'addYears(' + amount + '): ' + output, 'success');
+    logEvent('addYears', Funky.Date.toDateString(date) + ' + ' + amount + ' years', output);
+  }
+
+  function handleArithmeticDaysInMonth() {
+    var date = getArithmeticDate();
+    var result = Funky.Date.daysInMonth(date);
+    showResult('arithmetic-result', 'daysInMonth: ' + result + ' days', 'success');
+    logEvent('daysInMonth', Funky.Date.toDateString(date), result);
+  }
+
+  // =========================================================================
+  // Formatting Methods
+  // =========================================================================
+
+  function updateFormatResults() {
+    var input = document.getElementById('format-date');
+    var localeSelect = document.getElementById('format-locale');
+
+    var date = input && input.value ? new Date(input.value) : new Date();
+    var locale = localeSelect ? localeSelect.value : 'en-US';
+
+    document.getElementById('fmt-date-string').textContent = Funky.Date.toDateString(date);
+    document.getElementById('fmt-time-string').textContent = Funky.Date.toTimeString(date, true);
+    document.getElementById('fmt-full').textContent = Funky.Date.format(date, { dateStyle: 'full' }, locale);
+    document.getElementById('fmt-long').textContent = Funky.Date.format(date, { dateStyle: 'long' }, locale);
+    document.getElementById('fmt-medium').textContent = Funky.Date.format(date, { dateStyle: 'medium' }, locale);
+    document.getElementById('fmt-short').textContent = Funky.Date.format(date, { dateStyle: 'short' }, locale);
+    document.getElementById('fmt-custom').textContent = Funky.Date.format(date, { weekday: 'long', month: 'long', day: 'numeric' }, locale);
+
+    logEvent('format', formatDateOutput(date), 'locale=' + locale);
+  }
+
+  // =========================================================================
+  // Parsing Methods
+  // =========================================================================
+
+  function handleParse() {
+    var input = document.getElementById('parse-input');
+    var value = input ? input.value.trim() : '';
+
+    if (!value) {
+      showResult('parse-result', 'Please enter a value to parse', 'error');
+      return;
+    }
+
+    // Try to detect numeric input
+    var parseValue = value;
+    if (/^\d+$/.test(value)) {
+      parseValue = parseInt(value, 10);
+    }
+
+    var result = Funky.Date.parse(parseValue);
+
+    if (result) {
+      var output = formatDateOutput(result) + '\nISO: ' + result.toISOString();
+      showResult('parse-result', 'Parsed successfully:\n' + output, 'success');
+      logEvent('parse', value, formatDateOutput(result));
+    } else {
+      showResult('parse-result', 'Failed to parse: ' + value, 'error');
+      logEvent('parse', value, 'null (invalid)');
+    }
+  }
+
+  function handleParsePreset(e) {
+    var btn = e.target.closest('[data-value]');
+    if (!btn) return;
+    var input = document.getElementById('parse-input');
+    if (input) {
+      input.value = btn.getAttribute('data-value');
+      handleParse();
+    }
+  }
+
+  // =========================================================================
+  // Localization
+  // =========================================================================
+
+  function updateLocaleDisplay() {
+    var localeSelect = document.getElementById('locale-select');
+    var formatSelect = document.getElementById('locale-format');
+    var props = getProps();
+
+    var locale = localeSelect ? localeSelect.value : (props.locale || 'en-US');
+    var format = formatSelect ? formatSelect.value : 'long';
+    var weekStarts = props.weekStarts || 0;
+
+    var days = Funky.Date.getDayNames(locale, format, weekStarts);
+    var months = Funky.Date.getMonthNames(locale, format);
+
+    var daysContainer = document.getElementById('locale-days');
+    var monthsContainer = document.getElementById('locale-months');
+
+    if (daysContainer) {
+      daysContainer.innerHTML = days.map(function(d) {
+        return '<span class="date-demo__locale-item">' + d + '</span>';
+      }).join('');
+    }
+
+    if (monthsContainer) {
+      monthsContainer.innerHTML = months.map(function(m) {
+        return '<span class="date-demo__locale-item">' + m + '</span>';
+      }).join('');
+    }
+
+    logEvent('getDayNames/getMonthNames', 'locale=' + locale + ', format=' + format, days.length + ' days, ' + months.length + ' months');
+  }
+
+  // =========================================================================
+  // Month Grid
+  // =========================================================================
+
+  var currentGridDate = new Date();
+
+  function renderMonthGrid() {
+    var monthInput = document.getElementById('grid-month');
+    var weekStartsSelect = document.getElementById('grid-week-starts');
+    var props = getProps();
+
+    if (monthInput && monthInput.value) {
+      var parts = monthInput.value.split('-');
+      currentGridDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
+    }
+
+    var weekStarts = weekStartsSelect ? parseInt(weekStartsSelect.value, 10) : (props.weekStarts || 0);
+
+    var grid = Funky.Date.generateMonthGrid(currentGridDate, weekStarts);
+    var dayNames = Funky.Date.getDayNames(props.locale || 'en-US', 'short', weekStarts);
+
+    var container = document.getElementById('calendar-grid');
+    if (!container) return;
+
+    var html = '<div class="date-demo__grid-header">';
+    dayNames.forEach(function(name) {
+      html += '<div class="date-demo__grid-day-name">' + name + '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="date-demo__grid-body">';
+    grid.forEach(function(week) {
+      week.forEach(function(day) {
+        var classes = ['date-demo__grid-cell'];
+        if (!day.isCurrentMonth) classes.push('date-demo__grid-cell--other-month');
+        if (day.isToday) classes.push('date-demo__grid-cell--today');
+        if (day.isWeekend) classes.push('date-demo__grid-cell--weekend');
+
+        html += '<div class="' + classes.join(' ') + '" data-date="' + day.dateString + '">' +
+          '<span class="date-demo__grid-day">' + day.day + '</span>' +
+          '</div>';
+      });
+    });
+    html += '</div>';
+
+    container.innerHTML = html;
+
+    // Update month input to reflect current grid
+    if (monthInput) {
+      var year = currentGridDate.getFullYear();
+      var month = String(currentGridDate.getMonth() + 1).padStart(2, '0');
+      monthInput.value = year + '-' + month;
+    }
+
+    logEvent('generateMonthGrid', Funky.Date.format(currentGridDate, { year: 'numeric', month: 'long' }), '6 weeks x 7 days');
+  }
+
+  function handleGridPrev() {
+    currentGridDate = Funky.Date.addMonths(currentGridDate, -1);
+    renderMonthGrid();
+  }
+
+  function handleGridNext() {
+    currentGridDate = Funky.Date.addMonths(currentGridDate, 1);
+    renderMonthGrid();
+  }
+
+  // =========================================================================
+  // Event Binding
+  // =========================================================================
+
+  function setDefaultDates() {
+    var now = new Date();
+    var tomorrow = Funky.Date.addDays(now, 1);
+
+    // Set default values
+    var date1 = document.getElementById('compare-date1');
+    var date2 = document.getElementById('compare-date2');
+    if (date1) date1.value = Funky.Date.toDateString(now);
+    if (date2) date2.value = Funky.Date.toDateString(tomorrow);
+
+    var boundaryDate = document.getElementById('boundary-date');
+    if (boundaryDate) {
+      boundaryDate.value = now.toISOString().slice(0, 16);
+    }
+
+    var arithmeticDate = document.getElementById('arithmetic-date');
+    if (arithmeticDate) arithmeticDate.value = Funky.Date.toDateString(now);
+
+    var formatDate = document.getElementById('format-date');
+    if (formatDate) {
+      formatDate.value = now.toISOString().slice(0, 16);
+    }
+
+    var gridMonth = document.getElementById('grid-month');
+    if (gridMonth) {
+      var year = now.getFullYear();
+      var month = String(now.getMonth() + 1).padStart(2, '0');
+      gridMonth.value = year + '-' + month;
+    }
+  }
+
+  function syncFromProps(newProps) {
+    var props = newProps || getProps();
+
+    var formatLocale = document.getElementById('format-locale');
+    var localeSelect = document.getElementById('locale-select');
+    var gridWeekStarts = document.getElementById('grid-week-starts');
+
+    if (props.locale && formatLocale) formatLocale.value = props.locale;
+    if (props.locale && localeSelect) localeSelect.value = props.locale;
+    if (props.weekStarts !== undefined && gridWeekStarts) gridWeekStarts.value = String(props.weekStarts);
+
+    updateCurrentInfo();
+    updateFormatResults();
+    updateLocaleDisplay();
+  }
+
+  function bindEvents() {
+    // Comparison
+    document.getElementById('compare-same-day').addEventListener('click', handleCompareSameDay);
+    document.getElementById('compare-before').addEventListener('click', handleCompareBefore);
+    document.getElementById('compare-after').addEventListener('click', handleCompareAfter);
+    document.getElementById('compare-today').addEventListener('click', handleCompareToday);
+    document.getElementById('compare-weekend').addEventListener('click', handleCompareWeekend);
+
+    // Boundary
+    document.getElementById('boundary-start-day').addEventListener('click', function() { handleBoundary('startOfDay'); });
+    document.getElementById('boundary-end-day').addEventListener('click', function() { handleBoundary('endOfDay'); });
+    document.getElementById('boundary-start-week').addEventListener('click', function() { handleBoundary('startOfWeek'); });
+    document.getElementById('boundary-end-week').addEventListener('click', function() { handleBoundary('endOfWeek'); });
+    document.getElementById('boundary-start-month').addEventListener('click', function() { handleBoundary('startOfMonth'); });
+    document.getElementById('boundary-end-month').addEventListener('click', function() { handleBoundary('endOfMonth'); });
+
+    // Arithmetic
+    document.getElementById('arithmetic-add-days').addEventListener('click', handleArithmeticAddDays);
+    document.getElementById('arithmetic-add-months').addEventListener('click', handleArithmeticAddMonths);
+    document.getElementById('arithmetic-add-years').addEventListener('click', handleArithmeticAddYears);
+    document.getElementById('arithmetic-days-in-month').addEventListener('click', handleArithmeticDaysInMonth);
+
+    // Formatting
+    document.getElementById('format-update').addEventListener('click', updateFormatResults);
+    document.getElementById('format-date').addEventListener('change', updateFormatResults);
+    document.getElementById('format-locale').addEventListener('change', updateFormatResults);
+
+    // Parsing
+    document.getElementById('parse-btn').addEventListener('click', handleParse);
+    document.getElementById('parse-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleParse();
+    });
+    document.querySelector('.date-demo__parse-presets').addEventListener('click', handleParsePreset);
+
+    // Localization
+    document.getElementById('locale-select').addEventListener('change', updateLocaleDisplay);
+    document.getElementById('locale-format').addEventListener('change', updateLocaleDisplay);
+
+    // Grid
+    document.getElementById('grid-generate').addEventListener('click', renderMonthGrid);
+    document.getElementById('grid-prev').addEventListener('click', handleGridPrev);
+    document.getElementById('grid-next').addEventListener('click', handleGridNext);
+    document.getElementById('grid-month').addEventListener('change', renderMonthGrid);
+    document.getElementById('grid-week-starts').addEventListener('change', renderMonthGrid);
+
+    // Log
+    document.getElementById('log-clear').addEventListener('click', function() {
+      eventLog = [];
+      renderEventLog();
+    });
+  }
+
+  Funky.Pages.register('component-date', {
+    init: function(state) {
+      var props = getProps();
+
+      setDefaultDates();
+      bindEvents();
+      syncFromProps(props);
+      renderMonthGrid();
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          syncFromProps(newProps);
+          renderMonthGrid();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'date:init', payload: { today: Funky.Date.toDateString(new Date()) } });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      eventLog = [];
+
+      return {};
+    }
+  });
+})();
+</script>

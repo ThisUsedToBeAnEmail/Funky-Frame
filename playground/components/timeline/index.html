@@ -1,0 +1,452 @@
+<div data-page="component-timeline" class="component-demo">
+  <h2>Timeline</h2>
+  <p class="text-muted">Chronological event display with vertical/horizontal layouts, date grouping, and real-time updates.</p>
+
+  <!-- Section 1: Interactive Timeline -->
+  <div class="demo-section">
+    <h3>Interactive Timeline</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">A timeline displaying project milestones. Use the controls to modify appearance.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Orientation:</span>
+          <select id="orientation-select" class="form-select timeline-demo__select">
+            <option value="vertical" selected>Vertical</option>
+            <option value="horizontal">Horizontal</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Group By:</span>
+          <select id="groupby-select" class="form-select timeline-demo__select">
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month" selected>Month</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <span class="demo-form-row__label">Density:</span>
+          <select id="density-select" class="form-select timeline-demo__select">
+            <option value="compact">Compact</option>
+            <option value="normal" selected>Normal</option>
+            <option value="spacious">Spacious</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-apply">
+          <i class="fas fa-check me-1"></i> Apply
+        </button>
+      </div>
+      <div class="timeline-demo__container" id="timeline-main"></div>
+    </div>
+  </div>
+
+  <!-- Section 2: Centered Layout -->
+  <div class="demo-section">
+    <h3>Centered Alternating Layout</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Events alternate left and right for a symmetrical display (vertical only).</p>
+      <div class="demo-form-row">
+        <label class="timeline-demo__checkbox">
+          <input type="checkbox" id="centered-toggle" checked>
+          <span>Centered Layout</span>
+        </label>
+        <label class="timeline-demo__checkbox">
+          <input type="checkbox" id="timestamps-toggle" checked>
+          <span>Show Timestamps</span>
+        </label>
+        <label class="timeline-demo__checkbox">
+          <input type="checkbox" id="expandable-toggle" checked>
+          <span>Expandable Events</span>
+        </label>
+      </div>
+      <div class="timeline-demo__container" id="timeline-centered"></div>
+    </div>
+  </div>
+
+  <!-- Section 3: Horizontal Mode -->
+  <div class="demo-section">
+    <h3>Horizontal Timeline</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Horizontal scrolling timeline with navigation arrows and dots.</p>
+      <div class="timeline-demo__container timeline-demo__container--horizontal" id="timeline-horizontal"></div>
+      <div class="timeline-demo__nav-status">
+        <span id="horizontal-status">Event 1 of 5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: API Controls -->
+  <div class="demo-section">
+    <h3>Programmatic API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control the timeline programmatically with the Timeline API.</p>
+      <div class="timeline-demo__api-controls">
+        <button type="button" class="btn btn-outline-primary" id="btn-add-event">
+          <i class="fas fa-plus me-1"></i> addEvent()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-remove-event">
+          <i class="fas fa-minus me-1"></i> removeEvent()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-scroll-first">
+          <i class="fas fa-arrow-up me-1"></i> scrollToEvent(1)
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-get-events">
+          <i class="fas fa-list me-1"></i> getEvents()
+        </button>
+        <button type="button" class="btn btn-outline-danger" id="btn-clear">
+          <i class="fas fa-trash me-1"></i> clear()
+        </button>
+      </div>
+      <div class="timeline-demo__status">
+        <span id="api-status">Status: Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Categories -->
+  <div class="demo-section">
+    <h3>Categorized Events</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Events can be categorized with custom icons and colors.</p>
+      <div class="timeline-demo__legend">
+        <span class="timeline-demo__legend-item" data-category="deploy">
+          <i class="fas fa-rocket"></i> Deploy
+        </span>
+        <span class="timeline-demo__legend-item" data-category="update">
+          <i class="fas fa-sync"></i> Update
+        </span>
+        <span class="timeline-demo__legend-item" data-category="alert">
+          <i class="fas fa-exclamation-triangle"></i> Alert
+        </span>
+      </div>
+      <div class="timeline-demo__container" id="timeline-categories"></div>
+    </div>
+  </div>
+
+  <!-- Events Log -->
+  <div class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="timeline-log" class="timeline-demo__log">Waiting for events...</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = {};
+  var propsChangedHandler = null;
+  var eventCounter = 0;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('timeline-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  // Sample events data
+  function getSampleEvents() {
+    var now = Date.now();
+    var DAY = 86400000;
+    return [
+      {
+        id: '1',
+        title: 'Project Kickoff',
+        description: 'Initial planning meeting and team formation.',
+        timestamp: new Date(now - 30 * DAY),
+        category: 'deploy',
+        icon: 'fas fa-rocket',
+        details: { Team: 'Frontend', Priority: 'High' }
+      },
+      {
+        id: '2',
+        title: 'Design Review',
+        description: 'UI/UX mockups approved by stakeholders.',
+        timestamp: new Date(now - 21 * DAY),
+        category: 'update',
+        icon: 'fas fa-paint-brush',
+        details: { Designer: 'Sarah', Status: 'Approved' }
+      },
+      {
+        id: '3',
+        title: 'API Integration',
+        description: 'Backend endpoints connected to frontend.',
+        timestamp: new Date(now - 14 * DAY),
+        category: 'update',
+        icon: 'fas fa-plug',
+        details: { Endpoints: 12, Coverage: '100%' }
+      },
+      {
+        id: '4',
+        title: 'Performance Alert',
+        description: 'Database query optimization needed.',
+        timestamp: new Date(now - 7 * DAY),
+        category: 'alert',
+        icon: 'fas fa-exclamation-triangle',
+        details: { Severity: 'Medium', Response: '2h' }
+      },
+      {
+        id: '5',
+        title: 'Release v2.0',
+        description: 'Major version deployed to production.',
+        timestamp: new Date(now - 1 * DAY),
+        category: 'deploy',
+        icon: 'fas fa-flag-checkered',
+        details: { Version: '2.0.0', Downtime: '0s' }
+      }
+    ];
+  }
+
+  // Category definitions
+  var categories = {
+    deploy: { icon: 'fas fa-rocket', color: 'var(--pro-accent-success, #28a745)' },
+    update: { icon: 'fas fa-sync', color: 'var(--pro-accent-info, #17a2b8)' },
+    alert: { icon: 'fas fa-exclamation-triangle', color: 'var(--pro-accent-warning, #ffc107)' }
+  };
+
+  // Sync inputs from props
+  function syncInputsFromProps(props) {
+    var orientationSelect = document.getElementById('orientation-select');
+    var groupbySelect = document.getElementById('groupby-select');
+    var densitySelect = document.getElementById('density-select');
+    var centeredToggle = document.getElementById('centered-toggle');
+    var timestampsToggle = document.getElementById('timestamps-toggle');
+    var expandableToggle = document.getElementById('expandable-toggle');
+
+    if (orientationSelect && props.orientation) orientationSelect.value = props.orientation;
+    if (groupbySelect && props.groupBy) groupbySelect.value = props.groupBy;
+    if (densitySelect && props.density) densitySelect.value = props.density;
+    if (centeredToggle) centeredToggle.checked = props.centered !== false;
+    if (timestampsToggle) timestampsToggle.checked = props.showTimestamps !== false;
+    if (expandableToggle) expandableToggle.checked = props.expandable !== false;
+  }
+
+  Funky.Pages.register('component-timeline', {
+    init: function(state) {
+      var props = getProps();
+      var Timeline = Funky.Timeline;
+
+      if (!Timeline) {
+        log('Error: Funky.Timeline not available');
+        return;
+      }
+
+      log('Timeline module initialized');
+      syncInputsFromProps(props);
+
+      var sampleEvents = getSampleEvents();
+
+      // =========================================================================
+      // Section 1: Interactive Timeline
+      // =========================================================================
+
+      function createMainTimeline() {
+        var orientationSelect = document.getElementById('orientation-select');
+        var groupbySelect = document.getElementById('groupby-select');
+        var densitySelect = document.getElementById('density-select');
+
+        if (instances.main) {
+          instances.main.destroy();
+        }
+
+        instances.main = Timeline.create('#timeline-main', {
+          orientation: orientationSelect.value,
+          groupBy: groupbySelect.value,
+          density: densitySelect.value,
+          showTimestamps: true,
+          expandable: true,
+          categories: categories,
+          data: sampleEvents,
+          onEventClick: function(evt) {
+            log('Clicked: ' + evt.title);
+            emit('event', { event: 'timeline:click', payload: { id: evt.id } });
+          },
+          onEventExpand: function(data) {
+            log('Expand: ' + data.event.title + ' (' + (data.expanded ? 'opened' : 'closed') + ')');
+          }
+        });
+        log('Main timeline created: ' + orientationSelect.value + ', groupBy=' + groupbySelect.value);
+      }
+
+      createMainTimeline();
+
+      document.getElementById('btn-apply').addEventListener('click', function() {
+        createMainTimeline();
+        emit('event', { event: 'timeline:apply', payload: {} });
+      });
+
+      // =========================================================================
+      // Section 2: Centered Layout
+      // =========================================================================
+
+      function createCenteredTimeline() {
+        var centeredToggle = document.getElementById('centered-toggle');
+        var timestampsToggle = document.getElementById('timestamps-toggle');
+        var expandableToggle = document.getElementById('expandable-toggle');
+
+        if (instances.centered) {
+          instances.centered.destroy();
+        }
+
+        instances.centered = Timeline.create('#timeline-centered', {
+          orientation: 'vertical',
+          centered: centeredToggle.checked,
+          showTimestamps: timestampsToggle.checked,
+          expandable: expandableToggle.checked,
+          groupBy: 'month',
+          categories: categories,
+          data: sampleEvents.slice(0, 4),
+          onEventClick: function(evt) {
+            log('Centered clicked: ' + evt.title);
+          }
+        });
+        log('Centered timeline: centered=' + centeredToggle.checked);
+      }
+
+      createCenteredTimeline();
+
+      document.getElementById('centered-toggle').addEventListener('change', createCenteredTimeline);
+      document.getElementById('timestamps-toggle').addEventListener('change', createCenteredTimeline);
+      document.getElementById('expandable-toggle').addEventListener('change', createCenteredTimeline);
+
+      // =========================================================================
+      // Section 3: Horizontal Mode
+      // =========================================================================
+
+      var horizontalStatus = document.getElementById('horizontal-status');
+
+      instances.horizontal = Timeline.create('#timeline-horizontal', {
+        orientation: 'horizontal',
+        groupBy: 'none',
+        categories: categories,
+        data: sampleEvents,
+        horizontal: {
+          showArrows: true,
+          showDots: true,
+          itemWidth: 220,
+          centerActive: true
+        },
+        onEventClick: function(evt, el) {
+          log('Horizontal clicked: ' + evt.title);
+        },
+        onActiveChange: function(data) {
+          horizontalStatus.textContent = 'Event ' + (data.index + 1) + ' of ' + sampleEvents.length;
+        }
+      });
+      log('Horizontal timeline created');
+
+      // =========================================================================
+      // Section 4: API Controls
+      // =========================================================================
+
+      var apiStatus = document.getElementById('api-status');
+      eventCounter = sampleEvents.length;
+
+      document.getElementById('btn-add-event').addEventListener('click', function() {
+        eventCounter++;
+        var newEvent = {
+          id: 'new-' + eventCounter,
+          title: 'New Event #' + eventCounter,
+          description: 'Dynamically added event.',
+          timestamp: new Date(),
+          category: 'update',
+          icon: 'fas fa-star'
+        };
+        if (instances.main) {
+          instances.main.addEvent(newEvent);
+          apiStatus.textContent = 'Status: Added event #' + eventCounter;
+          log('API: addEvent() - ' + newEvent.title);
+          emit('event', { event: 'timeline:add', payload: { id: newEvent.id } });
+        }
+      });
+
+      document.getElementById('btn-remove-event').addEventListener('click', function() {
+        if (instances.main) {
+          var events = instances.main.getEvents();
+          if (events.length > 0) {
+            var lastEvent = events[events.length - 1];
+            instances.main.removeEvent(lastEvent.id);
+            apiStatus.textContent = 'Status: Removed ' + lastEvent.title;
+            log('API: removeEvent() - ' + lastEvent.id);
+          } else {
+            apiStatus.textContent = 'Status: No events to remove';
+          }
+        }
+      });
+
+      document.getElementById('btn-scroll-first').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.scrollToEvent('1');
+          apiStatus.textContent = 'Status: Scrolled to first event';
+          log('API: scrollToEvent(1)');
+        }
+      });
+
+      document.getElementById('btn-get-events').addEventListener('click', function() {
+        if (instances.main) {
+          var events = instances.main.getEvents();
+          apiStatus.textContent = 'Status: ' + events.length + ' events loaded';
+          log('API: getEvents() - ' + events.length + ' events');
+        }
+      });
+
+      document.getElementById('btn-clear').addEventListener('click', function() {
+        if (instances.main) {
+          instances.main.clear();
+          apiStatus.textContent = 'Status: Timeline cleared';
+          log('API: clear()');
+        }
+      });
+
+      // =========================================================================
+      // Section 5: Categories Timeline
+      // =========================================================================
+
+      instances.categories = Timeline.create('#timeline-categories', {
+        orientation: 'vertical',
+        groupBy: 'week',
+        density: 'compact',
+        categories: categories,
+        data: sampleEvents,
+        onEventClick: function(evt) {
+          log('Category event: ' + evt.category + ' - ' + evt.title);
+        }
+      });
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+          createMainTimeline();
+          createCenteredTimeline();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      Object.keys(instances).forEach(function(key) {
+        if (instances[key] && instances[key].destroy) {
+          instances[key].destroy();
+        }
+      });
+      instances = {};
+      logs = [];
+      eventCounter = 0;
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,477 @@
+<div data-page="component-file-manager" class="component-demo file-manager-demo" tabindex="-1">
+  <h2>File Manager</h2>
+  <p class="text-muted">Professional file browser with grid/list views, selection, preview, and bulk actions. Supports both API-driven and demo mode.</p>
+
+  <!-- Section 1: Configuration -->
+  <section class="demo-section">
+    <h3>Configuration</h3>
+    <div class="demo-area">
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="fm-view">Default View:</label>
+          <select id="fm-view" class="form-select">
+            <option value="grid" selected>Grid</option>
+            <option value="list">List</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="fm-page-length">Files Per Page:</label>
+          <select id="fm-page-length" class="form-select">
+            <option value="6">6</option>
+            <option value="12" selected>12</option>
+            <option value="24">24</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label">
+            <input type="checkbox" id="fm-enable-selection" class="form-check-input" checked>
+            Enable Selection
+          </label>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label">
+            <input type="checkbox" id="fm-enable-preview" class="form-check-input" checked>
+            Enable Preview
+          </label>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label">
+            <input type="checkbox" id="fm-enable-bulk" class="form-check-input" checked>
+            Enable Bulk Actions
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Stats Bar -->
+  <section class="demo-section">
+    <h3>Stats Overview</h3>
+    <div class="demo-area">
+      <div class="file-manager-demo__stats-row">
+        <div class="file-manager-demo__stat-card">
+          <div class="file-manager-demo__stat-icon"><i class="fas fa-files" aria-hidden="true"></i></div>
+          <div class="file-manager-demo__stat-content">
+            <span id="total-files" class="file-manager-demo__stat-value">0</span>
+            <span class="file-manager-demo__stat-label">Total Files</span>
+          </div>
+        </div>
+        <div class="file-manager-demo__stat-card">
+          <div class="file-manager-demo__stat-icon"><i class="fas fa-database" aria-hidden="true"></i></div>
+          <div class="file-manager-demo__stat-content">
+            <span id="total-size" class="file-manager-demo__stat-value">0 B</span>
+            <span class="file-manager-demo__stat-label">Total Size</span>
+          </div>
+        </div>
+        <div class="file-manager-demo__stat-card">
+          <div class="file-manager-demo__stat-icon"><i class="fas fa-calendar-day" aria-hidden="true"></i></div>
+          <div class="file-manager-demo__stat-content">
+            <span id="files-today" class="file-manager-demo__stat-value">0</span>
+            <span class="file-manager-demo__stat-label">Files Today</span>
+          </div>
+        </div>
+        <div class="file-manager-demo__stat-card">
+          <div class="file-manager-demo__stat-icon"><i class="fas fa-download" aria-hidden="true"></i></div>
+          <div class="file-manager-demo__stat-content">
+            <span id="downloads" class="file-manager-demo__stat-value">0</span>
+            <span class="file-manager-demo__stat-label">Downloads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: File Browser -->
+  <section class="demo-section">
+    <h3>File Browser</h3>
+    <div class="demo-area">
+      <!-- Toolbar -->
+      <div class="file-manager-demo__toolbar">
+        <div class="file-manager-demo__toolbar-left">
+          <div class="file-manager-demo__search-wrapper">
+            <i class="fas fa-search file-manager-demo__search-icon" aria-hidden="true"></i>
+            <input type="text" id="globalSearch" class="form-control file-manager-demo__search" placeholder="Search files..." aria-label="Search files">
+          </div>
+          <select id="mimeFilter" class="form-select file-manager-demo__filter" aria-label="Filter by type">
+            <option value="">All Types</option>
+          </select>
+          <select id="statusFilter" class="form-select file-manager-demo__filter" aria-label="Filter by status">
+            <option value="">All Statuses</option>
+          </select>
+        </div>
+        <div class="file-manager-demo__toolbar-right">
+          <div class="btn-group view-toggle" role="group" aria-label="View toggle">
+            <button type="button" class="btn btn-outline-secondary active" data-view="grid" aria-pressed="true" title="Grid view">
+              <i class="fas fa-th-large" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" data-view="list" aria-pressed="false" title="List view">
+              <i class="fas fa-list" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk Actions Bar -->
+      <div class="bulk-actions-bar d-none" id="bulkActionsBar" role="status" aria-live="polite">
+        <div class="bulk-bar-inner">
+          <div class="selected-info">
+            <i class="fas fa-check-circle" aria-hidden="true"></i>
+            <span class="selected-count">0 selected</span>
+          </div>
+          <div class="bulk-action-buttons">
+            <button type="button" class="btn btn-light btn-sm" id="btn-bulk-download">
+              <i class="fas fa-download me-1" aria-hidden="true"></i> Download
+            </button>
+            <button type="button" class="btn btn-light btn-sm" id="btn-bulk-delete">
+              <i class="fas fa-trash me-1" aria-hidden="true"></i> Delete
+            </button>
+            <button type="button" class="btn btn-light btn-sm" id="btn-clear-selection">
+              <i class="fas fa-times me-1" aria-hidden="true"></i> Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid View -->
+      <div id="fileManagerContainer">
+        <div id="filesGridView" role="grid" aria-label="Files grid"></div>
+        <div id="filesListView" class="d-none">
+          <table class="table table-hover" role="grid" aria-label="Files list">
+            <thead>
+              <tr>
+                <th scope="col" class="select-checkbox"><input type="checkbox" class="form-check-input" id="selectAll" aria-label="Select all files"></th>
+                <th scope="col">Filename</th>
+                <th scope="col">Type</th>
+                <th scope="col">Size</th>
+                <th scope="col">Status</th>
+                <th scope="col">Downloads</th>
+                <th scope="col">Created</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="file-pagination" id="filePagination" aria-label="File pagination"></div>
+    </div>
+  </section>
+
+  <!-- Section 4: API Methods -->
+  <section class="demo-section">
+    <h3>API Methods</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control the file manager programmatically.</p>
+      <div class="file-manager-demo__api-controls">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-file">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> Add File
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-refresh">
+          <i class="fas fa-sync-alt me-1" aria-hidden="true"></i> Refresh
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm" id="btn-select-all">
+          <i class="fas fa-check-square me-1" aria-hidden="true"></i> Select All
+        </button>
+        <button type="button" class="btn btn-outline-warning btn-sm" id="btn-clear-all">
+          <i class="fas fa-square me-1" aria-hidden="true"></i> Clear Selection
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm" id="btn-reset-data">
+          <i class="fas fa-undo me-1" aria-hidden="true"></i> Reset Data
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Event Log -->
+  <section class="demo-section">
+    <h3>Event Log</h3>
+    <div class="demo-area">
+      <div id="fm-event-log" class="file-manager-demo__event-log" role="log" aria-live="polite" aria-label="Event log">
+        <div class="file-manager-demo__log-entry file-manager-demo__log-entry--info">Interact with the file manager to see events</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var fmInstance = null;
+  var logs = [];
+  var propsChangedHandler = null;
+
+  // Demo file data
+  var demoFiles = [
+    { id: 1, filename: 'Q4_Financial_Report.pdf', mime_type: 'application/pdf', file_size: 2458624, generation_status: 'completed', download_count: 45, created_at: new Date(Date.now() - 3600000).toISOString() },
+    { id: 2, filename: 'Customer_Data_Export.csv', mime_type: 'text/csv', file_size: 1048576, generation_status: 'completed', download_count: 23, created_at: new Date(Date.now() - 7200000).toISOString() },
+    { id: 3, filename: 'Product_Catalog.xlsx', mime_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', file_size: 3145728, generation_status: 'completed', download_count: 12, created_at: new Date(Date.now() - 86400000).toISOString() },
+    { id: 4, filename: 'API_Response.json', mime_type: 'application/json', file_size: 512000, generation_status: 'completed', download_count: 8, created_at: new Date(Date.now() - 172800000).toISOString() },
+    { id: 5, filename: 'Error_Log.txt', mime_type: 'text/plain', file_size: 256000, generation_status: 'completed', download_count: 3, created_at: new Date(Date.now() - 259200000).toISOString() },
+    { id: 6, filename: 'Config_Backup.xml', mime_type: 'text/xml', file_size: 128000, generation_status: 'completed', download_count: 5, created_at: new Date(Date.now() - 345600000).toISOString() },
+    { id: 7, filename: 'Company_Logo.png', mime_type: 'image/png', file_size: 768000, generation_status: 'completed', download_count: 67, created_at: new Date(Date.now() - 432000000).toISOString() },
+    { id: 8, filename: 'Product_Photo.jpg', mime_type: 'image/jpeg', file_size: 1536000, generation_status: 'completed', download_count: 34, created_at: new Date(Date.now() - 518400000).toISOString() },
+    { id: 9, filename: 'Archive_2024.zip', mime_type: 'application/zip', file_size: 52428800, generation_status: 'completed', download_count: 2, created_at: new Date(Date.now() - 604800000).toISOString() },
+    { id: 10, filename: 'Monthly_Report_Gen.pdf', mime_type: 'application/pdf', file_size: 0, generation_status: 'processing', download_count: 0, created_at: new Date().toISOString() },
+    { id: 11, filename: 'Import_Failed.csv', mime_type: 'text/csv', file_size: 0, generation_status: 'failed', download_count: 0, created_at: new Date(Date.now() - 1800000).toISOString() },
+    { id: 12, filename: 'Queued_Export.json', mime_type: 'application/json', file_size: 0, generation_status: 'pending', download_count: 0, created_at: new Date(Date.now() - 900000).toISOString() }
+  ];
+
+  var demoStats = {
+    total_files: demoFiles.length,
+    total_size: demoFiles.reduce(function(sum, f) { return sum + f.file_size; }, 0),
+    files_today: 3,
+    total_downloads: demoFiles.reduce(function(sum, f) { return sum + f.download_count; }, 0),
+    by_status: {
+      completed: demoFiles.filter(function(f) { return f.generation_status === 'completed'; }).length,
+      processing: demoFiles.filter(function(f) { return f.generation_status === 'processing'; }).length,
+      failed: demoFiles.filter(function(f) { return f.generation_status === 'failed'; }).length,
+      pending: demoFiles.filter(function(f) { return f.generation_status === 'pending'; }).length
+    }
+  };
+
+  var demoFilterOptions = {
+    mime_types: [
+      { mime_type: 'application/pdf', count: 2 },
+      { mime_type: 'text/csv', count: 2 },
+      { mime_type: 'application/json', count: 2 },
+      { mime_type: 'image/png', count: 1 },
+      { mime_type: 'image/jpeg', count: 1 },
+      { mime_type: 'application/zip', count: 1 },
+      { mime_type: 'text/plain', count: 1 },
+      { mime_type: 'text/xml', count: 1 },
+      { mime_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', count: 1 }
+    ],
+    statuses: [
+      { generation_status: 'completed', count: 9 },
+      { generation_status: 'processing', count: 1 },
+      { generation_status: 'failed', count: 1 },
+      { generation_status: 'pending', count: 1 }
+    ]
+  };
+
+  function log(message, type) {
+    type = type || 'info';
+    var now = new Date().toLocaleTimeString();
+    logs.unshift({ time: now, message: message, type: type });
+    if (logs.length > 15) logs.pop();
+    renderLogs();
+  }
+
+  function renderLogs() {
+    var logEl = document.getElementById('fm-event-log');
+    if (!logEl) return;
+    logEl.innerHTML = logs.map(function(entry) {
+      return '<div class="file-manager-demo__log-entry file-manager-demo__log-entry--' + entry.type + '">' +
+        '<span class="file-manager-demo__log-time">' + entry.time + '</span> ' +
+        entry.message + '</div>';
+    }).join('');
+  }
+
+  function syncPropsToUI(props) {
+    var viewEl = document.getElementById('fm-view');
+    var pageLengthEl = document.getElementById('fm-page-length');
+    var selectionEl = document.getElementById('fm-enable-selection');
+    var previewEl = document.getElementById('fm-enable-preview');
+    var bulkEl = document.getElementById('fm-enable-bulk');
+
+    if (viewEl) viewEl.value = props.view || 'grid';
+    if (pageLengthEl) pageLengthEl.value = String(props.pageLength || 12);
+    if (selectionEl) selectionEl.checked = props.enableSelection !== false;
+    if (previewEl) previewEl.checked = props.enablePreview !== false;
+    if (bulkEl) bulkEl.checked = props.enableBulkActions !== false;
+  }
+
+  function getUIProps() {
+    return {
+      view: document.getElementById('fm-view').value,
+      pageLength: parseInt(document.getElementById('fm-page-length').value, 10) || 12,
+      enableSelection: document.getElementById('fm-enable-selection').checked,
+      enablePreview: document.getElementById('fm-enable-preview').checked,
+      enableBulkActions: document.getElementById('fm-enable-bulk').checked
+    };
+  }
+
+  function initFileManager(props) {
+    if (fmInstance && fmInstance.destroy) {
+      fmInstance.destroy();
+    }
+
+    // Initialize with demo mode
+    fmInstance = Funky.FileManager.init({
+      containerSelector: '#fileManagerContainer',
+      gridSelector: '#filesGridView',
+      listSelector: '#filesListView',
+      statsSelector: '.file-manager-demo__stats-row',
+      searchSelector: '#globalSearch',
+      statusFilterSelector: '#statusFilter',
+      mimeFilterSelector: '#mimeFilter',
+      viewToggleSelector: '[data-view]',
+      demoMode: true,
+      demoData: demoFiles.slice(), // Clone to avoid mutation
+      demoStats: demoStats,
+      demoFilterOptions: demoFilterOptions,
+      pageLength: props.pageLength || 12,
+      enableSelection: props.enableSelection !== false,
+      enablePreview: props.enablePreview !== false,
+      enableBulkActions: props.enableBulkActions !== false
+    });
+
+    // Set initial view
+    if (props.view === 'list') {
+      var listBtn = document.querySelector('[data-view="list"]');
+      if (listBtn) listBtn.click();
+    }
+
+    log('FileManager initialized (demo mode)', 'success');
+    emit('init', { demoMode: true, fileCount: demoFiles.length });
+  }
+
+  Funky.Pages.register('component-file-manager', {
+    init: function(state) {
+      var props = getProps();
+      syncPropsToUI(props);
+
+      // Initialize file manager
+      initFileManager(props);
+
+      // Configuration change handlers
+      document.getElementById('fm-view').onchange = function() {
+        var newProps = getUIProps();
+        emit('propsChange', newProps);
+        log('View changed to: ' + newProps.view, 'info');
+      };
+
+      document.getElementById('fm-page-length').onchange = function() {
+        var newProps = getUIProps();
+        emit('propsChange', newProps);
+        initFileManager(newProps);
+        log('Page length changed to: ' + newProps.pageLength, 'info');
+      };
+
+      ['fm-enable-selection', 'fm-enable-preview', 'fm-enable-bulk'].forEach(function(id) {
+        document.getElementById(id).onchange = function() {
+          var newProps = getUIProps();
+          emit('propsChange', newProps);
+          initFileManager(newProps);
+          log('Config updated', 'info');
+        };
+      });
+
+      // API method buttons
+      document.getElementById('btn-add-file').onclick = function() {
+        var newFile = {
+          id: Date.now(),
+          filename: 'New_File_' + Math.floor(Math.random() * 1000) + '.pdf',
+          mime_type: 'application/pdf',
+          file_size: Math.floor(Math.random() * 5000000),
+          generation_status: 'completed',
+          download_count: 0,
+          created_at: new Date().toISOString()
+        };
+        demoFiles.unshift(newFile);
+        fmInstance.setData(demoFiles.slice());
+        log('Added file: ' + newFile.filename, 'success');
+        emit('event', { event: 'file-manager:file-added', payload: newFile });
+      };
+
+      document.getElementById('btn-refresh').onclick = function() {
+        fmInstance.refresh();
+        log('Refreshed file manager', 'info');
+        emit('event', { event: 'file-manager:refresh' });
+      };
+
+      document.getElementById('btn-select-all').onclick = function() {
+        if (fmInstance.selectAll) {
+          fmInstance.selectAll();
+          log('Selected all files', 'info');
+        } else {
+          // Manual select all for grid view
+          fmInstance.files.forEach(function(file) {
+            fmInstance.selectedFiles.add(file.id);
+          });
+          fmInstance.renderGridView();
+          fmInstance.updateBulkActionsBar();
+          log('Selected all files', 'info');
+        }
+        emit('event', { event: 'file-manager:select-all' });
+      };
+
+      document.getElementById('btn-clear-all').onclick = function() {
+        fmInstance.clearSelection();
+        log('Cleared selection', 'info');
+        emit('event', { event: 'file-manager:clear-selection' });
+      };
+
+      document.getElementById('btn-reset-data').onclick = function() {
+        // Reset to original demo data
+        demoFiles = [
+          { id: 1, filename: 'Q4_Financial_Report.pdf', mime_type: 'application/pdf', file_size: 2458624, generation_status: 'completed', download_count: 45, created_at: new Date(Date.now() - 3600000).toISOString() },
+          { id: 2, filename: 'Customer_Data_Export.csv', mime_type: 'text/csv', file_size: 1048576, generation_status: 'completed', download_count: 23, created_at: new Date(Date.now() - 7200000).toISOString() },
+          { id: 3, filename: 'Product_Catalog.xlsx', mime_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', file_size: 3145728, generation_status: 'completed', download_count: 12, created_at: new Date(Date.now() - 86400000).toISOString() },
+          { id: 4, filename: 'API_Response.json', mime_type: 'application/json', file_size: 512000, generation_status: 'completed', download_count: 8, created_at: new Date(Date.now() - 172800000).toISOString() },
+          { id: 5, filename: 'Error_Log.txt', mime_type: 'text/plain', file_size: 256000, generation_status: 'completed', download_count: 3, created_at: new Date(Date.now() - 259200000).toISOString() },
+          { id: 6, filename: 'Config_Backup.xml', mime_type: 'text/xml', file_size: 128000, generation_status: 'completed', download_count: 5, created_at: new Date(Date.now() - 345600000).toISOString() },
+          { id: 7, filename: 'Company_Logo.png', mime_type: 'image/png', file_size: 768000, generation_status: 'completed', download_count: 67, created_at: new Date(Date.now() - 432000000).toISOString() },
+          { id: 8, filename: 'Product_Photo.jpg', mime_type: 'image/jpeg', file_size: 1536000, generation_status: 'completed', download_count: 34, created_at: new Date(Date.now() - 518400000).toISOString() },
+          { id: 9, filename: 'Archive_2024.zip', mime_type: 'application/zip', file_size: 52428800, generation_status: 'completed', download_count: 2, created_at: new Date(Date.now() - 604800000).toISOString() },
+          { id: 10, filename: 'Monthly_Report_Gen.pdf', mime_type: 'application/pdf', file_size: 0, generation_status: 'processing', download_count: 0, created_at: new Date().toISOString() },
+          { id: 11, filename: 'Import_Failed.csv', mime_type: 'text/csv', file_size: 0, generation_status: 'failed', download_count: 0, created_at: new Date(Date.now() - 1800000).toISOString() },
+          { id: 12, filename: 'Queued_Export.json', mime_type: 'application/json', file_size: 0, generation_status: 'pending', download_count: 0, created_at: new Date(Date.now() - 900000).toISOString() }
+        ];
+        fmInstance.setData(demoFiles.slice());
+        log('Reset to original demo data', 'success');
+        emit('event', { event: 'file-manager:reset' });
+      };
+
+      // Bulk action buttons
+      document.getElementById('btn-bulk-download').onclick = function() {
+        var selected = fmInstance.getSelectedFiles ? fmInstance.getSelectedFiles() : Array.from(fmInstance.selectedFiles);
+        log('Bulk download: ' + selected.length + ' files', 'info');
+        Funky.Toast.info('Would download ' + selected.length + ' files');
+        emit('event', { event: 'file-manager:bulk-download', payload: { count: selected.length } });
+      };
+
+      document.getElementById('btn-bulk-delete').onclick = function() {
+        var selected = fmInstance.getSelectedFiles ? fmInstance.getSelectedFiles() : Array.from(fmInstance.selectedFiles);
+        log('Bulk delete: ' + selected.length + ' files', 'warning');
+        Funky.Toast.warning('Would delete ' + selected.length + ' files');
+        emit('event', { event: 'file-manager:bulk-delete', payload: { count: selected.length } });
+      };
+
+      document.getElementById('btn-clear-selection').onclick = function() {
+        fmInstance.clearSelection();
+        log('Cleared selection', 'info');
+        emit('event', { event: 'file-manager:clear-selection' });
+      };
+
+      // Listen for props changes from playground
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - reinitializing', 'info');
+          syncPropsToUI(newProps);
+          initFileManager(newProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      if (fmInstance && fmInstance.destroy) {
+        fmInstance.destroy();
+      }
+      fmInstance = null;
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

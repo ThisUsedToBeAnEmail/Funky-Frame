@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ColumnProfiles Demo</title>
+</head>
+<body>
+  <div data-page="component-column-profiles" class="component-demo">
+    <h2>Column Profiles</h2>
+    <p class="text-muted">Save and load column visibility profiles for Funky.Table</p>
+
+    <!-- Live Demo Section -->
+    <section class="demo-section" aria-labelledby="demo-heading">
+      <h3 id="demo-heading">Interactive Demo</h3>
+      <p class="text-muted small">Toggle column visibility in the table below, then save your configuration as a profile</p>
+
+      <div class="demo-area">
+        <!-- Table Container -->
+        <div class="column-profiles-demo__table-wrapper">
+          <div id="demo-table-container"></div>
+        </div>
+
+        <!-- Profile Controls -->
+        <div class="column-profiles-demo__controls">
+          <button type="button" class="btn btn-primary" id="open-profiles-btn" aria-label="Open profiles modal">
+            <i class="fa fa-columns" aria-hidden="true"></i> Manage Profiles
+          </button>
+          <button type="button" class="btn btn-secondary" id="create-profile-btn" aria-label="Save current as profile">
+            <i class="fa fa-save" aria-hidden="true"></i> Quick Save
+          </button>
+        </div>
+
+        <!-- Current State Display -->
+        <div class="column-profiles-demo__state" role="status" aria-live="polite">
+          <div class="column-profiles-demo__state-item">
+            <span class="column-profiles-demo__state-label">Active Profile:</span>
+            <span id="active-profile-name" class="badge bg-primary">None</span>
+          </div>
+          <div class="column-profiles-demo__state-item">
+            <span class="column-profiles-demo__state-label">Visible Columns:</span>
+            <span id="visible-count" class="badge bg-secondary">0</span>
+          </div>
+          <div class="column-profiles-demo__state-item">
+            <span class="column-profiles-demo__state-label">Saved Profiles:</span>
+            <span id="profile-count" class="badge bg-info">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column Toggle Section -->
+    <section class="demo-section" aria-labelledby="columns-heading">
+      <h3 id="columns-heading">Column Visibility</h3>
+      <p class="text-muted small">Toggle individual columns to customize your view</p>
+
+      <div class="demo-area">
+        <div class="column-profiles-demo__toggles" id="column-toggles" role="group" aria-label="Column visibility toggles">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- API Methods Section -->
+    <section class="demo-section" aria-labelledby="api-heading">
+      <h3 id="api-heading">API Controls</h3>
+      <p class="text-muted small">Test ColumnProfiles API methods</p>
+
+      <div class="demo-area">
+        <div class="column-profiles-demo__api-controls">
+          <button type="button" class="btn btn-outline-primary btn-sm" id="list-profiles-btn">
+            <i class="fa fa-list" aria-hidden="true"></i> List
+          </button>
+          <button type="button" class="btn btn-outline-primary btn-sm" id="show-modal-btn">
+            <i class="fa fa-window-maximize" aria-hidden="true"></i> Modal
+          </button>
+          <button type="button" class="btn btn-outline-warning btn-sm" id="clear-profiles-btn">
+            <i class="fa fa-trash" aria-hidden="true"></i> Clear All
+          </button>
+          <button type="button" class="btn btn-outline-info btn-sm" id="get-data-btn">
+            <i class="fa fa-database" aria-hidden="true"></i> Get Data
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Profiles List -->
+    <section class="demo-section" aria-labelledby="profiles-heading">
+      <h3 id="profiles-heading">Saved Profiles</h3>
+      <p class="text-muted small">Your saved column configurations</p>
+
+      <div class="demo-area">
+        <div class="column-profiles-demo__profiles-list" id="profiles-list" role="list" aria-label="Saved profiles">
+          <div class="column-profiles-demo__empty">
+            <i class="fa fa-folder-open" aria-hidden="true"></i>
+            <p>No profiles saved yet</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Log -->
+    <section class="demo-section" aria-labelledby="events-heading">
+      <h3 id="events-heading">Event Log</h3>
+      <p class="text-muted small">Profile events are logged here</p>
+
+      <div class="demo-area">
+        <pre id="event-log" class="column-profiles-demo__log" aria-live="polite" aria-label="Event log"></pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+  (function() {
+    'use strict';
+
+    var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+    var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+    var table = null;
+    var profiles = null;
+    var propsChangedHandler = null;
+
+    // Sample data for the table
+    var SAMPLE_DATA = [
+      { id: 1, name: 'Alice Johnson', status: 'Active', amount: 1250.00, date: '2024-01-15', user: 'alice.j' },
+      { id: 2, name: 'Bob Smith', status: 'Pending', amount: 850.50, date: '2024-01-14', user: 'bob.s' },
+      { id: 3, name: 'Carol White', status: 'Active', amount: 2100.75, date: '2024-01-13', user: 'carol.w' },
+      { id: 4, name: 'David Brown', status: 'Inactive', amount: 450.00, date: '2024-01-12', user: 'david.b' },
+      { id: 5, name: 'Eve Davis', status: 'Active', amount: 3200.25, date: '2024-01-11', user: 'eve.d' },
+      { id: 6, name: 'Frank Miller', status: 'Pending', amount: 980.00, date: '2024-01-10', user: 'frank.m' },
+      { id: 7, name: 'Grace Lee', status: 'Active', amount: 1575.50, date: '2024-01-09', user: 'grace.l' },
+      { id: 8, name: 'Henry Wilson', status: 'Inactive', amount: 620.00, date: '2024-01-08', user: 'henry.w' }
+    ];
+
+    function log(message, type) {
+      var logEl = document.getElementById('event-log');
+      if (!logEl) return;
+
+      var timestamp = new Date().toLocaleTimeString();
+      var prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : '→';
+      var line = '[' + timestamp + '] ' + prefix + ' ' + message + '\n';
+      logEl.textContent = line + logEl.textContent;
+
+      emit('event', { event: 'columnProfiles:log', payload: { message: message, type: type } });
+    }
+
+    function buildColumnsFromProps(propsColumns) {
+      return propsColumns.map(function(col) {
+        return {
+          data: col.name,
+          title: col.title,
+          visible: col.visible !== false
+        };
+      });
+    }
+
+    function updateStateDisplay() {
+      if (!table || !profiles) return;
+
+      // Update active profile
+      var activeEl = document.getElementById('active-profile-name');
+      var active = profiles.getActiveProfile();
+      if (activeEl) {
+        activeEl.textContent = active || 'None';
+        activeEl.className = active ? 'badge bg-success' : 'badge bg-secondary';
+      }
+
+      // Update visible count
+      var visibleEl = document.getElementById('visible-count');
+      if (visibleEl && table.columns) {
+        var visible = table.columns.filter(function(c) {
+          return c.data !== '_control' && c.visible !== false;
+        }).length;
+        visibleEl.textContent = visible + '/' + (table.columns.length - (table.columns[0] && table.columns[0].data === '_control' ? 1 : 0));
+      }
+
+      // Update profile count
+      var countEl = document.getElementById('profile-count');
+      if (countEl && profiles) {
+        var list = profiles.listProfiles();
+        countEl.textContent = list.length;
+      }
+
+      // Update profiles list
+      renderProfilesList();
+
+      // Update column toggles
+      renderColumnToggles();
+    }
+
+    function renderProfilesList() {
+      var container = document.getElementById('profiles-list');
+      if (!container || !profiles) return;
+
+      var list = profiles.listProfiles();
+      var active = profiles.getActiveProfile();
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="column-profiles-demo__empty">' +
+          '<i class="fa fa-folder-open" aria-hidden="true"></i>' +
+          '<p>No profiles saved yet</p>' +
+          '</div>';
+        return;
+      }
+
+      var html = list.map(function(p) {
+        var isActive = p.name === active;
+        return '<div class="column-profiles-demo__profile-item' + (isActive ? ' active' : '') + '" ' +
+          'data-name="' + Funky.Util.escapeHtml(p.name) + '" role="listitem">' +
+          '<div class="column-profiles-demo__profile-info">' +
+          '<span class="column-profiles-demo__profile-icon">' + (isActive ? '✓' : '📋') + '</span>' +
+          '<span class="column-profiles-demo__profile-name">' + Funky.Util.escapeHtml(p.name) + '</span>' +
+          '<span class="column-profiles-demo__profile-meta">' + p.columnCount + ' columns</span>' +
+          '</div>' +
+          '<div class="column-profiles-demo__profile-actions">' +
+          '<button type="button" class="btn btn-sm btn-outline-primary load-btn" title="Load profile">' +
+          '<i class="fa fa-download" aria-hidden="true"></i>' +
+          '</button>' +
+          '<button type="button" class="btn btn-sm btn-outline-danger delete-btn" title="Delete profile">' +
+          '<i class="fa fa-trash" aria-hidden="true"></i>' +
+          '</button>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+
+      container.innerHTML = html;
+
+      // Bind events
+      container.querySelectorAll('.load-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var name = this.closest('.column-profiles-demo__profile-item').dataset.name;
+          profiles.loadProfile(name);
+          log('Loaded profile: ' + name, 'success');
+          updateStateDisplay();
+        });
+      });
+
+      container.querySelectorAll('.delete-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var item = this.closest('.column-profiles-demo__profile-item');
+          var name = item.dataset.name;
+          if (profiles.deleteProfile(name)) {
+            log('Deleted profile: ' + name, 'success');
+            updateStateDisplay();
+          }
+        });
+      });
+
+      container.querySelectorAll('.column-profiles-demo__profile-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          var name = this.dataset.name;
+          profiles.loadProfile(name);
+          log('Loaded profile: ' + name, 'success');
+          updateStateDisplay();
+        });
+      });
+    }
+
+    function renderColumnToggles() {
+      var container = document.getElementById('column-toggles');
+      if (!container || !table || !table.columns) return;
+
+      var html = table.columns.filter(function(c) {
+        return c.data !== '_control';
+      }).map(function(col, idx) {
+        var realIdx = table.columns.findIndex(function(c) { return c.data === col.data; });
+        var isVisible = col.visible !== false;
+        return '<label class="column-profiles-demo__toggle' + (isVisible ? ' active' : '') + '">' +
+          '<input type="checkbox" ' + (isVisible ? 'checked' : '') + ' data-column="' + realIdx + '">' +
+          '<span class="column-profiles-demo__toggle-label">' + Funky.Util.escapeHtml(col.title) + '</span>' +
+          '</label>';
+      }).join('');
+
+      container.innerHTML = html;
+
+      // Bind events
+      container.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          var colIdx = parseInt(this.dataset.column, 10);
+          var visible = this.checked;
+          if (table.columnVisible) {
+            table.columnVisible(colIdx, visible);
+          } else if (table.columns[colIdx]) {
+            table.columns[colIdx].visible = visible;
+            table.render();
+          }
+          log('Column ' + table.columns[colIdx].title + ' ' + (visible ? 'shown' : 'hidden'));
+          this.closest('.column-profiles-demo__toggle').classList.toggle('active', visible);
+          updateStateDisplay();
+        });
+      });
+    }
+
+    function createTable(props) {
+      var container = document.getElementById('demo-table-container');
+      if (!container) return;
+
+      // Destroy existing
+      if (table && table.destroy) {
+        table.destroy();
+        table = null;
+      }
+      if (profiles) {
+        profiles = null;
+      }
+
+      container.innerHTML = '<table id="column-profiles-demo-table" class="funky-table"></table>';
+
+      // Build columns from props
+      var columns = buildColumnsFromProps(props.columns || [
+        { name: 'id', title: 'ID', visible: true },
+        { name: 'name', title: 'Name', visible: true },
+        { name: 'status', title: 'Status', visible: true },
+        { name: 'amount', title: 'Amount', visible: true },
+        { name: 'date', title: 'Date', visible: true },
+        { name: 'user', title: 'User', visible: false }
+      ]);
+
+      // Initialize Funky.Table
+      table = Funky.Table.init('#column-profiles-demo-table', {
+        tableName: 'columnProfilesDemo',
+        data: SAMPLE_DATA,
+        columns: columns,
+        pageLength: 5,
+        searching: true,
+        ordering: true,
+        columnVisibilityMenu: true
+      });
+
+      // Initialize ColumnProfiles
+      profiles = new Funky.ColumnProfiles(table);
+
+      // Configure based on props
+      if (props.allowCreate === false) {
+        var createBtn = document.getElementById('create-profile-btn');
+        if (createBtn) createBtn.style.display = 'none';
+      }
+      if (props.allowDelete === false) {
+        document.querySelectorAll('.delete-btn').forEach(function(btn) {
+          btn.style.display = 'none';
+        });
+      }
+
+      log('Table and ColumnProfiles initialized');
+      updateStateDisplay();
+    }
+
+    function bindEvents(props) {
+      // Open profiles modal
+      var openBtn = document.getElementById('open-profiles-btn');
+      if (openBtn) {
+        openBtn.addEventListener('click', function() {
+          if (profiles) {
+            profiles.showModal();
+            log('Opened profiles modal');
+          }
+        });
+      }
+
+      // Quick save
+      var createBtn = document.getElementById('create-profile-btn');
+      if (createBtn) {
+        createBtn.addEventListener('click', function() {
+          if (!profiles) return;
+          var name = prompt('Enter profile name:');
+          if (name && name.trim()) {
+            profiles.saveProfile(name.trim());
+            log('Saved profile: ' + name.trim(), 'success');
+            updateStateDisplay();
+          }
+        });
+      }
+
+      // List profiles
+      var listBtn = document.getElementById('list-profiles-btn');
+      if (listBtn) {
+        listBtn.addEventListener('click', function() {
+          if (!profiles) return;
+          var list = profiles.listProfiles();
+          log('Profiles: ' + JSON.stringify(list.map(function(p) { return p.name; })));
+        });
+      }
+
+      // Show modal
+      var modalBtn = document.getElementById('show-modal-btn');
+      if (modalBtn) {
+        modalBtn.addEventListener('click', function() {
+          if (profiles) {
+            profiles.showModal();
+            log('Opened profiles modal');
+          }
+        });
+      }
+
+      // Clear all profiles
+      var clearBtn = document.getElementById('clear-profiles-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          if (!profiles) return;
+          var list = profiles.listProfiles();
+          list.forEach(function(p) {
+            profiles.deleteProfile(p.name);
+          });
+          log('Cleared all profiles', 'success');
+          updateStateDisplay();
+        });
+      }
+
+      // Get data
+      var getDataBtn = document.getElementById('get-data-btn');
+      if (getDataBtn) {
+        getDataBtn.addEventListener('click', function() {
+          if (!profiles) return;
+          var data = profiles.getData();
+          log('Data: ' + JSON.stringify(data));
+        });
+      }
+    }
+
+    window.ColumnProfilesDemo = {
+      init: function() {
+        var props = getProps();
+
+        createTable(props);
+        bindEvents(props);
+
+        // Subscribe to prop changes
+        if (Funky.PubSub && Funky.PubSub.on) {
+          propsChangedHandler = function(newProps) {
+            var currentProps = getProps();
+            log('Props changed: ' + JSON.stringify(Object.keys(newProps)));
+            createTable(currentProps);
+          };
+          Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+        }
+
+        log('ColumnProfiles demo initialized');
+        return {};
+      },
+
+      destroy: function() {
+        if (Funky.PubSub && propsChangedHandler) {
+          Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+          propsChangedHandler = null;
+        }
+        if (profiles) {
+          profiles = null;
+        }
+        if (table && table.destroy) {
+          table.destroy();
+          table = null;
+        }
+        return {};
+      }
+    };
+  })();
+  </script>
+</body>
+</html>

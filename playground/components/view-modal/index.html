@@ -1,0 +1,341 @@
+<div data-page="component-view-modal" class="component-demo">
+  <h2>View Modal</h2>
+  <p class="text-muted">Read-only entity display modal with configurable fields and data sources.</p>
+
+  <section class="demo-section" aria-labelledby="view-modal-props-heading">
+    <h3 id="view-modal-props-heading">Props-Configured Demo</h3>
+    <p class="text-muted small">Configure title, data, and fields using the props panel.</p>
+    <div class="demo-area">
+      <button class="btn btn-primary btn-lg" id="view-props-modal" type="button">
+        <i class="fas fa-eye me-2" aria-hidden="true"></i>View Props-Configured Data
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="view-modal-entities-heading">
+    <h3 id="view-modal-entities-heading">Different Entity Types</h3>
+    <p class="text-muted small">View modals adapt to different entity structures.</p>
+    <div class="demo-area view-modal-demo__button-grid" role="group" aria-label="Entity type examples">
+      <button class="btn btn-info" id="view-client" type="button">
+        <i class="fas fa-user me-2" aria-hidden="true"></i>View Client
+      </button>
+      <button class="btn btn-success" id="view-product" type="button">
+        <i class="fas fa-box me-2" aria-hidden="true"></i>View Product
+      </button>
+      <button class="btn btn-warning" id="view-order" type="button">
+        <i class="fas fa-shopping-cart me-2" aria-hidden="true"></i>View Order
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="view-modal-renderers-heading">
+    <h3 id="view-modal-renderers-heading">Custom Renderers</h3>
+    <p class="text-muted small">Fields can use custom renderers for formatting.</p>
+    <div class="demo-area">
+      <button class="btn btn-secondary" id="view-rendered" type="button">
+        <i class="fas fa-paint-brush me-2" aria-hidden="true"></i>View with Custom Renderers
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="view-modal-sections-heading">
+    <h3 id="view-modal-sections-heading">Grouped Sections</h3>
+    <p class="text-muted small">Organize fields into logical sections.</p>
+    <div class="demo-area">
+      <button class="btn btn-outline-primary" id="view-sections" type="button">
+        <i class="fas fa-layer-group me-2" aria-hidden="true"></i>View with Sections
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="view-modal-log-heading">
+    <h3 id="view-modal-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="view-modal-log" class="view-modal-demo__log" aria-live="polite" aria-label="View modal event log">Interact with view modals to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  // Sample data for different entity types
+  var clientData = {
+    id: 123,
+    name: 'Acme Corporation',
+    email: 'info@acme.com',
+    phone: '+44 20 7123 4567',
+    status: 'active',
+    created_at: '2024-01-15T10:30:00Z'
+  };
+
+  var productData = {
+    id: 456,
+    name: 'Premium Widget',
+    sku: 'WDG-001',
+    price: 49.99,
+    stock: 150,
+    category: 'Electronics',
+    in_stock: true
+  };
+
+  var orderData = {
+    id: 789,
+    order_number: 'ORD-2024-0789',
+    customer: 'John Doe',
+    total: 299.97,
+    status: 'shipped',
+    items_count: 3,
+    created_at: '2024-03-10T14:22:00Z'
+  };
+
+  var renderedData = {
+    id: 101,
+    name: 'Test Entity',
+    is_active: true,
+    progress: 75,
+    amount: 12500.50,
+    updated_at: '2024-03-15T09:45:00Z'
+  };
+
+  var sectionedData = {
+    id: 202,
+    name: 'Complete Profile',
+    email: 'user@example.com',
+    phone: '+1 555-0123',
+    street: '123 Main St',
+    city: 'New York',
+    country: 'USA',
+    created_at: '2023-06-01T00:00:00Z',
+    updated_at: '2024-03-15T12:00:00Z',
+    last_login: '2024-03-14T18:30:00Z'
+  };
+
+  // Field definitions for different entity types
+  var clientFields = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Phone' },
+    { key: 'status', label: 'Status' },
+    { key: 'created_at', label: 'Created' }
+  ];
+
+  var productFields = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Product Name' },
+    { key: 'sku', label: 'SKU' },
+    { key: 'price', label: 'Price' },
+    { key: 'stock', label: 'Stock Quantity' },
+    { key: 'category', label: 'Category' },
+    { key: 'in_stock', label: 'In Stock' }
+  ];
+
+  var orderFields = [
+    { key: 'id', label: 'ID' },
+    { key: 'order_number', label: 'Order Number' },
+    { key: 'customer', label: 'Customer' },
+    { key: 'total', label: 'Total' },
+    { key: 'status', label: 'Status' },
+    { key: 'items_count', label: 'Items' },
+    { key: 'created_at', label: 'Order Date' }
+  ];
+
+  var renderedFields = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'is_active', label: 'Status', render: function(val) {
+      return val
+        ? '<span class="badge bg-success">Active</span>'
+        : '<span class="badge bg-secondary">Inactive</span>';
+    }},
+    { key: 'progress', label: 'Progress', render: function(val) {
+      return '<div class="progress">' +
+        '<div class="progress-bar use-accent" role="progressbar" style="width: ' + val + '%" aria-valuenow="' + val + '" aria-valuemin="0" aria-valuemax="100">' + val + '%</div>' +
+        '</div>';
+    }},
+    { key: 'amount', label: 'Amount', render: function(val) {
+      return '<span class="text-success fw-semibold">$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>';
+    }},
+    { key: 'updated_at', label: 'Last Updated', render: function(val) {
+      var date = new Date(val);
+      return '<span class="text-muted">' + date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + '</span>';
+    }}
+  ];
+
+  // Modal IDs for cleanup
+  var modalIds = ['propsViewModal', 'clientViewModal', 'productViewModal', 'orderViewModal', 'renderedViewModal', 'sectionedViewModal'];
+
+  var propsChangedHandler = null;
+
+  Funky.Pages.register('component-view-modal', {
+    _logs: [],
+
+    _log: function(message) {
+      this._logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+      if (this._logs.length > 10) this._logs.pop();
+      var logEl = document.getElementById('view-modal-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    init: function(state) {
+      var self = this;
+      this._logs = [];
+
+      var props = getProps();
+      this._log('Init with title=' + (props.title || 'Client Details'));
+      emit('event', { event: 'view-modal:init', payload: { title: props.title } });
+
+      if (!Funky.ViewModal) {
+        this._log('Error: Funky.ViewModal not available');
+        return;
+      }
+
+      // Props-configured modal button
+      document.getElementById('view-props-modal').onclick = function() {
+        var props = getProps();
+        var modalTitle = props.title || 'Client Details';
+        var data = props.data || clientData;
+        var fields = props.fields || clientFields;
+
+        Funky.ViewModal.init({
+          modalId: 'propsViewModal',
+          entity: 'demo',
+          title: modalTitle,
+          fields: fields
+        });
+
+        Funky.ViewModal.showWithData('propsViewModal', data);
+        self._log('Opened props-configured modal: ' + modalTitle);
+        emit('event', { event: 'view-modal:open', payload: { modalId: 'propsViewModal', title: modalTitle } });
+      };
+
+      // Client view button
+      document.getElementById('view-client').onclick = function() {
+        Funky.ViewModal.init({
+          modalId: 'clientViewModal',
+          entity: 'client',
+          title: 'Client Details',
+          fields: clientFields
+        });
+
+        Funky.ViewModal.showWithData('clientViewModal', clientData);
+        self._log('Opened client view modal');
+        emit('event', { event: 'view-modal:open', payload: { modalId: 'clientViewModal', entity: 'client' } });
+      };
+
+      // Product view button
+      document.getElementById('view-product').onclick = function() {
+        Funky.ViewModal.init({
+          modalId: 'productViewModal',
+          entity: 'product',
+          title: 'Product Details',
+          fields: productFields
+        });
+
+        Funky.ViewModal.showWithData('productViewModal', productData);
+        self._log('Opened product view modal');
+        emit('event', { event: 'view-modal:open', payload: { modalId: 'productViewModal', entity: 'product' } });
+      };
+
+      // Order view button
+      document.getElementById('view-order').onclick = function() {
+        Funky.ViewModal.init({
+          modalId: 'orderViewModal',
+          entity: 'order',
+          title: 'Order Details',
+          fields: orderFields
+        });
+
+        Funky.ViewModal.showWithData('orderViewModal', orderData);
+        self._log('Opened order view modal');
+        emit('event', { event: 'view-modal:open', payload: { modalId: 'orderViewModal', entity: 'order' } });
+      };
+
+      // Rendered fields button
+      document.getElementById('view-rendered').onclick = function() {
+        Funky.ViewModal.init({
+          modalId: 'renderedViewModal',
+          entity: 'rendered',
+          title: 'Custom Renderers Demo',
+          fields: renderedFields
+        });
+
+        Funky.ViewModal.showWithData('renderedViewModal', renderedData);
+        self._log('Opened modal with custom renderers');
+        emit('event', { event: 'view-modal:open', payload: { modalId: 'renderedViewModal', type: 'rendered' } });
+      };
+
+      // Sectioned view button
+      document.getElementById('view-sections').onclick = function() {
+        Funky.ViewModal.init({
+          modalId: 'sectionedViewModal',
+          entity: 'profile',
+          title: 'User Profile',
+          fields: [
+            { key: 'id', label: 'ID' },
+            { key: 'name', label: 'Name' },
+            { key: 'email', label: 'Email' },
+            { key: 'phone', label: 'Phone' }
+          ],
+          sections: [
+            {
+              title: 'Address',
+              fields: [
+                { key: 'street', label: 'Street' },
+                { key: 'city', label: 'City' },
+                { key: 'country', label: 'Country' }
+              ]
+            },
+            {
+              title: 'Activity',
+              fields: [
+                { key: 'created_at', label: 'Member Since' },
+                { key: 'updated_at', label: 'Last Updated' },
+                { key: 'last_login', label: 'Last Login' }
+              ]
+            }
+          ]
+        });
+
+        Funky.ViewModal.showWithData('sectionedViewModal', sectionedData);
+        self._log('Opened modal with sections');
+        emit('event', { event: 'view-modal:open', payload: { modalId: 'sectionedViewModal', type: 'sectioned' } });
+      };
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          self._log('Props changed: title=' + (newProps.title || 'Client Details'));
+          emit('event', { event: 'view-modal:propsChanged', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clean up view modals
+      if (Funky.ViewModal) {
+        modalIds.forEach(function(id) {
+          if (Funky.ViewModal.getInstance(id)) {
+            Funky.ViewModal.destroy(id);
+          }
+        });
+      }
+
+      this._logs = [];
+      return {};
+    }
+  });
+})();
+</script>

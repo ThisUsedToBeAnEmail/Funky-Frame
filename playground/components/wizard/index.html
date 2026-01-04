@@ -1,0 +1,451 @@
+<div data-page="component-wizard" class="component-demo">
+  <h2>Wizard</h2>
+  <p class="text-muted">Multi-step modal wizard with validation, progress tracking, and navigation for complex workflows.</p>
+
+  <section class="demo-section" aria-labelledby="wizard-props-heading">
+    <h3 id="wizard-props-heading">Props-Configured Demo</h3>
+    <p class="text-muted small">Open the wizard modal to see multi-step forms in action.</p>
+    <div class="demo-area wizard-demo__button-grid" role="group" aria-label="Wizard controls">
+      <button class="btn btn-primary btn-lg" id="wizard-create" type="button">
+        <i class="fas fa-plus me-2" aria-hidden="true"></i>Create New Record
+      </button>
+      <button class="btn btn-secondary btn-lg" id="wizard-edit" type="button">
+        <i class="fas fa-edit me-2" aria-hidden="true"></i>Edit Existing Record
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wizard-api-heading">
+    <h3 id="wizard-api-heading">API Methods</h3>
+    <p class="text-muted small">Control the wizard programmatically while it's open.</p>
+    <div class="demo-area wizard-demo__button-grid" role="group" aria-label="API method controls">
+      <button class="btn btn-outline-primary" id="wizard-api-next" type="button" disabled>
+        <i class="fas fa-chevron-right me-1" aria-hidden="true"></i>Next Step
+      </button>
+      <button class="btn btn-outline-primary" id="wizard-api-prev" type="button" disabled>
+        <i class="fas fa-chevron-left me-1" aria-hidden="true"></i>Previous Step
+      </button>
+      <button class="btn btn-outline-secondary" id="wizard-api-reset" type="button" disabled>
+        <i class="fas fa-redo me-1" aria-hidden="true"></i>Reset
+      </button>
+      <button class="btn btn-outline-info" id="wizard-api-getdata" type="button" disabled>
+        <i class="fas fa-database me-1" aria-hidden="true"></i>Get Data
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wizard-state-heading">
+    <h3 id="wizard-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time state information from the wizard.</p>
+    <div class="demo-area">
+      <pre id="wizard-state" class="wizard-demo__log" aria-live="polite" aria-label="Wizard state">Wizard not active</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wizard-result-heading">
+    <h3 id="wizard-result-heading">Last Submitted Data</h3>
+    <p class="text-muted small">View the data from the most recent wizard completion.</p>
+    <div class="demo-area">
+      <pre id="wizard-result" class="wizard-demo__log" aria-live="polite" aria-label="Wizard result data">No data submitted yet</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wizard-log-heading">
+    <h3 id="wizard-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="wizard-log" class="wizard-demo__log" aria-live="polite" aria-label="Wizard event log">Interact with the wizard to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<!-- Wizard Modal Template -->
+<div class="modal fade" id="demoWizardModal" tabindex="-1" aria-labelledby="demoWizardModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="demoWizardModalLabel">Demo Wizard</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Wizard Progress -->
+        <div class="wizard-progress" role="navigation" aria-label="Wizard progress">
+          <div class="wizard-steps">
+            <div class="wizard-step active" data-step="1" aria-current="step">
+              <div class="wizard-step-number">1</div>
+              <div class="wizard-step-label">Details</div>
+            </div>
+            <div class="wizard-step" data-step="2">
+              <div class="wizard-step-number">2</div>
+              <div class="wizard-step-label">Settings</div>
+            </div>
+            <div class="wizard-step" data-step="3">
+              <div class="wizard-step-number">3</div>
+              <div class="wizard-step-label">Review</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 1: Details Form -->
+        <div id="wizard-step-1" class="wizard-content active">
+          <h6><i class="fas fa-info-circle me-2" aria-hidden="true"></i>Basic Details</h6>
+          <p class="text-muted small">Enter the basic information for your record.</p>
+          <div id="wizard-step-1-form"></div>
+        </div>
+
+        <!-- Step 2: Settings Form -->
+        <div id="wizard-step-2" class="wizard-content" style="display: none;">
+          <h6><i class="fas fa-cog me-2" aria-hidden="true"></i>Configuration Settings</h6>
+          <p class="text-muted small">Configure the settings for your record.</p>
+          <div id="wizard-step-2-form"></div>
+        </div>
+
+        <!-- Step 3: Review -->
+        <div id="wizard-step-3" class="wizard-content" style="display: none;">
+          <h6><i class="fas fa-check-circle me-2" aria-hidden="true"></i>Review & Confirm</h6>
+          <p class="text-muted small">Review your information before submitting.</p>
+          <div id="wizard-step-3-container" class="wizard-review-container"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="wizardPrevBtn" class="btn btn-secondary" style="display: none;">
+          <i class="fas fa-chevron-left me-1" aria-hidden="true"></i>Previous
+        </button>
+        <button type="button" id="wizardNextBtn" class="btn btn-primary">
+          Next<i class="fas fa-chevron-right ms-1" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="wizardSaveBtn" class="btn btn-success" style="display: none;">
+          <span id="wizardSaveSpinner" class="spinner-border spinner-border-sm me-1" role="status" style="display: none;" aria-hidden="true"></span>
+          <span id="wizardSaveText"><i class="fas fa-save me-1" aria-hidden="true"></i>Create</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var wizardInstance = null;
+  var logs = [];
+
+  // Schema definitions for wizard steps
+  var detailsSchema = {
+    fields: {
+      name: {
+        type: 'text',
+        label: 'Record Name',
+        required: true,
+        placeholder: 'Enter a name'
+      },
+      description: {
+        type: 'textarea',
+        label: 'Description',
+        placeholder: 'Enter a description'
+      },
+      category: {
+        type: 'select',
+        label: 'Category',
+        required: true,
+        options: [
+          { value: '', label: 'Select a category' },
+          { value: 'general', label: 'General' },
+          { value: 'business', label: 'Business' },
+          { value: 'technical', label: 'Technical' },
+          { value: 'personal', label: 'Personal' }
+        ]
+      }
+    }
+  };
+
+  var settingsSchema = {
+    fields: {
+      priority: {
+        type: 'select',
+        label: 'Priority',
+        options: [
+          { value: 'low', label: 'Low' },
+          { value: 'medium', label: 'Medium' },
+          { value: 'high', label: 'High' }
+        ]
+      },
+      is_active: {
+        type: 'checkbox',
+        label: 'Active',
+        helpText: 'Enable this record'
+      },
+      notifications: {
+        type: 'checkbox',
+        label: 'Enable Notifications',
+        helpText: 'Receive notifications for updates'
+      },
+      tags: {
+        type: 'text',
+        label: 'Tags',
+        placeholder: 'Comma-separated tags'
+      }
+    }
+  };
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('wizard-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState(text) {
+    var stateEl = document.getElementById('wizard-state');
+    if (stateEl) stateEl.textContent = text;
+  }
+
+  function showResult(data) {
+    var resultEl = document.getElementById('wizard-result');
+    if (resultEl) resultEl.textContent = JSON.stringify(data, null, 2);
+  }
+
+  function setApiButtonsEnabled(enabled) {
+    document.getElementById('wizard-api-next').disabled = !enabled;
+    document.getElementById('wizard-api-prev').disabled = !enabled;
+    document.getElementById('wizard-api-reset').disabled = !enabled;
+    document.getElementById('wizard-api-getdata').disabled = !enabled;
+  }
+
+  function renderReview(state) {
+    var container = document.getElementById('wizard-step-3-container');
+    if (!container) return;
+
+    var html = '<div class="card mb-3">' +
+      '<div class="card-header"><strong>Details</strong></div>' +
+      '<div class="card-body">' +
+      '<dl class="row mb-0">' +
+      '<dt class="col-sm-4">Name</dt>' +
+      '<dd class="col-sm-8">' + (state.details && state.details.name || 'Not set') + '</dd>' +
+      '<dt class="col-sm-4">Category</dt>' +
+      '<dd class="col-sm-8">' + (state.details && state.details.category || 'Not set') + '</dd>' +
+      '<dt class="col-sm-4">Description</dt>' +
+      '<dd class="col-sm-8">' + (state.details && state.details.description || 'Not set') + '</dd>' +
+      '</dl>' +
+      '</div>' +
+      '</div>' +
+      '<div class="card">' +
+      '<div class="card-header"><strong>Settings</strong></div>' +
+      '<div class="card-body">' +
+      '<dl class="row mb-0">' +
+      '<dt class="col-sm-4">Priority</dt>' +
+      '<dd class="col-sm-8">' + (state.settings && state.settings.priority || 'Not set') + '</dd>' +
+      '<dt class="col-sm-4">Active</dt>' +
+      '<dd class="col-sm-8">' + (state.settings && state.settings.is_active ? 'Yes' : 'No') + '</dd>' +
+      '<dt class="col-sm-4">Notifications</dt>' +
+      '<dd class="col-sm-8">' + (state.settings && state.settings.notifications ? 'Enabled' : 'Disabled') + '</dd>' +
+      '<dt class="col-sm-4">Tags</dt>' +
+      '<dd class="col-sm-8">' + (state.settings && state.settings.tags || 'None') + '</dd>' +
+      '</dl>' +
+      '</div>' +
+      '</div>';
+
+    container.innerHTML = html;
+  }
+
+  Funky.Pages.register('component-wizard', {
+    _logs: [],
+
+    init: function(state) {
+      var self = this;
+      var props = getProps();
+      logs = [];
+
+      log('Init with title=' + (props.title || 'Demo Wizard'));
+      emit('event', { event: 'wizard:init', payload: { title: props.title } });
+
+      if (!Funky.Wizard) {
+        log('Error: Funky.Wizard not available');
+        return;
+      }
+
+      if (!Funky.Form) {
+        log('Warning: Funky.Form not available - wizard forms may not work');
+      }
+
+      // Get schemas from props or use defaults
+      var step1Schema = props.step1Schema || detailsSchema;
+      var step2Schema = props.step2Schema || settingsSchema;
+
+      // Create wizard instance
+      wizardInstance = Funky.Wizard.create({
+        modalId: 'demoWizardModal',
+        title: props.title || 'Demo Wizard',
+        steps: [
+          {
+            type: 'form',
+            stateKey: 'details',
+            schema: step1Schema,
+            title: 'Basic Details'
+          },
+          {
+            type: 'form',
+            stateKey: 'settings',
+            schema: step2Schema,
+            title: 'Settings'
+          },
+          {
+            type: 'custom',
+            stateKey: 'review',
+            title: 'Review',
+            onInit: function(wizard, stepNum) {
+              renderReview(wizard.state);
+            }
+          }
+        ],
+        onSave: function(data, mode) {
+          log('Wizard saved in ' + mode + ' mode');
+          showResult(data);
+          emit('event', { event: 'wizard:save', payload: { mode: mode, data: data } });
+          Funky.Toast.success('Record ' + (mode === 'edit' ? 'updated' : 'created') + ' successfully!');
+          setApiButtonsEnabled(false);
+          updateState('Wizard not active');
+          return Promise.resolve();
+        },
+        onCancel: function() {
+          log('Wizard cancelled');
+          emit('event', { event: 'wizard:cancel', payload: {} });
+          setApiButtonsEnabled(false);
+          updateState('Wizard not active');
+        }
+      });
+
+      log('Wizard instance created');
+
+      // Wire up modal navigation buttons to wizard instance
+      var modal = document.getElementById('demoWizardModal');
+      var prevBtn = modal.querySelector('#wizardPrevBtn');
+      var nextBtn = modal.querySelector('#wizardNextBtn');
+      var saveBtn = modal.querySelector('#wizardSaveBtn');
+
+      if (prevBtn) {
+        prevBtn.onclick = function() {
+          if (wizardInstance) {
+            wizardInstance.previous();
+            var step = wizardInstance.currentStep;
+            updateState('Mode: ' + wizardInstance.mode + ', Step: ' + step + ' of 3');
+            log('Navigated to step ' + step);
+            emit('event', { event: 'wizard:prev', payload: { step: step } });
+          }
+        };
+      }
+
+      if (nextBtn) {
+        nextBtn.onclick = function() {
+          if (wizardInstance) {
+            wizardInstance.next();
+            var step = wizardInstance.currentStep;
+            updateState('Mode: ' + wizardInstance.mode + ', Step: ' + step + ' of 3');
+            log('Navigated to step ' + step);
+            emit('event', { event: 'wizard:next', payload: { step: step } });
+          }
+        };
+      }
+
+      if (saveBtn) {
+        saveBtn.onclick = function() {
+          if (wizardInstance) {
+            wizardInstance.save();
+          }
+        };
+      }
+
+      // Wire up close button
+      var closeBtn = modal.querySelector('.btn-close');
+      if (closeBtn) {
+        closeBtn.onclick = function() {
+          if (wizardInstance && wizardInstance.modal) {
+            wizardInstance.modal.hide();
+          }
+        };
+      }
+
+      // Create mode button
+      document.getElementById('wizard-create').onclick = function() {
+        var initialData = props.initialData || {};
+        wizardInstance.create(initialData);
+        setApiButtonsEnabled(true);
+        updateState('Mode: create, Step: 1 of 3');
+        log('Opened wizard in create mode');
+        emit('event', { event: 'wizard:open', payload: { mode: 'create' } });
+      };
+
+      // Edit mode button
+      document.getElementById('wizard-edit').onclick = function() {
+        var existingData = {
+          details: {
+            name: 'Sample Record',
+            description: 'This is an existing record being edited.',
+            category: 'business'
+          },
+          settings: {
+            priority: 'high',
+            is_active: true,
+            notifications: true,
+            tags: 'important, sample'
+          }
+        };
+        wizardInstance.edit(existingData);
+        setApiButtonsEnabled(true);
+        updateState('Mode: edit, Step: 1 of 3');
+        log('Opened wizard in edit mode');
+        emit('event', { event: 'wizard:open', payload: { mode: 'edit' } });
+      };
+
+      // API method buttons
+      document.getElementById('wizard-api-next').onclick = function() {
+        if (wizardInstance) {
+          wizardInstance.next();
+          var step = wizardInstance.currentStep;
+          updateState('Mode: ' + wizardInstance.mode + ', Step: ' + step + ' of 3');
+          log('Navigated to step ' + step);
+          emit('event', { event: 'wizard:next', payload: { step: step } });
+        }
+      };
+
+      document.getElementById('wizard-api-prev').onclick = function() {
+        if (wizardInstance) {
+          wizardInstance.previous();
+          var step = wizardInstance.currentStep;
+          updateState('Mode: ' + wizardInstance.mode + ', Step: ' + step + ' of 3');
+          log('Navigated to step ' + step);
+          emit('event', { event: 'wizard:prev', payload: { step: step } });
+        }
+      };
+
+      document.getElementById('wizard-api-reset').onclick = function() {
+        if (wizardInstance) {
+          wizardInstance.reset();
+          updateState('Mode: ' + wizardInstance.mode + ', Step: 1 of 3');
+          log('Wizard reset');
+          emit('event', { event: 'wizard:reset', payload: {} });
+        }
+      };
+
+      document.getElementById('wizard-api-getdata').onclick = function() {
+        if (wizardInstance) {
+          var data = wizardInstance.getData();
+          showResult(data);
+          log('Retrieved wizard data');
+          emit('event', { event: 'wizard:getData', payload: data });
+          Funky.Toast.info('Data retrieved - see result panel');
+        }
+      };
+    },
+
+    destroy: function() {
+      if (wizardInstance) {
+        wizardInstance.destroy();
+        wizardInstance = null;
+      }
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

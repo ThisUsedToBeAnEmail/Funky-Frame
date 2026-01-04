@@ -1,0 +1,530 @@
+<div data-page="component-live-binding" class="component-demo" tabindex="-1">
+  <h2>Live Binding</h2>
+  <p class="text-muted">Reactive data binding that automatically updates DOM elements when data changes from events, WebSocket, cache, or API sources.</p>
+
+  <!-- Section 1: Interactive Demo -->
+  <section class="demo-section">
+    <h3>Event-Driven Binding</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">LiveBinding listens to events and renders data using a template. Click "Emit Event" to trigger updates.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="template-input">Template:</label>
+          <input type="text" id="template-input" class="form-control" value="<div class=&quot;live-binding-demo__item&quot;><strong>{{label}}</strong>: {{value}} <small>{{timestamp|relative}}</small></div>">
+        </div>
+      </div>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="max-items">Max Items:</label>
+          <input type="number" id="max-items" class="form-control" value="5" min="1" max="20">
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="debounce-input">Debounce (ms):</label>
+          <input type="number" id="debounce-input" class="form-control" value="0" min="0" max="2000" step="100">
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label">Mode:</label>
+          <select id="opt-mode" class="form-select">
+            <option value="prepend">Stack (newest first)</option>
+            <option value="append">Stack (oldest first)</option>
+            <option value="replace">Replace (single item)</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-apply-config">
+          <i class="fas fa-check me-1"></i> Apply
+        </button>
+      </div>
+      <figure class="live-binding-demo__output" id="binding-output" aria-live="polite" aria-label="Live binding output">
+        <span class="live-binding-demo__placeholder">Waiting for events...</span>
+      </figure>
+      <div class="live-binding-demo__emit-controls">
+        <button type="button" class="btn btn-success" id="btn-emit">
+          <i class="fas fa-bolt me-1"></i> Emit Event
+        </button>
+        <button type="button" class="btn btn-outline-success" id="btn-emit-batch">
+          <i class="fas fa-layer-group me-1"></i> Emit 5 Events
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: API Controls -->
+  <section class="demo-section">
+    <h3>Programmatic API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control the binding above using the LiveBinding API methods.</p>
+      <div class="live-binding-demo__api-controls">
+        <button type="button" class="btn btn-primary" id="btn-refresh">
+          <i class="fas fa-sync me-1"></i> refresh()
+        </button>
+        <button type="button" class="btn btn-warning" id="btn-pause">
+          <i class="fas fa-pause me-1"></i> pause()
+        </button>
+        <button type="button" class="btn btn-success" id="btn-resume">
+          <i class="fas fa-play me-1"></i> resume()
+        </button>
+        <button type="button" class="btn btn-danger" id="btn-destroy">
+          <i class="fas fa-trash me-1"></i> destroy()
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-recreate">
+          <i class="fas fa-plus me-1"></i> Recreate
+        </button>
+      </div>
+      <output id="api-status" class="demo-status mt-3">Status: Ready</output>
+    </div>
+  </section>
+
+  <!-- Section 3: Template Engine -->
+  <section class="demo-section">
+    <h3>Template Engine</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">LiveBinding includes a Mustache-style template engine with formatters and loop support.</p>
+      <div class="live-binding-demo__template-demo">
+        <div class="live-binding-demo__template-section">
+          <h4>Formatters</h4>
+          <dl class="live-binding-demo__formatter-list">
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{value|upper}}</code></dt>
+              <dd>Uppercase text</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{value|lower}}</code></dt>
+              <dd>Lowercase text</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{price|currency}}</code></dt>
+              <dd>Currency format</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{ratio|percent}}</code></dt>
+              <dd>Percentage format</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{date|relative}}</code></dt>
+              <dd>Relative time</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{text|truncate:20}}</code></dt>
+              <dd>Truncate with limit</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="live-binding-demo__template-section">
+          <h4>Sections</h4>
+          <dl class="live-binding-demo__formatter-list">
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{#items}}...{{/items}}</code></dt>
+              <dd>Loop over array</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{#visible}}...{{/visible}}</code></dt>
+              <dd>Conditional (if truthy)</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{^empty}}...{{/empty}}</code></dt>
+              <dd>Inverted (if falsy)</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{@index}}</code></dt>
+              <dd>Loop index</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{@first}}</code></dt>
+              <dd>First item flag</dd>
+            </div>
+            <div class="live-binding-demo__formatter-item">
+              <dt><code>{{{raw}}}</code></dt>
+              <dd>Unescaped HTML</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+      <div class="live-binding-demo__template-example">
+        <h4>Live Example</h4>
+        <div class="demo-form-row">
+          <div class="demo-form-row__field demo-form-row__field--wide">
+            <label class="demo-form-row__label" for="template-test">Template:</label>
+            <input type="text" id="template-test" class="form-control" value="Price: {{amount|currency}} ({{change|percent:1}} change)">
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-render-template">
+            <i class="fas fa-play me-1"></i> Render
+          </button>
+        </div>
+        <output id="template-output" class="live-binding-demo__template-output">Click "Render" to see result</output>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Source Adapters -->
+  <section class="demo-section">
+    <h3>Source Adapters</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">LiveBinding supports multiple data sources: event, cache, websocket, api, and computed.</p>
+      <div class="live-binding-demo__source-grid">
+        <article class="live-binding-demo__source-card">
+          <h4><i class="fas fa-bolt" aria-hidden="true"></i> Event</h4>
+          <p>Listens to PubSub events for real-time updates.</p>
+          <code>source: 'event', event: 'my:event'</code>
+        </article>
+        <article class="live-binding-demo__source-card">
+          <h4><i class="fas fa-database" aria-hidden="true"></i> Cache</h4>
+          <p>Binds to Funky.Cache, updates when cache changes.</p>
+          <code>source: 'cache', entity: 'user', property: 'name'</code>
+        </article>
+        <article class="live-binding-demo__source-card">
+          <h4><i class="fas fa-plug" aria-hidden="true"></i> WebSocket</h4>
+          <p>Real-time streaming from WebSocket channels.</p>
+          <code>source: 'websocket', channel: 'prices'</code>
+        </article>
+        <article class="live-binding-demo__source-card">
+          <h4><i class="fas fa-cloud" aria-hidden="true"></i> API</h4>
+          <p>REST API with optional polling interval.</p>
+          <code>source: 'api', url: '/api/data', interval: 5000</code>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Declarative Binding -->
+  <section class="demo-section">
+    <h3>Declarative Binding</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Use data attributes to bind elements without JavaScript.</p>
+      <div class="live-binding-demo__declarative-examples">
+        <div class="live-binding-demo__declarative-item">
+          <code class="live-binding-demo__code-block">&lt;span data-live-bind="cache:trades:count"&gt;&lt;/span&gt;</code>
+          <p>Binds to cache entity "trades", property "count"</p>
+        </div>
+        <div class="live-binding-demo__declarative-item">
+          <code class="live-binding-demo__code-block">&lt;div data-live-bind="websocket:prices:GBPUSD"
+     data-live-template="£{{price|number:4}}"&gt;&lt;/div&gt;</code>
+          <p>WebSocket channel with template</p>
+        </div>
+        <div class="live-binding-demo__declarative-item">
+          <code class="live-binding-demo__code-block">&lt;ul data-live-bind="event:activity"
+    data-live-append
+    data-live-prepend
+    data-live-max="10"&gt;&lt;/ul&gt;</code>
+          <p>Streaming list with max items</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Keyboard Navigation -->
+  <section class="demo-section">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">API control keyboard shortcuts when focused on the demo area.</p>
+      <dl class="live-binding-demo__keyboard-hints">
+        <div class="live-binding-demo__keyboard-hint">
+          <dt><kbd>E</kbd></dt>
+          <dd>Emit event</dd>
+        </div>
+        <div class="live-binding-demo__keyboard-hint">
+          <dt><kbd>P</kbd></dt>
+          <dd>Pause binding</dd>
+        </div>
+        <div class="live-binding-demo__keyboard-hint">
+          <dt><kbd>R</kbd></dt>
+          <dd>Resume binding</dd>
+        </div>
+        <div class="live-binding-demo__keyboard-hint">
+          <dt><kbd>C</kbd></dt>
+          <dd>Clear output</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Events Log -->
+  <section class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="binding-log" class="demo-log" role="log" aria-live="polite">Interact with the binding to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var binding = null;
+  var propsChangedHandler = null;
+  var eventCounter = 0;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('binding-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function syncInputsFromProps(props) {
+    var templateInput = document.getElementById('template-input');
+    var maxInput = document.getElementById('max-items');
+    var debounceInput = document.getElementById('debounce-input');
+    var modeSelect = document.getElementById('opt-mode');
+
+    if (templateInput && props.template != null) templateInput.value = props.template;
+    if (maxInput && props.max != null) maxInput.value = props.max;
+    if (debounceInput && props.debounce != null) debounceInput.value = props.debounce;
+    if (modeSelect && props.mode != null) modeSelect.value = props.mode;
+  }
+
+  function getConfigFromInputs() {
+    var mode = document.getElementById('opt-mode').value;
+    return {
+      template: document.getElementById('template-input').value,
+      max: parseInt(document.getElementById('max-items').value, 10) || 5,
+      debounce: parseInt(document.getElementById('debounce-input').value, 10) || 0,
+      append: mode !== 'replace',
+      prepend: mode === 'prepend'
+    };
+  }
+
+  function emitTestEvent() {
+    eventCounter++;
+    var labels = ['Price Update', 'Trade Alert', 'System Event', 'User Action', 'Data Sync'];
+    var data = {
+      label: labels[Math.floor(Math.random() * labels.length)],
+      value: (Math.random() * 1000).toFixed(2),
+      timestamp: new Date().toISOString(),
+      id: eventCounter
+    };
+    Funky.PubSub.emit('demo:live-binding:update', data);
+    log('Emitted event #' + eventCounter + ': ' + data.label + ' = ' + data.value);
+    emit('event', { event: 'live-binding:emit', payload: data });
+  }
+
+  Funky.Pages.register('component-live-binding', {
+    init: function(state) {
+      var props = getProps();
+      var LiveBinding = Funky.LiveBinding;
+      var apiStatus = document.getElementById('api-status');
+
+      if (!LiveBinding) {
+        log('Error: Funky.LiveBinding not available');
+        return;
+      }
+
+      log('LiveBinding module initialized');
+      syncInputsFromProps(props);
+
+      // =========================================================================
+      // Section 1: Create Event Binding
+      // =========================================================================
+
+      function createBinding() {
+        if (binding) {
+          binding.destroy();
+          binding = null;
+        }
+
+        var config = getConfigFromInputs();
+        var outputEl = document.getElementById('binding-output');
+
+        // Clear placeholder
+        outputEl.innerHTML = '';
+
+        binding = LiveBinding.bind('#binding-output', {
+          source: 'event',
+          event: 'demo:live-binding:update',
+          template: config.template,
+          append: config.append,
+          prepend: config.prepend,
+          max: config.max,
+          debounce: config.debounce,
+          showLoading: false,
+          fallback: '<span class="live-binding-demo__placeholder">Waiting for events...</span>',
+          onUpdate: function(data) {
+            log('Binding updated: ' + JSON.stringify(data).substring(0, 50) + '...');
+            emit('event', { event: 'live-binding:update', payload: data });
+          },
+          onError: function(error) {
+            log('Binding error: ' + error.message);
+            emit('event', { event: 'live-binding:error', payload: { error: error.message } });
+          }
+        });
+
+        log('Binding created: append=' + config.append + ', prepend=' + config.prepend + ', max=' + config.max);
+        apiStatus.textContent = 'Status: Binding active';
+      }
+
+      createBinding();
+
+      // Apply button
+      document.getElementById('btn-apply-config').addEventListener('click', function() {
+        createBinding();
+        var config = getConfigFromInputs();
+        emit('event', { event: 'live-binding:config', payload: config });
+      });
+
+      // Emit buttons
+      document.getElementById('btn-emit').addEventListener('click', emitTestEvent);
+
+      document.getElementById('btn-emit-batch').addEventListener('click', function() {
+        for (var i = 0; i < 5; i++) {
+          setTimeout(emitTestEvent, i * 100);
+        }
+      });
+
+      // =========================================================================
+      // Section 2: API Controls
+      // =========================================================================
+
+      document.getElementById('btn-refresh').addEventListener('click', function() {
+        if (binding) {
+          binding.refresh();
+          apiStatus.textContent = 'Status: refresh() called';
+          log('API: refresh() called');
+        } else {
+          apiStatus.textContent = 'Status: No binding active';
+        }
+      });
+
+      document.getElementById('btn-pause').addEventListener('click', function() {
+        if (binding) {
+          binding.pause();
+          apiStatus.textContent = 'Status: Binding paused';
+          log('API: pause() called - binding will ignore events');
+        } else {
+          apiStatus.textContent = 'Status: No binding active';
+        }
+      });
+
+      document.getElementById('btn-resume').addEventListener('click', function() {
+        if (binding) {
+          binding.resume();
+          apiStatus.textContent = 'Status: Binding resumed';
+          log('API: resume() called - binding listening again');
+        } else {
+          apiStatus.textContent = 'Status: No binding active';
+        }
+      });
+
+      document.getElementById('btn-destroy').addEventListener('click', function() {
+        if (binding) {
+          binding.destroy();
+          binding = null;
+          apiStatus.textContent = 'Status: Binding destroyed';
+          log('API: destroy() called - binding removed');
+          document.getElementById('binding-output').innerHTML = '<span class="live-binding-demo__placeholder">Binding destroyed. Click "Recreate" to start again.</span>';
+        } else {
+          apiStatus.textContent = 'Status: No binding to destroy';
+        }
+      });
+
+      document.getElementById('btn-recreate').addEventListener('click', function() {
+        createBinding();
+        apiStatus.textContent = 'Status: Binding recreated';
+      });
+
+      // =========================================================================
+      // Section 3: Template Engine Demo
+      // =========================================================================
+
+      document.getElementById('btn-render-template').addEventListener('click', function() {
+        var template = document.getElementById('template-test').value;
+        var testData = {
+          amount: 1234.56,
+          change: 0.0523,
+          name: 'Test User',
+          items: ['Apple', 'Banana', 'Cherry']
+        };
+
+        try {
+          var result = LiveBinding.Template.render(template, testData);
+          document.getElementById('template-output').innerHTML = result;
+          log('Template rendered: ' + template);
+        } catch (e) {
+          document.getElementById('template-output').textContent = 'Error: ' + e.message;
+          log('Template error: ' + e.message);
+        }
+      });
+
+      // =========================================================================
+      // Keyboard Navigation
+      // =========================================================================
+
+      function flashButton(btn) {
+        if (!btn) return;
+        btn.classList.add('keyboard-active');
+        setTimeout(function() {
+          btn.classList.remove('keyboard-active');
+        }, 150);
+      }
+
+      document.querySelector('[data-page="component-live-binding"]').addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+        switch (e.key.toLowerCase()) {
+          case 'e':
+            flashButton(document.getElementById('btn-emit'));
+            emitTestEvent();
+            e.preventDefault();
+            break;
+          case 'p':
+            if (binding) {
+              flashButton(document.getElementById('btn-pause'));
+              binding.pause();
+              apiStatus.textContent = 'Status: Binding paused (keyboard)';
+              log('Keyboard: pause()');
+              e.preventDefault();
+            }
+            break;
+          case 'r':
+            if (binding) {
+              flashButton(document.getElementById('btn-resume'));
+              binding.resume();
+              apiStatus.textContent = 'Status: Binding resumed (keyboard)';
+              log('Keyboard: resume()');
+              e.preventDefault();
+            }
+            break;
+          case 'c':
+            document.getElementById('binding-output').innerHTML = '<span class="live-binding-demo__placeholder">Output cleared</span>';
+            log('Keyboard: output cleared');
+            e.preventDefault();
+            break;
+        }
+      });
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+          syncInputsFromProps(newProps);
+          createBinding();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Focus page container so keyboard shortcuts work immediately
+      var pageContainer = document.querySelector('[data-page="component-live-binding"]');
+      if (pageContainer) {
+        pageContainer.focus();
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      if (binding) {
+        binding.destroy();
+        binding = null;
+      }
+      logs = [];
+      eventCounter = 0;
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,317 @@
+<div data-page="component-relative-time" class="component-demo">
+  <h2>Relative Time</h2>
+  <p class="text-muted">Human-readable relative timestamps that auto-update (e.g., "5 minutes ago").</p>
+
+  <!-- Past Times Section -->
+  <section class="demo-section" id="section-past" aria-labelledby="past-heading">
+    <h3 id="past-heading">Past Times</h3>
+    <p class="text-muted small">Timestamps from the past, auto-updating in real-time.</p>
+    <div class="demo-area">
+      <div class="list-group">
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>Just now</span>
+          <time id="time-now" class="badge bg-primary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>30 seconds ago</span>
+          <time id="time-30s" class="badge bg-primary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>5 minutes ago</span>
+          <time id="time-5m" class="badge bg-primary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>1 hour ago</span>
+          <time id="time-1h" class="badge bg-primary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>Yesterday</span>
+          <time id="time-1d" class="badge bg-primary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>Last week</span>
+          <time id="time-1w" class="badge bg-primary" data-relative></time>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Future Times Section -->
+  <section class="demo-section" id="section-future" aria-labelledby="future-heading">
+    <h3 id="future-heading">Future Times</h3>
+    <p class="text-muted small">Upcoming timestamps counting down.</p>
+    <div class="demo-area">
+      <div class="list-group">
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>In 5 minutes</span>
+          <time id="time-future-5m" class="badge bg-success" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>In 1 hour</span>
+          <time id="time-future-1h" class="badge bg-success" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>Tomorrow</span>
+          <time id="time-future-1d" class="badge bg-success" data-relative></time>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Absolute Threshold Section -->
+  <section class="demo-section" id="section-absolute" aria-labelledby="absolute-heading">
+    <h3 id="absolute-heading">Absolute Threshold</h3>
+    <p class="text-muted small">Times beyond threshold show absolute dates.</p>
+    <div class="demo-area">
+      <div class="list-group">
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>30 days ago (threshold)</span>
+          <time id="time-30d" class="badge bg-secondary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>90 days ago (absolute)</span>
+          <time id="time-90d" class="badge bg-secondary" data-relative></time>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span>1 year ago (absolute)</span>
+          <time id="time-1y" class="badge bg-secondary" data-relative></time>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls Section -->
+  <section class="demo-section" id="section-controls" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">Pause/Resume Controls</h3>
+    <p class="text-muted small">Control auto-update behavior programmatically.</p>
+    <div class="demo-area">
+      <div class="btn-group" role="group" aria-label="Relative time controls">
+        <button class="btn btn-outline-primary" id="btn-pause" type="button">
+          <i class="fas fa-pause me-1" aria-hidden="true"></i> Pause
+        </button>
+        <button class="btn btn-outline-primary" id="btn-resume" type="button">
+          <i class="fas fa-play me-1" aria-hidden="true"></i> Resume
+        </button>
+        <button class="btn btn-outline-secondary" id="btn-refresh" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i> Refresh Now
+        </button>
+      </div>
+      <div class="mt-3">
+        <span class="badge bg-info" id="update-status">Auto-updating</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var refreshTimer = null;
+  var isPaused = false;
+  var propsChangedHandler = null;
+
+  // Format relative time manually (fallback if Funky.RelativeTime not available)
+  function formatRelativeTime(date) {
+    var now = Date.now();
+    var diff = now - date.getTime();
+    var seconds = Math.floor(Math.abs(diff) / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    if (diff < 0) {
+      // Future
+      if (days > 0) return 'in ' + days + ' day' + (days > 1 ? 's' : '');
+      if (hours > 0) return 'in ' + hours + ' hour' + (hours > 1 ? 's' : '');
+      if (minutes > 0) return 'in ' + minutes + ' minute' + (minutes > 1 ? 's' : '');
+      return 'in a few seconds';
+    }
+
+    // Past - check threshold for absolute dates
+    if (days > 30) {
+      return date.toLocaleDateString();
+    }
+
+    if (seconds < 5) return 'just now';
+    if (seconds < 60) return seconds + ' seconds ago';
+    if (minutes < 60) return minutes + ' minute' + (minutes > 1 ? 's' : '') + ' ago';
+    if (hours < 24) return hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+    return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+  }
+
+  // Set up a time element with datetime attribute
+  function setupTimeElement(el, date) {
+    if (!el) return;
+    el.setAttribute('datetime', date.toISOString());
+    el.textContent = formatRelativeTime(date);
+    el.title = date.toLocaleString();
+  }
+
+  // Update all time elements (just refresh display)
+  function updateAllTimes() {
+    var timeElements = document.querySelectorAll('[data-page="component-relative-time"] time[data-relative]');
+    timeElements.forEach(function(el) {
+      var datetime = el.getAttribute('datetime');
+      if (datetime) {
+        el.textContent = formatRelativeTime(new Date(datetime));
+      }
+    });
+  }
+
+  // Reset all time elements to be relative to current time
+  function resetAllTimes() {
+    var now = new Date();
+
+    // Reset past time elements
+    setupTimeElement(document.getElementById('time-now'), now);
+    setupTimeElement(document.getElementById('time-30s'), new Date(now - 30 * 1000));
+    setupTimeElement(document.getElementById('time-5m'), new Date(now - 5 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-1h'), new Date(now - 60 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-1d'), new Date(now - 24 * 60 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-1w'), new Date(now - 7 * 24 * 60 * 60 * 1000));
+
+    // Reset future time elements
+    setupTimeElement(document.getElementById('time-future-5m'), new Date(now.getTime() + 5 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-future-1h'), new Date(now.getTime() + 60 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-future-1d'), new Date(now.getTime() + 24 * 60 * 60 * 1000));
+
+    // Reset absolute threshold examples
+    setupTimeElement(document.getElementById('time-30d'), new Date(now - 30 * 24 * 60 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-90d'), new Date(now - 90 * 24 * 60 * 60 * 1000));
+    setupTimeElement(document.getElementById('time-1y'), new Date(now - 365 * 24 * 60 * 60 * 1000));
+  }
+
+  // Apply props to show/hide sections
+  function applyProps(props) {
+    var sectionPast = document.getElementById('section-past');
+    var sectionFuture = document.getElementById('section-future');
+    var sectionAbsolute = document.getElementById('section-absolute');
+    var sectionControls = document.getElementById('section-controls');
+
+    if (sectionPast) {
+      sectionPast.style.display = props.showPast !== false ? '' : 'none';
+    }
+    if (sectionFuture) {
+      sectionFuture.style.display = props.showFuture !== false ? '' : 'none';
+    }
+    if (sectionAbsolute) {
+      sectionAbsolute.style.display = props.showAbsolute !== false ? '' : 'none';
+    }
+    if (sectionControls) {
+      sectionControls.style.display = props.showControls !== false ? '' : 'none';
+    }
+  }
+
+  // Update status badge
+  function updateStatus() {
+    var statusEl = document.getElementById('update-status');
+    if (statusEl) {
+      if (isPaused) {
+        statusEl.textContent = 'Paused';
+        statusEl.className = 'badge bg-warning';
+      } else {
+        statusEl.textContent = 'Auto-updating';
+        statusEl.className = 'badge bg-info';
+      }
+    }
+  }
+
+  Funky.Pages.register('component-relative-time', {
+    init: function(state) {
+      var props = getProps();
+      var now = new Date();
+
+      // Apply section visibility from props
+      applyProps(props);
+
+      // Set up past time elements
+      setupTimeElement(document.getElementById('time-now'), now);
+      setupTimeElement(document.getElementById('time-30s'), new Date(now - 30 * 1000));
+      setupTimeElement(document.getElementById('time-5m'), new Date(now - 5 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-1h'), new Date(now - 60 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-1d'), new Date(now - 24 * 60 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-1w'), new Date(now - 7 * 24 * 60 * 60 * 1000));
+
+      // Set up future time elements
+      setupTimeElement(document.getElementById('time-future-5m'), new Date(now.getTime() + 5 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-future-1h'), new Date(now.getTime() + 60 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-future-1d'), new Date(now.getTime() + 24 * 60 * 60 * 1000));
+
+      // Set up absolute threshold examples
+      setupTimeElement(document.getElementById('time-30d'), new Date(now - 30 * 24 * 60 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-90d'), new Date(now - 90 * 24 * 60 * 60 * 1000));
+      setupTimeElement(document.getElementById('time-1y'), new Date(now - 365 * 24 * 60 * 60 * 1000));
+
+      // Initialize Funky.RelativeTime if available
+      if (Funky.RelativeTime && Funky.RelativeTime.init) {
+        Funky.RelativeTime.init();
+      }
+
+      // Start auto-update timer
+      refreshTimer = setInterval(function() {
+        if (!isPaused) {
+          updateAllTimes();
+        }
+      }, 10000); // Update every 10 seconds
+
+      // Control buttons
+      document.getElementById('btn-pause').onclick = function() {
+        isPaused = true;
+        if (Funky.RelativeTime && Funky.RelativeTime.pause) {
+          Funky.RelativeTime.pause();
+        }
+        updateStatus();
+        emit('event', { event: 'funky:relative-time:pause' });
+      };
+
+      document.getElementById('btn-resume').onclick = function() {
+        isPaused = false;
+        if (Funky.RelativeTime && Funky.RelativeTime.resume) {
+          Funky.RelativeTime.resume();
+        }
+        updateStatus();
+        emit('event', { event: 'funky:relative-time:resume' });
+      };
+
+      document.getElementById('btn-refresh').onclick = function() {
+        resetAllTimes();
+        if (Funky.RelativeTime && Funky.RelativeTime.refresh) {
+          Funky.RelativeTime.refresh();
+        }
+        emit('event', { event: 'funky:relative-time:refresh' });
+      };
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          applyProps(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'funky:relative-time:init', payload: props });
+
+      return {};
+    },
+
+    destroy: function() {
+      if (refreshTimer) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+      }
+      isPaused = false;
+
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

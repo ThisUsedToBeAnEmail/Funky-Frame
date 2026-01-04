@@ -1,0 +1,8 @@
+# Development files
+*.test.js
+**/tests/
+**/dev/
+
+# Build artifacts
+*.map
+*.min.js.map

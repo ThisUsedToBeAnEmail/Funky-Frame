@@ -1,0 +1,472 @@
+<div data-page="component-slide-panel" class="component-demo">
+  <h2>Slide Panel</h2>
+  <p class="text-muted">Sliding panel overlays from any edge of the screen for details, forms, or navigation.</p>
+
+  <section class="demo-section" aria-labelledby="slide-panel-positions-heading">
+    <h3 id="slide-panel-positions-heading">Panel Positions</h3>
+    <p class="text-muted small">Open panels from different screen edges.</p>
+    <div class="demo-area slide-panel-demo__button-grid" role="group" aria-label="Panel position buttons">
+      <button class="btn btn-primary" id="panel-right" type="button">
+        <i class="fas fa-arrow-left me-1" aria-hidden="true"></i>Open Right Panel
+      </button>
+      <button class="btn btn-primary" id="panel-left" type="button">
+        <i class="fas fa-arrow-right me-1" aria-hidden="true"></i>Open Left Panel
+      </button>
+      <button class="btn btn-primary" id="panel-top" type="button">
+        <i class="fas fa-arrow-down me-1" aria-hidden="true"></i>Open Top Panel
+      </button>
+      <button class="btn btn-primary" id="panel-bottom" type="button">
+        <i class="fas fa-arrow-up me-1" aria-hidden="true"></i>Open Bottom Panel
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="slide-panel-api-heading">
+    <h3 id="slide-panel-api-heading">API Methods</h3>
+    <p class="text-muted small">Control panels programmatically.</p>
+    <div class="demo-area slide-panel-demo__button-grid" role="group" aria-label="API control buttons">
+      <button class="btn btn-success" id="panel-show" type="button">
+        <i class="fas fa-eye me-1" aria-hidden="true"></i>Show Panel
+      </button>
+      <button class="btn btn-warning" id="panel-hide" type="button">
+        <i class="fas fa-eye-slash me-1" aria-hidden="true"></i>Hide Panel
+      </button>
+      <button class="btn btn-info" id="panel-set-data" type="button">
+        <i class="fas fa-edit me-1" aria-hidden="true"></i>Set Data
+      </button>
+      <button class="btn btn-outline-info" id="panel-get-data" type="button">
+        <i class="fas fa-download me-1" aria-hidden="true"></i>Get Data
+      </button>
+      <button class="btn btn-outline-secondary" id="panel-lock-scroll" type="button">
+        <i class="fas fa-lock me-1" aria-hidden="true"></i>Lock Scroll
+      </button>
+      <button class="btn btn-outline-secondary" id="panel-unlock-scroll" type="button">
+        <i class="fas fa-unlock me-1" aria-hidden="true"></i>Unlock Scroll
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="slide-panel-state-heading">
+    <h3 id="slide-panel-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time panel state information.</p>
+    <div class="demo-area">
+      <pre id="slide-panel-state" class="slide-panel-demo__log" aria-live="polite" aria-label="Panel state">No panel registered</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="slide-panel-log-heading">
+    <h3 id="slide-panel-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="slide-panel-log" class="slide-panel-demo__log" aria-live="polite" aria-label="Event log">Interact with panels to see events...</pre>
+    </div>
+  </section>
+
+  <!-- Right Slide Panel (default - slides from right) -->
+  <div class="modal modal-slide-panel fade" id="demoPanelRight" tabindex="-1" aria-labelledby="demoPanelRightTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="demoPanelRightTitle">Right Panel</h5>
+          <button type="button" class="btn-close" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This panel slides in from the right side of the screen.</p>
+          <p class="text-muted small">Use this pattern for details panels, edit forms, or contextual information.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-funky-modal-close>Close</button>
+          <button type="button" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Slide Panel -->
+  <div class="modal modal-slide-panel modal-slide-left fade" id="demoPanelLeft" tabindex="-1" aria-labelledby="demoPanelLeftTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="demoPanelLeftTitle">Left Panel</h5>
+          <button type="button" class="btn-close" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This panel slides in from the left side of the screen.</p>
+          <p class="text-muted small">Great for navigation menus or sidebars on mobile.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-funky-modal-close>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Slide Panel -->
+  <div class="modal modal-slide-panel modal-slide-top fade" id="demoPanelTop" tabindex="-1" aria-labelledby="demoPanelTopTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="demoPanelTopTitle">Top Panel</h5>
+          <button type="button" class="btn-close" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This panel slides down from the top of the screen.</p>
+          <p class="text-muted small">Useful for alerts, notifications, or search overlays.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Slide Panel -->
+  <div class="modal modal-slide-panel modal-slide-bottom fade" id="demoPanelBottom" tabindex="-1" aria-labelledby="demoPanelBottomTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="demoPanelBottomTitle">Bottom Panel</h5>
+          <button type="button" class="btn-close" data-funky-modal-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This panel slides up from the bottom of the screen.</p>
+          <p class="text-muted small">Common on mobile for action sheets or bottom drawers.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-funky-modal-close>Close</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var panelInstances = {};
+  var logs = [];
+  var propsChangedHandler = null;
+
+  // Map position to panel ID
+  var positionToPanelId = {
+    right: 'demoPanelRight',
+    left: 'demoPanelLeft',
+    top: 'demoPanelTop',
+    bottom: 'demoPanelBottom'
+  };
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('slide-panel-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('slide-panel-state');
+    if (!stateEl) return;
+
+    var props = getProps();
+    var position = props.position || 'right';
+    var panelId = positionToPanelId[position];
+    var instance = panelInstances[panelId];
+
+    if (instance) {
+      var data = instance.getData();
+      stateEl.textContent = JSON.stringify({
+        position: position,
+        panelId: panelId,
+        hasData: !!data,
+        data: data
+      }, null, 2);
+    } else {
+      stateEl.textContent = 'No panel registered for position: ' + position;
+    }
+  }
+
+  // Apply props to a panel (directly updates DOM)
+  function applyPropsToPanel(panelId) {
+    var props = getProps();
+    var instance = panelInstances[panelId];
+    if (!instance) return;
+
+    // Find the modal - prefer the one on body (moved there by Modal system) over the one in spaContent
+    var allPanels = document.querySelectorAll('#' + panelId);
+    var panel = null;
+
+    if (allPanels.length > 1) {
+      // Multiple panels found - use the one on body (that's the one Modal shows)
+      allPanels.forEach(function(p) {
+        if (p.parentElement === document.body) {
+          panel = p;
+        }
+      });
+      // Fallback to first one if none on body
+      if (!panel) panel = allPanels[0];
+    } else {
+      panel = document.getElementById(panelId);
+    }
+
+    if (!panel) return;
+
+    // Get title and content from props or use defaults
+    var title = props.title || getDefaultTitle(panelId);
+    var content = props.content || getDefaultContent(panelId);
+
+    // Update title directly
+    var titleEl = panel.querySelector('.modal-title');
+    if (titleEl) {
+      titleEl.textContent = title;
+    }
+
+    // Update body content directly - wrap plain text in <p> if no HTML tags
+    var bodyEl = panel.querySelector('.modal-body');
+    if (bodyEl) {
+      if (content.indexOf('<') === -1) {
+        // Plain text - wrap in paragraph
+        bodyEl.innerHTML = '<p>' + content + '</p>';
+      } else {
+        // HTML content
+        bodyEl.innerHTML = content;
+      }
+    }
+
+    // Store data on instance for getData()
+    instance._data = { title: title, content: content };
+
+    log('Applied props to ' + panelId + ': title="' + title + '"');
+  }
+
+  function getDefaultTitle(panelId) {
+    var titles = {
+      demoPanelRight: 'Right Panel',
+      demoPanelLeft: 'Left Panel',
+      demoPanelTop: 'Top Panel',
+      demoPanelBottom: 'Bottom Panel'
+    };
+    return titles[panelId] || 'Panel';
+  }
+
+  function getDefaultContent(panelId) {
+    var contents = {
+      demoPanelRight: '<p>This panel slides in from the right side of the screen.</p><p class="text-muted small">Use this pattern for details panels, edit forms, or contextual information.</p>',
+      demoPanelLeft: '<p>This panel slides in from the left side of the screen.</p><p class="text-muted small">Great for navigation menus or sidebars on mobile.</p>',
+      demoPanelTop: '<p>This panel slides down from the top of the screen.</p><p class="text-muted small">Useful for alerts, notifications, or search overlays.</p>',
+      demoPanelBottom: '<p>This panel slides up from the bottom of the screen.</p><p class="text-muted small">Common on mobile for action sheets or bottom drawers.</p>'
+    };
+    return contents[panelId] || 'Panel content goes here.';
+  }
+
+  // Get the active panel based on position prop
+  function getActivePanel() {
+    var props = getProps();
+    var position = props.position || 'right';
+    var panelId = positionToPanelId[position];
+    return panelInstances[panelId] || null;
+  }
+
+  Funky.Pages.register('component-slide-panel', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+
+      var position = props.position || 'right';
+      log('Init with position=' + position);
+      emit('event', { event: 'slide-panel:init', payload: { position: position, title: props.title, content: props.content } });
+
+      // Initialize SlidePanel module
+      if (Funky.SlidePanel) {
+        Funky.SlidePanel.init();
+      }
+
+      // Register all panels
+      var panelIds = ['demoPanelRight', 'demoPanelLeft', 'demoPanelTop', 'demoPanelBottom'];
+      panelIds.forEach(function(panelId) {
+        if (Funky.SlidePanel) {
+          panelInstances[panelId] = Funky.SlidePanel.register(panelId);
+          log('Panel registered: ' + panelId);
+        }
+      });
+
+      // Apply initial props to the active panel
+      var activePanelId = positionToPanelId[position];
+      if (panelInstances[activePanelId] && (props.title || props.content)) {
+        applyPropsToPanel(activePanelId);
+      }
+
+      updateState();
+
+      // Listen for props changes to update state display
+      // Props are applied to panels when they open via funky.modal.show event
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          updateState();
+          log('Props changed: title="' + (newProps.title || '(default)') + '"');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Setup panel event listeners for logging
+      panelIds.forEach(function(panelId) {
+        var panel = document.getElementById(panelId);
+        if (panel) {
+          panel.addEventListener('funky.modal.show', function() {
+            // Apply current props when modal is about to show
+            applyPropsToPanel(panelId);
+            log(panelId + ' showing');
+            emit('event', { event: 'slide-panel:show', payload: { panel: panelId } });
+          });
+          panel.addEventListener('funky.modal.shown', function() {
+            log(panelId + ' shown');
+            emit('event', { event: 'slide-panel:shown', payload: { panel: panelId } });
+          });
+          panel.addEventListener('funky.modal.hide', function() {
+            log(panelId + ' hiding');
+            emit('event', { event: 'slide-panel:hide', payload: { panel: panelId } });
+          });
+          panel.addEventListener('funky.modal.hidden', function() {
+            log(panelId + ' hidden');
+            emit('event', { event: 'slide-panel:hidden', payload: { panel: panelId } });
+          });
+          panel.addEventListener('funky.slide-panel.data-set', function(e) {
+            log(panelId + ' data set');
+            emit('event', { event: 'slide-panel:data-set', payload: { panel: panelId, data: e.detail } });
+            updateState();
+          });
+        }
+      });
+
+      // Position buttons - open panel based on button
+      // Props are applied via the funky.modal.show event listener
+      document.getElementById('panel-right').onclick = function() {
+        Funky.Modal.show('#demoPanelRight');
+        log('Opened right panel');
+      };
+
+      document.getElementById('panel-left').onclick = function() {
+        Funky.Modal.show('#demoPanelLeft');
+        log('Opened left panel');
+      };
+
+      document.getElementById('panel-top').onclick = function() {
+        Funky.Modal.show('#demoPanelTop');
+        log('Opened top panel');
+      };
+
+      document.getElementById('panel-bottom').onclick = function() {
+        Funky.Modal.show('#demoPanelBottom');
+        log('Opened bottom panel');
+      };
+
+      // API buttons - operate on the panel selected by position prop
+      document.getElementById('panel-show').onclick = function() {
+        var instance = getActivePanel();
+        if (instance) {
+          // Props are applied via the funky.modal.show event listener
+          instance.show();
+          log('Called show() on ' + instance.panelId);
+          emit('event', { event: 'slide-panel:api-show', payload: { panel: instance.panelId } });
+        }
+      };
+
+      document.getElementById('panel-hide').onclick = function() {
+        var instance = getActivePanel();
+        if (instance) {
+          instance.hide();
+          log('Called hide() on ' + instance.panelId);
+          emit('event', { event: 'slide-panel:api-hide', payload: { panel: instance.panelId } });
+        }
+      };
+
+      document.getElementById('panel-set-data').onclick = function() {
+        var instance = getActivePanel();
+        var props = getProps();
+        if (instance) {
+          var newData = {
+            title: props.title || 'Updated Panel Title',
+            content: props.content || '<div class="p-3"><h5>Dynamic Content</h5><p>This content was set via the setData() API at ' + new Date().toLocaleTimeString() + '</p><p class="text-muted">The panel content can be updated without reopening.</p></div>'
+          };
+          instance.setData(newData);
+          instance.show();
+          log('Set data on ' + instance.panelId);
+          emit('event', { event: 'slide-panel:api-setData', payload: newData });
+          updateState();
+        }
+      };
+
+      document.getElementById('panel-get-data').onclick = function() {
+        var instance = getActivePanel();
+        if (instance) {
+          var data = instance.getData();
+          log('Got data from ' + instance.panelId + ': ' + (data ? JSON.stringify(data).slice(0, 50) + '...' : 'null'));
+          emit('event', { event: 'slide-panel:api-getData', payload: { panel: instance.panelId, data: data } });
+          if (data) {
+            Funky.Toast.info('Panel has data: ' + (data.title || 'untitled'));
+          } else {
+            Funky.Toast.info('No data set on panel');
+          }
+          updateState();
+        }
+      };
+
+      document.getElementById('panel-lock-scroll').onclick = function() {
+        if (Funky.SlidePanel) {
+          Funky.SlidePanel.lockScroll();
+          log('Body scroll locked');
+          emit('event', { event: 'slide-panel:lockScroll', payload: {} });
+          Funky.Toast.warning('Scroll locked - page cannot scroll');
+        }
+      };
+
+      document.getElementById('panel-unlock-scroll').onclick = function() {
+        if (Funky.SlidePanel) {
+          Funky.SlidePanel.unlockScroll();
+          log('Body scroll unlocked');
+          emit('event', { event: 'slide-panel:unlockScroll', payload: {} });
+          Funky.Toast.success('Scroll unlocked');
+        }
+      };
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clean up modals that were moved to body by the Modal system
+      var panelIds = ['demoPanelRight', 'demoPanelLeft', 'demoPanelTop', 'demoPanelBottom'];
+      panelIds.forEach(function(panelId) {
+        // Find any modals on body and remove them
+        var modalsOnBody = document.querySelectorAll('body > #' + panelId);
+        modalsOnBody.forEach(function(modal) {
+          // Hide the modal first if it's shown
+          if (Funky.Modal) {
+            Funky.Modal.hide('#' + panelId);
+          }
+          // Remove from DOM
+          modal.parentNode.removeChild(modal);
+        });
+      });
+
+      // Clean up all panel instances from SlidePanel registry
+      if (Funky.SlidePanel && Funky.SlidePanel._instances) {
+        Object.keys(panelInstances).forEach(function(panelId) {
+          delete Funky.SlidePanel._instances[panelId];
+        });
+      }
+
+      // Clean up Modal instances
+      if (Funky.Modal && Funky.Modal._instances) {
+        panelIds.forEach(function(panelId) {
+          delete Funky.Modal._instances[panelId];
+        });
+      }
+
+      panelInstances = {};
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

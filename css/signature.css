@@ -1,0 +1,993 @@
+/**
+ * Funky.Signature Component Styles
+ * 
+ * Premium canvas-based signature capture with full theme support
+ * 
+ * @module Funky.Signature
+ * @version 2.0.0
+ */
+
+/* =========================================================================
+   CSS Custom Properties
+   ========================================================================= */
+
+.funky-signature {
+  /* Dimensions */
+  --sig-width: 100%;
+  --sig-height: 200px;
+  --sig-max-width: 600px;
+  --sig-min-height: 150px;
+
+  /* Colours - theme aware */
+  --sig-bg: var(--pro-bg-elevated, #ffffff);
+  --sig-bg-gradient: linear-gradient(
+    135deg,
+    var(--pro-bg-elevated, #ffffff) 0%,
+    var(--pro-bg-secondary, #f6f8fa) 100%
+  );
+  --sig-border: var(--pro-border-color, #d0d7de);
+  --sig-border-focus: var(--pro-accent-primary, #0969da);
+  --sig-pen: var(--pro-text-primary, #1f2328);
+  --sig-placeholder: var(--pro-text-muted, #8c959f);
+  --sig-surface: var(--pro-bg-tertiary, #eaeef2);
+
+  /* Border */
+  --sig-border-width: 2px;
+  --sig-border-radius: var(--pro-radius-lg, 12px);
+  --sig-border-radius-sm: var(--pro-radius-md, 8px);
+
+  /* Spacing */
+  --sig-padding: var(--pro-spacing-3, 0.75rem);
+  --sig-gap: var(--pro-spacing-3, 0.75rem);
+
+  /* Transitions */
+  --sig-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --sig-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --sig-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadows */
+  --sig-shadow: var(--pro-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  --sig-shadow-hover: var(--pro-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+  --sig-shadow-focus: 0 0 0 4px var(--pro-accent-primary-muted, rgba(9, 105, 218, 0.15));
+  --sig-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* Typography (typed mode) */
+  --sig-font-family: "Dancing Script", "Brush Script MT", "Segoe Script", cursive;
+  --sig-font-size: 48px;
+  --sig-label-font: var(--pro-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
+  
+  /* Button colours */
+  --sig-btn-bg: var(--pro-bg-tertiary, #eaeef2);
+  --sig-btn-hover: var(--pro-bg-elevated, #ffffff);
+  --sig-btn-active: var(--pro-accent-primary, #0969da);
+  --sig-btn-text: var(--pro-text-secondary, #656d76);
+  --sig-btn-text-hover: var(--pro-text-primary, #1f2328);
+}
+
+/* =========================================================================
+   Component Container
+   ========================================================================= */
+
+.funky-signature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sig-gap);
+  width: var(--sig-width);
+  max-width: var(--sig-max-width);
+  font-family: var(--sig-label-font);
+}
+
+/* =========================================================================
+   Wrapper & Canvas Area
+   ========================================================================= */
+
+.funky-signature-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--sig-bg-gradient);
+  border-radius: var(--sig-border-radius);
+  box-shadow: var(--sig-shadow);
+  overflow: hidden;
+  transition: 
+    box-shadow var(--sig-transition),
+    transform var(--sig-transition);
+}
+
+.funky-signature-wrapper:hover {
+  box-shadow: var(--sig-shadow-hover);
+}
+
+/* A11y Wrapper */
+.funky-signature-a11y-wrapper {
+  position: relative;
+  display: block;
+  border-radius: var(--sig-border-radius);
+  overflow: hidden;
+}
+
+/* Canvas styles */
+.funky-signature canvas,
+.funky-signature-canvas {
+  display: block;
+  width: 100%;
+  height: var(--sig-height);
+  min-height: var(--sig-min-height);
+  background: var(--sig-bg);
+  border: var(--sig-border-width) solid var(--sig-border);
+  border-radius: var(--sig-border-radius);
+  cursor: crosshair;
+  touch-action: none;
+  transition: 
+    border-color var(--sig-transition),
+    box-shadow var(--sig-transition);
+}
+
+/* Typed canvas */
+.funky-signature-typed-canvas {
+  display: none;
+  width: 100%;
+  height: var(--sig-height);
+  min-height: var(--sig-min-height);
+  background: var(--sig-bg);
+  border: var(--sig-border-width) solid var(--sig-border);
+  border-radius: var(--sig-border-radius);
+}
+
+/* =========================================================================
+   Focus & Hover States
+   ========================================================================= */
+
+.funky-signature-a11y-wrapper:focus {
+  outline: none;
+}
+
+.funky-signature-a11y-wrapper:focus canvas,
+.funky-signature-a11y-wrapper:focus .funky-signature-canvas,
+.funky-signature-wrapper.focused canvas,
+.funky-signature-wrapper.focused .funky-signature-canvas {
+  border-color: var(--sig-border-focus);
+  box-shadow: var(--sig-shadow-focus);
+}
+
+/* Active drawing state */
+.funky-signature-wrapper.drawing canvas {
+  border-color: var(--sig-border-focus);
+  box-shadow: var(--sig-shadow-focus);
+}
+
+/* =========================================================================
+   Validation States
+   ========================================================================= */
+
+.funky-signature-wrapper.is-valid canvas,
+.funky-signature-wrapper.is-valid .funky-signature-canvas {
+  border-color: var(--pro-accent-success, #1a7f37);
+  box-shadow: 0 0 0 4px var(--pro-accent-success-muted, rgba(26, 127, 55, 0.15));
+}
+
+.funky-signature-wrapper.is-invalid canvas,
+.funky-signature-wrapper.is-invalid .funky-signature-canvas {
+  border-color: var(--pro-accent-danger, #cf222e);
+  box-shadow: 0 0 0 4px var(--pro-accent-danger-muted, rgba(207, 34, 46, 0.15));
+  animation: sig-shake 0.4s ease-in-out;
+}
+
+@keyframes sig-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* Disabled state */
+.funky-signature.disabled,
+.funky-signature.disabled canvas,
+.funky-signature.disabled .funky-signature-canvas {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.funky-signature.disabled .funky-signature-wrapper {
+  background: var(--sig-surface);
+}
+
+/* =========================================================================
+   Mode Toggle (Draw / Type)
+   ========================================================================= */
+
+.funky-signature-mode-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: var(--sig-gap);
+  background: var(--sig-surface);
+  border-radius: var(--sig-border-radius);
+  box-shadow: var(--sig-shadow-inset);
+}
+
+.funky-signature-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--sig-label-font);
+  line-height: 1.4;
+  color: var(--sig-btn-text);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--sig-border-radius) - 4px);
+  cursor: pointer;
+  transition: 
+    color var(--sig-transition-fast),
+    background-color var(--sig-transition-fast),
+    transform var(--sig-transition-fast),
+    box-shadow var(--sig-transition-fast);
+  user-select: none;
+}
+
+.funky-signature-mode-btn:hover:not(.active) {
+  color: var(--sig-btn-text-hover);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.funky-signature-mode-btn:active {
+  transform: scale(0.98);
+}
+
+.funky-signature-mode-btn.active {
+  color: var(--pro-text-inverse, #ffffff);
+  background: var(--sig-btn-active);
+  box-shadow: var(--sig-shadow);
+}
+
+.funky-signature-mode-btn:focus-visible {
+  outline: 2px solid var(--sig-border-focus);
+  outline-offset: 2px;
+}
+
+.funky-signature-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+/* =========================================================================
+   Typed Input Field
+   ========================================================================= */
+
+.funky-signature-typed-input {
+  display: none;
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--sig-font-family);
+  font-size: calc(var(--sig-font-size) / 2);
+  font-weight: 400;
+  color: var(--sig-pen);
+  background: var(--sig-bg);
+  border: var(--sig-border-width) solid var(--sig-border);
+  border-radius: var(--sig-border-radius);
+  margin-bottom: var(--sig-gap);
+  box-shadow: var(--sig-shadow-inset);
+  transition: 
+    border-color var(--sig-transition),
+    box-shadow var(--sig-transition);
+}
+
+.funky-signature-typed-input:focus {
+  outline: none;
+  border-color: var(--sig-border-focus);
+  box-shadow: 
+    var(--sig-shadow-inset),
+    var(--sig-shadow-focus);
+}
+
+.funky-signature-typed-input::placeholder {
+  color: var(--sig-placeholder);
+  font-style: italic;
+}
+
+/* =========================================================================
+   Control Buttons (Clear, Undo, Export)
+   ========================================================================= */
+
+.funky-signature-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.funky-signature-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: var(--sig-label-font);
+  color: var(--sig-btn-text);
+  background: var(--sig-btn-bg);
+  border: 1px solid transparent;
+  border-radius: var(--sig-border-radius-sm);
+  cursor: pointer;
+  transition: 
+    color var(--sig-transition-fast),
+    background-color var(--sig-transition-fast),
+    border-color var(--sig-transition-fast),
+    transform var(--sig-transition-fast),
+    box-shadow var(--sig-transition-fast);
+  user-select: none;
+}
+
+.funky-signature-btn:hover {
+  color: var(--sig-btn-text-hover);
+  background: var(--sig-btn-hover);
+  border-color: var(--sig-border);
+  box-shadow: var(--sig-shadow);
+}
+
+.funky-signature-btn:active {
+  transform: scale(0.96);
+}
+
+.funky-signature-btn:focus-visible {
+  outline: 2px solid var(--sig-border-focus);
+  outline-offset: 2px;
+}
+
+/* Clear button - danger style on hover */
+.funky-signature-btn--clear:hover {
+  color: var(--pro-accent-danger, #cf222e);
+  background: var(--pro-accent-danger-muted, rgba(207, 34, 46, 0.1));
+  border-color: var(--pro-accent-danger, #cf222e);
+}
+
+/* Undo button - warning style on hover */
+.funky-signature-btn--undo:hover {
+  color: var(--pro-accent-warning, #9a6700);
+  background: var(--pro-accent-warning-muted, rgba(154, 103, 0, 0.1));
+  border-color: var(--pro-accent-warning, #9a6700);
+}
+
+/* Export button - success style on hover */
+.funky-signature-btn--export:hover {
+  color: var(--pro-accent-success, #1a7f37);
+  background: var(--pro-accent-success-muted, rgba(26, 127, 55, 0.1));
+  border-color: var(--pro-accent-success, #1a7f37);
+}
+
+/* =========================================================================
+   Validation Error Message
+   ========================================================================= */
+
+.funky-signature-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--pro-accent-danger, #cf222e);
+  padding: 8px 12px;
+  background: var(--pro-accent-danger-muted, rgba(207, 34, 46, 0.1));
+  border-radius: var(--sig-border-radius-sm);
+  animation: sig-error-appear 0.3s ease-out;
+}
+
+.funky-signature-error::before {
+  content: '⚠';
+  font-size: 1rem;
+}
+
+@keyframes sig-error-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================================
+   Keyboard Cursor (Accessibility)
+   ========================================================================= */
+
+.funky-signature-keyboard-cursor {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--sig-border-focus);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: 
+    background-color var(--sig-transition-fast),
+    transform var(--sig-transition-fast),
+    box-shadow var(--sig-transition-fast);
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.8),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.funky-signature-keyboard-cursor.drawing {
+  background-color: var(--sig-pen);
+  transform: translate(-50%, -50%) scale(0.7);
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.8),
+    0 0 12px var(--sig-border-focus);
+}
+
+/* =========================================================================
+   Instructions (Screen Reader + Visual)
+   ========================================================================= */
+
+.funky-signature-instructions {
+  font-size: 0.75rem;
+  color: var(--sig-placeholder);
+  text-align: center;
+  padding: 8px 16px;
+  background: var(--sig-surface);
+  border-radius: var(--sig-border-radius-sm);
+  border: 1px dashed var(--sig-border);
+}
+
+/* =========================================================================
+   Dark Theme Overrides
+   ========================================================================= */
+
+[data-theme="dark"] .funky-signature,
+.funky-signature[data-theme="dark"] {
+  --sig-bg: var(--pro-bg-tertiary, #21262d);
+  --sig-bg-gradient: linear-gradient(
+    135deg,
+    var(--pro-bg-tertiary, #21262d) 0%,
+    var(--pro-bg-secondary, #161b22) 100%
+  );
+  --sig-border: var(--pro-border-color, #30363d);
+  --sig-pen: var(--pro-text-primary, #e6edf3);
+  --sig-placeholder: var(--pro-text-muted, #6e7681);
+  --sig-surface: var(--pro-bg-secondary, #161b22);
+  --sig-btn-bg: var(--pro-bg-secondary, #161b22);
+  --sig-btn-hover: var(--pro-bg-tertiary, #21262d);
+  --sig-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --sig-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --sig-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .funky-signature-mode-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* System preference fallback */
+@media (prefers-color-scheme: dark) {
+  .funky-signature:not([data-theme="light"]) {
+    --sig-bg: var(--pro-bg-tertiary, #21262d);
+    --sig-bg-gradient: linear-gradient(
+      135deg,
+      var(--pro-bg-tertiary, #21262d) 0%,
+      var(--pro-bg-secondary, #161b22) 100%
+    );
+    --sig-border: var(--pro-border-color, #30363d);
+    --sig-pen: var(--pro-text-primary, #e6edf3);
+    --sig-placeholder: var(--pro-text-muted, #6e7681);
+    --sig-surface: var(--pro-bg-secondary, #161b22);
+    --sig-btn-bg: var(--pro-bg-secondary, #161b22);
+    --sig-btn-hover: var(--pro-bg-tertiary, #21262d);
+  }
+}
+
+/* =========================================================================
+   Funky Theme Overrides
+   ========================================================================= */
+
+[data-theme="funky"] .funky-signature {
+  --sig-border-focus: var(--pro-accent-purple, #a78bfa);
+  --sig-btn-active: linear-gradient(
+    135deg,
+    var(--pro-accent-purple, #a78bfa) 0%,
+    var(--pro-accent-primary, #2f81f7) 100%
+  );
+  --sig-shadow-focus: 0 0 0 4px var(--pro-accent-purple-muted, rgba(167, 139, 250, 0.25));
+}
+
+[data-theme="funky"] .funky-signature-mode-btn.active {
+  background: var(--sig-btn-active);
+}
+
+[data-theme="funky"] .funky-signature-wrapper {
+  background: linear-gradient(
+    135deg,
+    var(--pro-bg-tertiary, #21262d) 0%,
+    rgba(167, 139, 250, 0.05) 50%,
+    var(--pro-bg-secondary, #161b22) 100%
+  );
+}
+
+/* =========================================================================
+   High Contrast Mode
+   ========================================================================= */
+
+@media (prefers-contrast: more) {
+  .funky-signature canvas,
+  .funky-signature-canvas {
+    border-width: 3px;
+    border-color: CanvasText;
+  }
+
+  .funky-signature-mode-btn {
+    border: 2px solid ButtonText;
+  }
+
+  .funky-signature-mode-btn.active {
+    border-color: Highlight;
+  }
+
+  .funky-signature-keyboard-cursor {
+    border-width: 4px;
+  }
+
+  .funky-signature-btn {
+    border: 2px solid ButtonText;
+  }
+}
+
+@media (forced-colors: active) {
+  .funky-signature canvas,
+  .funky-signature-canvas {
+    border: 3px solid CanvasText;
+    forced-color-adjust: none;
+  }
+
+  .funky-signature-mode-btn {
+    border: 2px solid ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .funky-signature-mode-btn.active {
+    background-color: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+
+  .funky-signature-keyboard-cursor {
+    border-color: Highlight;
+    forced-color-adjust: none;
+  }
+}
+
+/* =========================================================================
+   Reduced Motion
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .funky-signature,
+  .funky-signature * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================================
+   Responsive Design
+   ========================================================================= */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .funky-signature {
+    --sig-height: 180px;
+    --sig-min-height: 140px;
+    --sig-border-radius: 10px;
+  }
+
+  .funky-signature-mode-btn {
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .funky-signature {
+    --sig-height: 150px;
+    --sig-min-height: 120px;
+    --sig-gap: 8px;
+    --sig-border-radius: 8px;
+  }
+
+  .funky-signature-mode-toggle {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .funky-signature-mode-btn {
+    justify-content: center;
+    padding: 10px 14px;
+  }
+
+  .funky-signature-controls {
+    flex-wrap: wrap;
+  }
+
+  .funky-signature-btn {
+    flex: 1;
+    justify-content: center;
+    min-width: calc(50% - 4px);
+  }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+  .funky-signature {
+    --sig-gap: 6px;
+    --sig-padding: 8px;
+    --sig-border-radius: 6px;
+  }
+
+  .funky-signature-mode-btn {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  .funky-signature-icon {
+    font-size: 1rem;
+  }
+
+  .funky-signature-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+/* =========================================================================
+   Print Styles
+   ========================================================================= */
+
+@media print {
+  .funky-signature {
+    break-inside: avoid;
+  }
+
+  .funky-signature-mode-toggle,
+  .funky-signature-controls,
+  .funky-signature-typed-input {
+    display: none !important;
+  }
+
+  .funky-signature canvas {
+    border: 1px solid #000;
+    box-shadow: none;
+  }
+}
+
+/* =========================================================================
+   SIGNATURE DEMO - Playground Demo Styles
+   ========================================================================= */
+
+.signature-demo {
+  padding: 24px;
+  width: 100%;
+}
+
+.signature-demo__section {
+  margin-bottom: 32px;
+}
+
+.signature-demo__section:last-child {
+  margin-bottom: 0;
+}
+
+.signature-demo__section h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+.signature-demo__hint {
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--pro-text-muted, #6e7681);
+}
+
+.signature-demo__hint i {
+  margin-right: 6px;
+  color: var(--pro-accent-info, #58a6ff);
+}
+
+.signature-demo__hint code {
+  padding: 2px 6px;
+  background: var(--pro-bg-tertiary, #21262d);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--pro-accent-primary, #2f81f7);
+}
+
+/* State Display */
+.signature-demo__state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+}
+
+.signature-demo__state-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+}
+
+.signature-demo__state-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--pro-text-muted, #6e7681);
+}
+
+.signature-demo__state-value {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'SF Mono', monospace;
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+/* Pad Container */
+.signature-demo__pad-container {
+  background: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.signature-demo__pad-container--centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signature-demo__pad {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Fix typed input and canvas width in demo */
+.signature-demo__pad .funky-signature {
+  width: auto;
+  max-width: 100%;
+}
+
+.signature-demo__pad .funky-signature-typed-input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.signature-demo__pad .funky-signature-typed-canvas {
+  max-width: 100%;
+}
+
+/* Controls */
+.signature-demo__controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Export Section */
+.signature-demo__export {
+  background: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.signature-demo__export-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.signature-demo__preview {
+  border-top: 1px solid var(--pro-border-color, #30363d);
+  padding-top: 16px;
+}
+
+.signature-demo__preview h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--pro-text-secondary, #8b949e);
+}
+
+.signature-demo__preview-area {
+  background: var(--pro-bg-tertiary, #21262d);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signature-demo__preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  background: white;
+}
+
+.signature-demo__json-preview {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  font-family: 'SF Mono', monospace;
+  color: var(--pro-text-muted, #6e7681);
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* Validation Section */
+.signature-demo__validation {
+  background: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.signature-demo__validation-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.signature-demo__validation-result {
+  margin-top: 12px;
+  min-height: 24px;
+}
+
+.signature-demo__valid {
+  color: var(--pro-accent-success, #3fb950);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.signature-demo__invalid {
+  color: var(--pro-accent-danger, #f85149);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Pen Options */
+.signature-demo__pen-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  background: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.signature-demo__pen-option {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signature-demo__pen-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pro-text-secondary, #8b949e);
+}
+
+.signature-demo__colour-swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.signature-demo__colour-swatch,
+.signature-demo__bg-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--pro-border-color, #30363d);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.signature-demo__colour-swatch:hover,
+.signature-demo__bg-swatch:hover {
+  transform: scale(1.1);
+}
+
+.signature-demo__colour-swatch.active,
+.signature-demo__bg-swatch.active {
+  box-shadow: 0 0 0 3px var(--pro-accent-primary, #2f81f7);
+  transform: scale(1.1);
+}
+
+.signature-demo__colour-swatch:focus-visible,
+.signature-demo__bg-swatch:focus-visible {
+  outline: 2px solid var(--pro-accent-primary, #2f81f7);
+  outline-offset: 2px;
+}
+
+/* Event Log */
+.signature-demo__log-controls {
+  margin-bottom: 12px;
+}
+
+.signature-demo__log {
+  padding: 16px;
+  background: var(--pro-bg-tertiary, #21262d);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: 'SF Mono', monospace;
+  color: var(--pro-text-muted, #6e7681);
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+/* Light theme */
+[data-theme="light"] .signature-demo__state,
+[data-theme="light"] .signature-demo__pad-container,
+[data-theme="light"] .signature-demo__export,
+[data-theme="light"] .signature-demo__validation,
+[data-theme="light"] .signature-demo__pen-options {
+  background: var(--pro-bg-elevated);
+}
+
+[data-theme="light"] .signature-demo__preview-area,
+[data-theme="light"] .signature-demo__log {
+  background: var(--pro-bg-secondary);
+}
+
+/* Even-funkyer theme */
+[data-theme="even-funkyer"] .signature-demo__state,
+[data-theme="even-funkyer"] .signature-demo__pad-container,
+[data-theme="even-funkyer"] .signature-demo__export,
+[data-theme="even-funkyer"] .signature-demo__validation,
+[data-theme="even-funkyer"] .signature-demo__pen-options {
+  background: rgba(10, 0, 21, 0.6);
+  border-color: rgba(255, 0, 255, 0.2);
+}
+
+[data-theme="even-funkyer"] .signature-demo__preview-area,
+[data-theme="even-funkyer"] .signature-demo__log {
+  background: rgba(10, 0, 21, 0.8);
+  border-color: rgba(0, 255, 255, 0.2);
+}
+
+[data-theme="even-funkyer"] .signature-demo__hint code {
+  background: rgba(0, 255, 255, 0.1);
+  color: var(--pro-accent-info);
+}
+
+[data-theme="even-funkyer"] .signature-demo__colour-swatch.active,
+[data-theme="even-funkyer"] .signature-demo__bg-swatch.active {
+  box-shadow: 0 0 0 3px var(--pro-accent-info);
+}

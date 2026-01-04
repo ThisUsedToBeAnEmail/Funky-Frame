@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable" data-animations="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playground Canvas</title>
+
+  <!-- Prevent flash of wrong theme -->
+  <script>
+    (function() {
+      try {
+        var stored = localStorage.getItem('funky_playground_prefs');
+        var prefs = stored ? JSON.parse(stored) : {};
+        var theme = prefs.theme || 'dark';
+        var effectiveTheme = theme;
+        if (theme === 'system') {
+          effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
+        document.documentElement.setAttribute('data-density', prefs.density || 'comfortable');
+        document.documentElement.setAttribute('data-animations', prefs.animations === false ? 'off' : 'on');
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  <!-- Vendor CSS: Bootstrap first, then FontAwesome -->
+  <link href="../../vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../../vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <!-- Funky CSS: ALL component styles (themes.css MUST be last) -->
+  <!-- Layout & Core -->
+  <link href="../../css/layout.css" rel="stylesheet">
+  <link href="../../css/navigation.css" rel="stylesheet">
+  <link href="../../css/spa.css" rel="stylesheet">
+  <link href="../../css/fonts.css" rel="stylesheet">
+  <link href="../../css/custom.css" rel="stylesheet">
+
+  <!-- UI Elements -->
+  <link href="../../css/cards.css" rel="stylesheet">
+  <link href="../../css/card-grid.css" rel="stylesheet">
+  <link href="../../css/forms.css" rel="stylesheet">
+  <link href="../../css/form.css" rel="stylesheet">
+  <link href="../../css/buttons.css" rel="stylesheet">
+  <link href="../../css/badge.css" rel="stylesheet">
+  <link href="../../css/breadcrumbs.css" rel="stylesheet">
+  <link href="../../css/modals.css" rel="stylesheet">
+  <link href="../../css/toasts.css" rel="stylesheet">
+  <link href="../../css/tables.css" rel="stylesheet">
+  <link href="../../css/datatables-funky.css" rel="stylesheet">
+
+  <!-- Feedback Components -->
+  <link href="../../css/spinner.css" rel="stylesheet">
+  <link href="../../css/skeleton.css" rel="stylesheet">
+  <link href="../../css/empty-state.css" rel="stylesheet">
+  <link href="../../css/tour.css" rel="stylesheet">
+
+  <!-- Data Components -->
+  <link href="../../css/carousel.css" rel="stylesheet">
+  <link href="../../css/combobox.css" rel="stylesheet">
+  <link href="../../css/date-picker.css" rel="stylesheet">
+  <link href="../../css/calendar.css" rel="stylesheet">
+  <link href="../../css/kanban.css" rel="stylesheet">
+  <link href="../../css/tree-view.css" rel="stylesheet">
+  <link href="../../css/virtualised-list.css" rel="stylesheet">
+  <link href="../../css/selectable-list.css" rel="stylesheet">
+  <link href="../../css/dashboard-grid.css" rel="stylesheet">
+  <link href="../../css/filters.css" rel="stylesheet">
+  <link href="../../css/column-profiles.css" rel="stylesheet">
+
+  <!-- Code & Display -->
+  <link href="../../css/code-preview.css" rel="stylesheet">
+  <link href="../../css/highlight.css" rel="stylesheet">
+  <link href="../../css/diff.css" rel="stylesheet">
+  <link href="../../css/truncate.css" rel="stylesheet">
+  <link href="../../css/typewriter.css" rel="stylesheet">
+  <link href="../../css/timeline.css" rel="stylesheet">
+  <link href="../../css/morph.css" rel="stylesheet">
+  <link href="../../css/morph-panel.css" rel="stylesheet">
+  <link href="../../css/animate.css" rel="stylesheet">
+
+  <!-- Navigation & Actions -->
+  <link href="../../css/context-menu.css" rel="stylesheet">
+  <link href="../../css/inline-edit.css" rel="stylesheet">
+  <link href="../../css/wizard.css" rel="stylesheet">
+  <link href="../../css/sidenav.css" rel="stylesheet">
+  <link href="../../css/command-palette.css" rel="stylesheet">
+  <link href="../../css/quick-nav.css" rel="stylesheet">
+  <link href="../../css/action-bar.css" rel="stylesheet">
+  <link href="../../css/keyboard.css" rel="stylesheet">
+  <link href="../../css/skip-links.css" rel="stylesheet">
+
+  <!-- Media -->
+  <link href="../../css/video.css" rel="stylesheet">
+  <link href="../../css/audio.css" rel="stylesheet">
+  <link href="../../css/clipboard.css" rel="stylesheet">
+  <link href="../../css/signature.css" rel="stylesheet">
+  <link href="../../css/iframe.css" rel="stylesheet">
+
+  <!-- Utility Components -->
+  <link href="../../css/relative-time.css" rel="stylesheet">
+  <link href="../../css/clock.css" rel="stylesheet">
+  <link href="../../css/queue-status.css" rel="stylesheet">
+  <link href="../../css/queue.css" rel="stylesheet">
+  <link href="../../css/widget-palette.css" rel="stylesheet">
+  <link href="../../css/widget-catalog.css" rel="stylesheet">
+  <link href="../../css/notification-center.css" rel="stylesheet">
+  <link href="../../css/presence.css" rel="stylesheet">
+  <link href="../../css/typing-indicator.css" rel="stylesheet">
+  <link href="../../css/stats.css" rel="stylesheet">
+  <link href="../../css/live-binding.css" rel="stylesheet">
+  <link href="../../css/mask.css" rel="stylesheet">
+  <link href="../../css/gesture-tracker.css" rel="stylesheet">
+  <link href="../../css/pointer-tracker.css" rel="stylesheet">
+  <link href="../../css/preferences.css" rel="stylesheet">
+
+  <!-- Page-specific -->
+  <link href="../../css/page-header.css" rel="stylesheet">
+  <link href="../../css/splash.css" rel="stylesheet">
+  <link href="../../css/docs.css" rel="stylesheet">
+  <link href="../../css/api-docs.css" rel="stylesheet">
+  <link href="../../css/audit.css" rel="stylesheet">
+  <link href="../../css/files.css" rel="stylesheet">
+  <link href="../../css/report-format.css" rel="stylesheet">
+  <link href="../../css/playground.css" rel="stylesheet">
+  <link href="../../css/test-runner.css" rel="stylesheet">
+  <link href="../../css/minion.css" rel="stylesheet">
+  <link href="../../css/even-funkyer.css" rel="stylesheet">
+  <link href="../../css/wysimark.css" rel="stylesheet">
+  <link href="../../css/zero-click.css" rel="stylesheet">
+
+  <!-- Additional Components -->
+  <link href="../../css/accordion.css" rel="stylesheet">
+  <link href="../../css/channel.css" rel="stylesheet">
+  <link href="../../css/crud.css" rel="stylesheet">
+  <link href="../../css/markdown.css" rel="stylesheet">
+  <link href="../../css/tabbed.css" rel="stylesheet">
+  <link href="../../css/slide-panel.css" rel="stylesheet">
+  <link href="../../css/dom.css" rel="stylesheet">
+  <link href="../../css/format.css" rel="stylesheet">
+  <link href="../../css/fuzzy-search.css" rel="stylesheet">
+  <link href="../../css/history.css" rel="stylesheet">
+  <link href="../../css/idle-detector.css" rel="stylesheet">
+  <link href="../../css/popover.css" rel="stylesheet">
+  <link href="../../css/push-notification.css" rel="stylesheet">
+  <link href="../../css/tooltip.css" rel="stylesheet">
+
+  <!-- Accessibility (before themes) -->
+  <link href="../../css/high-contrast.css" rel="stylesheet">
+
+  <!-- themes.css MUST load last -->
+  <link href="../../css/themes.css" rel="stylesheet">
+
+  <style>
+    /* Canvas-specific styles */
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      overflow: auto;
+      background: var(--pro-bg-primary);
+      color: var(--pro-text-primary);
+      font-family: var(--pro-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    }
+
+    html {
+      height: 100%;
+    }
+
+    #spaContent {
+      min-height: 100%;
+      padding: var(--pro-spacing-lg, 1.5rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    #spaContent > * {
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .canvas-welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      text-align: center;
+      color: var(--pro-text-secondary);
+    }
+
+    .canvas-welcome i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Component demo layout */
+    .component-demo {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .component-demo h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Only the description paragraph directly after h2 */
+    .component-demo > p.text-muted {
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-section {
+      margin-bottom: 2rem;
+    }
+
+    .demo-section h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--pro-text-secondary);
+    }
+
+    .demo-area {
+      padding: 1.5rem;
+      background: var(--pro-bg-secondary);
+      border-radius: var(--pro-radius-md, 8px);
+      border: 1px solid var(--pro-border-color);
+    }
+
+    /* Settings Button */
+    .playground-settings-btn {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1030;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--pro-bg-elevated);
+      border: 1px solid var(--pro-border-color);
+      color: var(--pro-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--pro-shadow-sm);
+    }
+
+    .playground-settings-btn:hover {
+      background: var(--pro-bg-tertiary);
+      color: var(--pro-text-primary);
+      transform: rotate(30deg);
+    }
+
+    /* Settings Panel */
+    .playground-settings-panel {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 320px;
+      height: 100%;
+      background: var(--pro-bg-elevated);
+      border-left: 1px solid var(--pro-border-color);
+      box-shadow: var(--pro-shadow-lg);
+      z-index: 1050;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .playground-settings-panel.open {
+      right: 0;
+    }
+
+    .settings-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--pro-border-color);
+    }
+
+    .settings-panel-header h6 {
+      margin: 0;
+      font-weight: 600;
+      color: var(--pro-text-primary);
+    }
+
+    .settings-panel-close {
+      background: none;
+      border: none;
+      color: var(--pro-text-secondary);
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+
+    .settings-panel-close:hover {
+      color: var(--pro-text-primary);
+    }
+
+    .settings-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1.25rem;
+      scrollbar-gutter: stable;
+    }
+
+    .settings-panel-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--pro-border-color);
+    }
+
+    .settings-group {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--pro-border-color);
+    }
+
+    .settings-group:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* Reset fieldset/legend defaults */
+    fieldset.settings-group {
+      border: none;
+      padding: 0;
+      margin: 0 0 1.5rem 0;
+      min-width: 0;
+    }
+
+    fieldset.settings-group:last-child {
+      margin-bottom: 0;
+    }
+
+    legend.settings-label {
+      padding: 0;
+      float: none;
+      width: 100%;
+    }
+
+    .settings-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      margin-bottom: 0.625rem;
+      color: var(--pro-text-primary);
+    }
+
+    .settings-hint {
+      font-size: 0.75rem;
+      color: var(--pro-text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    /* Theme buttons */
+    .theme-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--pro-border-color);
+      border-radius: 0.375rem;
+      background: var(--pro-bg-secondary);
+      color: var(--pro-text-secondary);
+      font-size: 0.8125rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .theme-btn:hover {
+      background: var(--pro-bg-tertiary);
+      color: var(--pro-text-primary);
+    }
+
+    .theme-btn.active {
+      border-color: var(--user-accent, var(--pro-accent-primary));
+      background: var(--user-accent-muted, rgba(13, 110, 253, 0.15));
+      color: var(--user-accent, var(--pro-accent-primary));
+    }
+
+    /* High Contrast theme button styling */
+    .theme-btn[data-theme="high-contrast"] {
+      background: #000000;
+      color: #ffff00;
+      border: 2px solid #ffffff;
+    }
+
+    .theme-btn[data-theme="high-contrast"]:hover,
+    .theme-btn[data-theme="high-contrast"].active {
+      background: #ffff00;
+      color: #000000;
+      border-color: #ffff00;
+    }
+
+    /* Accent color swatches */
+    .accent-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .accent-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+
+    .accent-swatch:hover {
+      transform: scale(1.15);
+    }
+
+    .accent-swatch.active {
+      border-color: var(--pro-text-primary);
+      box-shadow: 0 0 0 2px var(--pro-bg-primary);
+    }
+
+    .accent-swatch.active::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.875rem;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* Custom color picker wrapper */
+    .accent-custom-wrapper {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px dashed var(--pro-border-color);
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .accent-custom-wrapper:hover {
+      transform: scale(1.15);
+      border-color: var(--pro-text-secondary);
+    }
+
+    .accent-custom-wrapper.active {
+      border-style: solid;
+      border-color: var(--pro-text-primary);
+      box-shadow: 0 0 0 2px var(--pro-bg-primary);
+    }
+
+    .accent-custom-wrapper.active .accent-custom-icon {
+      display: none;
+    }
+
+    .accent-custom-wrapper.active::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.875rem;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .accent-custom-input {
+      position: absolute;
+      inset: -4px;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      border: none;
+      cursor: pointer;
+      opacity: 0;
+    }
+
+    .accent-custom-wrapper.active .accent-custom-input {
+      opacity: 1;
+    }
+
+    .accent-custom-input::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .accent-custom-input::-webkit-color-swatch {
+      border-radius: 50%;
+      border: none;
+    }
+
+    .accent-custom-icon {
+      font-size: 0.75rem;
+      color: var(--pro-text-secondary);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Density buttons */
+    .density-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .density-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--pro-border-color);
+      border-radius: 0.375rem;
+      background: var(--pro-bg-secondary);
+      color: var(--pro-text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .density-btn:hover {
+      background: var(--pro-bg-tertiary);
+      color: var(--pro-text-primary);
+    }
+
+    .density-btn.active {
+      border-color: var(--user-accent, var(--pro-accent-primary));
+      background: var(--user-accent-muted, rgba(13, 110, 253, 0.15));
+      color: var(--user-accent, var(--pro-accent-primary));
+    }
+
+    /* Font scale slider */
+    .font-scale-control {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .font-scale-control input[type="range"] {
+      flex: 1;
+    }
+
+    .font-scale-value {
+      min-width: 3rem;
+      text-align: right;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--pro-text-primary);
+    }
+
+    /* Toggle switch styling */
+    .settings-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .settings-toggle-label {
+      font-size: 0.8125rem;
+      color: var(--pro-text-primary);
+    }
+
+    /* Overlay for clicking outside */
+    .playground-settings-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1040;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .playground-settings-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 576px) {
+      #spaContent {
+        padding: 0;
+      }
+
+      .demo-area {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip Links - Accessibility Navigation -->
+  <div id="skip-links" class="skip-links" role="navigation" aria-label="Skip links"></div>
+
+  <!-- ARIA Live Regions for Screen Reader Announcements -->
+  <div id="spa-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true" role="status"></div>
+
+  <!-- Toast Container -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- Settings Button -->
+  <button class="playground-settings-btn" id="playground-settings-btn" aria-label="Open preferences" aria-haspopup="dialog" aria-expanded="false" aria-controls="playground-settings-panel">
+    <i class="fas fa-cog" aria-hidden="true"></i>
+  </button>
+
+  <!-- Settings Overlay -->
+  <div class="playground-settings-overlay" id="playground-settings-overlay" aria-hidden="true"></div>
+
+  <!-- Settings Panel -->
+  <aside class="playground-settings-panel" id="playground-settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-panel-title" inert>
+    <header class="settings-panel-header">
+      <h2 id="settings-panel-title" class="h6 mb-0"><i class="fas fa-cog me-2" aria-hidden="true"></i>Preferences</h2>
+      <button class="settings-panel-close" id="close-settings-btn" aria-label="Close preferences">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </header>
+    <div class="settings-panel-body">
+      <!-- Theme Selector -->
+      <fieldset class="settings-group">
+        <legend class="settings-label">Color Scheme</legend>
+        <div class="theme-buttons" role="radiogroup" aria-label="Color scheme">
+          <button class="theme-btn" data-theme="dark" role="radio" aria-checked="false">
+            <i class="fas fa-moon" aria-hidden="true"></i> Dark
+          </button>
+          <button class="theme-btn" data-theme="light" role="radio" aria-checked="false">
+            <i class="fas fa-sun" aria-hidden="true"></i> Light
+          </button>
+          <button class="theme-btn" data-theme="system" role="radio" aria-checked="false">
+            <i class="fas fa-desktop" aria-hidden="true"></i> System
+          </button>
+          <button class="theme-btn" data-theme="high-contrast" role="radio" aria-checked="false">
+            <i class="fas fa-eye" aria-hidden="true"></i> High Contrast
+          </button>
+        </div>
+      </fieldset>
+
+      <!-- Accent Color -->
+      <fieldset class="settings-group">
+        <legend class="settings-label">Accent Color</legend>
+        <div class="accent-swatches" role="radiogroup" aria-label="Accent color">
+          <button class="accent-swatch" data-color="#0d6efd" style="background: #0d6efd" role="radio" aria-checked="false" aria-label="Blue"></button>
+          <button class="accent-swatch" data-color="#ff6b35" style="background: #ff6b35" role="radio" aria-checked="false" aria-label="Orange"></button>
+          <button class="accent-swatch" data-color="#198754" style="background: #198754" role="radio" aria-checked="false" aria-label="Green"></button>
+          <button class="accent-swatch" data-color="#dc3545" style="background: #dc3545" role="radio" aria-checked="false" aria-label="Red"></button>
+          <button class="accent-swatch" data-color="#6f42c1" style="background: #6f42c1" role="radio" aria-checked="false" aria-label="Purple"></button>
+          <button class="accent-swatch" data-color="#20c997" style="background: #20c997" role="radio" aria-checked="false" aria-label="Teal"></button>
+          <button class="accent-swatch" data-color="#fd7e14" style="background: #fd7e14" role="radio" aria-checked="false" aria-label="Amber"></button>
+          <button class="accent-swatch" data-color="#e91e8c" style="background: #e91e8c" role="radio" aria-checked="false" aria-label="Pink"></button>
+          <div class="accent-custom-wrapper">
+            <input type="color" id="custom-accent" class="accent-custom-input" value="#0d6efd" aria-label="Custom accent color">
+            <i class="fas fa-plus accent-custom-icon" aria-hidden="true"></i>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Density -->
+      <fieldset class="settings-group">
+        <legend class="settings-label">Density</legend>
+        <div class="density-buttons" role="radiogroup" aria-label="Display density">
+          <button class="density-btn" data-density="compact" role="radio" aria-checked="false">Compact</button>
+          <button class="density-btn" data-density="comfortable" role="radio" aria-checked="false">Comfortable</button>
+          <button class="density-btn" data-density="spacious" role="radio" aria-checked="false">Spacious</button>
+        </div>
+      </fieldset>
+
+      <!-- Font Scale -->
+      <div class="settings-group">
+        <label class="settings-label" for="font-scale" id="font-scale-label">Font Size</label>
+        <div class="font-scale-control">
+          <input type="range" class="form-range" id="font-scale" min="0.875" max="1.25" step="0.025" value="1" aria-labelledby="font-scale-label" aria-describedby="font-scale-hint" aria-valuemin="87.5" aria-valuemax="125" aria-valuenow="100" aria-valuetext="100%">
+          <output class="font-scale-value" id="font-scale-value" for="font-scale">100%</output>
+        </div>
+        <p class="settings-hint" id="font-scale-hint">Adjust the base font size (87.5% - 125%)</p>
+      </div>
+
+      <!-- Animations Toggle -->
+      <div class="settings-group">
+        <div class="settings-toggle">
+          <label class="settings-toggle-label" for="animations-enabled">Enable Animations</label>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="animations-enabled" role="switch" aria-checked="true" checked>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="settings-panel-footer">
+      <button class="btn btn-sm btn-outline-secondary w-100" id="reset-preferences-btn" type="button">
+        <i class="fas fa-undo me-1" aria-hidden="true"></i>Reset to Defaults
+      </button>
+    </footer>
+  </aside>
+
+  <!-- SPA Content -->
+  <div id="spaContent">
+    <div class="canvas-welcome">
+      <i class="fas fa-cube"></i>
+      <h2>Select a component</h2>
+      <p>Choose from the sidebar to see it in action</p>
+    </div>
+  </div>
+
+  <!-- Core Scripts: ALL modules in dependency order -->
+  <!-- Foundation (must be first) -->
+  <script src="../../js/core/namespace.js"></script>
+  <script src="../../js/core/registry.js"></script>
+  <script src="../../js/core/util.js"></script>
+  <script src="../../js/core/dom.js"></script>
+  <script src="../../js/core/events.js"></script>
+  <script src="../../js/core/pubsub.js"></script>
+  <script src="../../js/core/storage.js"></script>
+
+  <!-- Input & Interaction -->
+  <script src="../../js/core/keyboard.js"></script>
+  <script src="../../js/core/pointer-tracker.js"></script>
+  <script src="../../js/core/fuzzy-search.js"></script>
+  <script src="../../js/core/selectable-list.js"></script>
+  <script src="../../js/core/focus-manager.js"></script>
+
+  <!-- Animation & Timing -->
+  <script src="../../js/core/animate.js"></script>
+  <script src="../../js/core/timing.js"></script>
+
+  <!-- Date & Time -->
+  <script src="../../js/core/date.js"></script>
+  <script src="../../js/core/timezone.js"></script>
+
+  <!-- Forms & Validation -->
+  <script src="../../js/core/forms.js"></script>
+  <script src="../../js/core/validator.js"></script>
+  <script src="../../js/core/schema-adapter.js"></script>
+  <script src="../../js/core/form-field-registry.js"></script>
+  <script src="../../js/core/form.js"></script>
+
+  <!-- Data & Caching -->
+  <script src="../../js/core/cache.js"></script>
+  <script src="../../js/core/cache-sync.js"></script>
+  <script src="../../js/core/api.js"></script>
+  <script src="../../js/core/request-queue.js"></script>
+  <script src="../../js/core/job-queue.js"></script>
+
+  <!-- Navigation & Routing -->
+  <script src="../../js/core/navigation.js"></script>
+  <script src="../../js/core/history.js"></script>
+  <script src="../../js/core/nav-position.js"></script>
+  <script src="../../js/core/pages.js"></script>
+  <script src="../../js/core/spa.js"></script>
+
+  <!-- UI Components -->
+  <script src="../../js/core/modal.js"></script>
+  <script src="../../js/core/tooltip.js"></script>
+  <script src="../../js/core/popover.js"></script>
+  <script src="../../js/core/tabs.js"></script>
+  <script src="../../js/core/vdom.js"></script>
+
+  <!-- Data Binding -->
+  <script src="../../js/core/live-binding.js"></script>
+
+  <!-- Accessibility -->
+  <script src="../../js/core/announce.js"></script>
+  <script src="../../js/core/a11y-enhancer.js"></script>
+
+  <!-- Security -->
+  <script src="../../js/core/csrf.js"></script>
+
+  <!-- Device & Media -->
+  <script src="../../js/core/media-query.js"></script>
+  <script src="../../js/core/idle-detector.js"></script>
+
+  <!-- Real-time -->
+  <script src="../../js/core/websocket.js"></script>
+
+  <!-- Service Worker Client Module (for desktop notifications) -->
+  <script src="../../js/core/service-worker.js"></script>
+
+  <!-- Component Scripts: ALL components in dependency order -->
+  <!-- Feedback & Notifications -->
+  <script src="../../js/components/toast.js"></script>
+  <script src="../../js/components/spinner.js"></script>
+  <script src="../../js/components/skeleton.js"></script>
+  <script src="../../js/components/empty-state.js"></script>
+  <script src="../../js/components/notification-center.js"></script>
+  <script src="../../js/components/push-notification.js"></script>
+  <script src="../../js/components/typing-indicator.js"></script>
+
+  <!-- Data Display -->
+  <script src="../../js/components/table.js"></script>
+  <script src="../../js/components/datatables.js"></script>
+  <script src="../../js/components/kanban.js"></script>
+  <script src="../../js/components/tree-view.js"></script>
+  <script src="../../js/components/virtualised-list.js"></script>
+  <script src="../../js/components/carousel.js"></script>
+  <script src="../../js/components/timeline.js"></script>
+  <script src="../../js/components/stats-bar.js"></script>
+  <script src="../../js/components/aggregations.js"></script>
+  <script src="../../js/components/column-renderers.js"></script>
+  <script src="../../js/components/conditional-formatting.js"></script>
+
+  <!-- Form Components -->
+  <script src="../../js/components/combobox.js"></script>
+  <script src="../../js/components/date-picker.js"></script>
+  <script src="../../js/components/calendar.js"></script>
+  <script src="../../js/components/inline-edit.js"></script>
+  <script src="../../js/components/signature.js"></script>
+  <script src="../../js/components/mask.js"></script>
+  <script src="../../js/components/slider.js"></script>
+  <script src="../../js/components/form-modal.js"></script>
+  <script src="../../js/components/advanced-filter.js"></script>
+  <script src="../../js/components/filter-toolbar.js"></script>
+  <script src="../../js/components/column-profiles.js"></script>
+  <script src="../../js/components/formatting.js"></script>
+  <script src="../../js/components/schema.js"></script>
+
+  <!-- Navigation -->
+  <script src="../../js/components/sidenav.js"></script>
+  <script src="../../js/components/sidenav-panel.js"></script>
+  <script src="../../js/components/action-registry.js"></script>
+  <script src="../../js/components/badge.js"></script>
+  <script src="../../js/components/quick-nav.js"></script>
+  <script src="../../js/components/breadcrumb.js"></script>
+  <script src="../../js/components/command-palette.js"></script>
+  <script src="../../js/components/action-bar.js"></script>
+  <script src="../../js/components/context-menu.js"></script>
+  <script src="../../js/components/skip-link.js"></script>
+  <script src="../../js/components/sticky-header.js"></script>
+
+  <!-- Layout & Containers -->
+  <script src="../../js/components/accordion.js"></script>
+  <script src="../../js/components/tabbed.js"></script>
+  <script src="../../js/components/wizard.js"></script>
+  <script src="../../js/components/slide-panel.js"></script>
+  <script src="../../js/components/dashboard-grid.js"></script>
+  <script src="../../js/components/card-grid.js"></script>
+  <script src="../../js/components/widget-palette.js"></script>
+  <script src="../../js/components/widget-catalog.js"></script>
+  <script src="../../js/components/iframe.js"></script>
+
+  <!-- Code & Text Display -->
+  <script src="../../js/components/code-preview.js"></script>
+  <script src="../../js/components/highlight.js"></script>
+  <script src="../../js/components/diff.js"></script>
+  <script src="../../js/components/truncate.js"></script>
+  <script src="../../js/components/typewriter.js"></script>
+  <script src="../../js/components/morph.js"></script>
+  <script src="../../js/components/morph-panel.js"></script>
+  <script src="../../js/components/markdown.js"></script>
+
+  <!-- Media -->
+  <script src="../../js/components/video.js"></script>
+  <script src="../../js/components/audio.js"></script>
+  <script src="../../js/components/clipboard.js"></script>
+  <script src="../../js/components/file-manager.js"></script>
+  <script src="../../js/components/import.js"></script>
+
+  <!-- Time & Status -->
+  <script src="../../js/components/clock.js"></script>
+  <script src="../../js/components/relative-time.js"></script>
+  <script src="../../js/components/queue-status.js"></script>
+  <script src="../../js/components/presence.js"></script>
+  <script src="../../js/components/wip-overlay.js"></script>
+
+  <!-- Tours & Help -->
+  <script src="../../js/components/tour.js"></script>
+
+  <!-- User Preferences -->
+  <script src="../../js/components/preferences.js"></script>
+
+  <!-- Utilities -->
+  <script src="../../js/components/gesture-tracker.js"></script>
+  <script src="../../js/components/scroll-tracker.js"></script>
+  <script src="../../js/components/page-animate.js"></script>
+  <script src="../../js/components/view-modal.js"></script>
+  <script src="../../js/components/crud.js"></script>
+  <script src="../../js/components/audit-viewer.js"></script>
+  <script src="../../js/components/bulk-actions.js"></script>
+
+  <!-- Charting -->
+  <script src="../../js/components/charts.js"></script>
+  <script src="../../js/components/plotly-wrapper.js"></script>
+
+  <!-- Third-party Integrations -->
+  <script src="../../js/components/wysimark.js"></script>
+  <script src="../../js/components/even-funkyer.js"></script>
+  <script src="../../js/components/zero-click.js"></script>
+  <script src="../../js/components/trade-wizard.js"></script>
+  <script src="../../js/components/channel.js"></script>
+
+  <!-- Playground (must be last) -->
+  <script src="../../js/components/playground.js"></script>
+
+  <!-- Mock API -->
+  <script src="/mock-api.js"></script>
+
+  <!-- Playground Preferences -->
+  <script>
+  (function() {
+    'use strict';
+
+    var PlaygroundPreferences = {
+      STORAGE_KEY: 'playground_prefs',
+
+      DEFAULTS: {
+        theme: 'dark',
+        accent: '#0d6efd',
+        density: 'comfortable',
+        fontScale: 1.0,
+        animations: true
+      },
+
+      getAll: function() {
+        if (typeof Funky !== 'undefined' && Funky.Storage) {
+          return Funky.Storage.get(this.STORAGE_KEY, Object.assign({}, this.DEFAULTS));
+        }
+        try {
+          var stored = localStorage.getItem('funky_' + this.STORAGE_KEY);
+          return stored ? Object.assign({}, this.DEFAULTS, JSON.parse(stored)) : Object.assign({}, this.DEFAULTS);
+        } catch (e) {
+          return Object.assign({}, this.DEFAULTS);
+        }
+      },
+
+      get: function(key) {
+        var prefs = this.getAll();
+        return prefs[key] !== undefined ? prefs[key] : this.DEFAULTS[key];
+      },
+
+      set: function(key, value) {
+        var prefs = this.getAll();
+        prefs[key] = value;
+        if (typeof Funky !== 'undefined' && Funky.Storage) {
+          Funky.Storage.set(this.STORAGE_KEY, prefs);
+        } else {
+          try {
+            localStorage.setItem('funky_' + this.STORAGE_KEY, JSON.stringify(prefs));
+          } catch (e) {}
+        }
+        this.apply();
+      },
+
+      reset: function() {
+        if (typeof Funky !== 'undefined' && Funky.Storage) {
+          Funky.Storage.remove(this.STORAGE_KEY);
+        } else {
+          try {
+            localStorage.removeItem('funky_' + this.STORAGE_KEY);
+          } catch (e) {}
+        }
+        this.apply();
+        this.updateFormControls();
+      },
+
+      apply: function() {
+        var prefs = this.getAll();
+        var html = document.documentElement;
+
+        // Theme
+        var effectiveTheme = prefs.theme;
+        if (prefs.theme === 'system') {
+          effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        html.setAttribute('data-theme', effectiveTheme);
+
+        // Accent color
+        var accent = prefs.accent;
+        html.style.setProperty('--user-accent', accent);
+
+        var rgb = this.hexToRgb(accent);
+        var hoverColor = this.adjustBrightness(accent, -10);
+        html.style.setProperty('--user-accent-hover', hoverColor);
+        html.style.setProperty('--user-accent-rgb', rgb.r + ', ' + rgb.g + ', ' + rgb.b);
+        html.style.setProperty('--user-accent-muted', 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 0.15)');
+
+        // Density
+        html.setAttribute('data-density', prefs.density);
+
+        // Font scale
+        html.style.setProperty('--user-font-scale', prefs.fontScale);
+        html.style.fontSize = (prefs.fontScale * 100) + '%';
+
+        // Animations
+        html.setAttribute('data-animations', prefs.animations ? 'on' : 'off');
+      },
+
+      updateFormControls: function() {
+        var prefs = this.getAll();
+
+        // Theme buttons
+        document.querySelectorAll('.theme-btn').forEach(function(btn) {
+          var isActive = btn.dataset.theme === prefs.theme;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        });
+
+        // Accent swatches
+        var isPreset = Array.from(document.querySelectorAll('.accent-swatch')).some(function(s) {
+          return s.dataset.color === prefs.accent;
+        });
+        document.querySelectorAll('.accent-swatch').forEach(function(s) {
+          var isActive = s.dataset.color === prefs.accent;
+          s.classList.toggle('active', isActive);
+          s.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        });
+
+        // Custom accent wrapper
+        var customAccent = document.getElementById('custom-accent');
+        var customWrapper = customAccent ? customAccent.closest('.accent-custom-wrapper') : null;
+        if (customAccent) {
+          customAccent.value = prefs.accent;
+        }
+        if (customWrapper) {
+          customWrapper.classList.toggle('active', !isPreset);
+          customWrapper.style.background = !isPreset ? prefs.accent : '';
+        }
+
+        // Density buttons
+        document.querySelectorAll('.density-btn').forEach(function(btn) {
+          var isActive = btn.dataset.density === prefs.density;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        });
+
+        // Font scale
+        var fontScale = document.getElementById('font-scale');
+        var fontScaleValue = document.getElementById('font-scale-value');
+        var percentValue = Math.round(prefs.fontScale * 100);
+        if (fontScale) {
+          fontScale.value = prefs.fontScale;
+          fontScale.setAttribute('aria-valuenow', percentValue);
+          fontScale.setAttribute('aria-valuetext', percentValue + '%');
+        }
+        if (fontScaleValue) fontScaleValue.textContent = percentValue + '%';
+
+        // Animations
+        var animationsEnabled = document.getElementById('animations-enabled');
+        if (animationsEnabled) {
+          animationsEnabled.checked = prefs.animations;
+          animationsEnabled.setAttribute('aria-checked', prefs.animations ? 'true' : 'false');
+        }
+      },
+
+      hexToRgb: function(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : { r: 0, g: 0, b: 0 };
+      },
+
+      adjustBrightness: function(hex, percent) {
+        var rgb = this.hexToRgb(hex);
+        var adjust = function(value) { return Math.max(0, Math.min(255, Math.round(value * (1 + percent / 100)))); };
+        var toHex = function(value) { return value.toString(16).padStart(2, '0'); };
+        return '#' + toHex(adjust(rgb.r)) + toHex(adjust(rgb.g)) + toHex(adjust(rgb.b));
+      }
+    };
+
+    // Make available globally
+    window.PlaygroundPreferences = PlaygroundPreferences;
+
+    // Apply preferences immediately
+    PlaygroundPreferences.apply();
+
+    // Settings Panel Event Handlers
+    function initSettingsPanel() {
+      var settingsBtn = document.getElementById('playground-settings-btn');
+      var settingsPanel = document.getElementById('playground-settings-panel');
+      var settingsOverlay = document.getElementById('playground-settings-overlay');
+      var closeBtn = document.getElementById('close-settings-btn');
+      var resetBtn = document.getElementById('reset-preferences-btn');
+
+      function openPanel() {
+        settingsPanel.classList.add('open');
+        settingsPanel.removeAttribute('inert');
+        settingsOverlay.classList.add('show');
+        settingsOverlay.setAttribute('aria-hidden', 'false');
+        settingsBtn.setAttribute('aria-expanded', 'true');
+        PlaygroundPreferences.updateFormControls();
+        // Focus the close button for keyboard users
+        if (closeBtn) closeBtn.focus();
+      }
+
+      function closePanel() {
+        settingsPanel.classList.remove('open');
+        settingsPanel.setAttribute('inert', '');
+        settingsOverlay.classList.remove('show');
+        settingsOverlay.setAttribute('aria-hidden', 'true');
+        settingsBtn.setAttribute('aria-expanded', 'false');
+        // Return focus to the settings button
+        if (settingsBtn) settingsBtn.focus();
+      }
+
+      if (settingsBtn) settingsBtn.addEventListener('click', openPanel);
+      if (closeBtn) closeBtn.addEventListener('click', closePanel);
+      if (settingsOverlay) settingsOverlay.addEventListener('click', closePanel);
+
+      // Close on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && settingsPanel.classList.contains('open')) {
+          closePanel();
+        }
+      });
+
+      // Theme buttons
+      document.querySelectorAll('.theme-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          PlaygroundPreferences.set('theme', btn.dataset.theme);
+          PlaygroundPreferences.updateFormControls();
+        });
+      });
+
+      // Accent swatches
+      document.querySelectorAll('.accent-swatch').forEach(function(swatch) {
+        swatch.addEventListener('click', function() {
+          document.querySelectorAll('.accent-swatch').forEach(function(s) { s.classList.remove('active'); });
+          var customWrapper = document.querySelector('.accent-custom-wrapper');
+          if (customWrapper) {
+            customWrapper.classList.remove('active');
+            customWrapper.style.background = '';
+          }
+          swatch.classList.add('active');
+          PlaygroundPreferences.set('accent', swatch.dataset.color);
+        });
+      });
+
+      // Custom accent color
+      var customAccent = document.getElementById('custom-accent');
+      var customWrapper = customAccent ? customAccent.closest('.accent-custom-wrapper') : null;
+      if (customAccent) {
+        customAccent.addEventListener('input', function(e) {
+          document.querySelectorAll('.accent-swatch').forEach(function(s) { s.classList.remove('active'); });
+          if (customWrapper) {
+            customWrapper.classList.add('active');
+            customWrapper.style.background = e.target.value;
+          }
+          PlaygroundPreferences.set('accent', e.target.value);
+        });
+      }
+
+      // Density buttons
+      document.querySelectorAll('.density-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          PlaygroundPreferences.set('density', btn.dataset.density);
+          PlaygroundPreferences.updateFormControls();
+        });
+      });
+
+      // Font scale slider
+      var fontScale = document.getElementById('font-scale');
+      var fontScaleValue = document.getElementById('font-scale-value');
+      if (fontScale) {
+        fontScale.addEventListener('input', function(e) {
+          var value = parseFloat(e.target.value);
+          if (fontScaleValue) fontScaleValue.textContent = Math.round(value * 100) + '%';
+          PlaygroundPreferences.set('fontScale', value);
+        });
+      }
+
+      // Animations toggle
+      var animationsEnabled = document.getElementById('animations-enabled');
+      if (animationsEnabled) {
+        animationsEnabled.addEventListener('change', function(e) {
+          PlaygroundPreferences.set('animations', e.target.checked);
+        });
+      }
+
+      // Reset button
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          PlaygroundPreferences.reset();
+          if (typeof Funky !== 'undefined' && Funky.Toast) {
+            Funky.Toast.success('Preferences reset to defaults');
+          }
+        });
+      }
+
+      // Update form controls on init
+      PlaygroundPreferences.updateFormControls();
+
+      // Watch for system theme changes
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+        if (PlaygroundPreferences.get('theme') === 'system') {
+          PlaygroundPreferences.apply();
+        }
+      });
+    }
+
+    // Initialize settings panel when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSettingsPanel);
+    } else {
+      initSettingsPanel();
+    }
+  })();
+  </script>
+
+  <!-- Canvas Controller -->
+  <script>
+  (function() {
+    'use strict';
+
+    var currentProps = {};
+    var pendingComponentId = null;
+
+    // Emit event to parent
+    function emit(type, data) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: type, data: data }, '*');
+      }
+    }
+
+    // Set theme (called from parent)
+    function setTheme(theme) {
+      if (window.PlaygroundPreferences) {
+        PlaygroundPreferences.set('theme', theme);
+      } else {
+        var effectiveTheme = theme;
+        if (theme === 'system') {
+          effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
+      }
+    }
+
+    // Convert PascalCase/CamelCase to kebab-case (e.g., "ActionBar" → "action-bar")
+    function toKebabCase(str) {
+      return str
+        .replace(/([a-z])([A-Z])/g, '$1-$2')  // Insert hyphen between lowercase and uppercase
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')  // Handle consecutive uppercase
+        .toLowerCase();
+    }
+
+    // Navigate to component page
+    function navigateToComponent(componentId) {
+      pendingComponentId = componentId;
+      var url = '/playground/components/' + toKebabCase(componentId);
+
+      // SPA.navigate doesn't return a promise, so we track via pendingComponentId
+      // and detect completion when the page initializes
+      try {
+        Funky.SPA.navigate(url);
+      } catch (err) {
+        console.error('[Canvas] Navigation error:', err);
+        emit('error', { message: 'Failed to load ' + componentId, error: err.message });
+      }
+    }
+
+    // Listen for page mount events to know when navigation completes
+    if (Funky.PubSub) {
+      Funky.PubSub.on('page:mounted', function(data) {
+        if (pendingComponentId) {
+          emit('pageLoaded', { page: pendingComponentId });
+          pendingComponentId = null;
+        }
+      });
+    }
+
+    // Message handler from parent
+    window.addEventListener('message', function(event) {
+      var data = event.data || {};
+
+      switch (data.type) {
+        case 'navigate':
+          if (data.componentId) {
+            navigateToComponent(data.componentId);
+          } else if (data.url) {
+            Funky.SPA.navigate(data.url);
+          }
+          break;
+
+        case 'render':
+          // Cancel any pending clear
+          if (window._clearTimeout) {
+            clearTimeout(window._clearTimeout);
+            window._clearTimeout = null;
+          }
+
+          // Render component - navigate to it, SPA handles caching
+          if (data.componentId) {
+            currentProps = data.props || {};
+            var targetPath = toKebabCase(data.componentId);
+
+            // If already on this component, refresh to re-run init with new props
+            if (window.location.pathname.endsWith('/' + targetPath)) {
+              Funky.SPA.refresh();
+              emit('pageLoaded', { page: data.componentId });
+            } else {
+              navigateToComponent(data.componentId);
+            }
+          }
+          break;
+
+        case 'theme':
+          setTheme(data.theme);
+          break;
+
+        case 'props':
+          currentProps = data.props || {};
+          Funky.PubSub.emit('playground:propsChanged', currentProps);
+          break;
+
+        case 'resize':
+          if (Funky.Plotly && Funky.Plotly.resizeAll) {
+            Funky.Plotly.resizeAll();
+          }
+          break;
+
+        case 'clear':
+          // Don't clear immediately - defer to allow render message to cancel
+          // This prevents flicker when props change on same component
+          if (window._clearTimeout) clearTimeout(window._clearTimeout);
+          window._clearTimeout = setTimeout(function() {
+            document.getElementById('spaContent').innerHTML =
+              '<div class="canvas-welcome">' +
+              '<i class="fas fa-cube"></i>' +
+              '<h2>Select a component</h2>' +
+              '<p>Choose from the sidebar to see it in action</p>' +
+              '</div>';
+          }, 50);
+          break;
+      }
+    });
+
+    // Forward component events to parent
+    Funky.PubSub.on('playground:event', function(eventData) {
+      emit('event', eventData);
+    });
+
+    // Expose API for component pages
+    window.PlaygroundCanvas = {
+      getProps: function() { return currentProps; },
+      emit: emit,
+      onPropsChange: function(callback) {
+        if (typeof callback === 'function') {
+          Funky.PubSub.on('playground:propsChanged', function(newProps) {
+            // Find which key changed by comparing with previous props
+            var changedKey = null;
+            var prevProps = window.PlaygroundCanvas._prevProps || {};
+            for (var key in newProps) {
+              if (JSON.stringify(newProps[key]) !== JSON.stringify(prevProps[key])) {
+                changedKey = key;
+                break;
+              }
+            }
+            window.PlaygroundCanvas._prevProps = JSON.parse(JSON.stringify(newProps));
+            callback(newProps, changedKey);
+          });
+        }
+      },
+      _prevProps: {}
+    };
+
+    // Listen for SPA pageload events - mount page if SPA missed it
+    document.addEventListener('funky.spa.pageload', function(e) {
+      var pageId = e.detail.page;
+      if (pageId && Funky.Pages.has(pageId) && !Funky.Pages.isManaged(pageId)) {
+        Funky.Pages.mount(pageId);
+      }
+    });
+
+    // Initialize SPA
+    Funky.SPA.init();
+
+    // Register Service Worker for desktop notifications
+    if (Funky.ServiceWorker && Funky.ServiceWorker.isSupported()) {
+      Funky.ServiceWorker.register('/sw.js', {
+        scope: '/'
+      }).then(function(registration) {
+        console.log('[Funky Canvas] Service Worker registered:', registration.scope);
+      }).catch(function(error) {
+        console.warn('[Funky Canvas] Service Worker registration failed:', error);
+      });
+    }
+
+    // Signal ready
+    emit('ready', {
+      mode: 'page-based',
+      timestamp: Date.now()
+    });
+
+  })();
+  </script>
+</body>
+</html>

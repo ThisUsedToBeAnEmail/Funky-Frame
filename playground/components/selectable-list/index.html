@@ -1,0 +1,389 @@
+<div data-page="component-selectable-list" class="component-demo">
+  <h2>Selectable List</h2>
+  <p class="text-muted">Accessible list with keyboard navigation, selection modes, and theming</p>
+
+  <!-- Main Demo Section -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use arrow keys, Home/End, or type to search. Vim keys (j/k) can be enabled in props.</p>
+    <div class="demo-area">
+      <div class="selectable-list-demo__container">
+        <div id="selectable-list-container" class="selectable-list-demo__list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selection Status Section -->
+  <section class="demo-section" aria-labelledby="status-heading">
+    <h3 id="status-heading">Selection Status</h3>
+    <p class="text-muted small">Shows currently selected items</p>
+    <div class="demo-area">
+      <div class="selectable-list-demo__status">
+        <div class="selectable-list-demo__status-label">Selected:</div>
+        <div id="selection-display" class="selectable-list-demo__status-value">
+          <span class="text-muted">None</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Test the component's public methods</p>
+    <div class="demo-area">
+      <div class="selectable-list-demo__controls">
+        <div class="selectable-list-demo__control-group">
+          <span class="selectable-list-demo__control-label">Selection:</span>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-select-first">
+            <i class="fa-solid fa-check" aria-hidden="true"></i> Select First
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-select-all">
+            <i class="fa-solid fa-check-double" aria-hidden="true"></i> Select All
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-clear">
+            <i class="fa-solid fa-times" aria-hidden="true"></i> Clear
+          </button>
+        </div>
+        <div class="selectable-list-demo__control-group">
+          <span class="selectable-list-demo__control-label">Navigation:</span>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-focus-list">
+            <i class="fa-solid fa-crosshairs" aria-hidden="true"></i> Focus List
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-focus-first">
+            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i> First Item
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-focus-last">
+            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i> Last Item
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keyboard Shortcuts Section -->
+  <section class="demo-section" aria-labelledby="keyboard-heading">
+    <h3 id="keyboard-heading">Keyboard Shortcuts</h3>
+    <div class="demo-area">
+      <div class="selectable-list-demo__shortcuts">
+        <div class="selectable-list-demo__shortcut">
+          <kbd>↑</kbd> <kbd>↓</kbd>
+          <span>Navigate items</span>
+        </div>
+        <div class="selectable-list-demo__shortcut">
+          <kbd>Home</kbd> <kbd>End</kbd>
+          <span>First / Last</span>
+        </div>
+        <div class="selectable-list-demo__shortcut">
+          <kbd>Enter</kbd> <kbd>Space</kbd>
+          <span>Select / Toggle</span>
+        </div>
+        <div class="selectable-list-demo__shortcut" id="shortcut-vim" style="display: none;">
+          <kbd>j</kbd> <kbd>k</kbd>
+          <span>Vim navigation</span>
+        </div>
+        <div class="selectable-list-demo__shortcut" id="shortcut-ctrl-a" style="display: none;">
+          <kbd>Ctrl+A</kbd>
+          <span>Select all (multi)</span>
+        </div>
+        <div class="selectable-list-demo__shortcut" id="shortcut-typeahead">
+          <kbd>A-Z</kbd>
+          <span>Type to search</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings Section -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div id="current-settings" class="selectable-list-demo__settings"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var listInstance = null;
+  var propsChangedHandler = null;
+
+  // Sample data
+  var SAMPLE_ITEMS = [
+    { id: 'apple', label: 'Apple', icon: 'fa-apple-alt', category: 'Fruit' },
+    { id: 'banana', label: 'Banana', icon: 'fa-leaf', category: 'Fruit' },
+    { id: 'cherry', label: 'Cherry', icon: 'fa-circle', category: 'Fruit' },
+    { id: 'carrot', label: 'Carrot', icon: 'fa-carrot', category: 'Vegetable' },
+    { id: 'broccoli', label: 'Broccoli', icon: 'fa-seedling', category: 'Vegetable' },
+    { id: 'pepper', label: 'Bell Pepper', icon: 'fa-pepper-hot', category: 'Vegetable' },
+    { id: 'bread', label: 'Bread', icon: 'fa-bread-slice', category: 'Grain' },
+    { id: 'rice', label: 'Rice', icon: 'fa-bowl-rice', category: 'Grain' }
+  ];
+
+  /**
+   * Update selection display
+   */
+  function updateSelectionDisplay(selectedItems, selectedIds) {
+    var display = document.getElementById('selection-display');
+    if (!display) return;
+
+    if (!selectedIds || selectedIds.length === 0) {
+      display.innerHTML = '<span class="text-muted">None</span>';
+    } else {
+      var badges = selectedIds.map(function(id) {
+        var item = SAMPLE_ITEMS.find(function(i) { return i.id === id; });
+        var label = item ? item.label : id;
+        return '<span class="badge bg-primary">' + escapeHtml(label) + '</span>';
+      });
+      display.innerHTML = badges.join(' ');
+    }
+  }
+
+  /**
+   * Escape HTML entities
+   */
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * Update keyboard shortcuts visibility
+   */
+  function updateShortcutsVisibility(props) {
+    var vimShortcut = document.getElementById('shortcut-vim');
+    var ctrlAShortcut = document.getElementById('shortcut-ctrl-a');
+    var typeaheadShortcut = document.getElementById('shortcut-typeahead');
+
+    if (vimShortcut) {
+      vimShortcut.style.display = props.vimKeys ? 'flex' : 'none';
+    }
+    if (ctrlAShortcut) {
+      ctrlAShortcut.style.display = props.selectable === 'multi' ? 'flex' : 'none';
+    }
+    if (typeaheadShortcut) {
+      typeaheadShortcut.style.display = props.typeAhead !== false ? 'flex' : 'none';
+    }
+  }
+
+  /**
+   * Update settings display
+   */
+  function updateSettingsDisplay(props) {
+    var container = document.getElementById('current-settings');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var badges = [
+      { label: 'Selection', value: props.selectable || 'single', variant: 'primary' },
+      { label: 'Density', value: props.density || 'default', variant: 'info' },
+      { label: 'Variant', value: props.variant || 'default', variant: 'secondary' },
+      { label: 'Vim Keys', value: props.vimKeys ? 'On' : 'Off', variant: props.vimKeys ? 'success' : 'secondary' },
+      { label: 'Type-Ahead', value: props.typeAhead !== false ? 'On' : 'Off', variant: props.typeAhead !== false ? 'success' : 'secondary' },
+      { label: 'Wrap', value: props.wrapAround !== false ? 'On' : 'Off', variant: props.wrapAround !== false ? 'success' : 'secondary' },
+      { label: 'Grouped', value: props.showGroups ? 'Yes' : 'No', variant: props.showGroups ? 'warning' : 'secondary' }
+    ];
+
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var span = document.createElement('span');
+      span.className = 'badge bg-' + badge.variant;
+      span.innerHTML = '<strong>' + badge.label + ':</strong> ' + badge.value;
+      container.appendChild(span);
+    }
+  }
+
+  /**
+   * Create the selectable list
+   */
+  function createList(props) {
+    var container = document.getElementById('selectable-list-container');
+    if (!container) return;
+
+    // Destroy existing instance
+    if (listInstance && listInstance.destroy) {
+      listInstance.destroy();
+      listInstance = null;
+    }
+
+    // Build options
+    var options = {
+      items: SAMPLE_ITEMS,
+      selectable: props.selectable || 'single',
+      density: props.density || 'default',
+      vimKeys: props.vimKeys || false,
+      typeAhead: props.typeAhead !== false,
+      wrapAround: props.wrapAround !== false,
+      ariaLabel: 'Food items list',
+
+      renderItem: function(item, index, state) {
+        var icon = '<i class="fas ' + item.icon + ' selectable-list-demo__item-icon" aria-hidden="true"></i>';
+        var label = '<span class="selectable-list-demo__item-label">' + escapeHtml(item.label) + '</span>';
+        var category = '<span class="selectable-list-demo__item-category">' + escapeHtml(item.category) + '</span>';
+        return icon + '<div class="selectable-list-demo__item-content">' + label + category + '</div>';
+      },
+
+      onSelect: function(selectedItems, selectedIds) {
+        updateSelectionDisplay(selectedItems, selectedIds);
+        emit('event', {
+          event: 'funky:list:select',
+          payload: { selectedIds: selectedIds, count: selectedIds.length }
+        });
+      },
+
+      onActivate: function(item, index) {
+        emit('event', {
+          event: 'funky:list:activate',
+          payload: { item: item.label, index: index }
+        });
+      },
+
+      onFocus: function(item, index) {
+        emit('event', {
+          event: 'funky:list:focus',
+          payload: { item: item.label, index: index }
+        });
+      }
+    };
+
+    // Apply variant if specified
+    if (props.variant) {
+      options.variant = props.variant;
+    }
+
+    // Apply grouping if enabled
+    if (props.showGroups) {
+      options.groupBy = function(item) {
+        return item.category;
+      };
+      options.renderGroupHeader = function(groupKey, items) {
+        return '<i class="fas fa-folder me-2" aria-hidden="true"></i>' + groupKey + ' (' + items.length + ')';
+      };
+    }
+
+    // Create instance
+    listInstance = Funky.SelectableList.init(container, options);
+
+    // Update UI
+    updateSelectionDisplay([], []);
+    updateShortcutsVisibility(props);
+    updateSettingsDisplay(props);
+  }
+
+  /**
+   * Bind button events
+   */
+  function bindEvents() {
+    var btnSelectFirst = document.getElementById('btn-select-first');
+    var btnSelectAll = document.getElementById('btn-select-all');
+    var btnClear = document.getElementById('btn-clear');
+    var btnFocusList = document.getElementById('btn-focus-list');
+    var btnFocusFirst = document.getElementById('btn-focus-first');
+    var btnFocusLast = document.getElementById('btn-focus-last');
+
+    if (btnSelectFirst) {
+      btnSelectFirst.addEventListener('click', function() {
+        if (listInstance) {
+          listInstance.select('apple');
+          emit('event', { event: 'api:select', payload: { id: 'apple' } });
+        }
+      });
+    }
+
+    if (btnSelectAll) {
+      btnSelectAll.addEventListener('click', function() {
+        if (listInstance) {
+          listInstance.selectAll();
+          emit('event', { event: 'api:selectAll', payload: {} });
+        }
+      });
+    }
+
+    if (btnClear) {
+      btnClear.addEventListener('click', function() {
+        if (listInstance) {
+          listInstance.clearSelection();
+          emit('event', { event: 'api:clearSelection', payload: {} });
+        }
+      });
+    }
+
+    if (btnFocusList) {
+      btnFocusList.addEventListener('click', function() {
+        if (listInstance) {
+          listInstance.focus();
+          emit('event', { event: 'api:focus', payload: {} });
+        }
+      });
+    }
+
+    if (btnFocusFirst) {
+      btnFocusFirst.addEventListener('click', function() {
+        if (listInstance) {
+          listInstance.setFocusedIndex(0);
+          listInstance.focus();
+          emit('event', { event: 'api:focusFirst', payload: {} });
+        }
+      });
+    }
+
+    if (btnFocusLast) {
+      btnFocusLast.addEventListener('click', function() {
+        if (listInstance) {
+          var lastIndex = listInstance.getItems().length - 1;
+          listInstance.setFocusedIndex(lastIndex);
+          listInstance.focus();
+          emit('event', { event: 'api:focusLast', payload: {} });
+        }
+      });
+    }
+  }
+
+  // Page registration
+  Funky.Pages.register('component-selectable-list', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create initial list
+      createList(props);
+
+      // Bind button events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          createList(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'selectable-list:init', payload: props });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy list instance
+      if (listInstance && listInstance.destroy) {
+        listInstance.destroy();
+        listInstance = null;
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,530 @@
+<div data-page="component-tree-view" class="component-demo">
+  <h2>Tree View</h2>
+  <p class="text-muted">Hierarchical tree display with expand/collapse, selection, checkboxes, drag-drop, search, and lazy loading support.</p>
+
+  <section class="demo-section" aria-labelledby="tree-demo-heading">
+    <h3 id="tree-demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">Click nodes to select. Enable checkboxes or drag-drop via props. Right-click for context options.</p>
+    <div class="demo-area">
+      <div id="tree-demo" class="tree-demo__container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tree-controls-heading">
+    <h3 id="tree-controls-heading">Expand/Collapse Controls</h3>
+    <p class="text-muted small">Control tree expansion programmatically.</p>
+    <div class="demo-area tree-demo__button-grid" role="group" aria-label="Expand collapse buttons">
+      <button class="btn btn-primary btn-sm" id="tree-expand-all" type="button">
+        <i class="fas fa-expand-alt me-1" aria-hidden="true"></i>Expand All
+      </button>
+      <button class="btn btn-secondary btn-sm" id="tree-collapse-all" type="button">
+        <i class="fas fa-compress-alt me-1" aria-hidden="true"></i>Collapse All
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="tree-expand-node" type="button">
+        <i class="fas fa-chevron-down me-1" aria-hidden="true"></i>Expand "Documents"
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="tree-collapse-node" type="button">
+        <i class="fas fa-chevron-up me-1" aria-hidden="true"></i>Collapse "Documents"
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="tree-toggle-node" type="button">
+        <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i>Toggle "Projects"
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tree-selection-heading">
+    <h3 id="tree-selection-heading">Selection API</h3>
+    <p class="text-muted small">Control node selection programmatically.</p>
+    <div class="demo-area tree-demo__button-grid" role="group" aria-label="Selection control buttons">
+      <button class="btn btn-success btn-sm" id="tree-select-node" type="button">
+        <i class="fas fa-check me-1" aria-hidden="true"></i>Select "WebApp"
+      </button>
+      <button class="btn btn-warning btn-sm" id="tree-deselect-node" type="button">
+        <i class="fas fa-times me-1" aria-hidden="true"></i>Deselect "WebApp"
+      </button>
+      <button class="btn btn-info btn-sm" id="tree-select-all" type="button">
+        <i class="fas fa-check-double me-1" aria-hidden="true"></i>Select All
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="tree-deselect-all" type="button">
+        <i class="fas fa-times-circle me-1" aria-hidden="true"></i>Deselect All
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="tree-get-selected" type="button">
+        <i class="fas fa-list me-1" aria-hidden="true"></i>Get Selected
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tree-data-heading">
+    <h3 id="tree-data-heading">Data Operations</h3>
+    <p class="text-muted small">Modify tree data dynamically.</p>
+    <div class="demo-area tree-demo__button-grid" role="group" aria-label="Data operation buttons">
+      <button class="btn btn-success btn-sm" id="tree-add-node" type="button">
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add Node
+      </button>
+      <button class="btn btn-info btn-sm" id="tree-get-node" type="button">
+        <i class="fas fa-search me-1" aria-hidden="true"></i>Get Node "docs"
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="tree-get-all" type="button">
+        <i class="fas fa-database me-1" aria-hidden="true"></i>Get All Nodes
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="tree-refresh" type="button">
+        <i class="fas fa-sync me-1" aria-hidden="true"></i>Refresh Tree
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="tree-filter" type="button">
+        <i class="fas fa-filter me-1" aria-hidden="true"></i>Filter "App"
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="tree-clear-filter" type="button">
+        <i class="fas fa-eraser me-1" aria-hidden="true"></i>Clear Filter
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tree-drag-heading">
+    <h3 id="tree-drag-heading">Drag & Drop</h3>
+    <p class="text-muted small">Control drag-drop and undo operations.</p>
+    <div class="demo-area tree-demo__button-grid" role="group" aria-label="Drag drop control buttons">
+      <button class="btn btn-primary btn-sm" id="tree-enable-drag" type="button">
+        <i class="fas fa-hand-pointer me-1" aria-hidden="true"></i>Enable Drag
+      </button>
+      <button class="btn btn-secondary btn-sm" id="tree-disable-drag" type="button">
+        <i class="fas fa-ban me-1" aria-hidden="true"></i>Disable Drag
+      </button>
+      <button class="btn btn-warning btn-sm" id="tree-undo" type="button">
+        <i class="fas fa-undo me-1" aria-hidden="true"></i>Undo Move
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="tree-clear-history" type="button">
+        <i class="fas fa-history me-1" aria-hidden="true"></i>Clear History
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tree-state-heading">
+    <h3 id="tree-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time tree state information.</p>
+    <div class="demo-area">
+      <pre id="tree-state" class="tree-demo__log" aria-live="polite" aria-label="Tree state">Initializing tree...</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="tree-log-heading">
+    <h3 id="tree-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="tree-log" class="tree-demo__log" aria-live="polite" aria-label="Event log">Interact with the tree to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var treeInstance = null;
+  var logs = [];
+  var propsChangedHandler = null;
+
+  // Sample hierarchical data
+  var sampleData = [
+    {
+      id: 'docs',
+      label: 'Documents',
+      icon: 'fas fa-folder',
+      children: [
+        { id: 'work', label: 'Work', icon: 'fas fa-folder', children: [
+          { id: 'report', label: 'Report.pdf', icon: 'fas fa-file-pdf' },
+          { id: 'presentation', label: 'Presentation.pptx', icon: 'fas fa-file-powerpoint' },
+          { id: 'spreadsheet', label: 'Budget.xlsx', icon: 'fas fa-file-excel' }
+        ]},
+        { id: 'personal', label: 'Personal', icon: 'fas fa-folder', children: [
+          { id: 'resume', label: 'Resume.docx', icon: 'fas fa-file-word' },
+          { id: 'photo', label: 'Photo.jpg', icon: 'fas fa-file-image' }
+        ]}
+      ]
+    },
+    {
+      id: 'projects',
+      label: 'Projects',
+      icon: 'fas fa-folder',
+      children: [
+        { id: 'webapp', label: 'WebApp', icon: 'fas fa-folder', children: [
+          { id: 'src', label: 'src', icon: 'fas fa-folder', children: [
+            { id: 'index', label: 'index.js', icon: 'fab fa-js' },
+            { id: 'app', label: 'App.jsx', icon: 'fab fa-react' },
+            { id: 'utils', label: 'utils.js', icon: 'fab fa-js' }
+          ]},
+          { id: 'package', label: 'package.json', icon: 'fas fa-file-code' },
+          { id: 'readme', label: 'README.md', icon: 'fas fa-file-alt' }
+        ]},
+        { id: 'mobile', label: 'MobileApp', icon: 'fas fa-folder', children: [
+          { id: 'android', label: 'android', icon: 'fab fa-android' },
+          { id: 'ios', label: 'ios', icon: 'fab fa-apple' }
+        ]}
+      ]
+    },
+    {
+      id: 'downloads',
+      label: 'Downloads',
+      icon: 'fas fa-folder',
+      children: [
+        { id: 'software', label: 'software.zip', icon: 'fas fa-file-archive' },
+        { id: 'image', label: 'image.png', icon: 'fas fa-file-image' }
+      ]
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: 'fas fa-cog'
+    }
+  ];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('tree-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('tree-state');
+    if (!stateEl || !treeInstance) return;
+
+    var props = getProps();
+    var selectedIds = treeInstance.getSelectedIds ? treeInstance.getSelectedIds() : [];
+    var allNodes = treeInstance.getAllNodes ? treeInstance.getAllNodes() : [];
+
+    stateEl.textContent = JSON.stringify({
+      totalNodes: allNodes.length,
+      selectedCount: selectedIds.length,
+      selectedIds: selectedIds,
+      selectable: props.selectable || 'single',
+      showSearch: props.showSearch || false,
+      draggable: props.draggable || false,
+      showGuides: props.showGuides !== false,
+      canUndo: treeInstance.canUndo ? treeInstance.canUndo() : false,
+      isFiltered: treeInstance.isFiltered ? treeInstance.isFiltered() : false
+    }, null, 2);
+  }
+
+  function createTree() {
+    var props = getProps();
+    var container = document.getElementById('tree-demo');
+    if (!container) return;
+
+    // Destroy existing tree
+    if (treeInstance && treeInstance.destroy) {
+      treeInstance.destroy();
+      treeInstance = null;
+    }
+    container.innerHTML = '';
+
+    // Map props to TreeView options
+    var selectable = props.selectable || 'single';
+
+    var treeConfig = {
+      data: sampleData,
+      selectable: selectable,
+      useMorph: props.useMorph !== false,
+      staggerChildren: props.staggerChildren !== false,
+      highlightMatches: props.highlightMatches !== false,
+      cascadeSelect: props.cascadeSelect !== false,
+      showSearch: props.showSearch || false,
+      searchPlaceholder: 'Search nodes...',
+      draggable: props.draggable || false,
+      showGuides: props.showGuides !== false,
+      indentSize: props.indentSize || 20,
+      animationDuration: 200,
+      useMorph: true,
+      staggerChildren: true,
+      expandedIds: ['docs', 'projects'],
+
+      // Callbacks
+      onSelect: function(selectedIds, node) {
+        // selectedIds is a Set, convert to Array for processing
+        var idsArray = Array.from(selectedIds);
+        var names = idsArray.map(function(id) {
+          var n = treeInstance.getNode(id);
+          return n ? n.label : id;
+        });
+        log('Selected: ' + (names.length ? names.join(', ') : '(none)'));
+        emit('event', { event: 'tree:select', payload: { ids: idsArray, node: node ? node.id : null } });
+        updateState();
+      },
+      onExpand: function(node) {
+        log('Expanded: ' + node.label);
+        emit('event', { event: 'tree:expand', payload: { id: node.id, label: node.label } });
+      },
+      onCollapse: function(node) {
+        log('Collapsed: ' + node.label);
+        emit('event', { event: 'tree:collapse', payload: { id: node.id, label: node.label } });
+      },
+      onMove: function(node, newParent, index) {
+        var parentLabel = newParent ? newParent.label : 'root';
+        log('Moved "' + node.label + '" to "' + parentLabel + '" at index ' + index);
+        emit('event', { event: 'tree:move', payload: { node: node.id, parent: newParent ? newParent.id : null, index: index } });
+        updateState();
+      },
+      onFilter: function(query, matches) {
+        log('Filtered: "' + query + '" (' + matches.length + ' matches)');
+        emit('event', { event: 'tree:filter', payload: { query: query, count: matches.length } });
+      }
+    };
+
+    // Initialize tree
+    if (Funky.TreeView) {
+      treeInstance = Funky.TreeView.init(container, treeConfig);
+      log('Tree created with ' + sampleData.length + ' root nodes');
+      emit('event', { event: 'tree:init', payload: { nodes: sampleData.length } });
+      updateState();
+    }
+  }
+
+  Funky.Pages.register('component-tree-view', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+
+      log('Init with selectable=' + (props.selectable || 'single') + ', draggable=' + (props.draggable || false));
+      emit('event', { event: 'tree:init', payload: props });
+
+      // Create the tree
+      createTree();
+
+      // Listen for props changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - recreating tree');
+          createTree();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Expand/Collapse controls
+      document.getElementById('tree-expand-all').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.expandAll) {
+          treeInstance.expandAll();
+          log('Expanded all nodes');
+          emit('event', { event: 'tree:expand-all', payload: {} });
+        }
+      };
+
+      document.getElementById('tree-collapse-all').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.collapseAll) {
+          treeInstance.collapseAll();
+          log('Collapsed all nodes');
+          emit('event', { event: 'tree:collapse-all', payload: {} });
+        }
+      };
+
+      document.getElementById('tree-expand-node').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.expand) {
+          treeInstance.expand('docs');
+          log('Expanded "Documents"');
+          emit('event', { event: 'tree:expand', payload: { id: 'docs' } });
+        }
+      };
+
+      document.getElementById('tree-collapse-node').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.collapse) {
+          treeInstance.collapse('docs');
+          log('Collapsed "Documents"');
+          emit('event', { event: 'tree:collapse', payload: { id: 'docs' } });
+        }
+      };
+
+      document.getElementById('tree-toggle-node').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.toggle) {
+          treeInstance.toggle('projects');
+          log('Toggled "Projects"');
+          emit('event', { event: 'tree:toggle', payload: { id: 'projects' } });
+        }
+      };
+
+      // Selection controls
+      document.getElementById('tree-select-node').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.selectNode) {
+          treeInstance.selectNode('webapp');
+          log('Selected "WebApp"');
+          emit('event', { event: 'tree:select-node', payload: { id: 'webapp' } });
+          updateState();
+        }
+      };
+
+      document.getElementById('tree-deselect-node').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.deselectNode) {
+          treeInstance.deselectNode('webapp');
+          log('Deselected "WebApp"');
+          emit('event', { event: 'tree:deselect-node', payload: { id: 'webapp' } });
+          updateState();
+        }
+      };
+
+      document.getElementById('tree-select-all').onclick = function() {
+        if (!treeInstance) return;
+        var props = getProps();
+        if (props.selectable !== 'multi') {
+          log('selectAll() requires multi-select mode');
+          Funky.Toast.warning('Select All requires multi-select mode. Change Selection Mode prop to "multi".');
+          return;
+        }
+        if (treeInstance.selectAll) {
+          treeInstance.selectAll();
+          log('Selected all nodes');
+          emit('event', { event: 'tree:select-all', payload: {} });
+          updateState();
+        }
+      };
+
+      document.getElementById('tree-deselect-all').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.deselectAll) {
+          treeInstance.deselectAll();
+          log('Deselected all nodes');
+          emit('event', { event: 'tree:deselect-all', payload: {} });
+          updateState();
+        }
+      };
+
+      document.getElementById('tree-get-selected').onclick = function() {
+        if (!treeInstance) return;
+        var selected = treeInstance.getSelected ? treeInstance.getSelected() : [];
+        var ids = treeInstance.getSelectedIds ? treeInstance.getSelectedIds() : [];
+        log('Selected IDs: [' + ids.join(', ') + ']');
+        emit('event', { event: 'tree:get-selected', payload: { ids: ids, count: ids.length } });
+        Funky.Toast.info('Selected: ' + ids.length + ' nodes');
+      };
+
+      // Data operations
+      document.getElementById('tree-add-node').onclick = function() {
+        if (!treeInstance) return;
+        var newNode = {
+          id: 'new-' + Date.now(),
+          label: 'New Folder ' + Math.floor(Math.random() * 100),
+          icon: 'fas fa-folder'
+        };
+        if (treeInstance.addData) {
+          treeInstance.addData([newNode]);
+          log('Added node: ' + newNode.label);
+          emit('event', { event: 'tree:add-node', payload: newNode });
+          Funky.Toast.success('Added: ' + newNode.label);
+          updateState();
+        }
+      };
+
+      document.getElementById('tree-get-node').onclick = function() {
+        if (!treeInstance) return;
+        var node = treeInstance.getNode ? treeInstance.getNode('docs') : null;
+        if (node) {
+          log('Got node: ' + JSON.stringify({ id: node.id, label: node.label, children: node.children ? node.children.length : 0 }));
+          emit('event', { event: 'tree:get-node', payload: { id: node.id, label: node.label } });
+          Funky.Toast.info('Node: ' + node.label + ' (' + (node.children ? node.children.length : 0) + ' children)');
+        }
+      };
+
+      document.getElementById('tree-get-all').onclick = function() {
+        if (!treeInstance) return;
+        var allNodes = treeInstance.getAllNodes ? treeInstance.getAllNodes() : [];
+        log('Total nodes: ' + allNodes.length);
+        emit('event', { event: 'tree:get-all', payload: { count: allNodes.length } });
+        Funky.Toast.info('Total nodes: ' + allNodes.length);
+      };
+
+      document.getElementById('tree-refresh').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.refresh) {
+          treeInstance.refresh(sampleData);
+          log('Tree refreshed');
+          emit('event', { event: 'tree:refresh', payload: {} });
+          Funky.Toast.info('Tree refreshed');
+          updateState();
+        }
+      };
+
+      document.getElementById('tree-filter').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.filter) {
+          treeInstance.filter('App');
+          log('Filtered for "App"');
+          emit('event', { event: 'tree:filter', payload: { query: 'App' } });
+        }
+      };
+
+      document.getElementById('tree-clear-filter').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.clearFilter) {
+          treeInstance.clearFilter();
+          log('Filter cleared');
+          emit('event', { event: 'tree:clear-filter', payload: {} });
+        }
+      };
+
+      // Drag & Drop controls
+      document.getElementById('tree-enable-drag').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.enableDrag) {
+          treeInstance.enableDrag(true);
+          log('Drag enabled');
+          emit('event', { event: 'tree:enable-drag', payload: { enabled: true } });
+          Funky.Toast.success('Drag & drop enabled');
+        }
+      };
+
+      document.getElementById('tree-disable-drag').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.enableDrag) {
+          treeInstance.enableDrag(false);
+          log('Drag disabled');
+          emit('event', { event: 'tree:enable-drag', payload: { enabled: false } });
+          Funky.Toast.info('Drag & drop disabled');
+        }
+      };
+
+      document.getElementById('tree-undo').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.undo && treeInstance.canUndo && treeInstance.canUndo()) {
+          treeInstance.undo();
+          log('Undo last move');
+          emit('event', { event: 'tree:undo', payload: {} });
+          Funky.Toast.success('Move undone');
+          updateState();
+        } else {
+          Funky.Toast.warning('Nothing to undo');
+        }
+      };
+
+      document.getElementById('tree-clear-history').onclick = function() {
+        if (!treeInstance) return;
+        if (treeInstance.clearHistory) {
+          treeInstance.clearHistory();
+          log('History cleared');
+          emit('event', { event: 'tree:clear-history', payload: {} });
+          Funky.Toast.info('Move history cleared');
+          updateState();
+        }
+      };
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy tree instance
+      if (treeInstance && treeInstance.destroy) {
+        treeInstance.destroy();
+      }
+      treeInstance = null;
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

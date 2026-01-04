@@ -1,0 +1,507 @@
+<div data-page="component-form" class="component-demo">
+  <h2>Form</h2>
+  <p class="text-muted">Native form component with field types, layouts, validation, and LiveBinding</p>
+
+  <section class="demo-section" aria-labelledby="form-preview-heading">
+    <h3 id="form-preview-heading">Form Preview</h3>
+    <div class="demo-area">
+      <div id="form-container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-actions-heading">
+    <h3 id="form-actions-heading">Actions</h3>
+    <p class="text-muted small">Control the form programmatically</p>
+    <div class="demo-area form-demo__actions">
+      <button type="button" class="btn btn-primary" id="btn-submit">
+        <i class="fas fa-paper-plane me-1" aria-hidden="true"></i>Submit
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-validate">
+        <i class="fas fa-check-circle me-1" aria-hidden="true"></i>Validate
+      </button>
+      <button type="button" class="btn btn-outline-secondary" id="btn-reset">
+        <i class="fas fa-undo me-1" aria-hidden="true"></i>Reset
+      </button>
+      <button type="button" class="btn btn-outline-info" id="btn-get-data">
+        <i class="fas fa-download me-1" aria-hidden="true"></i>Get Data
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-output-heading">
+    <h3 id="form-output-heading">Form Data</h3>
+    <p class="text-muted small">Current form values (updated on change)</p>
+    <div class="demo-area">
+      <pre id="form-data-output" class="form-demo__output" aria-live="polite">{ }</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="form-log-heading">
+    <h3 id="form-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="form-log" class="form-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var formInstance = null;
+  var propsChangedHandler = null;
+  var logs = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('form-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateDataOutput(data) {
+    var outputEl = document.getElementById('form-data-output');
+    if (outputEl) {
+      outputEl.textContent = JSON.stringify(data || {}, null, 2);
+    }
+  }
+
+  // Build schema based on preset or custom fields
+  function buildFormSchema(props) {
+    var fields = {};
+    var fieldOrder = [];
+
+    // Contact preset
+    if (props.preset === 'contact') {
+      fields = {
+        name: { type: 'text', label: 'Full Name', required: true, minLength: 2 },
+        email: { type: 'email', label: 'Email Address', required: true },
+        phone: { type: 'tel', label: 'Phone Number' },
+        subject: {
+          type: 'select', label: 'Subject',
+          options: [
+            { value: '', label: 'Select a subject...' },
+            { value: 'general', label: 'General Inquiry' },
+            { value: 'support', label: 'Technical Support' },
+            { value: 'sales', label: 'Sales Question' }
+          ]
+        },
+        message: { type: 'textarea', label: 'Message', required: true, rows: 4 }
+      };
+      fieldOrder = ['name', 'email', 'phone', 'subject', 'message'];
+    }
+    // Registration preset
+    else if (props.preset === 'registration') {
+      fields = {
+        username: { type: 'text', label: 'Username', required: true, minLength: 3, maxLength: 20 },
+        email: { type: 'email', label: 'Email', required: true },
+        password: { type: 'password', label: 'Password', required: true, minLength: 8 },
+        confirm_password: { type: 'password', label: 'Confirm Password', required: true },
+        birthdate: { type: 'date', label: 'Date of Birth' },
+        role: {
+          type: 'radio', label: 'Account Type',
+          options: [
+            { value: 'personal', label: 'Personal' },
+            { value: 'business', label: 'Business' }
+          ]
+        },
+        newsletter: { type: 'checkbox', label: 'Subscribe to newsletter' },
+        terms: { type: 'checkbox', label: 'I agree to the terms and conditions', required: true }
+      };
+      fieldOrder = ['username', 'email', 'password', 'confirm_password', 'birthdate', 'role', 'newsletter', 'terms'];
+    }
+    // Settings preset
+    else if (props.preset === 'settings') {
+      fields = {
+        display_name: { type: 'text', label: 'Display Name' },
+        timezone: {
+          type: 'select', label: 'Timezone',
+          options: [
+            { value: 'UTC', label: 'UTC' },
+            { value: 'America/New_York', label: 'Eastern Time' },
+            { value: 'America/Los_Angeles', label: 'Pacific Time' },
+            { value: 'Europe/London', label: 'London' }
+          ]
+        },
+        notifications: { type: 'switch', label: 'Enable notifications', onText: 'On', offText: 'Off' },
+        dark_mode: { type: 'switch', label: 'Dark mode' },
+        email_frequency: {
+          type: 'radio', label: 'Email Frequency',
+          options: [
+            { value: 'daily', label: 'Daily digest' },
+            { value: 'weekly', label: 'Weekly digest' },
+            { value: 'never', label: 'Never' }
+          ]
+        },
+        theme: {
+          type: 'select', label: 'Theme',
+          options: [
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+            { value: 'auto', label: 'System' }
+          ]
+        },
+        bio: { type: 'textarea', label: 'Bio', rows: 3, maxLength: 500 }
+      };
+      fieldOrder = ['display_name', 'timezone', 'theme', 'notifications', 'dark_mode', 'email_frequency', 'bio'];
+    }
+    // Custom - build from individual field toggles
+    else {
+      if (props.showTextField) {
+        fields.name = { type: 'text', label: 'Name', required: true };
+        fieldOrder.push('name');
+      }
+      if (props.showEmailField) {
+        fields.email = { type: 'email', label: 'Email', required: true };
+        fieldOrder.push('email');
+      }
+      if (props.showNumberField) {
+        fields.age = { type: 'number', label: 'Age', min: 0, max: 150 };
+        fieldOrder.push('age');
+      }
+      if (props.showTextareaField) {
+        fields.description = { type: 'textarea', label: 'Description', rows: 3 };
+        fieldOrder.push('description');
+      }
+      if (props.showSelectField) {
+        fields.country = {
+          type: 'select', label: 'Country',
+          options: [
+            { value: '', label: 'Select country...' },
+            { value: 'us', label: 'United States' },
+            { value: 'uk', label: 'United Kingdom' },
+            { value: 'ca', label: 'Canada' },
+            { value: 'au', label: 'Australia' }
+          ]
+        };
+        fieldOrder.push('country');
+      }
+      if (props.showCheckboxField) {
+        fields.agree = { type: 'checkbox', label: 'I agree to the terms' };
+        fieldOrder.push('agree');
+      }
+      if (props.showRadioField) {
+        fields.priority = {
+          type: 'radio', label: 'Priority',
+          options: [
+            { value: 'low', label: 'Low' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'high', label: 'High' }
+          ]
+        };
+        fieldOrder.push('priority');
+      }
+      if (props.showDateField) {
+        fields.date = { type: 'date', label: 'Date' };
+        fieldOrder.push('date');
+      }
+      if (props.showComboboxField) {
+        fields.tags = {
+          type: 'combobox', label: 'Tags', multiple: true,
+          options: [
+            { value: 'frontend', label: 'Frontend' },
+            { value: 'backend', label: 'Backend' },
+            { value: 'devops', label: 'DevOps' },
+            { value: 'design', label: 'Design' }
+          ]
+        };
+        fieldOrder.push('tags');
+      }
+      if (props.showFileField) {
+        fields.attachment = {
+          type: 'file', label: 'Attachment',
+          accept: '.pdf,.doc,.docx,.txt',
+          maxSize: 5 * 1024 * 1024
+        };
+        fieldOrder.push('attachment');
+      }
+      if (props.showSwitchField) {
+        fields.enabled = { type: 'switch', label: 'Enabled', onText: 'Yes', offText: 'No' };
+        fieldOrder.push('enabled');
+      }
+      if (props.showTimeField) {
+        fields.meeting_time = { type: 'time', label: 'Meeting Time', step: 900 };
+        fieldOrder.push('meeting_time');
+      }
+      if (props.showRangeField) {
+        fields.volume = { type: 'range', label: 'Volume', min: 0, max: 100, step: 5, showValue: true };
+        fieldOrder.push('volume');
+      }
+      if (props.showColorField) {
+        fields.accent_color = { type: 'color', label: 'Accent Color' };
+        fieldOrder.push('accent_color');
+      }
+      if (props.showSearchField) {
+        fields.query = { type: 'search', label: 'Search', placeholder: 'Type to search...' };
+        fieldOrder.push('query');
+      }
+      if (props.showCurrencyField) {
+        fields.amount = { type: 'currency', label: 'Amount', currency: 'USD', min: 0 };
+        fieldOrder.push('amount');
+      }
+      if (props.showPhoneField) {
+        fields.phone = { type: 'phone', label: 'Phone Number', country: 'US' };
+        fieldOrder.push('phone');
+      }
+      if (props.showTagsField) {
+        fields.keywords = { type: 'tags', label: 'Keywords', maxTags: 5, placeholder: 'Add keyword...' };
+        fieldOrder.push('keywords');
+      }
+      if (props.showRatingField) {
+        fields.rating = { type: 'rating', label: 'Rating', maxStars: 5 };
+        fieldOrder.push('rating');
+      }
+      if (props.showSignatureField) {
+        fields.signature = { type: 'signature', label: 'Signature', width: 400, height: 150 };
+        fieldOrder.push('signature');
+      }
+      if (props.showCodeField) {
+        fields.code_snippet = { type: 'code', label: 'Code Snippet', language: 'javascript', lineNumbers: true };
+        fieldOrder.push('code_snippet');
+      }
+    }
+
+    // Build layout
+    var layout = null;
+    if (props.layout === 'sections') {
+      var mid = Math.ceil(fieldOrder.length / 2);
+      layout = {
+        type: 'sections',
+        sections: [
+          { title: 'Basic Information', fields: fieldOrder.slice(0, mid), collapsible: true },
+          { title: 'Additional Details', fields: fieldOrder.slice(mid), collapsible: true }
+        ]
+      };
+    } else if (props.layout === 'columns') {
+      layout = {
+        type: 'columns',
+        columns: props.columns || 2,
+        fields: fieldOrder
+      };
+    } else if (props.layout === 'grid') {
+      var cols = props.columns || 2;
+      var rows = [];
+      for (var i = 0; i < fieldOrder.length; i += cols) {
+        rows.push({ fields: fieldOrder.slice(i, i + cols) });
+      }
+      layout = { type: 'grid', rows: rows };
+    } else if (props.layout === 'tabs') {
+      var mid = Math.ceil(fieldOrder.length / 2);
+      layout = {
+        type: 'tabs',
+        tabs: [
+          { id: 'tab1', label: 'General', fields: fieldOrder.slice(0, mid) },
+          { id: 'tab2', label: 'Advanced', fields: fieldOrder.slice(mid) }
+        ]
+      };
+    }
+
+    return {
+      fields: fields,
+      fieldOrder: fieldOrder,
+      layout: layout
+    };
+  }
+
+  function createForm(container, props) {
+    // Destroy existing instance
+    if (formInstance && formInstance.destroy) {
+      formInstance.destroy();
+      formInstance = null;
+    }
+
+    // Clear container
+    container.innerHTML = '';
+
+    // Build schema
+    var schema = buildFormSchema(props);
+
+    // Parse initial data
+    var initialData = {};
+    if (props.initialData && props.initialData !== '{}') {
+      try {
+        initialData = typeof props.initialData === 'string'
+          ? JSON.parse(props.initialData)
+          : props.initialData;
+      } catch (e) {
+        log('Error parsing initialData: ' + e.message);
+      }
+    }
+
+    // Auto-populate sample data for edit/view modes
+    if ((props.mode === 'edit' || props.mode === 'view') && Object.keys(initialData).length === 0) {
+      if (props.preset === 'contact') {
+        initialData = {
+          name: 'Jane Smith',
+          email: 'jane.smith@example.com',
+          phone: '+1 555-123-4567',
+          subject: 'support',
+          message: 'I need help with my account settings. The dashboard is not loading correctly.'
+        };
+      } else if (props.preset === 'registration') {
+        initialData = {
+          username: 'jsmith2024',
+          email: 'jane.smith@example.com',
+          birthdate: '1990-05-15',
+          role: 'personal',
+          newsletter: true,
+          terms: true
+        };
+      } else if (props.preset === 'settings') {
+        initialData = {
+          display_name: 'Jane Smith',
+          timezone: 'America/New_York',
+          theme: 'dark',
+          notifications: true,
+          dark_mode: true,
+          email_frequency: 'weekly',
+          bio: 'Software developer with 10+ years of experience in web technologies.'
+        };
+      } else {
+        // Custom preset - populate based on enabled fields
+        if (props.showTextField) initialData.name = 'Sample User';
+        if (props.showEmailField) initialData.email = 'user@example.com';
+        if (props.showNumberField) initialData.age = 28;
+        if (props.showTextareaField) initialData.description = 'This is a sample description.';
+        if (props.showSelectField) initialData.country = 'us';
+        if (props.showCheckboxField) initialData.agree = true;
+        if (props.showRadioField) initialData.priority = 'medium';
+        if (props.showDateField) initialData.date = '2024-06-15';
+        if (props.showSwitchField) initialData.enabled = true;
+        if (props.showTimeField) initialData.meeting_time = '14:30';
+        if (props.showRangeField) initialData.volume = 75;
+        if (props.showColorField) initialData.accent_color = '#3b82f6';
+        if (props.showSearchField) initialData.query = 'sample query';
+        if (props.showCurrencyField) initialData.amount = 1234.56;
+        if (props.showPhoneField) initialData.phone = '+1 (555) 123-4567';
+        if (props.showTagsField) initialData.keywords = ['javascript', 'react', 'css'];
+        if (props.showRatingField) initialData.rating = 4;
+        // Signature and Code fields intentionally left empty for demo
+      }
+    }
+
+    // Create form
+    formInstance = Funky.Form.create(container, {
+      schema: schema,
+      data: initialData,
+      mode: props.mode || 'create',
+      disabled: props.disabled || false,
+      validateOnChange: props.validateOnChange !== false,
+      validateOnBlur: props.validateOnBlur !== false,
+      showErrorsInline: props.showErrorsInline !== false,
+      onChange: function(data, field) {
+        log('Changed: ' + field);
+        updateDataOutput(data);
+        emit('event', { event: 'form:change', payload: { field: field, data: data } });
+      },
+      onSubmit: function(data) {
+        log('Form submitted');
+        emit('event', { event: 'form:submit', payload: { data: data } });
+        Funky.Toast && Funky.Toast.success('Form submitted successfully!');
+      },
+      onError: function(errors) {
+        var errorFields = Object.keys(errors).join(', ');
+        log('Validation errors: ' + errorFields);
+        emit('event', { event: 'form:error', payload: { errors: errors } });
+      },
+      onReset: function() {
+        log('Form reset');
+        updateDataOutput({});
+        emit('event', { event: 'form:reset', payload: {} });
+      }
+    });
+
+    // Update initial data display
+    updateDataOutput(initialData);
+    log('Form created with preset: ' + (props.preset || 'custom') + ', layout: ' + (props.layout || 'linear'));
+  }
+
+  function wireButtons() {
+    var submitBtn = document.getElementById('btn-submit');
+    var validateBtn = document.getElementById('btn-validate');
+    var resetBtn = document.getElementById('btn-reset');
+    var getDataBtn = document.getElementById('btn-get-data');
+
+    if (submitBtn) {
+      submitBtn.onclick = function() {
+        if (formInstance && formInstance.submit) {
+          formInstance.submit();
+        }
+      };
+    }
+
+    if (validateBtn) {
+      validateBtn.onclick = function() {
+        if (formInstance && formInstance.validate) {
+          var result = formInstance.validate();
+          if (result.valid) {
+            log('Validation passed');
+            Funky.Toast && Funky.Toast.success('All fields are valid!');
+          } else {
+            log('Validation failed: ' + Object.keys(result.errors).join(', '));
+            Funky.Toast && Funky.Toast.error('Validation failed. Check the form.');
+          }
+          emit('event', { event: 'form:validate', payload: result });
+        }
+      };
+    }
+
+    if (resetBtn) {
+      resetBtn.onclick = function() {
+        if (formInstance && formInstance.reset) {
+          formInstance.reset();
+        }
+      };
+    }
+
+    if (getDataBtn) {
+      getDataBtn.onclick = function() {
+        if (formInstance && formInstance.getData) {
+          var data = formInstance.getData();
+          updateDataOutput(data);
+          log('Data retrieved');
+          emit('event', { event: 'form:getData', payload: { data: data } });
+        }
+      };
+    }
+  }
+
+  Funky.Pages.register('component-form', {
+    init: function(state) {
+      var props = getProps();
+      var container = document.getElementById('form-container');
+
+      createForm(container, props);
+      wireButtons();
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          createForm(container, getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'form:init', payload: { preset: props.preset, layout: props.layout } });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      if (formInstance && formInstance.destroy) {
+        formInstance.destroy();
+        formInstance = null;
+      }
+
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

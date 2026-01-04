@@ -1,0 +1,806 @@
+<div data-page="component-audit-viewer" class="component-demo">
+  <h2>AuditViewer</h2>
+  <p class="text-muted">Interactive audit trail visualization with diff viewing, timeline rendering, and comprehensive change tracking.</p>
+
+  <!-- Section 1: Sample Audit Timeline -->
+  <section class="demo-section" aria-labelledby="timeline-heading">
+    <h3 id="timeline-heading">Audit Timeline</h3>
+    <p class="text-muted small">Visual timeline of audit entries. Click an entry to view details.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__timeline" id="audit-timeline" role="list" aria-label="Audit timeline">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="audit-viewer-demo__button-row">
+        <button type="button" class="btn btn-primary" id="add-entry">
+          <i class="fas fa-plus" aria-hidden="true"></i> Add Sample Entry
+        </button>
+        <button type="button" class="btn btn-secondary" id="load-samples">
+          <i class="fas fa-database" aria-hidden="true"></i> Load Sample Data
+        </button>
+        <button type="button" class="btn btn-warning" id="clear-timeline">
+          <i class="fas fa-trash" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Diff Viewer -->
+  <section class="demo-section" aria-labelledby="diff-heading">
+    <h3 id="diff-heading">Diff Viewer</h3>
+    <p class="text-muted small">Compare old and new values with different view modes.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__diff-controls">
+        <div class="audit-viewer-demo__diff-toggles" role="group" aria-label="Diff view modes">
+          <button type="button" class="btn btn-sm diff-toggle active" data-view="split" id="diff-split">
+            <i class="fas fa-columns" aria-hidden="true"></i> Split
+          </button>
+          <button type="button" class="btn btn-sm diff-toggle" data-view="unified" id="diff-unified">
+            <i class="fas fa-list" aria-hidden="true"></i> Unified
+          </button>
+          <button type="button" class="btn btn-sm diff-toggle" data-view="changes" id="diff-changes">
+            <i class="fas fa-exchange-alt" aria-hidden="true"></i> Changes Only
+          </button>
+        </div>
+      </div>
+
+      <div class="audit-viewer-demo__diff-container" id="diff-content" aria-live="polite">
+        <div class="audit-viewer-demo__diff-placeholder">Select an entry from the timeline or load sample data to view diff.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Operation Badges -->
+  <section class="demo-section" aria-labelledby="badges-heading">
+    <h3 id="badges-heading">Operation Badges</h3>
+    <p class="text-muted small">Visual indicators for different operation types.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__badge-gallery" id="badge-gallery">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Value Formatting -->
+  <section class="demo-section" aria-labelledby="format-heading">
+    <h3 id="format-heading">Value Formatting</h3>
+    <p class="text-muted small">How different data types are displayed in the viewer.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__format-examples" id="format-examples">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Data API -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">Data API (Bindable Interface)</h3>
+    <p class="text-muted small">Programmatically manage audit data for LiveBinding integration.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__api-form">
+        <div class="audit-viewer-demo__input-group">
+          <label for="api-table">Table Name</label>
+          <select id="api-table" class="form-control">
+            <option value="users">users</option>
+            <option value="trades">trades</option>
+            <option value="clients">clients</option>
+            <option value="products">products</option>
+          </select>
+        </div>
+        <div class="audit-viewer-demo__input-group">
+          <label for="api-operation">Operation</label>
+          <select id="api-operation" class="form-control">
+            <option value="create">create</option>
+            <option value="update">update</option>
+            <option value="delete">delete</option>
+          </select>
+        </div>
+        <div class="audit-viewer-demo__input-group">
+          <label for="api-record-id">Record ID</label>
+          <input type="number" id="api-record-id" class="form-control" value="1" min="1">
+        </div>
+      </div>
+
+      <div class="audit-viewer-demo__button-row">
+        <button type="button" class="btn btn-primary" id="api-add">
+          <i class="fas fa-plus" aria-hidden="true"></i> addData()
+        </button>
+        <button type="button" class="btn btn-secondary" id="api-get">
+          <i class="fas fa-download" aria-hidden="true"></i> getData()
+        </button>
+        <button type="button" class="btn btn-warning" id="api-clear">
+          <i class="fas fa-eraser" aria-hidden="true"></i> clearData()
+        </button>
+      </div>
+
+      <div id="api-result" class="audit-viewer-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 6: Entry Detail Modal Simulation -->
+  <section class="demo-section" aria-labelledby="detail-heading">
+    <h3 id="detail-heading">Entry Detail View</h3>
+    <p class="text-muted small">Detailed view of a single audit entry with metadata.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__detail-card" id="detail-card">
+        <div class="audit-viewer-demo__detail-placeholder">Click an entry in the timeline to see details here.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Real-time log of audit viewer interactions.</p>
+
+    <div class="demo-area">
+      <div class="audit-viewer-demo__event-log" id="event-log" aria-live="polite" aria-label="Audit viewer event log">
+        <div class="audit-viewer-demo__log-empty">No events yet. Interact with the viewer to see events.</div>
+      </div>
+
+      <div class="audit-viewer-demo__button-row">
+        <button type="button" class="btn btn-outline-secondary" id="log-clear">
+          <i class="fas fa-trash-alt" aria-hidden="true"></i> Clear Log
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var eventLog = [];
+  var auditData = [];
+  var currentDiffView = 'split';
+  var selectedEntry = null;
+  var propsChangedHandler = null;
+  var entryIdCounter = 1;
+
+  // =========================================================================
+  // Sample Data Generator
+  // =========================================================================
+
+  var sampleUsers = ['alice', 'bob', 'charlie', 'diana', 'eve'];
+  var sampleTables = ['users', 'trades', 'clients', 'products', 'orders'];
+
+  function generateSampleEntry(overrides) {
+    var table = (overrides && overrides.table_name) || sampleTables[Math.floor(Math.random() * sampleTables.length)];
+    var operation = (overrides && overrides.operation) || ['create', 'update', 'delete'][Math.floor(Math.random() * 3)];
+    var user = sampleUsers[Math.floor(Math.random() * sampleUsers.length)];
+
+    var oldValues = null;
+    var newValues = null;
+    var changedFields = [];
+
+    if (operation === 'create') {
+      newValues = generateRecordData(table);
+      changedFields = Object.keys(newValues);
+    } else if (operation === 'delete') {
+      oldValues = generateRecordData(table);
+      changedFields = Object.keys(oldValues);
+    } else {
+      oldValues = generateRecordData(table);
+      newValues = JSON.parse(JSON.stringify(oldValues));
+      // Make some changes
+      var fields = Object.keys(newValues);
+      var numChanges = Math.min(3, Math.floor(Math.random() * fields.length) + 1);
+      for (var i = 0; i < numChanges; i++) {
+        var field = fields[Math.floor(Math.random() * fields.length)];
+        if (typeof newValues[field] === 'string') {
+          newValues[field] = newValues[field] + '_modified';
+        } else if (typeof newValues[field] === 'number') {
+          newValues[field] = newValues[field] + Math.floor(Math.random() * 100);
+        } else if (typeof newValues[field] === 'boolean') {
+          newValues[field] = !newValues[field];
+        }
+        if (changedFields.indexOf(field) === -1) {
+          changedFields.push(field);
+        }
+      }
+    }
+
+    return {
+      id: (overrides && overrides.id) || entryIdCounter++,
+      table_name: table,
+      record_id: (overrides && overrides.record_id) || Math.floor(Math.random() * 1000) + 1,
+      operation: operation,
+      username: user,
+      user_id: Math.floor(Math.random() * 100) + 1,
+      old_values: oldValues,
+      new_values: newValues,
+      changed_fields: changedFields,
+      source: ['application', 'trigger', 'manual'][Math.floor(Math.random() * 3)],
+      ip_address: '192.168.1.' + Math.floor(Math.random() * 255),
+      created_at: new Date(Date.now() - Math.floor(Math.random() * 86400000)).toISOString(),
+      duration_ms: Math.floor(Math.random() * 100) + 5
+    };
+  }
+
+  function generateRecordData(table) {
+    var data = {
+      users: { id: 1, username: 'john_doe', email: 'john@example.com', role: 'admin', active: true },
+      trades: { id: 1, symbol: 'AAPL', quantity: 100, price: 150.50, status: 'pending', side: 'buy' },
+      clients: { id: 1, name: 'Acme Corp', contact: 'Jane Smith', tier: 'premium', balance: 50000 },
+      products: { id: 1, sku: 'PROD-001', name: 'Widget A', price: 29.99, stock: 500, category: 'electronics' },
+      orders: { id: 1, order_number: 'ORD-2024-001', total: 299.99, status: 'shipped', items: 3 }
+    };
+    var template = data[table] || data.users;
+    return JSON.parse(JSON.stringify(template));
+  }
+
+  // =========================================================================
+  // Logging Utilities
+  // =========================================================================
+
+  function logEvent(eventName, data) {
+    var now = new Date();
+    var timestamp = now.toLocaleTimeString();
+
+    var entry = {
+      timestamp: timestamp,
+      event: eventName,
+      data: data
+    };
+    eventLog.unshift(entry);
+
+    if (eventLog.length > 50) {
+      eventLog.pop();
+    }
+
+    renderEventLog();
+    emit('event', { event: eventName, payload: entry });
+  }
+
+  function renderEventLog() {
+    var logContainer = document.getElementById('event-log');
+    if (!logContainer) return;
+
+    if (eventLog.length === 0) {
+      logContainer.innerHTML = '<div class="audit-viewer-demo__log-empty">No events yet. Interact with the viewer to see events.</div>';
+      return;
+    }
+
+    var html = eventLog.map(function(entry) {
+      var dataStr = '';
+      try {
+        dataStr = JSON.stringify(entry.data, null, 2);
+      } catch (e) {
+        dataStr = String(entry.data);
+      }
+      return '<div class="audit-viewer-demo__log-entry">' +
+        '<span class="audit-viewer-demo__log-time">' + entry.timestamp + '</span> ' +
+        '<span class="audit-viewer-demo__log-event">' + entry.event + '</span>' +
+        '<pre class="audit-viewer-demo__log-data">' + dataStr + '</pre>' +
+        '</div>';
+    }).join('');
+
+    logContainer.innerHTML = html;
+  }
+
+  function showResult(elementId, message, type) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+
+    el.className = 'audit-viewer-demo__result audit-viewer-demo__result--' + (type || 'info');
+    if (typeof message === 'object') {
+      el.innerHTML = '<pre>' + JSON.stringify(message, null, 2) + '</pre>';
+    } else {
+      el.textContent = message;
+    }
+  }
+
+  // =========================================================================
+  // Timeline Rendering
+  // =========================================================================
+
+  var operationColors = {
+    create: { bg: '#10b981', text: '#ffffff', label: 'Created', icon: 'fa-plus' },
+    update: { bg: '#f59e0b', text: '#ffffff', label: 'Updated', icon: 'fa-edit' },
+    delete: { bg: '#ef4444', text: '#ffffff', label: 'Deleted', icon: 'fa-trash' }
+  };
+
+  var tableIcons = {
+    users: 'fa-users',
+    trades: 'fa-exchange-alt',
+    clients: 'fa-building',
+    products: 'fa-box',
+    orders: 'fa-shopping-cart'
+  };
+
+  function renderTimeline() {
+    var container = document.getElementById('audit-timeline');
+    if (!container) return;
+
+    if (auditData.length === 0) {
+      container.innerHTML = '<div class="audit-viewer-demo__timeline-empty">No audit entries. Click "Load Sample Data" to get started.</div>';
+      return;
+    }
+
+    var props = getProps();
+    var maxEntries = props.maxEntries || 10;
+    var entries = auditData.slice(0, maxEntries);
+
+    var html = entries.map(function(entry) {
+      var opInfo = operationColors[entry.operation] || operationColors.update;
+      var tableIcon = tableIcons[entry.table_name] || 'fa-database';
+      var isSelected = selectedEntry && selectedEntry.id === entry.id;
+
+      return '<div class="audit-viewer-demo__timeline-item' + (isSelected ? ' audit-viewer-demo__timeline-item--selected' : '') + '" ' +
+        'data-id="' + entry.id + '" role="listitem" tabindex="0">' +
+        '<div class="audit-viewer-demo__timeline-marker" style="background: ' + opInfo.bg + '">' +
+        '<i class="fas ' + opInfo.icon + '" aria-hidden="true"></i>' +
+        '</div>' +
+        '<div class="audit-viewer-demo__timeline-content">' +
+        '<div class="audit-viewer-demo__timeline-header">' +
+        '<span class="audit-viewer-demo__timeline-table"><i class="fas ' + tableIcon + '"></i> ' + formatTableName(entry.table_name) + '</span>' +
+        '<span class="audit-viewer-demo__timeline-record">#' + entry.record_id + '</span>' +
+        '</div>' +
+        '<div class="audit-viewer-demo__timeline-body">' +
+        '<span class="audit-viewer-demo__operation-badge" style="background: ' + opInfo.bg + '">' + opInfo.label + '</span>' +
+        '<span class="audit-viewer-demo__timeline-user">' + (entry.username || 'System') + '</span>' +
+        '</div>' +
+        '<div class="audit-viewer-demo__timeline-time">' + formatRelativeTime(entry.created_at) + '</div>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+
+    // Add click handlers
+    var items = container.querySelectorAll('.audit-viewer-demo__timeline-item');
+    items.forEach(function(item) {
+      item.addEventListener('click', function() {
+        var id = parseInt(item.dataset.id, 10);
+        selectEntry(id);
+      });
+      item.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          var id = parseInt(item.dataset.id, 10);
+          selectEntry(id);
+        }
+      });
+    });
+  }
+
+  function selectEntry(id) {
+    selectedEntry = auditData.find(function(e) { return e.id === id; });
+    if (selectedEntry) {
+      renderTimeline();
+      renderDiff(selectedEntry.old_values, selectedEntry.new_values);
+      renderDetailCard(selectedEntry);
+      logEvent('entry:selected', { id: id, operation: selectedEntry.operation, table: selectedEntry.table_name });
+    }
+  }
+
+  // =========================================================================
+  // Diff Rendering
+  // =========================================================================
+
+  function renderDiff(oldVal, newVal) {
+    var container = document.getElementById('diff-content');
+    if (!container) return;
+
+    if (!oldVal && !newVal) {
+      container.innerHTML = '<div class="audit-viewer-demo__diff-placeholder">Select an entry from the timeline or load sample data to view diff.</div>';
+      return;
+    }
+
+    var html = '';
+    if (currentDiffView === 'split') {
+      html = renderSplitDiff(oldVal, newVal);
+    } else if (currentDiffView === 'unified') {
+      html = renderUnifiedDiff(oldVal, newVal);
+    } else {
+      html = renderChangesOnlyDiff(oldVal, newVal);
+    }
+
+    container.innerHTML = html;
+  }
+
+  function renderSplitDiff(oldVal, newVal) {
+    var allKeys = getUniqueKeys(oldVal, newVal);
+
+    var oldRows = '';
+    var newRows = '';
+
+    allKeys.forEach(function(key) {
+      var oldValue = oldVal ? oldVal[key] : undefined;
+      var newValue = newVal ? newVal[key] : undefined;
+      var changed = JSON.stringify(oldValue) !== JSON.stringify(newValue);
+      var changedClass = changed ? ' audit-viewer-demo__diff-row--changed' : '';
+
+      oldRows += '<div class="audit-viewer-demo__diff-row' + changedClass + '">' +
+        '<span class="audit-viewer-demo__diff-key">' + key + ':</span>' +
+        '<span class="audit-viewer-demo__diff-value">' + formatValueHtml(oldValue) + '</span>' +
+        '</div>';
+
+      newRows += '<div class="audit-viewer-demo__diff-row' + changedClass + '">' +
+        '<span class="audit-viewer-demo__diff-key">' + key + ':</span>' +
+        '<span class="audit-viewer-demo__diff-value">' + formatValueHtml(newValue) + '</span>' +
+        '</div>';
+    });
+
+    return '<div class="audit-viewer-demo__diff-split">' +
+      '<div class="audit-viewer-demo__diff-panel audit-viewer-demo__diff-panel--old">' +
+      '<div class="audit-viewer-demo__diff-panel-header"><i class="fas fa-minus-circle"></i> Before</div>' +
+      '<div class="audit-viewer-demo__diff-panel-content">' + oldRows + '</div>' +
+      '</div>' +
+      '<div class="audit-viewer-demo__diff-panel audit-viewer-demo__diff-panel--new">' +
+      '<div class="audit-viewer-demo__diff-panel-header"><i class="fas fa-plus-circle"></i> After</div>' +
+      '<div class="audit-viewer-demo__diff-panel-content">' + newRows + '</div>' +
+      '</div>' +
+      '</div>';
+  }
+
+  function renderUnifiedDiff(oldVal, newVal) {
+    var allKeys = getUniqueKeys(oldVal, newVal);
+    var lines = '';
+
+    allKeys.forEach(function(key) {
+      var oldValue = oldVal ? oldVal[key] : undefined;
+      var newValue = newVal ? newVal[key] : undefined;
+      var changed = JSON.stringify(oldValue) !== JSON.stringify(newValue);
+
+      if (changed) {
+        if (oldValue !== undefined) {
+          lines += '<div class="audit-viewer-demo__diff-line audit-viewer-demo__diff-line--removed">' +
+            '<span class="audit-viewer-demo__diff-marker">-</span>' +
+            '<span class="audit-viewer-demo__diff-key">' + key + ':</span>' +
+            '<span class="audit-viewer-demo__diff-value">' + formatValueHtml(oldValue) + '</span>' +
+            '</div>';
+        }
+        if (newValue !== undefined) {
+          lines += '<div class="audit-viewer-demo__diff-line audit-viewer-demo__diff-line--added">' +
+            '<span class="audit-viewer-demo__diff-marker">+</span>' +
+            '<span class="audit-viewer-demo__diff-key">' + key + ':</span>' +
+            '<span class="audit-viewer-demo__diff-value">' + formatValueHtml(newValue) + '</span>' +
+            '</div>';
+        }
+      } else {
+        lines += '<div class="audit-viewer-demo__diff-line">' +
+          '<span class="audit-viewer-demo__diff-marker"> </span>' +
+          '<span class="audit-viewer-demo__diff-key">' + key + ':</span>' +
+          '<span class="audit-viewer-demo__diff-value">' + formatValueHtml(newValue) + '</span>' +
+          '</div>';
+      }
+    });
+
+    return '<div class="audit-viewer-demo__diff-unified">' + lines + '</div>';
+  }
+
+  function renderChangesOnlyDiff(oldVal, newVal) {
+    var allKeys = getUniqueKeys(oldVal, newVal);
+    var changes = [];
+
+    allKeys.forEach(function(key) {
+      var oldValue = oldVal ? oldVal[key] : undefined;
+      var newValue = newVal ? newVal[key] : undefined;
+      if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+        changes.push({ key: key, oldValue: oldValue, newValue: newValue });
+      }
+    });
+
+    if (changes.length === 0) {
+      return '<div class="audit-viewer-demo__no-changes"><i class="fas fa-check-circle"></i> No changes detected</div>';
+    }
+
+    var html = changes.map(function(change) {
+      return '<div class="audit-viewer-demo__change-item">' +
+        '<div class="audit-viewer-demo__change-field">' + change.key + '</div>' +
+        '<div class="audit-viewer-demo__change-values">' +
+        '<div class="audit-viewer-demo__change-old"><span class="audit-viewer-demo__change-label">From:</span> ' + formatValueHtml(change.oldValue) + '</div>' +
+        '<div class="audit-viewer-demo__change-arrow"><i class="fas fa-arrow-right"></i></div>' +
+        '<div class="audit-viewer-demo__change-new"><span class="audit-viewer-demo__change-label">To:</span> ' + formatValueHtml(change.newValue) + '</div>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+
+    return '<div class="audit-viewer-demo__diff-changes">' + html + '</div>';
+  }
+
+  // =========================================================================
+  // Detail Card Rendering
+  // =========================================================================
+
+  function renderDetailCard(entry) {
+    var container = document.getElementById('detail-card');
+    if (!container) return;
+
+    if (!entry) {
+      container.innerHTML = '<div class="audit-viewer-demo__detail-placeholder">Click an entry in the timeline to see details here.</div>';
+      return;
+    }
+
+    var opInfo = operationColors[entry.operation] || operationColors.update;
+    var tableIcon = tableIcons[entry.table_name] || 'fa-database';
+
+    container.innerHTML = '<div class="audit-viewer-demo__detail-header">' +
+      '<span class="audit-viewer-demo__detail-id">#' + entry.id + '</span>' +
+      '<span class="audit-viewer-demo__operation-badge" style="background: ' + opInfo.bg + '">' + opInfo.label + '</span>' +
+      '</div>' +
+      '<div class="audit-viewer-demo__detail-meta">' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">Table:</span> <span class="audit-viewer-demo__meta-value"><i class="fas ' + tableIcon + '"></i> ' + formatTableName(entry.table_name) + '</span></div>' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">Record:</span> <span class="audit-viewer-demo__meta-value">#' + entry.record_id + '</span></div>' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">User:</span> <span class="audit-viewer-demo__meta-value">' + (entry.username || 'System') + '</span></div>' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">Time:</span> <span class="audit-viewer-demo__meta-value">' + formatDateTime(entry.created_at) + '</span></div>' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">Source:</span> <span class="audit-viewer-demo__meta-value">' + (entry.source || '-') + '</span></div>' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">IP:</span> <span class="audit-viewer-demo__meta-value">' + (entry.ip_address || '-') + '</span></div>' +
+      '<div class="audit-viewer-demo__meta-item"><span class="audit-viewer-demo__meta-label">Duration:</span> <span class="audit-viewer-demo__meta-value">' + (entry.duration_ms ? entry.duration_ms + 'ms' : '-') + '</span></div>' +
+      '</div>' +
+      '<div class="audit-viewer-demo__detail-fields">' +
+      '<span class="audit-viewer-demo__fields-label">Changed Fields:</span>' +
+      '<div class="audit-viewer-demo__fields-list">' +
+      (entry.changed_fields || []).map(function(f) { return '<span class="audit-viewer-demo__field-badge">' + f + '</span>'; }).join('') +
+      '</div>' +
+      '</div>';
+  }
+
+  // =========================================================================
+  // Badge Gallery & Format Examples
+  // =========================================================================
+
+  function renderBadgeGallery() {
+    var container = document.getElementById('badge-gallery');
+    if (!container) return;
+
+    var html = Object.keys(operationColors).map(function(op) {
+      var info = operationColors[op];
+      return '<div class="audit-viewer-demo__badge-item">' +
+        '<span class="audit-viewer-demo__operation-badge" style="background: ' + info.bg + '">' + info.label + '</span>' +
+        '<span class="audit-viewer-demo__badge-desc">' + op + ' operation</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function renderFormatExamples() {
+    var container = document.getElementById('format-examples');
+    if (!container) return;
+
+    var examples = [
+      { type: 'string', value: 'Hello World', formatted: formatValueHtml('Hello World') },
+      { type: 'number', value: 42.5, formatted: formatValueHtml(42.5) },
+      { type: 'boolean', value: true, formatted: formatValueHtml(true) },
+      { type: 'null', value: null, formatted: formatValueHtml(null) },
+      { type: 'undefined', value: undefined, formatted: formatValueHtml(undefined) },
+      { type: 'object', value: { key: 'value' }, formatted: formatValueHtml({ key: 'value' }) },
+      { type: 'long string', value: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.', formatted: formatValueHtml('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.') }
+    ];
+
+    var html = examples.map(function(ex) {
+      return '<div class="audit-viewer-demo__format-item">' +
+        '<span class="audit-viewer-demo__format-type">' + ex.type + '</span>' +
+        '<span class="audit-viewer-demo__format-output">' + ex.formatted + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  // =========================================================================
+  // Utility Functions
+  // =========================================================================
+
+  function getUniqueKeys(obj1, obj2) {
+    var keys = [];
+    if (obj1) Object.keys(obj1).forEach(function(k) { if (keys.indexOf(k) === -1) keys.push(k); });
+    if (obj2) Object.keys(obj2).forEach(function(k) { if (keys.indexOf(k) === -1) keys.push(k); });
+    return keys.sort();
+  }
+
+  function formatTableName(name) {
+    if (!name) return '-';
+    return name.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+  }
+
+  function formatDateTime(dateStr) {
+    if (!dateStr) return '-';
+    var date = new Date(dateStr);
+    return date.toLocaleString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function formatRelativeTime(dateStr) {
+    if (!dateStr) return '-';
+    var date = new Date(dateStr);
+    var now = new Date();
+    var diff = now - date;
+    var minutes = Math.floor(diff / 60000);
+    var hours = Math.floor(diff / 3600000);
+    var days = Math.floor(diff / 86400000);
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return minutes + 'm ago';
+    if (hours < 24) return hours + 'h ago';
+    if (days < 30) return days + 'd ago';
+    return formatDateTime(dateStr);
+  }
+
+  function formatValueHtml(value) {
+    if (value === undefined) return '<span class="audit-viewer-demo__value-undefined">undefined</span>';
+    if (value === null) return '<span class="audit-viewer-demo__value-null">null</span>';
+    if (typeof value === 'boolean') return '<span class="audit-viewer-demo__value-bool">' + value + '</span>';
+    if (typeof value === 'number') return '<span class="audit-viewer-demo__value-number">' + value + '</span>';
+    if (typeof value === 'object') return '<span class="audit-viewer-demo__value-object">' + escapeHtml(JSON.stringify(value)) + '</span>';
+    if (typeof value === 'string' && value.length > 100) {
+      return '<span class="audit-viewer-demo__value-string">"' + escapeHtml(value.substring(0, 100)) + '..."</span>';
+    }
+    return '<span class="audit-viewer-demo__value-string">"' + escapeHtml(value) + '"</span>';
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // =========================================================================
+  // Event Handlers
+  // =========================================================================
+
+  function handleAddEntry() {
+    var entry = generateSampleEntry();
+    auditData.unshift(entry);
+    renderTimeline();
+    logEvent('entry:added', { id: entry.id, operation: entry.operation, table: entry.table_name });
+  }
+
+  function handleLoadSamples() {
+    auditData = [];
+    for (var i = 0; i < 10; i++) {
+      auditData.push(generateSampleEntry());
+    }
+    selectedEntry = null;
+    renderTimeline();
+    renderDiff(null, null);
+    renderDetailCard(null);
+    logEvent('data:loaded', { count: auditData.length });
+  }
+
+  function handleClearTimeline() {
+    auditData = [];
+    selectedEntry = null;
+    renderTimeline();
+    renderDiff(null, null);
+    renderDetailCard(null);
+    logEvent('data:cleared', {});
+  }
+
+  function handleDiffViewChange(view) {
+    currentDiffView = view;
+
+    // Update toggle buttons
+    document.querySelectorAll('.diff-toggle').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.view === view);
+    });
+
+    // Re-render diff if entry selected
+    if (selectedEntry) {
+      renderDiff(selectedEntry.old_values, selectedEntry.new_values);
+    }
+
+    logEvent('diffView:changed', { view: view });
+  }
+
+  function handleApiAdd() {
+    var table = document.getElementById('api-table').value;
+    var operation = document.getElementById('api-operation').value;
+    var recordId = parseInt(document.getElementById('api-record-id').value, 10);
+
+    var entry = generateSampleEntry({
+      table_name: table,
+      operation: operation,
+      record_id: recordId
+    });
+
+    auditData.unshift(entry);
+    renderTimeline();
+    showResult('api-result', 'Added entry #' + entry.id, 'success');
+    logEvent('api:addData', { id: entry.id });
+  }
+
+  function handleApiGet() {
+    showResult('api-result', { count: auditData.length, entries: auditData.slice(0, 3) }, 'info');
+    logEvent('api:getData', { count: auditData.length });
+  }
+
+  function handleApiClear() {
+    auditData = [];
+    selectedEntry = null;
+    renderTimeline();
+    renderDiff(null, null);
+    renderDetailCard(null);
+    showResult('api-result', 'Cleared all data', 'success');
+    logEvent('api:clearData', {});
+  }
+
+  function handleLogClear() {
+    eventLog = [];
+    renderEventLog();
+  }
+
+  // =========================================================================
+  // Initialization
+  // =========================================================================
+
+  function bindEvents() {
+    document.getElementById('add-entry').addEventListener('click', handleAddEntry);
+    document.getElementById('load-samples').addEventListener('click', handleLoadSamples);
+    document.getElementById('clear-timeline').addEventListener('click', handleClearTimeline);
+
+    document.getElementById('diff-split').addEventListener('click', function() { handleDiffViewChange('split'); });
+    document.getElementById('diff-unified').addEventListener('click', function() { handleDiffViewChange('unified'); });
+    document.getElementById('diff-changes').addEventListener('click', function() { handleDiffViewChange('changes'); });
+
+    document.getElementById('api-add').addEventListener('click', handleApiAdd);
+    document.getElementById('api-get').addEventListener('click', handleApiGet);
+    document.getElementById('api-clear').addEventListener('click', handleApiClear);
+
+    document.getElementById('log-clear').addEventListener('click', handleLogClear);
+  }
+
+  Funky.Pages.register('component-audit-viewer', {
+    init: function(state) {
+      var props = getProps();
+
+      // Apply props
+      if (props.diffView) {
+        currentDiffView = props.diffView;
+        document.querySelectorAll('.diff-toggle').forEach(function(btn) {
+          btn.classList.toggle('active', btn.dataset.view === currentDiffView);
+        });
+      }
+
+      bindEvents();
+      renderTimeline();
+      renderBadgeGallery();
+      renderFormatExamples();
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          if (newProps.diffView && newProps.diffView !== currentDiffView) {
+            handleDiffViewChange(newProps.diffView);
+          }
+          if (newProps.maxEntries) {
+            renderTimeline();
+          }
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'auditViewer:init', payload: {} });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      auditData = [];
+      eventLog = [];
+      selectedEntry = null;
+      entryIdCounter = 1;
+
+      return {};
+    }
+  });
+})();
+</script>

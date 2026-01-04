@@ -1,0 +1,612 @@
+/**
+ * ==========================================================================
+ * MINION.CSS - Minion Job Queue UI Styles
+ * ==========================================================================
+ * 
+ * Styles to integrate Minion admin UI with the Funky theme.
+ * Minion uses Bootstrap 4 classes, so we need to bridge the gap.
+ * 
+ * ==========================================================================
+ */
+
+/* ==========================================================================
+   1. CONTAINER & LAYOUT
+   ========================================================================== */
+
+/* Main container styling */
+.minion-content .container,
+#spaContent .container.flex-grow-1 {
+  max-width: 100%;
+  padding: 0;
+}
+
+/* Row and column resets for Minion */
+.minion-content .row,
+#spaContent .container.flex-grow-1 .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* ==========================================================================
+   2. TABLE STYLING
+   ========================================================================== */
+
+/* Override Bootstrap 4 table styles to match Funky theme */
+.minion-content .table,
+#spaContent .container.flex-grow-1 .table {
+  background: var(--pro-bg-elevated, #161b22);
+  color: var(--pro-text-primary, #e6edf3);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.minion-content .table thead th,
+#spaContent .container.flex-grow-1 .table thead th {
+  background: var(--pro-bg-tertiary, #21262d);
+  color: var(--pro-text-secondary, #8b949e);
+  border-bottom: 1px solid var(--pro-border-color, #30363d);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.minion-content .table tbody td,
+#spaContent .container.flex-grow-1 .table tbody td {
+  background: var(--pro-bg-elevated, #161b22);
+  border-bottom: 1px solid var(--pro-border-color, #30363d);
+  padding: 12px 16px;
+  vertical-align: middle;
+}
+
+.minion-content .table tbody tr:hover td,
+#spaContent .container.flex-grow-1 .table tbody tr:hover td {
+  background: var(--pro-bg-tertiary, #21262d);
+}
+
+.minion-content .table tbody tr:last-child td,
+#spaContent .container.flex-grow-1 .table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Empty state styling */
+.minion-content .table .text-center,
+#spaContent .container.flex-grow-1 .table .text-center {
+  color: var(--pro-text-muted, #6e7681);
+  padding: 2rem !important;
+}
+
+/* ==========================================================================
+   3. BUTTON STYLING
+   ========================================================================== */
+
+/* Primary buttons */
+.minion-content .btn-primary,
+#spaContent .container.flex-grow-1 .btn-primary {
+  background: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  border-color: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  color: white;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.minion-content .btn-primary:hover,
+#spaContent .container.flex-grow-1 .btn-primary:hover {
+  background: var(--user-accent-hover, var(--pro-accent-primary-hover, #e65c00));
+  border-color: var(--user-accent-hover, var(--pro-accent-primary-hover, #e65c00));
+}
+
+/* Secondary buttons */
+.minion-content .btn-secondary,
+#spaContent .container.flex-grow-1 .btn-secondary {
+  background: var(--pro-bg-tertiary, #21262d);
+  border-color: var(--pro-border-color, #30363d);
+  color: var(--pro-text-primary, #e6edf3);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.minion-content .btn-secondary:hover,
+#spaContent .container.flex-grow-1 .btn-secondary:hover {
+  background: var(--pro-bg-elevated, #2d333b);
+  border-color: var(--pro-border-emphasis, #484f58);
+}
+
+/* Outline buttons */
+.minion-content .btn-outline-secondary,
+#spaContent .container.flex-grow-1 .btn-outline-secondary {
+  background: transparent;
+  border: 1px solid var(--pro-border-color, #30363d);
+  color: var(--pro-text-secondary, #8b949e);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.minion-content .btn-outline-secondary:hover,
+#spaContent .container.flex-grow-1 .btn-outline-secondary:hover {
+  background: var(--pro-bg-tertiary, #21262d);
+  border-color: var(--pro-border-emphasis, #484f58);
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+/* Danger/Delete buttons */
+.minion-content .btn-danger,
+#spaContent .container.flex-grow-1 .btn-danger {
+  background: var(--pro-accent-danger, #f85149);
+  border-color: var(--pro-accent-danger, #f85149);
+  color: white;
+}
+
+.minion-content .btn-danger:hover,
+#spaContent .container.flex-grow-1 .btn-danger:hover {
+  background: var(--pro-accent-danger-hover, #da3633);
+  border-color: var(--pro-accent-danger-hover, #da3633);
+}
+
+/* Success buttons */
+.minion-content .btn-success,
+#spaContent .container.flex-grow-1 .btn-success {
+  background: var(--pro-accent-success, #3fb950);
+  border-color: var(--pro-accent-success, #3fb950);
+  color: white;
+}
+
+/* Warning buttons */
+.minion-content .btn-warning,
+#spaContent .container.flex-grow-1 .btn-warning {
+  background: var(--pro-accent-warning, #d29922);
+  border-color: var(--pro-accent-warning, #d29922);
+  color: white;
+}
+
+/* ==========================================================================
+   4. FORM STYLING
+   ========================================================================== */
+
+/* Form controls */
+.minion-content .form-control,
+.minion-content .custom-select,
+#spaContent .container.flex-grow-1 .form-control,
+#spaContent .container.flex-grow-1 .custom-select {
+  background: var(--pro-bg-tertiary, #21262d);
+  border: 1px solid var(--pro-border-color, #30363d);
+  color: var(--pro-text-primary, #e6edf3);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.9375rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.minion-content .form-control:focus,
+.minion-content .custom-select:focus,
+#spaContent .container.flex-grow-1 .form-control:focus,
+#spaContent .container.flex-grow-1 .custom-select:focus {
+  background: var(--pro-bg-tertiary, #21262d);
+  border-color: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  color: var(--pro-text-primary, #e6edf3);
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+  outline: none;
+}
+
+.minion-content .form-control::placeholder,
+#spaContent .container.flex-grow-1 .form-control::placeholder {
+  color: var(--pro-text-muted, #6e7681);
+}
+
+/* Form labels */
+.minion-content label,
+.minion-content .form-group label,
+#spaContent .container.flex-grow-1 label,
+#spaContent .container.flex-grow-1 .form-group label {
+  color: var(--pro-text-secondary, #8b949e);
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Form groups */
+.minion-content .form-group,
+#spaContent .container.flex-grow-1 .form-group {
+  margin-bottom: 1rem;
+}
+
+/* Checkboxes */
+.minion-content input[type="checkbox"],
+#spaContent .container.flex-grow-1 input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--user-accent, var(--pro-accent-primary, #ff6600));
+}
+
+/* ==========================================================================
+   5. MODAL STYLING
+   ========================================================================== */
+
+/* Modal content */
+.minion-content .modal-content,
+#spaContent .container.flex-grow-1 .modal-content {
+  background: var(--pro-bg-secondary, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+/* Modal header */
+.minion-content .modal-header,
+#spaContent .container.flex-grow-1 .modal-header {
+  background: var(--pro-bg-tertiary, #21262d);
+  border-bottom: 1px solid var(--pro-border-color, #30363d);
+  padding: 16px 20px;
+  border-radius: 12px 12px 0 0;
+}
+
+.minion-content .modal-title,
+#spaContent .container.flex-grow-1 .modal-title {
+  color: var(--pro-text-primary, #e6edf3);
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+/* Modal close button */
+.minion-content .modal-header .close,
+#spaContent .container.flex-grow-1 .modal-header .close {
+  color: var(--pro-text-muted, #6e7681);
+  opacity: 1;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-shadow: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.minion-content .modal-header .close:hover,
+#spaContent .container.flex-grow-1 .modal-header .close:hover {
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+/* Modal body */
+.minion-content .modal-body,
+#spaContent .container.flex-grow-1 .modal-body {
+  padding: 20px;
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+/* Modal footer */
+.minion-content .modal-footer,
+#spaContent .container.flex-grow-1 .modal-footer {
+  background: var(--pro-bg-tertiary, #21262d);
+  border-top: 1px solid var(--pro-border-color, #30363d);
+  padding: 16px 20px;
+  border-radius: 0 0 12px 12px;
+}
+
+/* ==========================================================================
+   6. PAGINATION STYLING
+   ========================================================================== */
+
+.minion-content .pagination,
+#spaContent .container.flex-grow-1 .pagination {
+  margin: 0;
+  gap: 4px;
+}
+
+.minion-content .page-item .page-link,
+#spaContent .container.flex-grow-1 .page-item .page-link {
+  background: var(--pro-bg-tertiary, #21262d);
+  border: 1px solid var(--pro-border-color, #30363d);
+  color: var(--pro-text-secondary, #8b949e);
+  padding: 8px 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.minion-content .page-item .page-link:hover,
+#spaContent .container.flex-grow-1 .page-item .page-link:hover {
+  background: var(--pro-bg-elevated, #2d333b);
+  border-color: var(--pro-border-emphasis, #484f58);
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+.minion-content .page-item.active .page-link,
+#spaContent .container.flex-grow-1 .page-item.active .page-link {
+  background: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  border-color: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  color: white;
+}
+
+.minion-content .page-item.disabled .page-link,
+#spaContent .container.flex-grow-1 .page-item.disabled .page-link {
+  background: var(--pro-bg-primary, #0d1117);
+  border-color: var(--pro-border-color, #30363d);
+  color: var(--pro-text-muted, #6e7681);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   7. BADGE & STATUS STYLING
+   ========================================================================== */
+
+.minion-content .badge,
+#spaContent .container.flex-grow-1 .badge {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.minion-content .badge-primary,
+#spaContent .container.flex-grow-1 .badge-primary {
+  background: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  color: white;
+}
+
+.minion-content .badge-secondary,
+#spaContent .container.flex-grow-1 .badge-secondary {
+  background: var(--pro-bg-tertiary, #21262d);
+  color: var(--pro-text-secondary, #8b949e);
+}
+
+.minion-content .badge-success,
+#spaContent .container.flex-grow-1 .badge-success {
+  background: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.2));
+  color: var(--pro-accent-success, #3fb950);
+}
+
+.minion-content .badge-danger,
+#spaContent .container.flex-grow-1 .badge-danger {
+  background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.2));
+  color: var(--pro-accent-danger, #f85149);
+}
+
+.minion-content .badge-warning,
+#spaContent .container.flex-grow-1 .badge-warning {
+  background: var(--pro-accent-warning-muted, rgba(210, 153, 34, 0.2));
+  color: var(--pro-accent-warning, #d29922);
+}
+
+.minion-content .badge-info,
+#spaContent .container.flex-grow-1 .badge-info {
+  background: var(--pro-accent-info-muted, rgba(56, 139, 253, 0.2));
+  color: var(--pro-accent-info, #388bfd);
+}
+
+/* ==========================================================================
+   8. ALERT STYLING
+   ========================================================================== */
+
+.minion-content .alert,
+#spaContent .container.flex-grow-1 .alert {
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid;
+  margin-bottom: 1rem;
+}
+
+.minion-content .alert-info,
+#spaContent .container.flex-grow-1 .alert-info {
+  background: var(--pro-accent-info-muted, rgba(56, 139, 253, 0.1));
+  border-color: var(--pro-accent-info, #388bfd);
+  color: var(--pro-accent-info, #388bfd);
+}
+
+.minion-content .alert-success,
+#spaContent .container.flex-grow-1 .alert-success {
+  background: var(--pro-accent-success-muted, rgba(63, 185, 80, 0.1));
+  border-color: var(--pro-accent-success, #3fb950);
+  color: var(--pro-accent-success, #3fb950);
+}
+
+.minion-content .alert-warning,
+#spaContent .container.flex-grow-1 .alert-warning {
+  background: var(--pro-accent-warning-muted, rgba(210, 153, 34, 0.1));
+  border-color: var(--pro-accent-warning, #d29922);
+  color: var(--pro-accent-warning, #d29922);
+}
+
+.minion-content .alert-danger,
+#spaContent .container.flex-grow-1 .alert-danger {
+  background: var(--pro-accent-danger-muted, rgba(248, 81, 73, 0.1));
+  border-color: var(--pro-accent-danger, #f85149);
+  color: var(--pro-accent-danger, #f85149);
+}
+
+/* ==========================================================================
+   9. CARD STYLING
+   ========================================================================== */
+
+.minion-content .card,
+#spaContent .container.flex-grow-1 .card {
+  background: var(--pro-bg-elevated, #161b22);
+  border: 1px solid var(--pro-border-color, #30363d);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.minion-content .card-header,
+#spaContent .container.flex-grow-1 .card-header {
+  background: var(--pro-bg-tertiary, #21262d);
+  border-bottom: 1px solid var(--pro-border-color, #30363d);
+  padding: 12px 16px;
+  color: var(--pro-text-primary, #e6edf3);
+  font-weight: 600;
+}
+
+.minion-content .card-body,
+#spaContent .container.flex-grow-1 .card-body {
+  padding: 16px;
+  color: var(--pro-text-primary, #e6edf3);
+}
+
+/* ==========================================================================
+   10. UTILITY CLASSES
+   ========================================================================== */
+
+/* Text colors */
+.minion-content .text-muted,
+#spaContent .container.flex-grow-1 .text-muted {
+  color: var(--pro-text-muted, #6e7681) !important;
+}
+
+.minion-content .text-primary,
+#spaContent .container.flex-grow-1 .text-primary {
+  color: var(--user-accent, var(--pro-accent-primary, #ff6600)) !important;
+}
+
+.minion-content .text-success,
+#spaContent .container.flex-grow-1 .text-success {
+  color: var(--pro-accent-success, #3fb950) !important;
+}
+
+.minion-content .text-danger,
+#spaContent .container.flex-grow-1 .text-danger {
+  color: var(--pro-accent-danger, #f85149) !important;
+}
+
+.minion-content .text-warning,
+#spaContent .container.flex-grow-1 .text-warning {
+  color: var(--pro-accent-warning, #d29922) !important;
+}
+
+.minion-content .text-info,
+#spaContent .container.flex-grow-1 .text-info {
+  color: var(--pro-accent-info, #388bfd) !important;
+}
+
+/* Background colors */
+.minion-content .bg-light,
+#spaContent .container.flex-grow-1 .bg-light {
+  background: var(--pro-bg-tertiary, #21262d) !important;
+}
+
+.minion-content .bg-dark,
+#spaContent .container.flex-grow-1 .bg-dark {
+  background: var(--pro-bg-primary, #0d1117) !important;
+}
+
+/* Links */
+.minion-content a,
+#spaContent .container.flex-grow-1 a:not(.btn):not(.page-link) {
+  color: var(--pro-text-link, #58a6ff);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.minion-content a:hover,
+#spaContent .container.flex-grow-1 a:not(.btn):not(.page-link):hover {
+  color: var(--user-accent, var(--pro-accent-primary, #ff6600));
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   11. ICONS (Font Awesome)
+   ========================================================================== */
+
+.minion-content .fas,
+.minion-content .far,
+.minion-content .fab,
+#spaContent .container.flex-grow-1 .fas,
+#spaContent .container.flex-grow-1 .far,
+#spaContent .container.flex-grow-1 .fab {
+  margin-right: 0.25em;
+}
+
+/* ==========================================================================
+   12. RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .minion-content .d-flex.justify-content-between,
+  #spaContent .container.flex-grow-1 .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .minion-content .pagination,
+  #spaContent .container.flex-grow-1 .pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* ==========================================================================
+   13. LIGHT THEME OVERRIDES
+   ========================================================================== */
+
+[data-theme="light"] .minion-content .table,
+[data-theme="light"] #spaContent .container.flex-grow-1 .table {
+  background: var(--pro-bg-primary);
+  color: var(--pro-text-primary);
+}
+
+[data-theme="light"] .minion-content .table thead th,
+[data-theme="light"] #spaContent .container.flex-grow-1 .table thead th {
+  background: var(--pro-bg-secondary);
+  color: var(--pro-text-secondary);
+  border-bottom-color: var(--pro-border-color);
+}
+
+[data-theme="light"] .minion-content .table tbody td,
+[data-theme="light"] #spaContent .container.flex-grow-1 .table tbody td {
+  background: var(--pro-bg-primary);
+  border-bottom-color: var(--pro-border-color);
+}
+
+[data-theme="light"] .minion-content .table tbody tr:hover td,
+[data-theme="light"] #spaContent .container.flex-grow-1 .table tbody tr:hover td {
+  background: var(--pro-bg-secondary);
+}
+
+[data-theme="light"] .minion-content .form-control,
+[data-theme="light"] .minion-content .custom-select,
+[data-theme="light"] #spaContent .container.flex-grow-1 .form-control,
+[data-theme="light"] #spaContent .container.flex-grow-1 .custom-select {
+  background: var(--pro-bg-primary);
+  border-color: var(--pro-border-color);
+  color: var(--pro-text-primary);
+}
+
+[data-theme="light"] .minion-content .modal-content,
+[data-theme="light"] #spaContent .container.flex-grow-1 .modal-content {
+  background: var(--pro-bg-primary);
+  border-color: var(--pro-border-color);
+}
+
+[data-theme="light"] .minion-content .modal-header,
+[data-theme="light"] .minion-content .modal-footer,
+[data-theme="light"] #spaContent .container.flex-grow-1 .modal-header,
+[data-theme="light"] #spaContent .container.flex-grow-1 .modal-footer {
+  background: var(--pro-bg-secondary);
+  border-color: var(--pro-border-color);
+}
+
+[data-theme="light"] .minion-content .page-item .page-link,
+[data-theme="light"] #spaContent .container.flex-grow-1 .page-item .page-link {
+  background: var(--pro-bg-primary);
+  border-color: var(--pro-border-color);
+  color: var(--pro-text-secondary);
+}
+
+[data-theme="light"] .minion-content .page-item .page-link:hover,
+[data-theme="light"] #spaContent .container.flex-grow-1 .page-item .page-link:hover {
+  background: var(--pro-bg-secondary);
+}

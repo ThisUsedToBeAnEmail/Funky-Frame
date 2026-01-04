@@ -1,0 +1,1363 @@
+/**
+ * Funky.CardGrid - Component Styles
+ * 
+ * Phase 1: Core Foundation Styles
+ * Responsive grid layout with CSS custom properties for theming.
+ * 
+ * @version 1.0.0
+ */
+
+/* ==========================================================================
+   CSS Custom Properties (Defaults)
+   ========================================================================== */
+
+.funky-card-grid {
+    /* Layout */
+    --card-grid-gap: var(--pro-space-md, 1rem);
+    --card-grid-min-width: 280px;
+    --card-grid-columns: auto;
+    
+    /* Card */
+    --card-grid-card-bg: var(--pro-surface, #ffffff);
+    --card-grid-card-border: var(--pro-border-color, #dee2e6);
+    --card-grid-card-border-radius: var(--pro-radius-md, 0.5rem);
+    --card-grid-card-shadow: var(--pro-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08));
+    --card-grid-card-shadow-hover: var(--pro-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.12));
+    
+    /* Card selected */
+    --card-grid-card-selected-border: var(--pro-primary, #0066cc);
+    --card-grid-card-selected-bg: var(--pro-primary-light, rgba(0, 102, 204, 0.05));
+    
+    /* Text */
+    --card-grid-title-color: var(--pro-text-primary, #212529);
+    --card-grid-description-color: var(--pro-text-muted, #6c757d);
+    
+    /* Transition */
+    --card-grid-transition: var(--pro-transition-normal, 200ms ease);
+}
+
+/* ==========================================================================
+   Container & Wrapper
+   ========================================================================== */
+
+.funky-card-grid-container {
+    width: 100%;
+}
+
+.funky-card-grid {
+    width: 100%;
+    position: relative;
+}
+
+/* ==========================================================================
+   Grid Layout
+   ========================================================================== */
+
+.funky-card-grid__grid {
+    display: grid;
+    gap: var(--card-grid-gap, 1rem);
+    width: 100%;
+}
+
+/* Grid view - auto-fill columns */
+.funky-card-grid__grid--grid {
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-grid-min-width), 1fr));
+}
+
+/* List view - single column */
+.funky-card-grid__grid--list {
+    grid-template-columns: 1fr;
+    /* Uses same gap variable as grid view for consistency */
+}
+
+/* List view card layout - horizontal */
+.funky-card-grid__grid--list .funky-card-grid__card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.funky-card-grid__grid--list .funky-card-grid__card-image {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    margin: 0;
+    margin-right: var(--pro-space-md, 1rem);
+    border-radius: var(--pro-radius-sm, 0.25rem);
+}
+
+.funky-card-grid__grid--list .funky-card-grid__card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-space-xs, 0.25rem);
+    padding: var(--pro-space-md, 1rem);
+}
+
+/* ==========================================================================
+   Card Base Styles
+   ========================================================================== */
+
+.funky-card-grid__card {
+    background: var(--card-grid-card-bg);
+    border: 1px solid var(--card-grid-card-border);
+    border-radius: var(--card-grid-card-border-radius);
+    box-shadow: var(--card-grid-card-shadow);
+    transition: 
+        box-shadow var(--card-grid-transition),
+        border-color var(--card-grid-transition),
+        background-color var(--card-grid-transition),
+        transform var(--card-grid-transition);
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+}
+
+/* Hover state */
+.funky-card-grid__card:hover {
+    box-shadow: var(--card-grid-card-shadow-hover);
+}
+
+/* Focus state (keyboard navigation) */
+.funky-card-grid__card:focus {
+    box-shadow: 
+        var(--card-grid-card-shadow),
+        0 0 0 2px var(--pro-focus-ring, rgba(0, 102, 204, 0.25));
+    border-color: var(--card-grid-card-selected-border);
+}
+
+/* Selected state */
+.funky-card-grid__card--selected {
+    border-color: var(--card-grid-card-selected-border);
+    background: var(--card-grid-card-selected-bg);
+}
+
+.funky-card-grid__card--selected:focus {
+    box-shadow: 
+        var(--card-grid-card-shadow),
+        0 0 0 3px var(--pro-focus-ring, rgba(0, 102, 204, 0.25));
+}
+
+/* ==========================================================================
+   Default Card Content (when no renderCard provided)
+   ========================================================================== */
+
+.funky-card-grid__card-content {
+    display: flex;
+    flex-direction: column;
+    padding: var(--pro-space-md, 1rem);
+}
+
+/* Card image */
+.funky-card-grid__card-image {
+    width: 100%;
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--pro-surface-alt, #f8f9fa);
+    margin: calc(-1 * var(--pro-space-md, 1rem));
+    margin-bottom: var(--pro-space-md, 1rem);
+    width: calc(100% + 2 * var(--pro-space-md, 1rem));
+}
+
+/* Card title */
+.funky-card-grid__card-title {
+    font-size: var(--pro-font-size-md, 1rem);
+    font-weight: var(--pro-font-weight-semibold, 600);
+    color: var(--card-grid-title-color);
+    margin-bottom: var(--pro-space-xs, 0.25rem);
+    line-height: 1.4;
+}
+
+/* Card description */
+.funky-card-grid__card-description {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--card-grid-description-color);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.funky-card-grid__empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pro-space-xl, 3rem) var(--pro-space-lg, 2rem);
+    text-align: center;
+    color: var(--pro-text-muted, #6c757d);
+}
+
+.funky-card-grid__empty p {
+    margin: 0;
+    font-size: var(--pro-font-size-md, 1rem);
+}
+
+/* ==========================================================================
+   Animations (for Funky.Animate integration)
+   ========================================================================== */
+
+/* Initial hidden state for stagger animation */
+.funky-card-grid__card[data-animate] {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+/* Fade-in-up animation class */
+.funky-card-grid__card.fade-in-up {
+    animation: cardGridFadeInUp 300ms ease forwards;
+}
+
+@keyframes cardGridFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card enter animation */
+.funky-card-grid__card--entering {
+    animation: cardGridEnter 300ms ease-out forwards;
+}
+
+@keyframes cardGridEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Card exit animation */
+.funky-card-grid__card--exiting {
+    animation: cardGridExit 200ms ease-in forwards;
+}
+
+@keyframes cardGridExit {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* Hover lift effect */
+.funky-card-grid__card:hover {
+    transform: translateY(-2px);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .funky-card-grid__card,
+    .funky-card-grid__card--entering,
+    .funky-card-grid__card--exiting,
+    .funky-card-grid__card.fade-in-up {
+        animation: none;
+        transition: none;
+    }
+    
+    .funky-card-grid__card:hover {
+        transform: none;
+    }
+    
+    .funky-card-grid__card--skeleton .funky-card-grid__card-image,
+    .funky-card-grid__card--skeleton .funky-card-grid__card-title,
+    .funky-card-grid__card--skeleton .funky-card-grid__card-description {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Gap Size Modifiers
+   ========================================================================== */
+
+.funky-card-grid--gap-xs { --card-grid-gap: var(--pro-space-xs, 0.25rem); }
+.funky-card-grid--gap-sm { --card-grid-gap: var(--pro-space-sm, 0.5rem); }
+.funky-card-grid--gap-md { --card-grid-gap: var(--pro-space-md, 1rem); }
+.funky-card-grid--gap-lg { --card-grid-gap: var(--pro-space-lg, 1.5rem); }
+.funky-card-grid--gap-xl { --card-grid-gap: var(--pro-space-xl, 2rem); }
+
+/* ==========================================================================
+   Density Modes
+   ========================================================================== */
+
+/* Compact density */
+.density-compact .funky-card-grid {
+    --card-grid-gap: var(--pro-space-sm, 0.5rem);
+    --card-grid-card-padding: var(--pro-space-sm, 0.5rem);
+}
+
+.density-compact .funky-card-grid__card-content {
+    padding: var(--pro-space-sm, 0.5rem);
+}
+
+.density-compact .funky-card-grid__card-image {
+    height: 120px;
+}
+
+/* Comfortable density */
+.density-comfortable .funky-card-grid {
+    --card-grid-gap: var(--pro-space-lg, 1.5rem);
+    --card-grid-card-padding: var(--pro-space-lg, 1.5rem);
+}
+
+.density-comfortable .funky-card-grid__card-content {
+    padding: var(--pro-space-lg, 1.5rem);
+}
+
+.density-comfortable .funky-card-grid__card-image {
+    height: 200px;
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+
+.funky-card-grid--loading {
+    position: relative;
+}
+
+.funky-card-grid__loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--pro-bg-overlay, rgba(255, 255, 255, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: var(--card-grid-card-border-radius);
+}
+
+/* Skeleton card */
+.funky-card-grid__card--skeleton {
+    pointer-events: none;
+    cursor: default;
+}
+
+.funky-card-grid__card--skeleton .funky-card-grid__card-image,
+.funky-card-grid__card--skeleton .funky-card-grid__card-title,
+.funky-card-grid__card--skeleton .funky-card-grid__card-description {
+    background: var(--pro-skeleton-bg, #e0e0e0);
+    border-radius: var(--pro-radius-sm, 0.25rem);
+    animation: funkyCardGridSkeleton 1.5s ease-in-out infinite;
+}
+
+.funky-card-grid__card--skeleton .funky-card-grid__card-title {
+    height: 1.25rem;
+    width: 60%;
+}
+
+.funky-card-grid__card--skeleton .funky-card-grid__card-description {
+    height: 0.875rem;
+    width: 80%;
+}
+
+@keyframes funkyCardGridSkeleton {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+/* Extra small (mobile) */
+@media (max-width: 575.98px) {
+    .funky-card-grid {
+        --card-grid-min-width: 100%;
+        --card-grid-gap: var(--pro-space-sm, 0.5rem);
+    }
+    
+    .funky-card-grid__grid--grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .funky-card-grid__card-image {
+        height: 120px;
+    }
+}
+
+/* Small (landscape mobile) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .funky-card-grid {
+        --card-grid-min-width: 240px;
+    }
+}
+
+/* Medium (tablet) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .funky-card-grid {
+        --card-grid-min-width: 260px;
+    }
+}
+
+/* Large (desktop) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .funky-card-grid {
+        --card-grid-min-width: 280px;
+    }
+}
+
+/* Extra large */
+@media (min-width: 1200px) {
+    .funky-card-grid {
+        --card-grid-min-width: 300px;
+    }
+}
+
+/* ==========================================================================
+   Dark Theme Support
+   ========================================================================== */
+
+[data-theme="dark"] .funky-card-grid,
+.funky-card-grid[data-theme="dark"] {
+    --card-grid-card-bg: var(--pro-surface-dark, #1e1e1e);
+    --card-grid-card-border: var(--pro-border-color-dark, #333);
+    --card-grid-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --card-grid-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --card-grid-title-color: var(--pro-text-primary-dark, #e1e1e1);
+    --card-grid-description-color: var(--pro-text-muted-dark, #a0a0a0);
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .funky-card-grid__card {
+        box-shadow: none;
+        border: 1px solid var(--pro-border-color, #dee2e6);
+        break-inside: avoid;
+    }
+    
+    .funky-card-grid__grid {
+        gap: 0.5rem;
+    }
+}
+
+/* ==========================================================================
+   ActionBar Integration (Phase 3)
+   ========================================================================== */
+
+/* Result count in ActionBar context */
+.funky-card-grid__count {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary, #666666);
+    white-space: nowrap;
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+}
+
+/* View toggle group for ActionBar */
+.funky-card-grid__view-group {
+    display: flex;
+    border: 1px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-sm, 4px);
+    overflow: hidden;
+}
+
+.funky-card-grid__view-btn {
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    border: none;
+    background: var(--pro-bg-primary, #ffffff);
+    color: var(--pro-text-secondary, #666666);
+    cursor: pointer;
+    transition: background var(--card-grid-transition), color var(--card-grid-transition);
+}
+
+.funky-card-grid__view-btn:not(:last-child) {
+    border-right: 1px solid var(--pro-border-color, #e0e0e0);
+}
+
+.funky-card-grid__view-btn:hover {
+    background: var(--pro-bg-secondary, #f5f5f5);
+}
+
+.funky-card-grid__view-btn:focus {
+    outline: none;
+    box-shadow: inset var(--pro-focus-ring, 0 0 0 3px rgba(0, 123, 255, 0.25));
+}
+
+.funky-card-grid__view-btn--active {
+    background: var(--pro-primary, #007bff);
+    color: var(--pro-text-on-primary, #ffffff);
+}
+
+.funky-card-grid__view-btn--active:hover {
+    background: var(--pro-primary-hover, #0056b3);
+}
+
+/* Sort controls for ActionBar */
+.funky-card-grid__sort-group {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-xs, 0.25rem);
+}
+
+.funky-card-grid__sort-select {
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    border: 1px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-sm, 4px);
+    background: var(--pro-bg-primary, #ffffff);
+    color: var(--pro-text-primary, #1a1a1a);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+.funky-card-grid__sort-select:focus {
+    outline: none;
+    border-color: var(--pro-primary, #007bff);
+    box-shadow: var(--pro-focus-ring, 0 0 0 3px rgba(0, 123, 255, 0.25));
+}
+
+.funky-card-grid__sort-direction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: var(--pro-space-xs, 0.25rem);
+    border: 1px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-sm, 4px);
+    background: var(--pro-bg-primary, #ffffff);
+    color: var(--pro-text-secondary, #666666);
+    cursor: pointer;
+    transition: background var(--card-grid-transition), color var(--card-grid-transition);
+}
+
+.funky-card-grid__sort-direction:hover {
+    background: var(--pro-bg-secondary, #f5f5f5);
+    color: var(--pro-text-primary, #1a1a1a);
+}
+
+.funky-card-grid__sort-direction:focus {
+    outline: none;
+    border-color: var(--pro-primary, #007bff);
+    box-shadow: var(--pro-focus-ring, 0 0 0 3px rgba(0, 123, 255, 0.25));
+}
+
+/* Dark theme adjustments for ActionBar controls */
+[data-theme="dark"] .funky-card-grid__view-btn,
+[data-theme="dark"] .funky-card-grid__sort-select,
+[data-theme="dark"] .funky-card-grid__sort-direction {
+    background: var(--pro-surface-dark, #1e1e1e);
+    border-color: var(--pro-border-color-dark, #333);
+    color: var(--pro-text-primary-dark, #e1e1e1);
+}
+
+[data-theme="dark"] .funky-card-grid__view-btn:hover,
+[data-theme="dark"] .funky-card-grid__sort-direction:hover {
+    background: var(--pro-surface-alt-dark, #2a2a2a);
+}
+
+[data-theme="dark"] .funky-card-grid__count {
+    color: var(--pro-text-muted-dark, #a0a0a0);
+}
+
+/* ==========================================================================
+   Pagination & Loading (Phase 4)
+   ========================================================================== */
+
+.funky-card-grid__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--pro-space-sm, 0.5rem);
+    padding: var(--pro-space-lg, 1.5rem) 0;
+    margin-top: var(--pro-space-md, 1rem);
+}
+
+/* Load More Button */
+.funky-card-grid__load-more {
+    padding: var(--pro-space-sm, 0.5rem) var(--pro-space-lg, 1.5rem);
+    border: 1px solid var(--pro-primary, #007bff);
+    border-radius: var(--pro-radius-md, 6px);
+    background: transparent;
+    color: var(--pro-primary, #007bff);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--card-grid-transition), color var(--card-grid-transition);
+}
+
+.funky-card-grid__load-more:hover {
+    background: var(--pro-primary, #007bff);
+    color: var(--pro-text-on-primary, #ffffff);
+}
+
+.funky-card-grid__load-more:focus {
+    outline: none;
+    box-shadow: var(--pro-focus-ring, 0 0 0 3px rgba(0, 123, 255, 0.25));
+}
+
+.funky-card-grid__load-more:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.funky-card-grid__load-more--loading {
+    pointer-events: none;
+}
+
+.funky-card-grid__load-more-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: funkyCardGridSpin 0.75s linear infinite;
+    margin-right: var(--pro-space-xs, 0.25rem);
+    vertical-align: middle;
+}
+
+@keyframes funkyCardGridSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Page Navigation */
+.funky-card-grid__page-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-xs, 0.25rem);
+}
+
+.funky-card-grid__page-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-xs, 0.25rem);
+}
+
+.funky-card-grid__page-btn {
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 var(--pro-space-xs, 0.25rem);
+    border: 1px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-sm, 4px);
+    background: var(--pro-bg-primary, #ffffff);
+    color: var(--pro-text-primary, #1a1a1a);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    cursor: pointer;
+    transition: background var(--card-grid-transition), border-color var(--card-grid-transition);
+}
+
+.funky-card-grid__page-btn:hover:not(:disabled) {
+    background: var(--pro-bg-secondary, #f5f5f5);
+    border-color: var(--pro-border-emphasis, #c0c0c0);
+}
+
+.funky-card-grid__page-btn:focus {
+    outline: none;
+    box-shadow: var(--pro-focus-ring, 0 0 0 3px rgba(0, 123, 255, 0.25));
+}
+
+.funky-card-grid__page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.funky-card-grid__page-btn--active {
+    background: var(--pro-primary, #007bff);
+    border-color: var(--pro-primary, #007bff);
+    color: var(--pro-text-on-primary, #ffffff);
+}
+
+.funky-card-grid__page-ellipsis {
+    padding: 0 var(--pro-space-xs, 0.25rem);
+    color: var(--pro-text-muted, #999999);
+}
+
+.funky-card-grid__page-info {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary, #666666);
+    margin-left: var(--pro-space-sm, 0.5rem);
+}
+
+/* Infinite Scroll Trigger */
+.funky-card-grid__scroll-trigger {
+    height: 1px;
+    width: 100%;
+}
+
+.funky-card-grid__scroll-loading {
+    display: flex;
+    justify-content: center;
+    padding: var(--pro-space-lg, 1.5rem);
+}
+
+/* Loading Overlay */
+.funky-card-grid__loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--pro-bg-overlay, rgba(255, 255, 255, 0.85));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: var(--pro-radius-md, 8px);
+}
+
+.funky-card-grid--loading {
+    position: relative;
+    min-height: 200px;
+}
+
+/* End of Results */
+.funky-card-grid__end-message {
+    text-align: center;
+    padding: var(--pro-space-md, 1rem);
+    color: var(--pro-text-muted, #999999);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+/* Dark theme pagination */
+[data-theme="dark"] .funky-card-grid__load-more {
+    border-color: var(--pro-primary, #007bff);
+    color: var(--pro-primary, #007bff);
+}
+
+[data-theme="dark"] .funky-card-grid__load-more:hover {
+    background: var(--pro-primary, #007bff);
+    color: var(--pro-text-on-primary, #ffffff);
+}
+
+[data-theme="dark"] .funky-card-grid__page-btn {
+    background: var(--pro-surface-dark, #1e1e1e);
+    border-color: var(--pro-border-color-dark, #333);
+    color: var(--pro-text-primary-dark, #e1e1e1);
+}
+
+[data-theme="dark"] .funky-card-grid__page-btn:hover:not(:disabled) {
+    background: var(--pro-surface-alt-dark, #2a2a2a);
+}
+
+[data-theme="dark"] .funky-card-grid__loading-overlay {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+/* ==========================================================================
+   Selection & Interaction (Phase 5)
+   ========================================================================== */
+
+/* Selectable cards */
+.funky-card-grid--selectable .funky-card-grid__card {
+    user-select: none;
+    position: relative;
+}
+
+/* Selection checkbox (multi-select) */
+.funky-card-grid__card-checkbox {
+    position: absolute;
+    top: var(--pro-space-sm, 0.5rem);
+    left: var(--pro-space-sm, 0.5rem);
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-sm, 4px);
+    background: var(--pro-bg-primary, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--card-grid-transition), border-color var(--card-grid-transition), background var(--card-grid-transition);
+    z-index: 2;
+    cursor: pointer;
+}
+
+.funky-card-grid__card:hover .funky-card-grid__card-checkbox,
+.funky-card-grid__card:focus .funky-card-grid__card-checkbox,
+.funky-card-grid__card--selected .funky-card-grid__card-checkbox {
+    opacity: 1;
+}
+
+.funky-card-grid__card--selected .funky-card-grid__card-checkbox {
+    background: var(--pro-primary, #007bff);
+    border-color: var(--pro-primary, #007bff);
+}
+
+.funky-card-grid__card-checkbox-icon {
+    color: var(--pro-text-on-primary, #ffffff);
+    font-size: 0.75rem;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.funky-card-grid__card--selected .funky-card-grid__card-checkbox-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Checkbox position variants */
+.funky-card-grid__card-checkbox--top-left {
+    top: var(--pro-space-sm, 0.5rem);
+    left: var(--pro-space-sm, 0.5rem);
+    right: auto;
+    bottom: auto;
+}
+
+.funky-card-grid__card-checkbox--top-right {
+    top: var(--pro-space-sm, 0.5rem);
+    right: var(--pro-space-sm, 0.5rem);
+    left: auto;
+    bottom: auto;
+}
+
+.funky-card-grid__card-checkbox--bottom-left {
+    bottom: var(--pro-space-sm, 0.5rem);
+    left: var(--pro-space-sm, 0.5rem);
+    top: auto;
+    right: auto;
+}
+
+.funky-card-grid__card-checkbox--bottom-right {
+    bottom: var(--pro-space-sm, 0.5rem);
+    right: var(--pro-space-sm, 0.5rem);
+    top: auto;
+    left: auto;
+}
+
+/* Selection toolbar */
+.funky-card-grid__selection-bar {
+    display: none;
+    align-items: center;
+    gap: var(--pro-space-md, 1rem);
+    padding: var(--pro-space-sm, 0.5rem) var(--pro-space-md, 1rem);
+    background: var(--pro-primary, #007bff);
+    color: var(--pro-text-on-primary, #ffffff);
+    border-radius: var(--pro-radius-md, 6px);
+    margin-bottom: var(--pro-space-md, 1rem);
+}
+
+.funky-card-grid--has-selection .funky-card-grid__selection-bar {
+    display: flex;
+}
+
+.funky-card-grid__selection-count {
+    font-weight: 500;
+}
+
+.funky-card-grid__selection-actions {
+    display: flex;
+    gap: var(--pro-space-sm, 0.5rem);
+    margin-left: auto;
+}
+
+.funky-card-grid__selection-btn {
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--pro-radius-sm, 4px);
+    background: transparent;
+    color: inherit;
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    cursor: pointer;
+    transition: background var(--card-grid-transition);
+}
+
+.funky-card-grid__selection-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.funky-card-grid__selection-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Focus navigation indicator */
+.funky-card-grid__card--focused {
+    outline: 2px solid var(--pro-primary, #007bff);
+    outline-offset: 2px;
+}
+
+/* Keyboard hint */
+.funky-card-grid__keyboard-hint {
+    position: fixed;
+    bottom: var(--pro-space-md, 1rem);
+    right: var(--pro-space-md, 1rem);
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    background: var(--pro-bg-elevated, #1a1a1a);
+    color: var(--pro-text-on-elevated, #ffffff);
+    border-radius: var(--pro-radius-sm, 4px);
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.funky-card-grid:focus-within .funky-card-grid__keyboard-hint {
+    opacity: 0.8;
+}
+
+/* Dark theme selection */
+[data-theme="dark"] .funky-card-grid__card-checkbox {
+    background: var(--pro-surface-dark, #1e1e1e);
+    border-color: var(--pro-border-color-dark, #444);
+}
+
+[data-theme="dark"] .funky-card-grid__card--selected .funky-card-grid__card-checkbox {
+    background: var(--pro-primary, #007bff);
+    border-color: var(--pro-primary, #007bff);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .funky-card-grid__card-checkbox,
+    .funky-card-grid__card-checkbox-icon {
+        transition: none;
+    }
+}
+
+/* ==========================================================================
+   Virtualization
+   ========================================================================== */
+
+/* Virtualized mode wrapper */
+.funky-card-grid--virtualized .funky-card-grid__grid {
+    overflow: hidden;
+}
+
+/* Virtual container with fixed height */
+.funky-card-grid__virtual-container {
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    will-change: scroll-position;
+    contain: layout paint;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Spacer element that provides scroll height */
+.funky-card-grid__virtual-spacer {
+    position: relative;
+    width: 100%;
+}
+
+/* Viewport containing visible cards */
+.funky-card-grid__virtual-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: grid;
+    gap: var(--card-grid-gap, 1rem);
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-grid-min-width, 280px), 1fr));
+    contain: layout style;
+}
+
+/* List view virtualization */
+.funky-card-grid--virtualized .funky-card-grid__grid--list .funky-card-grid__virtual-viewport {
+    grid-template-columns: 1fr;
+}
+
+/* Custom scrollbar for virtual container */
+.funky-card-grid__virtual-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.funky-card-grid__virtual-container::-webkit-scrollbar-track {
+    background: var(--pro-bg-subtle, #f8f9fa);
+    border-radius: 4px;
+}
+
+.funky-card-grid__virtual-container::-webkit-scrollbar-thumb {
+    background: var(--pro-border-color, #dee2e6);
+    border-radius: 4px;
+}
+
+.funky-card-grid__virtual-container::-webkit-scrollbar-thumb:hover {
+    background: var(--pro-text-muted, #6c757d);
+}
+
+/* Virtualized card pool hints */
+.funky-card-grid--virtualized .funky-card-grid__card {
+    contain: layout style paint;
+}
+
+/* Loading indicator during virtual scroll */
+.funky-card-grid__virtual-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-sm, 0.5rem);
+    padding: var(--pro-space-sm, 0.5rem) var(--pro-space-md, 1rem);
+    background: var(--pro-surface, #ffffff);
+    border-radius: var(--pro-radius-md, 0.5rem);
+    box-shadow: var(--pro-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.1));
+    color: var(--pro-text-muted, #6c757d);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.funky-card-grid--virtualized.is-scrolling .funky-card-grid__virtual-loading {
+    opacity: 0;
+}
+
+/* Scroll performance mode - disable animations during fast scroll */
+.funky-card-grid--virtualized.is-fast-scrolling .funky-card-grid__card {
+    transition: none !important;
+}
+
+.funky-card-grid--virtualized.is-fast-scrolling .funky-card-grid__card:hover {
+    transform: none;
+    box-shadow: var(--card-grid-card-shadow);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .funky-card-grid__virtual-container::-webkit-scrollbar-track {
+    background: var(--pro-surface-dark, #1e1e1e);
+}
+
+[data-theme="dark"] .funky-card-grid__virtual-container::-webkit-scrollbar-thumb {
+    background: var(--pro-border-color-dark, #444);
+}
+
+[data-theme="dark"] .funky-card-grid__virtual-loading {
+    background: var(--pro-surface-dark, #1e1e1e);
+}
+
+/* Reduced motion for virtualization */
+@media (prefers-reduced-motion: reduce) {
+    .funky-card-grid__virtual-viewport {
+        transition: none;
+    }
+}
+
+/* ==========================================================================
+   Playground Demo Styles
+   ========================================================================== */
+
+.card-grid-demo__container {
+    width: 100%;
+    min-height: 400px;
+}
+
+/* Layout Controls */
+.card-grid-demo__layout-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-md, 1rem);
+    align-items: center;
+    margin-bottom: var(--pro-space-md, 1rem);
+}
+
+.card-grid-demo__control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-sm, 0.5rem);
+}
+
+.card-grid-demo__label {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+    color: var(--pro-text-secondary, #666);
+    white-space: nowrap;
+}
+
+.card-grid-demo__select {
+    min-width: 120px;
+}
+
+/* API Buttons */
+.card-grid-demo__api-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-sm, 0.5rem);
+}
+
+/* Selection Controls */
+.card-grid-demo__selection-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-md, 1rem);
+    align-items: center;
+}
+
+.card-grid-demo__selection-hint {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-muted, #999);
+}
+
+/* Virtualization Controls */
+.card-grid-demo__virtualize-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-md, 1rem);
+    align-items: center;
+}
+
+/* State Display */
+.card-grid-demo__state {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-md, 1rem);
+}
+
+.card-grid-demo__state-item {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-xs, 0.25rem);
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    background: var(--pro-surface-alt, #f8f9fa);
+    border-radius: var(--pro-radius-sm, 4px);
+}
+
+.card-grid-demo__state-label {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-muted, #999);
+}
+
+.card-grid-demo__state-value {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-semibold, 600);
+    color: var(--pro-text-primary, #1a1a1a);
+}
+
+/* Event Log */
+.card-grid-demo__log {
+    background: var(--pro-surface-alt, #f8f9fa);
+    border: 1px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-md, 6px);
+    padding: var(--pro-space-md, 1rem);
+    font-family: var(--pro-font-mono, 'Consolas', monospace);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary, #666);
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Custom Card Styling for Demo */
+.card-grid-demo__card-color {
+    height: 4px;
+    width: calc(100% + 2rem);
+    margin: -1rem -1rem 0.75rem -1rem;
+    border-radius: var(--pro-radius-md, 6px) var(--pro-radius-md, 6px) 0 0;
+}
+
+.card-grid-demo__card-badge {
+    display: inline-block;
+    padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    background: var(--pro-surface-alt, #f0f0f0);
+    border-radius: var(--pro-radius-sm, 4px);
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+    color: var(--pro-text-secondary, #666);
+    margin-top: var(--pro-space-sm, 0.5rem);
+}
+
+/* List View Card Styling */
+.card-grid-demo__card-content--list {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 0;
+}
+
+.card-grid-demo__card-indicator {
+    width: 4px;
+    min-height: 100%;
+    border-radius: var(--pro-radius-md, 6px) 0 0 var(--pro-radius-md, 6px);
+    flex-shrink: 0;
+}
+
+.card-grid-demo__card-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-space-xs, 0.25rem);
+    padding: var(--pro-space-md, 1rem);
+}
+
+.card-grid-demo__card-title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-sm, 0.5rem);
+    flex-wrap: wrap;
+}
+
+.card-grid-demo__card-title-row .card-grid-demo__card-badge {
+    margin-top: 0;
+}
+
+/* Dark Theme */
+[data-theme="dark"] .card-grid-demo__state-item {
+    background: var(--pro-surface-dark, #2a2a2a);
+}
+
+[data-theme="dark"] .card-grid-demo__state-value {
+    color: var(--pro-text-primary-dark, #e1e1e1);
+}
+
+[data-theme="dark"] .card-grid-demo__log {
+    background: var(--pro-surface-dark, #1e1e1e);
+    border-color: var(--pro-border-color-dark, #333);
+    color: var(--pro-text-secondary-dark, #a0a0a0);
+}
+
+[data-theme="dark"] .card-grid-demo__card-badge {
+    background: var(--pro-surface-alt-dark, #333);
+    color: var(--pro-text-secondary-dark, #a0a0a0);
+}
+
+/* ==========================================================================
+   ActionBar Integration Styles (Demo)
+   ========================================================================== */
+
+.card-grid-demo__action-bar,
+.demo-area div#card-grid-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-md, 1rem);
+    align-items: center;
+    padding: 1em;
+    background: var(--pro-surface-alt, #f8f9fa);
+    border: 1px solid var(--pro-border-color, #e0e0e0);
+    border-radius: var(--pro-radius-md, 6px);
+    margin-bottom: var(--pro-space-md, 1rem);
+}
+
+.card-grid-demo__action-bar .action-bar__group {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-sm, 0.5rem);
+    transition: opacity 0.2s ease;
+}
+
+.card-grid-demo__action-bar .action-bar__group--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.card-grid-demo__action-bar .action-bar__group--search {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+}
+
+.card-grid-demo__action-bar .action-bar__group--search input {
+    flex: 1;
+}
+
+.card-grid-demo__action-bar .action-bar__group--count {
+    margin-left: auto;
+}
+
+.card-grid-demo__action-bar .action-bar__label {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+    color: var(--pro-text-muted, #6c757d);
+    white-space: nowrap;
+}
+
+.card-grid-demo__action-bar .action-bar__count {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-muted, #6c757d);
+    white-space: nowrap;
+}
+
+/* Toolbar Status Indicators */
+.card-grid-demo__toolbar-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-space-md, 1rem);
+    padding: var(--pro-space-sm, 0.5rem) var(--pro-space-md, 1rem);
+    background: var(--pro-bg-secondary, #f5f5f5);
+    border-radius: var(--pro-radius-sm, 4px);
+    margin-top: var(--pro-space-sm, 0.5rem);
+}
+
+.card-grid-demo__status-item {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-space-xs, 0.25rem);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary, #666);
+}
+
+.card-grid-demo__status-item i {
+    font-size: 0.5rem;
+}
+
+.card-grid-demo__status-item strong {
+    font-weight: var(--pro-font-weight-semibold, 600);
+}
+
+/* Dark Theme */
+[data-theme="dark"] .card-grid-demo__action-bar {
+    background: var(--pro-surface-dark, #1e1e1e);
+    border-color: var(--pro-border-color-dark, #333);
+}
+
+[data-theme="dark"] .card-grid-demo__toolbar-status {
+    background: var(--pro-surface-alt-dark, #2a2a2a);
+}
+
+[data-theme="dark"] .card-grid-demo__status-item {
+    color: var(--pro-text-secondary-dark, #a0a0a0);
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .card-grid-demo__action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .card-grid-demo__action-bar .action-bar__group {
+        width: 100%;
+    }
+
+    .card-grid-demo__action-bar .action-bar__group--search {
+        max-width: none;
+    }
+
+    .card-grid-demo__action-bar .action-bar__group--count {
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    .card-grid-demo__toolbar-status {
+        flex-direction: column;
+        gap: var(--pro-space-xs, 0.25rem);
+    }
+
+    .card-grid-demo__layout-controls,
+    .card-grid-demo__selection-controls,
+    .card-grid-demo__virtualize-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-grid-demo__api-buttons {
+        gap: var(--pro-space-xs, 0.25rem);
+    }
+
+    .card-grid-demo__api-buttons .btn {
+        font-size: var(--pro-font-size-xs, 0.75rem);
+        padding: var(--pro-space-xs, 0.25rem) var(--pro-space-sm, 0.5rem);
+    }
+}
+

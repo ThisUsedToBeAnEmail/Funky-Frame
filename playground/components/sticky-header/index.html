@@ -1,0 +1,349 @@
+<div data-page="component-sticky-header" class="component-demo">
+  <h2>Sticky Header</h2>
+  <p class="text-muted">Headers that stick to the viewport on scroll using IntersectionObserver for smooth transitions.</p>
+
+  <section class="demo-section" aria-labelledby="sticky-basic-heading">
+    <h3 id="sticky-basic-heading">Basic Sticky Header</h3>
+    <p class="text-muted small">Scroll inside the container to see the header stick to the top.</p>
+    <div class="demo-area">
+      <div id="sticky-demo-1" class="sticky-header-demo__container">
+        <header id="sticky-header-1" class="page-header-sticky sticky-header-demo__header sticky-header-demo__header--primary">
+          <div class="sticky-header-demo__header-content">
+            <div class="sticky-header-demo__title-group">
+              <strong class="page-header-title sticky-header-demo__title">Page Header</strong>
+              <span class="page-header-subtitle sticky-header-demo__subtitle">Subtitle text that hides when sticky</span>
+            </div>
+            <span id="scroll-indicator" class="sticky-header-demo__indicator badge bg-secondary">Scroll: 0</span>
+          </div>
+        </header>
+        <div class="sticky-header-demo__scroll-content">
+          <p>Scroll down to see the sticky header in action. The header will remain fixed at the top of this container while you scroll through the content.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+          <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
+          <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+          <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <p class="sticky-header-demo__scroll-end">End of content - scroll back up to see the header state change.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="sticky-hide-heading">
+    <h3 id="sticky-hide-heading">Hide on Scroll Down</h3>
+    <p class="text-muted small">This header hides when scrolling down and reappears when scrolling up - ideal for mobile navigation.</p>
+    <div class="demo-area">
+      <div id="sticky-demo-2" class="sticky-header-demo__container sticky-header-demo__container--short">
+        <header id="sticky-header-2" class="page-header-sticky sticky-header-demo__header sticky-header-demo__header--success">
+          <div class="sticky-header-demo__header-content">
+            <strong class="page-header-title sticky-header-demo__title">Hide on Scroll</strong>
+            <span id="direction-badge" class="sticky-header-demo__indicator badge bg-light text-dark">Idle</span>
+          </div>
+        </header>
+        <div class="sticky-header-demo__scroll-content">
+          <p>Try scrolling in both directions to see the hide/show effect.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          <p class="sticky-header-demo__scroll-end">Keep scrolling to see the header behavior...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="sticky-reveal-heading">
+    <h3 id="sticky-reveal-heading">Show on Scroll</h3>
+    <p class="text-muted small">This header starts hidden and appears when you begin scrolling - great for immersive content.</p>
+    <div class="demo-area">
+      <div id="sticky-demo-3" class="sticky-header-demo__container sticky-header-demo__container--short">
+        <header id="sticky-header-3" class="page-header-sticky sticky-header-demo__header sticky-header-demo__header--info">
+          <div class="sticky-header-demo__header-content">
+            <strong class="page-header-title sticky-header-demo__title">Appears on Scroll</strong>
+            <span id="reveal-badge" class="sticky-header-demo__indicator badge bg-light text-dark">Hidden</span>
+          </div>
+        </header>
+        <div class="sticky-header-demo__scroll-content">
+          <p>Start scrolling to reveal the header above. It will hide again when you scroll back to the top.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          <p class="sticky-header-demo__scroll-end">Scroll back to top to see the header hide again...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="sticky-api-heading">
+    <h3 id="sticky-api-heading">API Methods</h3>
+    <p class="text-muted small">Control sticky headers programmatically.</p>
+    <div class="demo-area sticky-header-demo__button-grid" role="group" aria-label="API control buttons">
+      <button class="btn btn-primary btn-sm" id="btn-init" type="button">
+        <i class="fas fa-play me-1" aria-hidden="true"></i>Re-Init Headers
+      </button>
+      <button class="btn btn-warning btn-sm" id="btn-destroy-all" type="button">
+        <i class="fas fa-stop me-1" aria-hidden="true"></i>Destroy All
+      </button>
+      <button class="btn btn-info btn-sm" id="btn-check-status" type="button">
+        <i class="fas fa-info-circle me-1" aria-hidden="true"></i>Check Status
+      </button>
+      <button class="btn btn-secondary btn-sm" id="btn-scroll-top" type="button">
+        <i class="fas fa-arrow-up me-1" aria-hidden="true"></i>Scroll to Top
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="sticky-log-heading">
+    <h3 id="sticky-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="sticky-log" class="sticky-header-demo__log" aria-live="polite" aria-label="Event log">Scroll to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var propsChangedHandler = null;
+  var scrollHandler1 = null;
+  var scrollHandler2 = null;
+  var scrollHandler3 = null;
+  var lastScrollTop2 = 0;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('sticky-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function initHeaders(props) {
+    // Clean up existing
+    if (Funky.StickyHeader) {
+      Funky.StickyHeader.destroyAll();
+    }
+
+    var header1 = document.getElementById('sticky-header-1');
+    var header2 = document.getElementById('sticky-header-2');
+    var header3 = document.getElementById('sticky-header-3');
+    var container1 = document.getElementById('sticky-demo-1');
+    var container2 = document.getElementById('sticky-demo-2');
+    var container3 = document.getElementById('sticky-demo-3');
+
+    if (!header1 || !header2 || !header3) return;
+
+    // Initialize header 1 with props from playground
+    if (Funky.StickyHeader) {
+      Funky.StickyHeader.initElement(header1, {
+        showShadow: props.showShadow !== false,
+        compactOnStick: props.compactOnStick === true,
+        hideSubtitle: props.hideSubtitle !== false,
+        hideOnScrollDown: false, // First demo doesn't hide on scroll
+        scrollContainer: container1,
+        onStick: function(el, isSticky) {
+          log('Header 1: ' + (isSticky ? 'sticky' : 'normal'));
+          emit('event', { event: 'sticky-header:stick', payload: { header: 1, sticky: isSticky } });
+        }
+      });
+
+      // Initialize header 2 with hideOnScrollDown enabled based on props
+      Funky.StickyHeader.initElement(header2, {
+        showShadow: props.showShadow !== false,
+        compactOnStick: props.compactOnStick === true,
+        hideSubtitle: props.hideSubtitle !== false,
+        hideOnScrollDown: props.hideOnScrollDown === true,
+        scrollContainer: container2,
+        onStick: function(el, isSticky) {
+          log('Header 2: ' + (isSticky ? 'sticky' : 'normal'));
+          emit('event', { event: 'sticky-header:stick', payload: { header: 2, sticky: isSticky } });
+        },
+        onHide: function(el) {
+          log('Header 2: hidden');
+          var badge = document.getElementById('direction-badge');
+          if (badge) {
+            badge.textContent = 'Hidden';
+            badge.className = 'sticky-header-demo__indicator badge bg-danger';
+          }
+          emit('event', { event: 'sticky-header:hide', payload: { header: 2 } });
+        },
+        onShow: function(el) {
+          log('Header 2: visible');
+          var badge = document.getElementById('direction-badge');
+          if (badge) {
+            badge.textContent = 'Visible';
+            badge.className = 'sticky-header-demo__indicator badge bg-success';
+          }
+          emit('event', { event: 'sticky-header:show', payload: { header: 2 } });
+        }
+      });
+
+      // Initialize header 3 with showOnScroll enabled based on props
+      Funky.StickyHeader.initElement(header3, {
+        showShadow: props.showShadow !== false,
+        compactOnStick: props.compactOnStick === true,
+        hideSubtitle: props.hideSubtitle !== false,
+        showOnScroll: props.showOnScroll === true,
+        scrollContainer: container3,
+        onStick: function(el, isSticky) {
+          log('Header 3: ' + (isSticky ? 'sticky' : 'normal'));
+          emit('event', { event: 'sticky-header:stick', payload: { header: 3, sticky: isSticky } });
+        },
+        onShow: function(el) {
+          log('Header 3: revealed');
+          var badge = document.getElementById('reveal-badge');
+          if (badge) {
+            badge.textContent = 'Revealed';
+            badge.className = 'sticky-header-demo__indicator badge bg-success';
+          }
+          emit('event', { event: 'sticky-header:reveal', payload: { header: 3 } });
+        },
+        onHide: function(el) {
+          log('Header 3: hidden');
+          var badge = document.getElementById('reveal-badge');
+          if (badge) {
+            badge.textContent = 'Hidden';
+            badge.className = 'sticky-header-demo__indicator badge bg-secondary';
+          }
+          emit('event', { event: 'sticky-header:hide', payload: { header: 3 } });
+        }
+      });
+    }
+
+    log('Headers initialized with props');
+  }
+
+  Funky.Pages.register('component-sticky-header', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+      lastScrollTop2 = 0;
+
+      log('Init with showShadow=' + (props.showShadow !== false) + ', compactOnStick=' + (props.compactOnStick === true));
+      emit('event', { event: 'sticky-header:init', payload: props });
+
+      var demo1 = document.getElementById('sticky-demo-1');
+      var demo2 = document.getElementById('sticky-demo-2');
+      var demo3 = document.getElementById('sticky-demo-3');
+      var scrollIndicator = document.getElementById('scroll-indicator');
+
+      // Initialize headers with current props
+      initHeaders(props);
+
+      // Scroll indicator for demo 1
+      scrollHandler1 = function() {
+        var scrollTop = this.scrollTop;
+        if (scrollIndicator) {
+          scrollIndicator.textContent = 'Scroll: ' + Math.round(scrollTop);
+        }
+      };
+      if (demo1) {
+        demo1.addEventListener('scroll', scrollHandler1);
+      }
+
+      // Direction indicator for demo 2 (supplement to component callbacks)
+      scrollHandler2 = function() {
+        var scrollTop = this.scrollTop;
+        var direction = scrollTop > lastScrollTop2 ? 'down' : 'up';
+
+        if (Math.abs(scrollTop - lastScrollTop2) > 5) {
+          var badge = document.getElementById('direction-badge');
+          var instance = Funky.StickyHeader ? Funky.StickyHeader.getInstance(document.getElementById('sticky-header-2')) : null;
+
+          // Only update badge if we haven't hidden it (component handles hide state)
+          if (badge && instance && !instance.isHidden) {
+            badge.textContent = direction === 'up' ? 'Scrolling Up' : 'Scrolling Down';
+            badge.className = 'sticky-header-demo__indicator badge ' + (direction === 'up' ? 'bg-success' : 'bg-warning');
+          }
+        }
+        lastScrollTop2 = scrollTop;
+      };
+      if (demo2) {
+        demo2.addEventListener('scroll', scrollHandler2);
+      }
+
+      // API buttons
+      document.getElementById('btn-init').addEventListener('click', function() {
+        initHeaders(getProps());
+        Funky.Toast.success('Headers re-initialized');
+        emit('event', { event: 'sticky-header:api-init', payload: {} });
+      });
+
+      document.getElementById('btn-destroy-all').addEventListener('click', function() {
+        if (Funky.StickyHeader) {
+          Funky.StickyHeader.destroyAll();
+          log('StickyHeader.destroyAll() called');
+          emit('event', { event: 'sticky-header:api-destroy', payload: {} });
+          Funky.Toast.warning('All sticky headers destroyed');
+        }
+      });
+
+      document.getElementById('btn-check-status').addEventListener('click', function() {
+        if (Funky.StickyHeader) {
+          var count = Funky.StickyHeader.headers ? Funky.StickyHeader.headers.length : 0;
+          var statuses = Funky.StickyHeader.headers.map(function(h, i) {
+            return 'Header ' + (i + 1) + ': sticky=' + h.isSticky + ', hidden=' + h.isHidden + ', revealed=' + h.isRevealed;
+          });
+          log('Active headers: ' + count + '\n' + statuses.join('\n'));
+          emit('event', { event: 'sticky-header:api-status', payload: { count: count } });
+          Funky.Toast.info('Active sticky headers: ' + count);
+        }
+      });
+
+      document.getElementById('btn-scroll-top').addEventListener('click', function() {
+        if (demo1) demo1.scrollTop = 0;
+        if (demo2) demo2.scrollTop = 0;
+        if (demo3) demo3.scrollTop = 0;
+        lastScrollTop2 = 0;
+        log('Scrolled to top');
+        emit('event', { event: 'sticky-header:scroll-top', payload: {} });
+      });
+
+      // Listen for props changes - re-init headers with new options
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - reinitializing headers');
+          initHeaders(newProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Remove scroll handlers
+      var demo1 = document.getElementById('sticky-demo-1');
+      var demo2 = document.getElementById('sticky-demo-2');
+      var demo3 = document.getElementById('sticky-demo-3');
+      if (demo1 && scrollHandler1) {
+        demo1.removeEventListener('scroll', scrollHandler1);
+      }
+      if (demo2 && scrollHandler2) {
+        demo2.removeEventListener('scroll', scrollHandler2);
+      }
+      if (demo3 && scrollHandler3) {
+        demo3.removeEventListener('scroll', scrollHandler3);
+      }
+      scrollHandler1 = null;
+      scrollHandler2 = null;
+      scrollHandler3 = null;
+
+      // Cleanup sticky headers
+      if (Funky.StickyHeader) {
+        Funky.StickyHeader.destroyAll();
+      }
+
+      logs = [];
+      lastScrollTop2 = 0;
+      return {};
+    }
+  });
+})();
+</script>

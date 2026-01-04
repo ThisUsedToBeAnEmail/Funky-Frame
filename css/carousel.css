@@ -1,0 +1,664 @@
+/**
+ * Funky.Carousel Styles
+ * 
+ * Responsive carousel/slider component with theme support.
+ * Uses --pro-* CSS custom properties for theming.
+ * 
+ * @version 1.0.0
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+
+:root {
+  /* Layout - uses theme spacing */
+  --carousel-gap: var(--pro-space-4, 16px);
+  --carousel-border-radius: var(--pro-radius-md, 8px);
+  
+  /* Slide */
+  --carousel-slide-bg: var(--pro-bg-elevated, #ffffff);
+  --carousel-slide-border: var(--pro-border-color, #e1e4e8);
+  --carousel-slide-shadow: var(--pro-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  
+  /* Animation */
+  --carousel-transition-speed: 400ms;
+  --carousel-easing: ease-out;
+  
+  /* Density-aware sizing */
+  --carousel-arrow-size: var(--pro-btn-height, 40px);
+  --carousel-dot-size: var(--pro-space-2, 8px);
+  --carousel-icon-size: var(--pro-icon-size, 24px);
+  
+  /* Overlay backgrounds - theme aware */
+  --carousel-overlay-bg: var(--pro-bg-overlay, rgba(0, 0, 0, 0.6));
+  --carousel-overlay-bg-hover: var(--pro-bg-overlay, rgba(0, 0, 0, 0.8));
+  --carousel-progress-bg: var(--pro-bg-secondary, rgba(0, 0, 0, 0.1));
+}
+
+/* ==========================================================================
+   Base Container
+   ========================================================================== */
+
+.carousel {
+  position: relative;
+  width: 100%;
+  /* Add padding for external arrows */
+  padding: 0 24px;
+  box-sizing: border-box;
+  /* Ensure arrows are not clipped */
+  overflow: visible;
+}
+
+/* When arrows are inside viewport, no extra padding needed */
+.carousel--arrows-inside {
+  padding: 0;
+}
+
+/* ==========================================================================
+   Full Width Mode
+   ========================================================================== */
+
+.carousel--full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding-left: var(--pro-space-6, 24px);
+  padding-right: var(--pro-space-6, 24px);
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Viewport
+   ========================================================================== */
+
+.carousel__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Track
+   ========================================================================== */
+
+.carousel__track {
+  display: flex;
+  transition: transform var(--carousel-transition-speed) var(--carousel-easing);
+  will-change: transform;
+}
+
+/* Disable transition when not animating (set via JS) */
+.carousel__track--no-transition {
+  transition: none !important;
+}
+
+/* ==========================================================================
+   Slides
+   ========================================================================== */
+
+.carousel__slide {
+  flex-shrink: 0;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Slide content wrapper */
+.carousel__slide-content {
+  height: 100%;
+  background: var(--carousel-slide-bg);
+  border-radius: var(--carousel-border-radius);
+  overflow: hidden;
+}
+
+/* Optional: Card-style slides */
+.carousel--cards .carousel__slide-content {
+  border: 1px solid var(--carousel-slide-border);
+  box-shadow: var(--carousel-slide-shadow);
+}
+
+/* Optional: Full-bleed images */
+.carousel__slide img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.carousel--images .carousel__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+/* Screen reader only text */
+.carousel__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible for keyboard navigation */
+.carousel:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* ==========================================================================
+   Touch & Swipe (Phase 2)
+   ========================================================================== */
+
+/* Cursor hints for draggable carousel */
+.carousel__viewport {
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Dragging state */
+.carousel--dragging {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.carousel--dragging .carousel__viewport {
+  cursor: grabbing;
+}
+
+.carousel--dragging .carousel__slide {
+  cursor: grabbing;
+}
+
+/* Disable pointer events on slide content during drag */
+.carousel--dragging .carousel__slide-content,
+.carousel--dragging .carousel__slide img,
+.carousel--dragging .carousel__slide a,
+.carousel--dragging .carousel__slide button {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Navigation & Indicators (Phase 3)
+   ========================================================================== */
+
+/* Arrow Buttons */
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: var(--carousel-arrow-size);
+  height: var(--carousel-arrow-size);
+  padding: 0;
+  border: 1px solid var(--pro-border-color, #ddd);
+  border-radius: 50%;
+  background: var(--pro-bg-elevated, #fff);
+  color: var(--pro-text-primary, #333);
+  cursor: pointer;
+  
+  transition: background-color 0.2s, opacity 0.2s, transform 0.2s;
+}
+
+.carousel__arrow:hover:not(:disabled) {
+  background: var(--pro-bg-tertiary, #f5f5f5);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel__arrow:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.carousel__arrow--prev {
+  left: 0;
+}
+
+.carousel__arrow--next {
+  right: 0;
+}
+
+/* Arrows inside viewport */
+.carousel__viewport .carousel__arrow--prev {
+  left: var(--pro-space-2, 8px);
+}
+
+.carousel__viewport .carousel__arrow--next {
+  right: var(--pro-space-2, 8px);
+}
+
+/* Disabled state */
+.carousel__arrow:disabled,
+.carousel__arrow--disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Arrow SVG icons */
+.carousel__arrow svg {
+  display: block;
+  width: var(--carousel-icon-size);
+  height: var(--carousel-icon-size);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.carousel__arrow svg path {
+  fill: currentColor;
+}
+
+/* Dot Indicators */
+.carousel__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--pro-space-2, 8px);
+  padding: var(--pro-space-3, 12px) 0;
+}
+
+.carousel__dots--top {
+  order: -1;
+}
+
+.carousel__dot {
+  width: var(--carousel-dot-size);
+  height: var(--carousel-dot-size);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--pro-border-color, #ddd);
+  cursor: pointer;
+  
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.carousel__dot:hover {
+  background: var(--pro-text-secondary, #666);
+  transform: scale(1.2);
+}
+
+.carousel__dot:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.carousel__dot--active {
+  background: var(--pro-accent-primary, #0066cc);
+  transform: scale(1.2);
+}
+
+/* Pill-style dots variant */
+.carousel--dots-pill .carousel__dot {
+  width: calc(var(--carousel-dot-size) * 3);
+  height: calc(var(--carousel-dot-size) / 2);
+  border-radius: var(--pro-radius-sm, 2px);
+}
+
+.carousel--dots-pill .carousel__dot--active {
+  width: calc(var(--carousel-dot-size) * 4);
+}
+
+/* Numbers variant */
+.carousel--dots-numbers .carousel__dot {
+  width: auto;
+  height: auto;
+  padding: var(--pro-space-1, 4px) var(--pro-space-2, 8px);
+  font-size: var(--pro-font-size-sm, 0.875rem);
+  border-radius: var(--pro-radius-sm, 4px);
+}
+
+/* ==========================================================================
+   Autoplay & Animation (Phase 4)
+   ========================================================================== */
+
+/* Play/Pause Button */
+.carousel__play-button {
+  position: absolute;
+  bottom: var(--pro-space-3, 12px);
+  right: var(--pro-space-3, 12px);
+  z-index: 10;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: calc(var(--carousel-arrow-size) * 0.9);
+  height: calc(var(--carousel-arrow-size) * 0.9);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--carousel-overlay-bg);
+  color: var(--pro-text-inverse, #fff);
+  cursor: pointer;
+  
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.carousel__play-button:hover {
+  background: var(--carousel-overlay-bg-hover);
+  transform: scale(1.1);
+}
+
+.carousel__play-button:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.carousel__play-button svg {
+  display: block;
+  width: calc(var(--carousel-icon-size) * 0.8);
+  height: calc(var(--carousel-icon-size) * 0.8);
+  flex-shrink: 0;
+}
+
+/* Progress Bar */
+.carousel__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--pro-space-1, 3px);
+  background: var(--carousel-progress-bg);
+  overflow: hidden;
+}
+
+.carousel__progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--pro-accent-primary, #0066cc);
+}
+
+/* Autoplay active indicator */
+.carousel--autoplay::after {
+  content: '';
+  position: absolute;
+  top: var(--pro-space-2, 8px);
+  right: var(--pro-space-2, 8px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pro-accent-success, #28a745);
+  animation: carousel-pulse 2s infinite;
+}
+
+@keyframes carousel-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Hide autoplay indicator when play button is shown */
+.carousel--autoplay:has(.carousel__play-button)::after {
+  display: none;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel__track {
+    transition: none !important;
+  }
+  
+  .carousel__arrow,
+  .carousel__dot,
+  .carousel__play-button,
+  .carousel__progress-fill {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .carousel__progress {
+    display: none;
+  }
+  
+  .carousel--autoplay::after {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Advanced Features (Phase 5)
+   ========================================================================== */
+
+/* Center Mode */
+.carousel--center .carousel__slide {
+  opacity: 0.5;
+  transform: scale(0.9);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.carousel--center .carousel__slide--center {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+}
+
+/* Lazy Loading */
+.carousel__slide--lazy {
+  background: var(--pro-bg-secondary, #f5f5f5);
+  min-height: 200px;
+}
+
+.carousel__slide--lazy::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 2px solid var(--pro-border-color, #ddd);
+  border-top-color: var(--pro-accent-primary, #0066cc);
+  border-radius: 50%;
+  animation: carousel-spin 0.8s linear infinite;
+}
+
+@keyframes carousel-spin {
+  to { transform: rotate(360deg); }
+}
+
+.carousel__image--loaded {
+  animation: carousel-fadeIn 0.3s ease-out;
+}
+
+@keyframes carousel-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.carousel__image--error {
+  opacity: 0.5;
+}
+
+/* Infinite Loop Clones - styled same as regular slides */
+.carousel__slide--clone {
+  pointer-events: none;
+}
+
+/* Fullscreen Button */
+.carousel__fullscreen-button {
+  position: absolute;
+  top: var(--pro-space-2, 8px);
+  right: var(--pro-space-2, 8px);
+  z-index: 10;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: calc(var(--carousel-arrow-size) * 0.8);
+  height: calc(var(--carousel-arrow-size) * 0.8);
+  padding: 0;
+  border: none;
+  border-radius: var(--pro-radius-sm, 4px);
+  background: var(--carousel-overlay-bg);
+  color: var(--pro-text-inverse, #fff);
+  cursor: pointer;
+  
+  transition: background-color 0.2s;
+  
+  /* Ensure button doesn't affect layout */
+  pointer-events: auto;
+}
+
+.carousel__fullscreen-button:hover {
+  background: var(--carousel-overlay-bg-hover);
+}
+
+.carousel__fullscreen-button:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.carousel__fullscreen-button svg {
+  display: block;
+  width: calc(var(--carousel-icon-size) * 0.8);
+  height: calc(var(--carousel-icon-size) * 0.8);
+  flex-shrink: 0;
+}
+
+/* Fullscreen Mode */
+.carousel--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 9999;
+  background: var(--pro-backdrop-bg, #000);
+}
+
+.carousel--fullscreen .carousel__viewport {
+  width: 100vw;
+  height: 100vh;
+}
+
+.carousel--fullscreen .carousel__slide {
+  width: 100vw !important;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel--fullscreen .carousel__slide img {
+  max-height: 100vh;
+  max-width: 100vw;
+  object-fit: contain;
+}
+
+/* Adjust fullscreen button position when in fullscreen */
+.carousel--fullscreen .carousel__fullscreen-button {
+  position: fixed;
+  top: var(--pro-space-3, 12px);
+  right: var(--pro-space-3, 12px);
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --carousel-gap: var(--pro-space-3, 12px);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --carousel-gap: var(--pro-space-2, 8px);
+  }
+}
+
+/* ==========================================================================
+   Playground Demo Styles
+   ========================================================================== */
+
+.carousel-demo__slide {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--pro-radius-md, 8px);
+  color: var(--pro-text-inverse, #fff);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.carousel-demo__slide[data-slide="1"] {
+  background: linear-gradient(135deg, hsl(50, 70%, 60%), hsl(80, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="2"] {
+  background: linear-gradient(135deg, hsl(100, 70%, 60%), hsl(130, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="3"] {
+  background: linear-gradient(135deg, hsl(150, 70%, 60%), hsl(180, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="4"] {
+  background: linear-gradient(135deg, hsl(200, 70%, 60%), hsl(230, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="5"] {
+  background: linear-gradient(135deg, hsl(250, 70%, 60%), hsl(280, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="6"] {
+  background: linear-gradient(135deg, hsl(300, 70%, 60%), hsl(330, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="7"] {
+  background: linear-gradient(135deg, hsl(350, 70%, 60%), hsl(20, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="8"] {
+  background: linear-gradient(135deg, hsl(40, 70%, 60%), hsl(70, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="9"] {
+  background: linear-gradient(135deg, hsl(90, 70%, 60%), hsl(120, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="10"] {
+  background: linear-gradient(135deg, hsl(140, 70%, 60%), hsl(170, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="11"] {
+  background: linear-gradient(135deg, hsl(190, 70%, 60%), hsl(220, 70%, 40%));
+}
+
+.carousel-demo__slide[data-slide="12"] {
+  background: linear-gradient(135deg, hsl(240, 70%, 60%), hsl(270, 70%, 40%));
+}
+
+.carousel-demo__slide-number {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,307 @@
+<div data-page="component-spinner" class="component-demo">
+  <h2>Spinner</h2>
+  <p class="text-muted">Loading indicators in various styles and sizes for indicating async operations.</p>
+
+  <section class="demo-section" aria-labelledby="spinner-styles-heading">
+    <h3 id="spinner-styles-heading">Spinner Styles</h3>
+    <p class="text-muted small">Different animation styles. Props panel style selection applies to size demos.</p>
+    <div class="demo-area spinner-demo__grid" role="group" aria-label="Spinner style examples">
+      <div class="spinner-demo__item">
+        <div id="spinner-border" role="status" aria-label="Border spinner"></div>
+        <small class="text-muted">Border</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-grow" role="status" aria-label="Grow spinner"></div>
+        <small class="text-muted">Grow</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-dots" role="status" aria-label="Dots spinner"></div>
+        <small class="text-muted">Dots</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-pulse" role="status" aria-label="Pulse spinner"></div>
+        <small class="text-muted">Pulse</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-ring" role="status" aria-label="Ring spinner"></div>
+        <small class="text-muted">Ring</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-sizes-heading">
+    <h3 id="spinner-sizes-heading">Sizes</h3>
+    <p class="text-muted small">From extra small to extra large. Style from props panel is applied.</p>
+    <div class="demo-area spinner-demo__grid" role="group" aria-label="Spinner size examples">
+      <div class="spinner-demo__item">
+        <div id="spinner-xs" role="status" aria-label="Extra small spinner"></div>
+        <small class="text-muted">XS</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-sm" role="status" aria-label="Small spinner"></div>
+        <small class="text-muted">SM</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-md" role="status" aria-label="Medium spinner"></div>
+        <small class="text-muted">MD</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-lg" role="status" aria-label="Large spinner"></div>
+        <small class="text-muted">LG</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-xl" role="status" aria-label="Extra large spinner"></div>
+        <small class="text-muted">XL</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-colors-heading">
+    <h3 id="spinner-colors-heading">Color Variants</h3>
+    <p class="text-muted small">Semantic color options for different contexts.</p>
+    <div class="demo-area spinner-demo__grid" role="group" aria-label="Spinner color examples">
+      <div class="spinner-demo__item">
+        <div id="spinner-primary" role="status" aria-label="Primary spinner"></div>
+        <small class="text-muted">Primary</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-secondary" role="status" aria-label="Secondary spinner"></div>
+        <small class="text-muted">Secondary</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-success" role="status" aria-label="Success spinner"></div>
+        <small class="text-muted">Success</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-warning" role="status" aria-label="Warning spinner"></div>
+        <small class="text-muted">Warning</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-danger" role="status" aria-label="Danger spinner"></div>
+        <small class="text-muted">Danger</small>
+      </div>
+      <div class="spinner-demo__item">
+        <div id="spinner-info" role="status" aria-label="Info spinner"></div>
+        <small class="text-muted">Info</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-text-heading">
+    <h3 id="spinner-text-heading">With Text</h3>
+    <p class="text-muted small">Spinner with loading message. Set text in props panel.</p>
+    <div class="demo-area">
+      <div id="spinner-text" role="status" aria-label="Spinner with text"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-overlay-heading">
+    <h3 id="spinner-overlay-heading">Overlay Spinner</h3>
+    <p class="text-muted small">Full-page overlay for blocking operations.</p>
+    <div class="demo-area spinner-demo__button-grid" role="group" aria-label="Overlay spinner controls">
+      <button class="btn btn-primary" id="btn-overlay" type="button">
+        <i class="fas fa-expand me-1" aria-hidden="true"></i> Show Overlay (2s)
+      </button>
+      <button class="btn btn-outline-primary" id="btn-overlay-text" type="button">
+        <i class="fas fa-comment me-1" aria-hidden="true"></i> Overlay with Text
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-button-heading">
+    <h3 id="spinner-button-heading">Button States</h3>
+    <p class="text-muted small">Inline spinners within buttons for loading states.</p>
+    <div class="demo-area spinner-demo__button-grid" role="group" aria-label="Button spinner controls">
+      <button class="btn btn-primary" id="btn-loading" disabled type="button">
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Loading...
+      </button>
+      <button class="btn btn-success" id="btn-simulate" type="button">
+        <i class="fas fa-play me-1" aria-hidden="true"></i> Simulate Loading
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-container-heading">
+    <h3 id="spinner-container-heading">Container Spinner</h3>
+    <p class="text-muted small">Spinner overlay within a specific container.</p>
+    <div class="demo-area">
+      <button class="btn btn-outline-secondary mb-3" id="btn-container" type="button">
+        <i class="fas fa-square me-1" aria-hidden="true"></i> Toggle Container Spinner
+      </button>
+      <div id="spinner-container-demo" class="spinner-demo__container">
+        <p>This is some content that will be covered by the spinner overlay.</p>
+        <p>The container maintains its dimensions while loading.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="spinner-log-heading">
+    <h3 id="spinner-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="spinner-log" class="spinner-demo__log" aria-live="polite" aria-label="Spinner event log">Interact with spinners to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var containerLoading = false;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('spinner-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  Funky.Pages.register('component-spinner', {
+    init: function(state) {
+      var props = getProps();
+      var style = props.style || 'border';
+      var size = props.size || 'md';
+      var variant = props.variant || 'primary';
+      var text = props.text || 'Loading data...';
+
+      log('Init with style=' + style + ', size=' + size + ', variant=' + variant);
+      emit('event', { event: 'spinner:init', payload: { style: style, size: size, variant: variant } });
+
+      if (!Funky.Spinner) {
+        log('Error: Funky.Spinner not available');
+        return;
+      }
+
+      // Render different spinner styles
+      Funky.Spinner.show('#spinner-border', { style: 'border', size: 'md' });
+      Funky.Spinner.show('#spinner-grow', { style: 'grow', size: 'md' });
+      Funky.Spinner.show('#spinner-dots', { style: 'dots', size: 'md' });
+      Funky.Spinner.show('#spinner-pulse', { style: 'pulse', size: 'md' });
+      Funky.Spinner.show('#spinner-ring', { style: 'ring', size: 'md' });
+
+      // Render sizes (uses style from props)
+      Funky.Spinner.show('#spinner-xs', { style: style, size: 'xs', variant: variant });
+      Funky.Spinner.show('#spinner-sm', { style: style, size: 'sm', variant: variant });
+      Funky.Spinner.show('#spinner-md', { style: style, size: 'md', variant: variant });
+      Funky.Spinner.show('#spinner-lg', { style: style, size: 'lg', variant: variant });
+      Funky.Spinner.show('#spinner-xl', { style: style, size: 'xl', variant: variant });
+
+      // Render color variants
+      Funky.Spinner.show('#spinner-primary', { style: style, size: 'md', variant: 'primary' });
+      Funky.Spinner.show('#spinner-secondary', { style: style, size: 'md', variant: 'secondary' });
+      Funky.Spinner.show('#spinner-success', { style: style, size: 'md', variant: 'success' });
+      Funky.Spinner.show('#spinner-warning', { style: style, size: 'md', variant: 'warning' });
+      Funky.Spinner.show('#spinner-danger', { style: style, size: 'md', variant: 'danger' });
+      Funky.Spinner.show('#spinner-info', { style: style, size: 'md', variant: 'info' });
+
+      // With text
+      Funky.Spinner.show('#spinner-text', {
+        style: style,
+        text: text,
+        size: size,
+        variant: variant
+      });
+
+      // Overlay button
+      document.getElementById('btn-overlay').onclick = function() {
+        var overlay = Funky.Spinner.overlay({ style: style, size: 'lg' });
+        log('Showed overlay spinner');
+        emit('event', { event: 'spinner:overlay', payload: { style: style } });
+        setTimeout(function() {
+          overlay.hide();
+          log('Hidden overlay spinner');
+          emit('event', { event: 'spinner:overlay-hidden', payload: {} });
+        }, 2000);
+      };
+
+      // Overlay with text button
+      document.getElementById('btn-overlay-text').onclick = function() {
+        var overlay = Funky.Spinner.overlay({
+          style: style,
+          size: 'lg',
+          text: text || 'Please wait...'
+        });
+        log('Showed overlay with text: ' + (text || 'Please wait...'));
+        emit('event', { event: 'spinner:overlay', payload: { style: style, text: text } });
+        setTimeout(function() {
+          overlay.hide();
+          log('Hidden overlay spinner');
+          emit('event', { event: 'spinner:overlay-hidden', payload: {} });
+        }, 2000);
+      };
+
+      // Simulate loading button
+      var btnLoading = document.getElementById('btn-loading');
+      var btnSimulate = document.getElementById('btn-simulate');
+
+      btnSimulate.onclick = function() {
+        btnLoading.disabled = true;
+        btnLoading.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+        log('Button loading started');
+        emit('event', { event: 'spinner:button-loading', payload: { state: 'start' } });
+
+        setTimeout(function() {
+          btnLoading.disabled = false;
+          btnLoading.innerHTML = '<i class="fas fa-check me-2" aria-hidden="true"></i>Complete!';
+          log('Button loading complete');
+          emit('event', { event: 'spinner:button-loading', payload: { state: 'complete' } });
+
+          setTimeout(function() {
+            btnLoading.disabled = true;
+            btnLoading.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+          }, 2000);
+        }, 2000);
+      };
+
+      // Container spinner toggle
+      document.getElementById('btn-container').onclick = function() {
+        var container = document.getElementById('spinner-container-demo');
+        if (containerLoading) {
+          Funky.Spinner.hide(container);
+          containerLoading = false;
+          log('Container spinner hidden');
+          emit('event', { event: 'spinner:container', payload: { visible: false } });
+        } else {
+          Funky.Spinner.show(container, {
+            style: style,
+            size: size,
+            variant: variant,
+            text: text
+          });
+          containerLoading = true;
+          log('Container spinner shown');
+          emit('event', { event: 'spinner:container', payload: { visible: true, style: style } });
+        }
+      };
+    },
+    destroy: function() {
+      // Clean up any spinners
+      if (Funky.Spinner) {
+        Funky.Spinner.hide('#spinner-border');
+        Funky.Spinner.hide('#spinner-grow');
+        Funky.Spinner.hide('#spinner-dots');
+        Funky.Spinner.hide('#spinner-pulse');
+        Funky.Spinner.hide('#spinner-ring');
+        Funky.Spinner.hide('#spinner-xs');
+        Funky.Spinner.hide('#spinner-sm');
+        Funky.Spinner.hide('#spinner-md');
+        Funky.Spinner.hide('#spinner-lg');
+        Funky.Spinner.hide('#spinner-xl');
+        Funky.Spinner.hide('#spinner-primary');
+        Funky.Spinner.hide('#spinner-secondary');
+        Funky.Spinner.hide('#spinner-success');
+        Funky.Spinner.hide('#spinner-warning');
+        Funky.Spinner.hide('#spinner-danger');
+        Funky.Spinner.hide('#spinner-info');
+        Funky.Spinner.hide('#spinner-text');
+        Funky.Spinner.hide('#spinner-container-demo');
+      }
+      containerLoading = false;
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

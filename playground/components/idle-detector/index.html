@@ -1,0 +1,371 @@
+<div data-page="component-idle-detector" class="component-demo">
+  <h2>IdleDetector</h2>
+  <p class="text-muted">User activity tracking and idle state detection</p>
+
+  <section class="demo-section" aria-labelledby="idle-status-heading">
+    <h3 id="idle-status-heading">Current Status</h3>
+    <p class="text-muted small">Move your mouse or press keys to trigger activity</p>
+    <div class="demo-area">
+      <div class="idle-demo__status">
+        <div class="idle-demo__state-indicator" id="idle-state-indicator">
+          <div class="idle-demo__state-icon" id="idle-state-icon">
+            <i class="fas fa-user" aria-hidden="true"></i>
+          </div>
+          <div class="idle-demo__state-label" id="idle-state-label">Active</div>
+        </div>
+        <div class="idle-demo__metrics">
+          <div class="idle-demo__metric">
+            <span class="idle-demo__metric-label">Idle Time</span>
+            <span class="idle-demo__metric-value" id="idle-time">0s</span>
+          </div>
+          <div class="idle-demo__metric">
+            <span class="idle-demo__metric-label">Last Activity</span>
+            <span class="idle-demo__metric-value" id="last-activity">Just now</span>
+          </div>
+          <div class="idle-demo__metric">
+            <span class="idle-demo__metric-label">Tab Hidden</span>
+            <span class="idle-demo__metric-value" id="tab-hidden">No</span>
+          </div>
+          <div class="idle-demo__metric">
+            <span class="idle-demo__metric-label">Window Focused</span>
+            <span class="idle-demo__metric-value" id="window-focused">Yes</span>
+          </div>
+        </div>
+      </div>
+      <div class="idle-demo__progress">
+        <div class="idle-demo__progress-label">
+          <span>Time until idle:</span>
+          <span id="idle-countdown">5.0s</span>
+        </div>
+        <div class="idle-demo__progress-bar">
+          <div class="idle-demo__progress-fill" id="idle-progress"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="idle-controls-heading">
+    <h3 id="idle-controls-heading">Controls</h3>
+    <div class="demo-area">
+      <div class="idle-demo__controls">
+        <button type="button" id="idle-trigger-btn" class="btn btn-primary">
+          <i class="fas fa-bolt" aria-hidden="true"></i> Trigger Activity
+        </button>
+        <button type="button" id="idle-pause-btn" class="btn btn-outline-secondary">
+          <i class="fas fa-pause" aria-hidden="true"></i> Pause
+        </button>
+        <button type="button" id="idle-resume-btn" class="btn btn-outline-secondary" disabled>
+          <i class="fas fa-play" aria-hidden="true"></i> Resume
+        </button>
+        <button type="button" id="idle-reset-btn" class="btn btn-outline-warning">
+          <i class="fas fa-redo" aria-hidden="true"></i> Reset
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="idle-settings-heading">
+    <h3 id="idle-settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="idle-demo__settings">
+        <div class="idle-demo__setting">
+          <span class="idle-demo__setting-label">Idle Timeout:</span>
+          <span class="idle-demo__setting-value" id="setting-idle-timeout">5000ms</span>
+        </div>
+        <div class="idle-demo__setting">
+          <span class="idle-demo__setting-label">Away Timeout:</span>
+          <span class="idle-demo__setting-value" id="setting-away-timeout">3000ms</span>
+        </div>
+        <div class="idle-demo__setting">
+          <span class="idle-demo__setting-label">Throttle:</span>
+          <span class="idle-demo__setting-value" id="setting-throttle">500ms</span>
+        </div>
+        <div class="idle-demo__setting">
+          <span class="idle-demo__setting-label">Track Visibility:</span>
+          <span class="idle-demo__setting-value" id="setting-visibility">Yes</span>
+        </div>
+        <div class="idle-demo__setting">
+          <span class="idle-demo__setting-label">Debug:</span>
+          <span class="idle-demo__setting-value" id="setting-debug">Yes</span>
+        </div>
+        <div class="idle-demo__setting">
+          <span class="idle-demo__setting-label">Paused:</span>
+          <span class="idle-demo__setting-value" id="setting-paused">No</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="idle-log-heading">
+    <h3 id="idle-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="idle-log" class="idle-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var updateTimer = null;
+  var logs = [];
+
+  function log(message, type) {
+    var prefix = type ? '[' + type.toUpperCase() + '] ' : '';
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + prefix + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('idle-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      idleTimeout: props.idleTimeout || 5000,
+      awayTimeout: props.awayTimeout || 3000,
+      throttle: props.throttle || 500,
+      trackVisibility: props.trackVisibility !== false,
+      debug: props.debug !== false
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+    var el;
+
+    el = document.getElementById('setting-idle-timeout');
+    if (el) el.textContent = opts.idleTimeout + 'ms';
+
+    el = document.getElementById('setting-away-timeout');
+    if (el) el.textContent = opts.awayTimeout + 'ms';
+
+    el = document.getElementById('setting-throttle');
+    if (el) el.textContent = opts.throttle + 'ms';
+
+    el = document.getElementById('setting-visibility');
+    if (el) el.textContent = opts.trackVisibility ? 'Yes' : 'No';
+
+    el = document.getElementById('setting-debug');
+    if (el) el.textContent = opts.debug ? 'Yes' : 'No';
+  }
+
+  function formatTime(ms) {
+    if (ms < 1000) return ms + 'ms';
+    if (ms < 60000) return (ms / 1000).toFixed(1) + 's';
+    return Math.floor(ms / 60000) + 'm ' + Math.floor((ms % 60000) / 1000) + 's';
+  }
+
+  function formatRelativeTime(timestamp) {
+    var diff = Date.now() - timestamp;
+    if (diff < 1000) return 'Just now';
+    if (diff < 60000) return Math.floor(diff / 1000) + 's ago';
+    return Math.floor(diff / 60000) + 'm ago';
+  }
+
+  function updateDisplay() {
+    if (!Funky.IdleDetector || !Funky.IdleDetector.isInitialized()) return;
+
+    var info = Funky.IdleDetector.getStateInfo();
+    var opts = getOptions();
+
+    // State indicator
+    var stateIndicator = document.getElementById('idle-state-indicator');
+    var stateIcon = document.getElementById('idle-state-icon');
+    var stateLabel = document.getElementById('idle-state-label');
+
+    if (stateIndicator) {
+      stateIndicator.className = 'idle-demo__state-indicator idle-demo__state-indicator--' + info.state;
+    }
+
+    if (stateIcon) {
+      var iconClass = 'fa-user';
+      if (info.state === 'idle') iconClass = 'fa-moon';
+      if (info.state === 'away') iconClass = 'fa-eye-slash';
+      if (info.isPaused) iconClass = 'fa-pause';
+      stateIcon.innerHTML = '<i class="fas ' + iconClass + '" aria-hidden="true"></i>';
+    }
+
+    if (stateLabel) {
+      var label = info.state.charAt(0).toUpperCase() + info.state.slice(1);
+      if (info.isPaused) label += ' (Paused)';
+      stateLabel.textContent = label;
+    }
+
+    // Metrics
+    var idleTimeEl = document.getElementById('idle-time');
+    if (idleTimeEl) idleTimeEl.textContent = formatTime(info.idleTime);
+
+    var lastActivityEl = document.getElementById('last-activity');
+    if (lastActivityEl) lastActivityEl.textContent = formatRelativeTime(info.lastActivity);
+
+    var tabHiddenEl = document.getElementById('tab-hidden');
+    if (tabHiddenEl) tabHiddenEl.textContent = info.tabHidden ? 'Yes' : 'No';
+
+    var windowFocusedEl = document.getElementById('window-focused');
+    if (windowFocusedEl) windowFocusedEl.textContent = info.windowFocused ? 'Yes' : 'No';
+
+    // Paused status
+    var pausedEl = document.getElementById('setting-paused');
+    if (pausedEl) pausedEl.textContent = info.isPaused ? 'Yes' : 'No';
+
+    // Progress bar
+    var progressFill = document.getElementById('idle-progress');
+    var countdownEl = document.getElementById('idle-countdown');
+
+    if (progressFill && countdownEl) {
+      if (info.state === 'active' && !info.isPaused) {
+        var remaining = Math.max(0, opts.idleTimeout - info.idleTime);
+        var percent = (remaining / opts.idleTimeout) * 100;
+        progressFill.style.width = percent + '%';
+        countdownEl.textContent = (remaining / 1000).toFixed(1) + 's';
+      } else if (info.state === 'idle') {
+        progressFill.style.width = '0%';
+        countdownEl.textContent = 'Idle';
+      } else if (info.state === 'away') {
+        progressFill.style.width = '0%';
+        countdownEl.textContent = 'Away';
+      } else if (info.isPaused) {
+        countdownEl.textContent = 'Paused';
+      }
+    }
+
+    // Button states
+    var pauseBtn = document.getElementById('idle-pause-btn');
+    var resumeBtn = document.getElementById('idle-resume-btn');
+
+    if (pauseBtn) pauseBtn.disabled = info.isPaused;
+    if (resumeBtn) resumeBtn.disabled = !info.isPaused;
+  }
+
+  function initIdleDetector() {
+    var opts = getOptions();
+
+    // Destroy existing instance
+    if (Funky.IdleDetector && Funky.IdleDetector.isInitialized()) {
+      Funky.IdleDetector.destroy();
+    }
+
+    // Initialize with event handlers
+    Funky.IdleDetector.init({
+      idleTimeout: opts.idleTimeout,
+      awayTimeout: opts.awayTimeout,
+      throttle: opts.throttle,
+      trackVisibility: opts.trackVisibility,
+      debug: opts.debug,
+      onIdle: function(data) {
+        log('User went idle after ' + formatTime(data.idleTime), 'idle');
+        emit('event', { event: 'idle:idle', payload: data });
+      },
+      onActive: function(data) {
+        log('User active again (was idle for ' + formatTime(data.idleDuration) + ')', 'active');
+        emit('event', { event: 'idle:active', payload: data });
+      },
+      onAway: function(data) {
+        log('User went away (tab hidden)', 'away');
+        emit('event', { event: 'idle:away', payload: data });
+      },
+      onReturn: function(data) {
+        log('User returned (was away for ' + formatTime(data.awayDuration) + ')', 'return');
+        emit('event', { event: 'idle:return', payload: data });
+      }
+    });
+
+    // Start update timer
+    if (updateTimer) clearInterval(updateTimer);
+    updateTimer = setInterval(updateDisplay, 100);
+
+    log('IdleDetector initialized (timeout: ' + opts.idleTimeout + 'ms)');
+  }
+
+  function setupEventListeners() {
+    var triggerBtn = document.getElementById('idle-trigger-btn');
+    var pauseBtn = document.getElementById('idle-pause-btn');
+    var resumeBtn = document.getElementById('idle-resume-btn');
+    var resetBtn = document.getElementById('idle-reset-btn');
+
+    if (triggerBtn) {
+      triggerBtn.addEventListener('click', function() {
+        if (Funky.IdleDetector) {
+          Funky.IdleDetector.triggerActivity();
+          log('Activity triggered manually');
+          emit('event', { event: 'idle:triggerActivity', payload: {} });
+        }
+      });
+    }
+
+    if (pauseBtn) {
+      pauseBtn.addEventListener('click', function() {
+        if (Funky.IdleDetector) {
+          Funky.IdleDetector.pause();
+          log('Detection paused');
+          emit('event', { event: 'idle:pause', payload: {} });
+          updateDisplay();
+        }
+      });
+    }
+
+    if (resumeBtn) {
+      resumeBtn.addEventListener('click', function() {
+        if (Funky.IdleDetector) {
+          Funky.IdleDetector.resume();
+          log('Detection resumed');
+          emit('event', { event: 'idle:resume', payload: {} });
+          updateDisplay();
+        }
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function() {
+        initIdleDetector();
+        emit('event', { event: 'idle:reset', payload: {} });
+      });
+    }
+  }
+
+  Funky.Pages.register('component-idle-detector', {
+    init: function(state) {
+      updateSettingsDisplay();
+      initIdleDetector();
+      setupEventListeners();
+      updateDisplay();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          initIdleDetector();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'idle:init', payload: getOptions() });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      if (updateTimer) {
+        clearInterval(updateTimer);
+        updateTimer = null;
+      }
+
+      if (Funky.IdleDetector && Funky.IdleDetector.isInitialized()) {
+        Funky.IdleDetector.destroy();
+      }
+
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,353 @@
+<div data-page="component-wip-overlay" class="component-demo">
+  <h2>WIP Overlay</h2>
+  <p class="text-muted">Work-in-progress overlay for features under development with progress tracking and feature lists.</p>
+
+  <section class="demo-section" aria-labelledby="wip-props-heading">
+    <h3 id="wip-props-heading">Props-Configured Demo</h3>
+    <p class="text-muted small">Configure message, animation, and progress using the props panel.</p>
+    <div class="demo-area">
+      <button class="btn btn-primary btn-lg" id="wip-show-props" type="button">
+        <i class="fas fa-hammer me-2" aria-hidden="true"></i>Show Props-Configured Overlay
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wip-animations-heading">
+    <h3 id="wip-animations-heading">Animation Types</h3>
+    <p class="text-muted small">Different entrance animations for the overlay.</p>
+    <div class="demo-area wip-demo__button-grid" role="group" aria-label="Animation examples">
+      <button class="btn btn-info" id="wip-fade" type="button">
+        <i class="fas fa-eye me-2" aria-hidden="true"></i>Fade
+      </button>
+      <button class="btn btn-success" id="wip-slide" type="button">
+        <i class="fas fa-arrow-down me-2" aria-hidden="true"></i>Slide
+      </button>
+      <button class="btn btn-warning" id="wip-zoom" type="button">
+        <i class="fas fa-search-plus me-2" aria-hidden="true"></i>Zoom
+      </button>
+      <button class="btn btn-secondary" id="wip-none" type="button">
+        <i class="fas fa-ban me-2" aria-hidden="true"></i>None
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wip-progress-heading">
+    <h3 id="wip-progress-heading">With Progress Bar</h3>
+    <p class="text-muted small">Show development progress with a visual progress bar.</p>
+    <div class="demo-area">
+      <button class="btn btn-outline-primary" id="wip-with-progress" type="button">
+        <i class="fas fa-tasks me-2" aria-hidden="true"></i>Show with Progress (75%)
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wip-features-heading">
+    <h3 id="wip-features-heading">With Features List</h3>
+    <p class="text-muted small">Display upcoming features with a checklist.</p>
+    <div class="demo-area">
+      <button class="btn btn-outline-success" id="wip-with-features" type="button">
+        <i class="fas fa-list-check me-2" aria-hidden="true"></i>Show with Features
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wip-scoped-heading">
+    <h3 id="wip-scoped-heading">Scoped to Container</h3>
+    <p class="text-muted small">Overlay that only covers a specific container.</p>
+    <div class="demo-area">
+      <div id="wip-scoped-container" class="wip-demo__scoped-container">
+        <h4>Scoped Container</h4>
+        <p>This container will have its own WIP overlay.</p>
+        <button class="btn btn-outline-warning" id="wip-scoped-toggle" type="button">
+          <i class="fas fa-toggle-on me-2" aria-hidden="true"></i>Toggle Scoped Overlay
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wip-api-heading">
+    <h3 id="wip-api-heading">API Methods</h3>
+    <p class="text-muted small">Programmatic control of the overlay.</p>
+    <div class="demo-area wip-demo__button-grid" role="group" aria-label="API method buttons">
+      <button class="btn btn-outline-info" id="wip-api-show" type="button">
+        <i class="fas fa-eye me-2" aria-hidden="true"></i>show()
+      </button>
+      <button class="btn btn-outline-secondary" id="wip-api-hide" type="button">
+        <i class="fas fa-eye-slash me-2" aria-hidden="true"></i>hide()
+      </button>
+      <button class="btn btn-outline-primary" id="wip-api-toggle" type="button">
+        <i class="fas fa-sync me-2" aria-hidden="true"></i>toggle()
+      </button>
+      <button class="btn btn-outline-danger" id="wip-api-disable" type="button">
+        <i class="fas fa-power-off me-2" aria-hidden="true"></i>disableForSession()
+      </button>
+      <button class="btn btn-outline-success" id="wip-api-enable" type="button">
+        <i class="fas fa-check me-2" aria-hidden="true"></i>enable()
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="wip-log-heading">
+    <h3 id="wip-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="wip-log" class="wip-demo__log" aria-live="polite" aria-label="WIP overlay event log">Interact with WIP overlays to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  // Instance IDs for different overlay types
+  var MAIN_OVERLAY_ID = 'demo-main';
+  var SCOPED_OVERLAY_ID = 'demo-scoped';
+
+  var propsChangedHandler = null;
+
+  Funky.Pages.register('component-wip-overlay', {
+    _logs: [],
+
+    _log: function(message) {
+      this._logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+      if (this._logs.length > 10) this._logs.pop();
+      var logEl = document.getElementById('wip-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    init: function(state) {
+      var self = this;
+      this._logs = [];
+
+      var props = getProps();
+      this._log('Init with message=' + (props.message || 'Work in Progress'));
+      emit('event', { event: 'wip-overlay:init', payload: { message: props.message } });
+
+      if (!Funky.WIPOverlay) {
+        this._log('Error: Funky.WIPOverlay not available');
+        return;
+      }
+
+      // Props-configured overlay button
+      document.getElementById('wip-show-props').onclick = function() {
+        var props = getProps();
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: props.message || 'Work in Progress',
+          subMessage: props.subMessage || 'This feature is coming soon',
+          allowClose: props.allowClose !== false,
+          animation: props.animation || 'fade',
+          showProgress: props.showProgress,
+          progress: props.progress || 50,
+          estimatedCompletion: props.estimatedCompletion || '',
+          contactEmail: props.contactEmail || '',
+          showFeatures: props.showFeatures,
+          features: props.features || []
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened props-configured overlay');
+        emit('event', { event: 'wip-overlay:show', payload: { type: 'props' } });
+      };
+
+      // Animation type buttons
+      document.getElementById('wip-fade').onclick = function() {
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: 'Fade Animation',
+          subMessage: 'Smooth fade in/out effect',
+          allowClose: true,
+          animation: 'fade'
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened with fade animation');
+        emit('event', { event: 'wip-overlay:show', payload: { animation: 'fade' } });
+      };
+
+      document.getElementById('wip-slide').onclick = function() {
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: 'Slide Animation',
+          subMessage: 'Slides down from top',
+          allowClose: true,
+          animation: 'slide'
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened with slide animation');
+        emit('event', { event: 'wip-overlay:show', payload: { animation: 'slide' } });
+      };
+
+      document.getElementById('wip-zoom').onclick = function() {
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: 'Zoom Animation',
+          subMessage: 'Scales up from center',
+          allowClose: true,
+          animation: 'zoom'
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened with zoom animation');
+        emit('event', { event: 'wip-overlay:show', payload: { animation: 'zoom' } });
+      };
+
+      document.getElementById('wip-none').onclick = function() {
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: 'No Animation',
+          subMessage: 'Instant show/hide',
+          allowClose: true,
+          animation: 'none'
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened with no animation');
+        emit('event', { event: 'wip-overlay:show', payload: { animation: 'none' } });
+      };
+
+      // Progress bar demo
+      document.getElementById('wip-with-progress').onclick = function() {
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: 'Feature In Development',
+          subMessage: 'We are working hard on this feature',
+          allowClose: true,
+          animation: 'fade',
+          showProgress: true,
+          progress: 75,
+          estimatedCompletion: 'Q2 2025'
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened with progress bar (75%)');
+        emit('event', { event: 'wip-overlay:show', payload: { progress: 75 } });
+      };
+
+      // Features list demo
+      document.getElementById('wip-with-features').onclick = function() {
+        Funky.WIPOverlay.init({
+          id: MAIN_OVERLAY_ID,
+          message: 'Coming Soon',
+          subMessage: 'These features are on our roadmap',
+          allowClose: true,
+          animation: 'fade',
+          showFeatures: true,
+          features: [
+            { text: 'Dark mode support', done: true },
+            { text: 'Keyboard shortcuts', done: true },
+            { text: 'Export to PDF', done: false },
+            { text: 'Collaboration tools', done: false },
+            { text: 'Mobile app', done: false }
+          ],
+          contactEmail: 'feedback@example.com'
+        });
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Opened with features list');
+        emit('event', { event: 'wip-overlay:show', payload: { showFeatures: true } });
+      };
+
+      // Scoped container demo - uses separate instance ID
+      document.getElementById('wip-scoped-toggle').onclick = function() {
+        var instance = Funky.WIPOverlay.getInstance(SCOPED_OVERLAY_ID);
+        if (!instance) {
+          // Create scoped overlay for the first time
+          Funky.WIPOverlay.init({
+            id: SCOPED_OVERLAY_ID,
+            message: 'Container WIP',
+            subMessage: 'This overlay only covers this container',
+            allowClose: true,
+            animation: 'fade',
+            scopeToContainer: '#wip-scoped-container'
+          });
+          Funky.WIPOverlay.show(SCOPED_OVERLAY_ID);
+          self._log('Created and showed scoped overlay');
+        } else {
+          // Toggle existing scoped overlay
+          Funky.WIPOverlay.toggle(SCOPED_OVERLAY_ID);
+          var isShown = Funky.WIPOverlay.isShown(SCOPED_OVERLAY_ID);
+          self._log('Toggled scoped overlay - now ' + (isShown ? 'shown' : 'hidden'));
+        }
+        emit('event', { event: 'wip-overlay:toggle', payload: { scoped: true } });
+      };
+
+      // API method buttons - control main overlay
+      document.getElementById('wip-api-show').onclick = function() {
+        // Ensure we have an initialized main overlay
+        if (!Funky.WIPOverlay.getInstance(MAIN_OVERLAY_ID)) {
+          Funky.WIPOverlay.init({
+            id: MAIN_OVERLAY_ID,
+            message: 'API Demo',
+            subMessage: 'Opened via show() method',
+            allowClose: true,
+            animation: 'fade'
+          });
+        }
+        Funky.WIPOverlay.show(MAIN_OVERLAY_ID);
+        self._log('Called show()');
+        emit('event', { event: 'wip-overlay:api', payload: { method: 'show' } });
+      };
+
+      document.getElementById('wip-api-hide').onclick = function() {
+        Funky.WIPOverlay.hide(MAIN_OVERLAY_ID);
+        self._log('Called hide()');
+        emit('event', { event: 'wip-overlay:api', payload: { method: 'hide' } });
+      };
+
+      document.getElementById('wip-api-toggle').onclick = function() {
+        // Ensure we have an initialized main overlay
+        if (!Funky.WIPOverlay.getInstance(MAIN_OVERLAY_ID)) {
+          Funky.WIPOverlay.init({
+            id: MAIN_OVERLAY_ID,
+            message: 'API Demo',
+            subMessage: 'Opened via toggle() method',
+            allowClose: true,
+            animation: 'fade'
+          });
+        }
+        Funky.WIPOverlay.toggle(MAIN_OVERLAY_ID);
+        var isShown = Funky.WIPOverlay.isShown(MAIN_OVERLAY_ID);
+        self._log('Called toggle() - now ' + (isShown ? 'shown' : 'hidden'));
+        emit('event', { event: 'wip-overlay:api', payload: { method: 'toggle', isShown: isShown } });
+      };
+
+      document.getElementById('wip-api-disable').onclick = function() {
+        Funky.WIPOverlay.disableForSession();
+        self._log('Called disableForSession() - overlay disabled until tab/window closes');
+        emit('event', { event: 'wip-overlay:api', payload: { method: 'disableForSession' } });
+      };
+
+      document.getElementById('wip-api-enable').onclick = function() {
+        Funky.WIPOverlay.enable();
+        self._log('Called enable() - overlays re-enabled');
+        emit('event', { event: 'wip-overlay:api', payload: { method: 'enable' } });
+      };
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          self._log('Props changed: message=' + (newProps.message || 'Work in Progress'));
+          emit('event', { event: 'wip-overlay:propsChanged', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Clean up WIP overlays - destroy both instances
+      if (Funky.WIPOverlay) {
+        Funky.WIPOverlay.destroy(MAIN_OVERLAY_ID);
+        Funky.WIPOverlay.destroy(SCOPED_OVERLAY_ID);
+        Funky.WIPOverlay.enable(); // Re-enable in case it was disabled
+      }
+
+      this._logs = [];
+      return {};
+    }
+  });
+})();
+</script>

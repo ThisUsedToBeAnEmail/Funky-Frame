@@ -1,0 +1,595 @@
+<div data-page="component-channel" class="component-demo">
+  <h2>Channel</h2>
+  <p class="text-muted">Real-time room-based pub/sub with member tracking and simulated messaging.</p>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current Configuration</h3>
+    <div class="demo-area">
+      <div class="channel-demo__state-display">
+        <div class="channel-demo__state-item">
+          <span class="badge bg-secondary">Channel</span>
+          <span id="state-channelName">room:demo</span>
+        </div>
+        <div class="channel-demo__state-item">
+          <span class="badge bg-secondary">User</span>
+          <span id="state-userName">Demo User</span>
+        </div>
+        <div class="channel-demo__state-item">
+          <span class="badge bg-secondary">Simulate</span>
+          <span id="state-simulateMembers">true</span>
+        </div>
+        <div class="channel-demo__state-item">
+          <span class="badge bg-secondary">Members</span>
+          <span id="state-memberCount">3</span>
+        </div>
+        <div class="channel-demo__state-item">
+          <span class="badge bg-secondary">Auto-Message</span>
+          <span id="state-messageInterval">Off</span>
+        </div>
+        <div class="channel-demo__state-item">
+          <span class="badge bg-info">Status</span>
+          <span id="state-connectionStatus">disconnected</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Members Panel -->
+  <section class="demo-section" aria-labelledby="members-heading">
+    <h3 id="members-heading">Channel Members</h3>
+    <p class="text-muted small">Users currently in the channel.</p>
+    <div class="demo-area">
+      <div id="channel-members" class="channel-demo__members" aria-live="polite">
+        <p class="text-muted">Join a channel to see members...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat Panel -->
+  <section class="demo-section" aria-labelledby="messages-heading">
+    <h3 id="messages-heading">Messages</h3>
+    <p class="text-muted small">Send and receive messages in the channel.</p>
+    <div class="demo-area">
+      <div class="channel-demo__chat">
+        <div class="channel-demo__chat-header">
+          <div class="channel-demo__chat-title">
+            <i class="fas fa-hashtag" aria-hidden="true"></i>
+            <span id="chat-channel-name">room:demo</span>
+          </div>
+          <div class="channel-demo__chat-status">
+            <span class="channel-demo__chat-status-dot" id="chat-status-dot"></span>
+            <span id="chat-member-count">0 members</span>
+          </div>
+        </div>
+        <div id="channel-messages" class="channel-demo__messages" aria-live="polite">
+          <div class="channel-demo__messages-empty">
+            <i class="fas fa-comments" aria-hidden="true"></i>
+            <p>Join a channel to start chatting</p>
+          </div>
+        </div>
+        <div class="channel-demo__chat-input">
+          <input type="text" id="message-input" class="form-control" placeholder="Type a message..." aria-label="Message input" disabled>
+          <button type="button" id="btn-send" class="btn btn-primary" disabled>
+            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">API Controls</h3>
+    <p class="text-muted small">Test Channel methods programmatically.</p>
+    <div class="demo-area">
+      <div class="channel-demo__controls">
+        <button class="btn btn-success btn-sm" id="btn-join" type="button">
+          <i class="fas fa-sign-in-alt me-1" aria-hidden="true"></i> Join
+        </button>
+        <button class="btn btn-danger btn-sm" id="btn-leave" type="button" disabled>
+          <i class="fas fa-sign-out-alt me-1" aria-hidden="true"></i> Leave
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-broadcast" type="button" disabled>
+          <i class="fas fa-bullhorn me-1" aria-hidden="true"></i> Broadcast
+        </button>
+        <button class="btn btn-info btn-sm" id="btn-get-members" type="button" disabled>
+          <i class="fas fa-users me-1" aria-hidden="true"></i> Members
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-get-status" type="button">
+          <i class="fas fa-info-circle me-1" aria-hidden="true"></i> Status
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-clear-messages" type="button">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="channel-log" class="channel-demo__log" aria-live="polite">Interact with the channel to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var propsChangedHandler = null;
+  var logs = [];
+  var messages = [];
+  var currentChannel = null;
+  var simulatedMembers = [];
+  var messageIntervalId = null;
+  var isJoined = false;
+
+  // Simulated member names
+  var memberNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry'];
+  var messageTemplates = [
+    'Hello everyone!',
+    'How\'s it going?',
+    'Nice to be here',
+    'Anyone around?',
+    'Working on something cool',
+    'Just checking in',
+    'Great conversation!',
+    'Thanks for sharing'
+  ];
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data !== undefined) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 30) logs.pop();
+    var logEl = document.getElementById('channel-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay(props) {
+    var stateChannel = document.getElementById('state-channelName');
+    var stateUser = document.getElementById('state-userName');
+    var stateSimulate = document.getElementById('state-simulateMembers');
+    var stateMemberCount = document.getElementById('state-memberCount');
+    var stateInterval = document.getElementById('state-messageInterval');
+
+    if (stateChannel) stateChannel.textContent = props.channelName || 'room:demo';
+    if (stateUser) stateUser.textContent = props.userName || 'Demo User';
+    if (stateSimulate) stateSimulate.textContent = String(props.simulateMembers !== false);
+    if (stateMemberCount) stateMemberCount.textContent = String(props.memberCount || 3);
+
+    var intervalLabel = 'Off';
+    var interval = parseInt(props.messageInterval, 10) || 0;
+    if (interval === 2000) intervalLabel = '2 seconds';
+    else if (interval === 5000) intervalLabel = '5 seconds';
+    else if (interval === 10000) intervalLabel = '10 seconds';
+    if (stateInterval) stateInterval.textContent = intervalLabel;
+  }
+
+  function updateConnectionStatus(status) {
+    var statusEl = document.getElementById('state-connectionStatus');
+    if (statusEl) {
+      statusEl.textContent = status;
+      statusEl.className = status === 'joined' ? 'text-success' :
+                           status === 'joining' ? 'text-warning' : 'text-muted';
+    }
+  }
+
+  function generateSimulatedMembers(count, userName) {
+    var members = [];
+    // Add current user first
+    members.push({
+      id: 'user-self',
+      name: userName || 'Demo User',
+      isSelf: true,
+      joinedAt: new Date().toISOString()
+    });
+    // Add simulated members
+    var availableNames = memberNames.slice();
+    for (var i = 0; i < count && availableNames.length > 0; i++) {
+      var nameIndex = Math.floor(Math.random() * availableNames.length);
+      var name = availableNames.splice(nameIndex, 1)[0];
+      members.push({
+        id: 'user-' + (i + 1),
+        name: name,
+        isSelf: false,
+        joinedAt: new Date().toISOString()
+      });
+    }
+    return members;
+  }
+
+  function renderMembers(members) {
+    var container = document.getElementById('channel-members');
+    if (!container) return;
+
+    if (!members || members.length === 0) {
+      container.innerHTML = '<p class="text-muted">No members in channel</p>';
+      return;
+    }
+
+    var html = '<div class="channel-demo__member-list">';
+    members.forEach(function(member) {
+      var selfBadge = member.isSelf ? '<span class="badge bg-primary ms-1">You</span>' : '';
+      html += '<div class="channel-demo__member">' +
+        '<i class="fas fa-user-circle me-2" aria-hidden="true"></i>' +
+        '<span class="channel-demo__member-name">' + escapeHtml(member.name) + '</span>' +
+        selfBadge +
+        '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function addMessage(sender, text, isSystem) {
+    messages.push({
+      id: Date.now(),
+      sender: sender,
+      text: text,
+      isSystem: isSystem || false,
+      timestamp: new Date().toLocaleTimeString()
+    });
+    if (messages.length > 50) messages.shift();
+    renderMessages();
+  }
+
+  function getInitials(name) {
+    if (!name) return '?';
+    var parts = name.split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }
+
+  function updateChatHeader(props) {
+    var channelNameEl = document.getElementById('chat-channel-name');
+    var memberCountEl = document.getElementById('chat-member-count');
+    var statusDotEl = document.getElementById('chat-status-dot');
+
+    if (channelNameEl) channelNameEl.textContent = props.channelName || 'room:demo';
+    if (memberCountEl) {
+      var count = simulatedMembers.length;
+      memberCountEl.textContent = count + (count === 1 ? ' member' : ' members');
+    }
+    if (statusDotEl) {
+      statusDotEl.classList.toggle('channel-demo__chat-status-dot--online', isJoined);
+    }
+  }
+
+  function renderMessages() {
+    var container = document.getElementById('channel-messages');
+    if (!container) return;
+
+    if (messages.length === 0) {
+      container.innerHTML = '<div class="channel-demo__messages-empty">' +
+        '<i class="fas fa-comments" aria-hidden="true"></i>' +
+        '<p>' + (isJoined ? 'No messages yet. Say hello!' : 'Join a channel to start chatting') + '</p>' +
+        '</div>';
+      return;
+    }
+
+    var html = '';
+    messages.forEach(function(msg) {
+      if (msg.isSystem) {
+        html += '<div class="channel-demo__message channel-demo__message--system">' +
+          '<div class="channel-demo__message-bubble">' + escapeHtml(msg.text) + '</div>' +
+          '</div>';
+      } else {
+        var senderClass = msg.sender.isSelf ? 'channel-demo__message--self' : 'channel-demo__message--other';
+        var initials = getInitials(msg.sender.name);
+        html += '<div class="channel-demo__message ' + senderClass + '">' +
+          '<div class="channel-demo__message-header">' +
+          '<div class="channel-demo__message-avatar">' + initials + '</div>' +
+          '<span class="channel-demo__message-sender">' + escapeHtml(msg.sender.name) + '</span>' +
+          '<span class="channel-demo__message-time">' + msg.timestamp + '</span>' +
+          '</div>' +
+          '<div class="channel-demo__message-bubble">' + escapeHtml(msg.text) + '</div>' +
+          '</div>';
+      }
+    });
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function setControlsState(joined) {
+    var btnJoin = document.getElementById('btn-join');
+    var btnLeave = document.getElementById('btn-leave');
+    var btnGetMembers = document.getElementById('btn-get-members');
+    var btnBroadcast = document.getElementById('btn-broadcast');
+    var btnSend = document.getElementById('btn-send');
+    var messageInput = document.getElementById('message-input');
+
+    if (btnJoin) btnJoin.disabled = joined;
+    if (btnLeave) btnLeave.disabled = !joined;
+    if (btnGetMembers) btnGetMembers.disabled = !joined;
+    if (btnBroadcast) btnBroadcast.disabled = !joined;
+    if (btnSend) btnSend.disabled = !joined;
+    if (messageInput) messageInput.disabled = !joined;
+  }
+
+  function startAutoMessages(props) {
+    stopAutoMessages();
+    var interval = parseInt(props.messageInterval, 10) || 0;
+    if (interval <= 0 || !isJoined || simulatedMembers.length <= 1) return;
+
+    messageIntervalId = setInterval(function() {
+      // Pick a random non-self member
+      var otherMembers = simulatedMembers.filter(function(m) { return !m.isSelf; });
+      if (otherMembers.length === 0) return;
+
+      var sender = otherMembers[Math.floor(Math.random() * otherMembers.length)];
+      var text = messageTemplates[Math.floor(Math.random() * messageTemplates.length)];
+
+      addMessage(sender, text);
+      log('message:received', { from: sender.name, text: text });
+      emit('event', { event: 'funky:channel:message', payload: { from: sender.name, text: text } });
+    }, interval);
+  }
+
+  function stopAutoMessages() {
+    if (messageIntervalId) {
+      clearInterval(messageIntervalId);
+      messageIntervalId = null;
+    }
+  }
+
+  function joinChannel(props) {
+    if (isJoined) {
+      leaveChannel();
+    }
+
+    currentChannel = props.channelName || 'room:demo';
+    updateConnectionStatus('joining');
+    updateChatHeader(props);
+
+    // Simulate join delay
+    setTimeout(function() {
+      isJoined = true;
+      updateConnectionStatus('joined');
+
+      // Generate simulated members if enabled
+      if (props.simulateMembers !== false) {
+        var count = parseInt(props.memberCount, 10) || 3;
+        simulatedMembers = generateSimulatedMembers(count, props.userName);
+      } else {
+        simulatedMembers = [{
+          id: 'user-self',
+          name: props.userName || 'Demo User',
+          isSelf: true,
+          joinedAt: new Date().toISOString()
+        }];
+      }
+
+      renderMembers(simulatedMembers);
+      setControlsState(true);
+      updateChatHeader(props);
+
+      addMessage(null, 'Joined channel: ' + currentChannel, true);
+      log('channel:join', { channel: currentChannel, members: simulatedMembers.length });
+      emit('event', { event: 'funky:channel:join', payload: { channel: currentChannel, members: simulatedMembers.length } });
+
+      // Start auto messages if configured
+      startAutoMessages(props);
+    }, 300);
+  }
+
+  function leaveChannel() {
+    if (!isJoined) return;
+
+    stopAutoMessages();
+    var channelName = currentChannel;
+
+    isJoined = false;
+    currentChannel = null;
+    simulatedMembers = [];
+
+    updateConnectionStatus('disconnected');
+    renderMembers([]);
+    setControlsState(false);
+    updateChatHeader(getProps());
+
+    addMessage(null, 'Left channel: ' + channelName, true);
+    log('channel:leave', { channel: channelName });
+    emit('event', { event: 'funky:channel:leave', payload: { channel: channelName } });
+  }
+
+  function sendMessage(text) {
+    if (!isJoined || !text.trim()) return;
+
+    var selfMember = simulatedMembers.find(function(m) { return m.isSelf; });
+    if (!selfMember) return;
+
+    addMessage(selfMember, text.trim());
+    log('message:sent', { text: text.trim() });
+    emit('event', { event: 'funky:channel:publish', payload: { text: text.trim() } });
+  }
+
+  function setupControls(props) {
+    // Join button
+    var btnJoin = document.getElementById('btn-join');
+    if (btnJoin) {
+      btnJoin.onclick = function() {
+        var currentProps = getProps();
+        joinChannel(currentProps);
+        log('API: join()');
+      };
+    }
+
+    // Leave button
+    var btnLeave = document.getElementById('btn-leave');
+    if (btnLeave) {
+      btnLeave.onclick = function() {
+        leaveChannel();
+        log('API: leave()');
+      };
+    }
+
+    // Get Members button
+    var btnGetMembers = document.getElementById('btn-get-members');
+    if (btnGetMembers) {
+      btnGetMembers.onclick = function() {
+        log('API: getMembers()', simulatedMembers.map(function(m) { return m.name; }));
+      };
+    }
+
+    // Get Status button
+    var btnGetStatus = document.getElementById('btn-get-status');
+    if (btnGetStatus) {
+      btnGetStatus.onclick = function() {
+        log('API: getStatus()', {
+          channel: currentChannel,
+          joined: isJoined,
+          memberCount: simulatedMembers.length
+        });
+      };
+    }
+
+    // Broadcast button
+    var btnBroadcast = document.getElementById('btn-broadcast');
+    if (btnBroadcast) {
+      btnBroadcast.onclick = function() {
+        if (!isJoined) return;
+        var text = 'Broadcast message from ' + (props.userName || 'Demo User');
+        var selfMember = simulatedMembers.find(function(m) { return m.isSelf; });
+        if (selfMember) {
+          addMessage(selfMember, text);
+          log('API: broadcast()', { text: text });
+          emit('event', { event: 'funky:channel:broadcast', payload: { text: text } });
+        }
+      };
+    }
+
+    // Send message
+    var btnSend = document.getElementById('btn-send');
+    var messageInput = document.getElementById('message-input');
+    if (btnSend && messageInput) {
+      btnSend.onclick = function() {
+        sendMessage(messageInput.value);
+        messageInput.value = '';
+        messageInput.focus();
+      };
+      messageInput.onkeydown = function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage(messageInput.value);
+          messageInput.value = '';
+        }
+      };
+    }
+
+    // Clear messages
+    var btnClearMessages = document.getElementById('btn-clear-messages');
+    if (btnClearMessages) {
+      btnClearMessages.onclick = function() {
+        messages = [];
+        renderMessages();
+        log('Messages cleared');
+      };
+    }
+
+    // Clear log
+    var btnClearLog = document.getElementById('btn-clear-log');
+    if (btnClearLog) {
+      btnClearLog.onclick = function() {
+        logs = [];
+        var logEl = document.getElementById('channel-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+      };
+    }
+  }
+
+  Funky.Pages.register('component-channel', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+      updateConnectionStatus('disconnected');
+      updateChatHeader(props);
+
+      // Setup control buttons
+      setupControls(props);
+
+      // Set initial UI state
+      setControlsState(false);
+      renderMembers([]);
+      renderMessages();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          updateChatHeader(currentProps);
+
+          // If joined and props changed, rejoin with new config
+          if (isJoined) {
+            // Check if we need to rejoin (channel name or member config changed)
+            var needsRejoin = newProps.channelName !== undefined ||
+                              newProps.userName !== undefined ||
+                              newProps.simulateMembers !== undefined ||
+                              newProps.memberCount !== undefined;
+
+            if (needsRejoin) {
+              joinChannel(currentProps);
+            }
+
+            // Update auto-message interval
+            if (newProps.messageInterval !== undefined) {
+              startAutoMessages(currentProps);
+            }
+          }
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      log('initialized', { channelName: props.channelName, userName: props.userName });
+      emit('event', { event: 'funky:channel:init', payload: { channelName: props.channelName } });
+
+      return {};
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Stop auto messages
+      stopAutoMessages();
+
+      // Leave channel if joined
+      if (isJoined) {
+        isJoined = false;
+        currentChannel = null;
+      }
+
+      // Reset state
+      logs = [];
+      messages = [];
+      simulatedMembers = [];
+
+      return {};
+    }
+  });
+})();
+</script>

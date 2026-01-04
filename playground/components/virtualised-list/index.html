@@ -1,0 +1,703 @@
+<div data-page="component-virtualised-list" class="component-demo">
+  <h2>Virtualised List</h2>
+  <p class="text-muted">High-performance virtual scrolling for 100K+ items with DOM recycling, selection, search, filtering, and infinite scroll.</p>
+
+  <section class="demo-section" aria-labelledby="vlist-demo-heading">
+    <h3 id="vlist-demo-heading">Interactive List</h3>
+    <p class="text-muted small">Scroll through massive datasets with 60fps performance. Only visible items are rendered.</p>
+    <div class="demo-area">
+      <div id="vlist-demo" class="vlist-demo__container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-stats-heading">
+    <h3 id="vlist-stats-heading">Performance Stats</h3>
+    <div class="demo-area vlist-demo__stats" role="region" aria-label="Performance statistics">
+      <div class="vlist-demo__stat">
+        <span class="vlist-demo__stat-label">Total Items</span>
+        <span class="vlist-demo__stat-value" id="stat-total">0</span>
+      </div>
+      <div class="vlist-demo__stat">
+        <span class="vlist-demo__stat-label">Rendered DOM</span>
+        <span class="vlist-demo__stat-value" id="stat-rendered">0</span>
+      </div>
+      <div class="vlist-demo__stat">
+        <span class="vlist-demo__stat-label">Selected</span>
+        <span class="vlist-demo__stat-value" id="stat-selected">0</span>
+      </div>
+      <div class="vlist-demo__stat">
+        <span class="vlist-demo__stat-label">Scroll</span>
+        <span class="vlist-demo__stat-value" id="stat-scroll">0px</span>
+      </div>
+      <div class="vlist-demo__stat">
+        <span class="vlist-demo__stat-label">Visible Range</span>
+        <span class="vlist-demo__stat-value" id="stat-range">0-0</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-scroll-heading">
+    <h3 id="vlist-scroll-heading">Scroll Navigation</h3>
+    <p class="text-muted small">Navigate to specific positions in the list programmatically.</p>
+    <div class="demo-area vlist-demo__button-grid" role="group" aria-label="Scroll navigation buttons">
+      <button class="btn btn-primary btn-sm" id="vlist-scroll-top" type="button">
+        <i class="fas fa-arrow-up me-1" aria-hidden="true"></i>Scroll to Top
+      </button>
+      <button class="btn btn-primary btn-sm" id="vlist-scroll-bottom" type="button">
+        <i class="fas fa-arrow-down me-1" aria-hidden="true"></i>Scroll to Bottom
+      </button>
+      <button class="btn btn-secondary btn-sm" id="vlist-scroll-item" type="button">
+        <i class="fas fa-crosshairs me-1" aria-hidden="true"></i>Go to Item 5000
+      </button>
+      <button class="btn btn-secondary btn-sm" id="vlist-scroll-middle" type="button">
+        <i class="fas fa-arrows-alt-v me-1" aria-hidden="true"></i>Go to Middle
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="vlist-get-visible" type="button">
+        <i class="fas fa-eye me-1" aria-hidden="true"></i>Get Visible Range
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-selection-heading">
+    <h3 id="vlist-selection-heading">Selection</h3>
+    <p class="text-muted small">Click items to select. Ctrl+Click for multi-select, Shift+Click for range selection.</p>
+    <div class="demo-area vlist-demo__button-grid" role="group" aria-label="Selection buttons">
+      <button class="btn btn-success btn-sm" id="vlist-select-all" type="button">
+        <i class="fas fa-check-double me-1" aria-hidden="true"></i>Select All
+      </button>
+      <button class="btn btn-warning btn-sm" id="vlist-deselect-all" type="button">
+        <i class="fas fa-times me-1" aria-hidden="true"></i>Deselect All
+      </button>
+      <button class="btn btn-info btn-sm" id="vlist-select-item" type="button">
+        <i class="fas fa-check me-1" aria-hidden="true"></i>Select Item 100
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="vlist-toggle-item" type="button">
+        <i class="fas fa-toggle-on me-1" aria-hidden="true"></i>Toggle Item 200
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="vlist-get-selected" type="button">
+        <i class="fas fa-list-check me-1" aria-hidden="true"></i>Get Selected
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-search-heading">
+    <h3 id="vlist-search-heading">Search & Filter</h3>
+    <p class="text-muted small">Search with highlighting. Use arrow buttons to navigate between matches.</p>
+    <div class="demo-area vlist-demo__button-grid" role="group" aria-label="Search and filter buttons">
+      <button class="btn btn-primary btn-sm" id="vlist-search" type="button">
+        <i class="fas fa-search me-1" aria-hidden="true"></i>Search "active"
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="vlist-search-prev" type="button">
+        <i class="fas fa-chevron-up me-1" aria-hidden="true"></i>Prev Match
+      </button>
+      <button class="btn btn-outline-primary btn-sm" id="vlist-search-next" type="button">
+        <i class="fas fa-chevron-down me-1" aria-hidden="true"></i>Next Match
+      </button>
+      <button class="btn btn-secondary btn-sm" id="vlist-clear-search" type="button">
+        <i class="fas fa-times me-1" aria-hidden="true"></i>Clear Search
+      </button>
+      <button class="btn btn-info btn-sm" id="vlist-filter" type="button">
+        <i class="fas fa-filter me-1" aria-hidden="true"></i>Filter Active Only
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="vlist-clear-filter" type="button">
+        <i class="fas fa-eraser me-1" aria-hidden="true"></i>Clear Filter
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-sort-heading">
+    <h3 id="vlist-sort-heading">Sorting</h3>
+    <p class="text-muted small">Sort items by different criteria.</p>
+    <div class="demo-area vlist-demo__button-grid" role="group" aria-label="Sorting buttons">
+      <button class="btn btn-primary btn-sm" id="vlist-sort-name" type="button">
+        <i class="fas fa-sort-alpha-down me-1" aria-hidden="true"></i>Sort by Name
+      </button>
+      <button class="btn btn-secondary btn-sm" id="vlist-sort-status" type="button">
+        <i class="fas fa-sort me-1" aria-hidden="true"></i>Sort by Status
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="vlist-reverse-sort" type="button">
+        <i class="fas fa-exchange-alt fa-rotate-90 me-1" aria-hidden="true"></i>Reverse Sort
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="vlist-clear-sort" type="button">
+        <i class="fas fa-undo me-1" aria-hidden="true"></i>Clear Sort
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-data-heading">
+    <h3 id="vlist-data-heading">Data Operations</h3>
+    <p class="text-muted small">Add, update, and remove items dynamically.</p>
+    <div class="demo-area vlist-demo__button-grid" role="group" aria-label="Data operation buttons">
+      <button class="btn btn-success btn-sm" id="vlist-add-item" type="button">
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add Item
+      </button>
+      <button class="btn btn-success btn-sm" id="vlist-prepend-item" type="button">
+        <i class="fas fa-arrow-up me-1" aria-hidden="true"></i>Prepend Item
+      </button>
+      <button class="btn btn-primary btn-sm" id="vlist-update-item" type="button">
+        <i class="fas fa-edit me-1" aria-hidden="true"></i>Update First Item
+      </button>
+      <button class="btn btn-danger btn-sm" id="vlist-remove-item" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i>Remove Last Item
+      </button>
+      <button class="btn btn-outline-danger btn-sm" id="vlist-clear-all" type="button">
+        <i class="fas fa-trash-alt me-1" aria-hidden="true"></i>Clear All
+      </button>
+      <button class="btn btn-outline-success btn-sm" id="vlist-reset-data" type="button">
+        <i class="fas fa-redo me-1" aria-hidden="true"></i>Reset Data
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-focus-heading">
+    <h3 id="vlist-focus-heading">Focus & Keyboard</h3>
+    <p class="text-muted small">Navigate with keyboard: Arrow keys, Page Up/Down, Home/End, Space to select, Enter to activate.</p>
+    <div class="demo-area vlist-demo__button-grid" role="group" aria-label="Focus navigation buttons">
+      <button class="btn btn-primary btn-sm" id="vlist-focus-first" type="button">
+        <i class="fas fa-step-backward me-1" aria-hidden="true"></i>Focus First
+      </button>
+      <button class="btn btn-primary btn-sm" id="vlist-focus-last" type="button">
+        <i class="fas fa-step-forward me-1" aria-hidden="true"></i>Focus Last
+      </button>
+      <button class="btn btn-secondary btn-sm" id="vlist-focus-item" type="button">
+        <i class="fas fa-crosshairs me-1" aria-hidden="true"></i>Focus Item 500
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="vlist-get-focused" type="button">
+        <i class="fas fa-eye me-1" aria-hidden="true"></i>Get Focused Item
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-state-heading">
+    <h3 id="vlist-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time state information.</p>
+    <div class="demo-area">
+      <pre id="vlist-state" class="vlist-demo__log" aria-live="polite" aria-label="Current state">Initializing list...</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="vlist-log-heading">
+    <h3 id="vlist-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="vlist-log" class="vlist-demo__log" aria-live="polite" aria-label="Event log">Interact with the list to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var listInstance = null;
+  var logs = [];
+  var propsChangedHandler = null;
+  var itemCounter = 0;
+  var originalData = null;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('vlist-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('vlist-state');
+    if (!stateEl || !listInstance) return;
+
+    var props = getProps();
+    var itemCount = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+    var selected = listInstance.getSelectedIds ? listInstance.getSelectedIds() : [];
+    var focusedIndex = listInstance.getFocusedIndex ? listInstance.getFocusedIndex() : -1;
+    // getVisibleRange returns { first, last, count }
+    var range = listInstance.getVisibleRange ? listInstance.getVisibleRange() : { first: 0, last: 0, count: 0 };
+    var filtered = listInstance.isFiltered ? listInstance.isFiltered() : false;
+    var filteredCount = listInstance.getFilteredCount ? listInstance.getFilteredCount() : itemCount;
+
+    stateEl.textContent = JSON.stringify({
+      totalItems: itemCount,
+      renderedDOMNodes: range.count || (range.last - range.first + 1),
+      selectedCount: selected.length,
+      focusedIndex: focusedIndex,
+      visibleRange: range.first + '-' + range.last,
+      isFiltered: filtered,
+      filteredCount: filteredCount,
+      selectionMode: props.multiSelect ? 'multi' : 'single',
+      itemHeight: props.itemHeight || 40
+    }, null, 2);
+  }
+
+  function updateStats(scrollTop, range) {
+    document.getElementById('stat-scroll').textContent = Math.round(scrollTop) + 'px';
+    // getVisibleRange returns { first, last, count }
+    document.getElementById('stat-range').textContent = range.first + '-' + range.last;
+    document.getElementById('stat-rendered').textContent = range.count || (range.last - range.first + 1);
+  }
+
+  function generateData(count) {
+    var data = [];
+    var statuses = ['active', 'pending', 'inactive', 'archived'];
+    var priorities = ['low', 'medium', 'high', 'critical'];
+
+    for (var i = 0; i < count; i++) {
+      data.push({
+        id: i,
+        name: 'Item ' + (i + 1),
+        description: 'Description for item ' + (i + 1) + ' with some additional details',
+        status: statuses[i % statuses.length],
+        priority: priorities[i % priorities.length],
+        value: Math.floor(Math.random() * 1000)
+      });
+    }
+    itemCounter = count;
+    return data;
+  }
+
+  function createList() {
+    var props = getProps();
+    var container = document.getElementById('vlist-demo');
+    if (!container) return;
+
+    // Destroy existing list
+    if (listInstance && listInstance.destroy) {
+      listInstance.destroy();
+      listInstance = null;
+    }
+    container.innerHTML = '';
+
+    var itemCount = props.itemCount || 100000;
+    var itemHeight = props.itemHeight || 40;
+    var data = generateData(itemCount);
+    originalData = data.slice(); // Keep backup for reset
+
+    document.getElementById('stat-total').textContent = itemCount.toLocaleString();
+
+    if (!Funky.VirtualisedList) {
+      container.innerHTML = '<div class="p-3 text-muted">VirtualisedList component not available</div>';
+      return;
+    }
+
+    listInstance = Funky.VirtualisedList.init(container, {
+      items: data,
+      itemHeight: props.variableHeight ? 'auto' : itemHeight,
+      estimatedItemHeight: itemHeight,
+      overscan: 5,
+      selectable: props.multiSelect ? 'multi' : 'single',
+      searchFields: ['name', 'description', 'status'],
+      fuzzySearch: false,
+
+      getItemKey: function(item) {
+        return item.id;
+      },
+
+      renderItem: function(item, index, highlighter) {
+        var statusClass = item.status === 'active' ? 'success' :
+                         item.status === 'pending' ? 'warning' :
+                         item.status === 'archived' ? 'secondary' : 'danger';
+        var priorityIcon = item.priority === 'critical' ? 'fa-exclamation-triangle' :
+                          item.priority === 'high' ? 'fa-arrow-up' :
+                          item.priority === 'medium' ? 'fa-minus' : 'fa-arrow-down';
+
+        var nameHtml = highlighter ? highlighter(item.name, 'name') : item.name;
+        var descHtml = highlighter ? highlighter(item.description, 'description') : item.description;
+        var statusHtml = highlighter ? highlighter(item.status, 'status') : item.status;
+
+        return '<div class="vlist-demo__item">' +
+          '<div class="vlist-demo__item-main">' +
+            '<span class="vlist-demo__item-index">#' + (index + 1) + '</span>' +
+            '<span class="vlist-demo__item-name">' + nameHtml + '</span>' +
+            '<span class="vlist-demo__item-desc">' + descHtml + '</span>' +
+          '</div>' +
+          '<div class="vlist-demo__item-meta">' +
+            '<span class="vlist-demo__item-priority"><i class="fas ' + priorityIcon + '" aria-hidden="true"></i></span>' +
+            '<span class="badge bg-' + statusClass + '">' + statusHtml + '</span>' +
+          '</div>' +
+        '</div>';
+      },
+
+      onClick: function(item, index, event) {
+        log('Clicked item ' + index + ': "' + item.name + '"');
+        emit('event', { event: 'vlist:click', payload: { index: index, id: item.id } });
+      },
+
+      onSelect: function(selectedItems, selectedIds) {
+        document.getElementById('stat-selected').textContent = selectedIds.length;
+        log('Selection changed: ' + selectedIds.length + ' items');
+        emit('event', { event: 'vlist:select', payload: { count: selectedIds.length } });
+        updateState();
+      },
+
+      onScroll: function(scrollTop, scrollHeight) {
+        var range = listInstance.getVisibleRange ? listInstance.getVisibleRange() : { start: 0, end: 0 };
+        updateStats(scrollTop, range);
+      },
+
+      onActivate: function(item, index) {
+        log('Activated item ' + index + ': "' + item.name + '"');
+        emit('event', { event: 'vlist:activate', payload: { index: index, id: item.id } });
+      },
+
+      onFocus: function(item, index) {
+        emit('event', { event: 'vlist:focus', payload: { index: index } });
+        updateState();
+      },
+
+      onFilter: function(filteredCount, totalCount) {
+        log('Filtered: ' + filteredCount + '/' + totalCount + ' items');
+        emit('event', { event: 'vlist:filter', payload: { filtered: filteredCount, total: totalCount } });
+        document.getElementById('stat-total').textContent = filteredCount.toLocaleString() + ' / ' + totalCount.toLocaleString();
+        updateState();
+      },
+
+      onSearch: function(matches, query) {
+        log('Search "' + query + '": ' + matches.length + ' matches');
+        emit('event', { event: 'vlist:search', payload: { query: query, matches: matches.length } });
+      }
+    });
+
+    log('List created with ' + itemCount.toLocaleString() + ' items');
+    emit('event', { event: 'vlist:init', payload: { itemCount: itemCount } });
+    updateState();
+  }
+
+  Funky.Pages.register('component-virtualised-list', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+      itemCounter = 0;
+
+      log('Init with itemCount=' + (props.itemCount || 100000) + ', height=' + (props.itemHeight || 40));
+      emit('event', { event: 'vlist:init', payload: props });
+
+      // Create the list
+      createList();
+
+      // Listen for props changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - recreating list');
+          createList();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Scroll Navigation
+      document.getElementById('vlist-scroll-top').onclick = function() {
+        if (!listInstance || !listInstance.scrollToTop) return;
+        listInstance.scrollToTop();
+        log('Scrolled to top');
+        emit('event', { event: 'vlist:scroll-top', payload: {} });
+      };
+
+      document.getElementById('vlist-scroll-bottom').onclick = function() {
+        if (!listInstance || !listInstance.scrollToIndex) return;
+        var count = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+        listInstance.scrollToIndex(count - 1);
+        log('Scrolled to bottom');
+        emit('event', { event: 'vlist:scroll-bottom', payload: {} });
+      };
+
+      document.getElementById('vlist-scroll-item').onclick = function() {
+        if (!listInstance || !listInstance.scrollToIndex) return;
+        listInstance.scrollToIndex(5000, 'center');
+        log('Scrolled to item 5000');
+        emit('event', { event: 'vlist:scroll-to', payload: { index: 5000 } });
+      };
+
+      document.getElementById('vlist-scroll-middle').onclick = function() {
+        if (!listInstance || !listInstance.scrollToIndex) return;
+        var count = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+        var middle = Math.floor(count / 2);
+        listInstance.scrollToIndex(middle, 'center');
+        log('Scrolled to middle (item ' + middle + ')');
+        emit('event', { event: 'vlist:scroll-to', payload: { index: middle } });
+      };
+
+      document.getElementById('vlist-get-visible').onclick = function() {
+        if (!listInstance || !listInstance.getVisibleRange) return;
+        var range = listInstance.getVisibleRange();
+        log('Visible range: ' + range.first + ' to ' + range.last);
+        emit('event', { event: 'vlist:visible-range', payload: range });
+        Funky.Toast.info('Visible: items ' + range.first + '-' + range.last);
+      };
+
+      // Selection
+      document.getElementById('vlist-select-all').onclick = function() {
+        if (!listInstance || !listInstance.selectAll) return;
+        listInstance.selectAll();
+        log('Selected all items');
+        emit('event', { event: 'vlist:select-all', payload: {} });
+        updateState();
+      };
+
+      document.getElementById('vlist-deselect-all').onclick = function() {
+        if (!listInstance || !listInstance.deselectAll) return;
+        listInstance.deselectAll();
+        log('Deselected all items');
+        emit('event', { event: 'vlist:deselect-all', payload: {} });
+        updateState();
+      };
+
+      document.getElementById('vlist-select-item').onclick = function() {
+        if (!listInstance || !listInstance.select) return;
+        listInstance.select(100);
+        listInstance.scrollToIndex(100, 'center');
+        log('Selected item 100');
+        emit('event', { event: 'vlist:select', payload: { id: 100 } });
+        updateState();
+      };
+
+      document.getElementById('vlist-toggle-item').onclick = function() {
+        if (!listInstance || !listInstance.toggleSelect) return;
+        listInstance.toggleSelect(200);
+        listInstance.scrollToIndex(200, 'center');
+        var isSelected = listInstance.isSelected ? listInstance.isSelected(200) : false;
+        log('Toggled item 200 - now ' + (isSelected ? 'selected' : 'deselected'));
+        emit('event', { event: 'vlist:toggle', payload: { id: 200, selected: isSelected } });
+        updateState();
+      };
+
+      document.getElementById('vlist-get-selected').onclick = function() {
+        if (!listInstance || !listInstance.getSelected) return;
+        var selected = listInstance.getSelected();
+        var ids = listInstance.getSelectedIds ? listInstance.getSelectedIds() : [];
+        log('Selected items: ' + ids.length);
+        emit('event', { event: 'vlist:get-selected', payload: { count: ids.length } });
+        Funky.Toast.info('Selected: ' + ids.length + ' items');
+      };
+
+      // Search & Filter
+      document.getElementById('vlist-search').onclick = function() {
+        if (!listInstance || !listInstance.search) return;
+        listInstance.search('active');
+        log('Searching for "active"');
+        emit('event', { event: 'vlist:search', payload: { query: 'active' } });
+      };
+
+      document.getElementById('vlist-search-prev').onclick = function() {
+        if (!listInstance || !listInstance.previousMatch) return;
+        listInstance.previousMatch();
+        var match = listInstance.getCurrentMatch ? listInstance.getCurrentMatch() : null;
+        if (match) {
+          log('Previous match: item ' + match.index);
+        }
+        emit('event', { event: 'vlist:prev-match', payload: {} });
+      };
+
+      document.getElementById('vlist-search-next').onclick = function() {
+        if (!listInstance || !listInstance.nextMatch) return;
+        listInstance.nextMatch();
+        var match = listInstance.getCurrentMatch ? listInstance.getCurrentMatch() : null;
+        if (match) {
+          log('Next match: item ' + match.index);
+        }
+        emit('event', { event: 'vlist:next-match', payload: {} });
+      };
+
+      document.getElementById('vlist-clear-search').onclick = function() {
+        if (!listInstance || !listInstance.clearSearch) return;
+        listInstance.clearSearch();
+        log('Search cleared');
+        emit('event', { event: 'vlist:clear-search', payload: {} });
+      };
+
+      document.getElementById('vlist-filter').onclick = function() {
+        if (!listInstance || !listInstance.filter) return;
+        listInstance.filter(function(item) {
+          return item.status === 'active';
+        });
+        log('Filtered to active items only');
+        emit('event', { event: 'vlist:filter', payload: { status: 'active' } });
+        updateState();
+      };
+
+      document.getElementById('vlist-clear-filter').onclick = function() {
+        if (!listInstance || !listInstance.clearFilter) return;
+        listInstance.clearFilter();
+        var count = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+        document.getElementById('stat-total').textContent = count.toLocaleString();
+        log('Filter cleared');
+        emit('event', { event: 'vlist:clear-filter', payload: {} });
+        updateState();
+      };
+
+      // Sorting
+      document.getElementById('vlist-sort-name').onclick = function() {
+        if (!listInstance || !listInstance.sort) return;
+        listInstance.sort(function(a, b) {
+          return a.name.localeCompare(b.name);
+        });
+        log('Sorted by name');
+        emit('event', { event: 'vlist:sort', payload: { field: 'name' } });
+      };
+
+      document.getElementById('vlist-sort-status').onclick = function() {
+        if (!listInstance || !listInstance.sort) return;
+        listInstance.sort(function(a, b) {
+          return a.status.localeCompare(b.status);
+        });
+        log('Sorted by status');
+        emit('event', { event: 'vlist:sort', payload: { field: 'status' } });
+      };
+
+      document.getElementById('vlist-reverse-sort').onclick = function() {
+        if (!listInstance || !listInstance.reverseSort) return;
+        listInstance.reverseSort();
+        log('Sort reversed');
+        emit('event', { event: 'vlist:reverse-sort', payload: {} });
+      };
+
+      document.getElementById('vlist-clear-sort').onclick = function() {
+        if (!listInstance || !listInstance.clearSort) return;
+        listInstance.clearSort();
+        log('Sort cleared');
+        emit('event', { event: 'vlist:clear-sort', payload: {} });
+      };
+
+      // Data Operations
+      document.getElementById('vlist-add-item').onclick = function() {
+        if (!listInstance || !listInstance.addItems) return;
+        itemCounter++;
+        var newItem = {
+          id: 'new-' + itemCounter,
+          name: 'New Item ' + itemCounter,
+          description: 'Dynamically added item',
+          status: 'pending',
+          priority: 'medium',
+          value: Math.floor(Math.random() * 1000)
+        };
+        listInstance.addItems([newItem]);
+        var count = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+        listInstance.scrollToIndex(count - 1);
+        log('Added item: "' + newItem.name + '"');
+        emit('event', { event: 'vlist:add-item', payload: { id: newItem.id } });
+        updateState();
+      };
+
+      document.getElementById('vlist-prepend-item').onclick = function() {
+        if (!listInstance || !listInstance.prependItems) return;
+        itemCounter++;
+        var newItem = {
+          id: 'prepend-' + itemCounter,
+          name: 'Prepended Item ' + itemCounter,
+          description: 'Added to the beginning',
+          status: 'active',
+          priority: 'high',
+          value: Math.floor(Math.random() * 1000)
+        };
+        listInstance.prependItems([newItem]);
+        listInstance.scrollToTop();
+        log('Prepended item: "' + newItem.name + '"');
+        emit('event', { event: 'vlist:prepend-item', payload: { id: newItem.id } });
+        updateState();
+      };
+
+      document.getElementById('vlist-update-item').onclick = function() {
+        if (!listInstance || !listInstance.updateItem) return;
+        listInstance.updateItem(0, {
+          name: 'Updated Item 1',
+          status: 'active',
+          description: 'This item was updated at ' + new Date().toLocaleTimeString()
+        });
+        listInstance.scrollToTop();
+        log('Updated first item');
+        emit('event', { event: 'vlist:update-item', payload: { id: 0 } });
+      };
+
+      document.getElementById('vlist-remove-item').onclick = function() {
+        if (!listInstance || !listInstance.removeItem) return;
+        var count = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+        if (count === 0) {
+          Funky.Toast.warning('No items to remove');
+          return;
+        }
+        var items = listInstance.getData ? listInstance.getData() : [];
+        var lastItem = items[items.length - 1];
+        if (lastItem) {
+          listInstance.removeItem(lastItem.id);
+          log('Removed last item: "' + lastItem.name + '"');
+          emit('event', { event: 'vlist:remove-item', payload: { id: lastItem.id } });
+          updateState();
+        }
+      };
+
+      document.getElementById('vlist-clear-all').onclick = function() {
+        if (!listInstance || !listInstance.clearData) return;
+        listInstance.clearData();
+        document.getElementById('stat-total').textContent = '0';
+        log('Cleared all items');
+        emit('event', { event: 'vlist:clear-all', payload: {} });
+        updateState();
+      };
+
+      document.getElementById('vlist-reset-data').onclick = function() {
+        log('Resetting data');
+        createList();
+        Funky.Toast.success('Data reset');
+      };
+
+      // Focus & Keyboard
+      document.getElementById('vlist-focus-first').onclick = function() {
+        if (!listInstance || !listInstance.setFocus) return;
+        listInstance.setFocus(0);
+        listInstance.scrollToTop();
+        log('Focused first item');
+        emit('event', { event: 'vlist:focus', payload: { index: 0 } });
+        updateState();
+      };
+
+      document.getElementById('vlist-focus-last').onclick = function() {
+        if (!listInstance || !listInstance.setFocus) return;
+        var count = listInstance.getItemCount ? listInstance.getItemCount() : 0;
+        listInstance.setFocus(count - 1);
+        listInstance.scrollToIndex(count - 1);
+        log('Focused last item');
+        emit('event', { event: 'vlist:focus', payload: { index: count - 1 } });
+        updateState();
+      };
+
+      document.getElementById('vlist-focus-item').onclick = function() {
+        if (!listInstance || !listInstance.setFocus) return;
+        listInstance.setFocus(500);
+        listInstance.scrollToIndex(500, 'center');
+        log('Focused item 500');
+        emit('event', { event: 'vlist:focus', payload: { index: 500 } });
+        updateState();
+      };
+
+      document.getElementById('vlist-get-focused').onclick = function() {
+        if (!listInstance) return;
+        var index = listInstance.getFocusedIndex ? listInstance.getFocusedIndex() : -1;
+        var item = listInstance.getFocusedItem ? listInstance.getFocusedItem() : null;
+        if (item) {
+          log('Focused: item ' + index + ' ("' + item.name + '")');
+          Funky.Toast.info('Focused: ' + item.name + ' (index ' + index + ')');
+        } else {
+          log('No item focused');
+          Funky.Toast.info('No item focused');
+        }
+        emit('event', { event: 'vlist:get-focused', payload: { index: index } });
+      };
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy list instance
+      if (listInstance && listInstance.destroy) {
+        listInstance.destroy();
+      }
+      listInstance = null;
+      originalData = null;
+      logs = [];
+      itemCounter = 0;
+      return {};
+    }
+  });
+})();
+</script>

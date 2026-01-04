@@ -1,0 +1,732 @@
+/**
+ * Funky.ZeroClick Styles
+ * Debug mode indicators and visual feedback
+ */
+
+/* ===========================================
+   DEBUG MODE OVERLAY
+   =========================================== */
+
+/* Debug indicator on elements with triggers */
+[data-zero-click].zeroclick-debug {
+    position: relative;
+    outline: 2px dashed var(--pro-info, #17a2b8);
+    outline-offset: 2px;
+}
+
+[data-zero-click].zeroclick-debug::before {
+    content: '⚡ ' attr(data-zero-click);
+    position: absolute;
+    top: -20px;
+    left: 0;
+    font-size: 10px;
+    font-family: var(--pro-font-monospace, monospace);
+    background: var(--pro-info, #17a2b8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* JSON script blocks in debug mode */
+script[data-zero-click].zeroclick-debug {
+    display: block !important;
+    background: var(--pro-secondary-bg, #f8f9fa);
+    border: 2px dashed var(--pro-info, #17a2b8);
+    border-radius: 4px;
+    padding: 8px;
+    margin: 8px 0;
+    font-family: var(--pro-font-monospace, monospace);
+    font-size: 11px;
+    white-space: pre-wrap;
+    max-height: 150px;
+    overflow: auto;
+}
+
+script[data-zero-click].zeroclick-debug::before {
+    content: '⚡ ZeroClick Config';
+    display: block;
+    font-weight: bold;
+    color: var(--pro-info, #17a2b8);
+    margin-bottom: 4px;
+}
+
+/* ===========================================
+   DEBUG PANEL
+   =========================================== */
+
+.zeroclick-debug-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    max-height: 400px;
+    background: var(--pro-card-bg, #fff);
+    border: 1px solid var(--pro-border-color, #dee2e6);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    font-size: 12px;
+    font-family: var(--pro-font-sans, system-ui, sans-serif);
+    overflow: hidden;
+}
+
+.zeroclick-debug-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--pro-info, #17a2b8);
+    color: white;
+    font-weight: 600;
+}
+
+.zeroclick-debug-panel-header .badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+.zeroclick-debug-panel-body {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.zeroclick-debug-panel-footer {
+    padding: 8px;
+    border-top: 1px solid var(--pro-border-color, #dee2e6);
+    display: flex;
+    gap: 8px;
+}
+
+.zeroclick-debug-panel-footer button {
+    flex: 1;
+    padding: 6px;
+    font-size: 11px;
+    border: 1px solid var(--pro-border-color, #dee2e6);
+    border-radius: 4px;
+    background: var(--pro-card-bg, #fff);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.zeroclick-debug-panel-footer button:hover {
+    background: var(--pro-secondary-bg, #f8f9fa);
+}
+
+/* ===========================================
+   DEBUG LOG ENTRIES
+   =========================================== */
+
+.zeroclick-log-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--pro-border-color, #dee2e6);
+    font-family: var(--pro-font-monospace, monospace);
+    font-size: 11px;
+}
+
+.zeroclick-log-entry:last-child {
+    border-bottom: none;
+}
+
+.zeroclick-log-entry-time {
+    color: var(--pro-text-muted, #6c757d);
+    flex-shrink: 0;
+}
+
+.zeroclick-log-entry-event {
+    color: var(--pro-primary, #007bff);
+    font-weight: 500;
+}
+
+.zeroclick-log-entry-action {
+    color: var(--pro-success, #28a745);
+}
+
+.zeroclick-log-entry.registered {
+    background: rgba(23, 162, 184, 0.1);
+}
+
+.zeroclick-log-entry.triggered {
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.zeroclick-log-entry.error {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.zeroclick-log-entry.error .zeroclick-log-entry-action {
+    color: var(--pro-danger, #dc3545);
+}
+
+/* ===========================================
+   TRIGGER INDICATOR FLASH
+   =========================================== */
+
+/* Flash animation when trigger fires */
+@keyframes zeroclick-flash {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+[data-zero-click].zeroclick-triggered {
+    animation: zeroclick-flash 0.6s ease-out;
+}
+
+/* ===========================================
+   STATUS INDICATOR
+   =========================================== */
+
+.zeroclick-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.zeroclick-status.active {
+    background: rgba(40, 167, 69, 0.15);
+    color: var(--pro-success, #28a745);
+}
+
+.zeroclick-status.paused {
+    background: rgba(255, 193, 7, 0.15);
+    color: var(--pro-warning, #ffc107);
+}
+
+.zeroclick-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* ===========================================
+   DARK THEME ADJUSTMENTS
+   =========================================== */
+
+[data-theme="dark"] .zeroclick-debug-panel,
+.dark .zeroclick-debug-panel {
+    background: var(--pro-card-bg, #2d3748);
+    border-color: var(--pro-border-color, #4a5568);
+}
+
+[data-theme="dark"] script[data-zero-click].zeroclick-debug,
+.dark script[data-zero-click].zeroclick-debug {
+    background: var(--pro-secondary-bg, #1a202c);
+}
+
+/* ===========================================
+   EVEN FUNKIER THEME
+   =========================================== */
+
+[data-theme="even-funkyer"] [data-zero-click].zeroclick-debug {
+    outline-color: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] [data-zero-click].zeroclick-debug::before {
+    background: var(--funkier-neon-cyan, #00ffff);
+    color: #0a0015;
+}
+
+[data-theme="even-funkyer"] .zeroclick-debug-panel {
+    background: var(--pro-bg-primary, #0a0015);
+    border-color: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .zeroclick-debug-panel-header {
+    background: linear-gradient(135deg, var(--funkier-neon-pink, #ff00ff), var(--funkier-neon-cyan, #00ffff));
+    color: #0a0015;
+}
+
+[data-theme="even-funkyer"] .zeroclick-log-entry-event {
+    color: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] .zeroclick-log-entry-action {
+    color: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] script[data-zero-click].zeroclick-debug {
+    background: var(--pro-bg-secondary, #1a0033);
+    border-color: var(--funkier-neon-cyan, #00ffff);
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-zero-click].zeroclick-triggered {
+        animation: none;
+    }
+}
+
+/* ===========================================
+   PLAYGROUND DEMO STYLES
+   =========================================== */
+
+.zero-click-demo__section {
+    margin-bottom: 2rem;
+}
+
+/* Declarative Examples */
+.zero-click-demo__declarative-examples {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.zero-click-demo__hover-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: var(--pro-bg-secondary, #e9ecef);
+    border: 2px dashed var(--pro-border-color, #dee2e6);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.zero-click-demo__hover-zone:hover,
+.zero-click-demo__hover-zone:focus {
+    background: var(--pro-info-bg, #d1ecf1);
+    border-color: var(--pro-info, #17a2b8);
+    outline: none;
+}
+
+.zero-click-demo__input {
+    max-width: 200px;
+}
+
+.zero-click-demo__triggers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.zero-click-demo__code {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border: 1px solid var(--pro-border-color, #dee2e6);
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: var(--pro-font-monospace, monospace);
+    font-size: 0.875rem;
+}
+
+.zero-click-demo__syntax {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.zero-click-demo__event {
+    color: var(--pro-primary, #007bff);
+    font-weight: 600;
+}
+
+.zero-click-demo__arrow {
+    color: var(--pro-text-muted, #6c757d);
+    font-size: 1.25rem;
+}
+
+.zero-click-demo__action {
+    color: var(--pro-success, #28a745);
+    font-weight: 500;
+}
+
+.zero-click-demo__condition {
+    color: var(--pro-warning, #ffc107);
+    font-style: italic;
+    background: rgba(255, 193, 7, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.zero-click-demo__syntax--indent {
+    padding-left: 1.5rem;
+}
+
+.zero-click-demo__attr {
+    color: var(--pro-info, #17a2b8);
+}
+
+.zero-click-demo__string {
+    color: var(--pro-success, #28a745);
+}
+
+.zero-click-demo__fn {
+    color: var(--pro-text, #212529);
+}
+
+.zero-click-demo__prop {
+    color: var(--pro-primary, #007bff);
+}
+
+.zero-click-demo__comment {
+    color: var(--pro-text-muted, #6c757d);
+    font-style: italic;
+}
+
+/* Conditional Controls */
+.zero-click-demo__conditional-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.zero-click-demo__priority-picker {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.zero-click-demo__priority-picker .form-label {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Debug Controls */
+.zero-click-demo__debug-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.zero-click-demo__status-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.zero-click-demo__control-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Event Log */
+.zero-click-demo__log {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border: 1px solid var(--pro-border-color, #dee2e6);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.zero-click-demo__log-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: var(--pro-bg-secondary, #e9ecef);
+    border-bottom: 1px solid var(--pro-border-color, #dee2e6);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.zero-click-demo__log-header .btn-link {
+    padding: 0;
+    font-size: 0.75rem;
+}
+
+.zero-click-demo__log-entries {
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: var(--pro-font-monospace, monospace);
+    font-size: 0.75rem;
+}
+
+.zero-click-demo__log-empty {
+    padding: 1rem;
+    text-align: center;
+    color: var(--pro-text-muted, #6c757d);
+    font-style: italic;
+}
+
+.zero-click-demo__log-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-bottom: 1px solid var(--pro-border-color, #dee2e6);
+}
+
+.zero-click-demo__log-entry:last-child {
+    border-bottom: none;
+}
+
+.zero-click-demo__log-time {
+    color: var(--pro-text-muted, #6c757d);
+    flex-shrink: 0;
+}
+
+.zero-click-demo__log-type {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.zero-click-demo__log-entry--registered .zero-click-demo__log-type {
+    background: rgba(23, 162, 184, 0.15);
+    color: var(--pro-info, #17a2b8);
+}
+
+.zero-click-demo__log-entry--fired .zero-click-demo__log-type {
+    background: rgba(40, 167, 69, 0.15);
+    color: var(--pro-success, #28a745);
+}
+
+.zero-click-demo__log-entry--control .zero-click-demo__log-type {
+    background: rgba(255, 193, 7, 0.15);
+    color: var(--pro-warning-text, #856404);
+}
+
+.zero-click-demo__log-entry--config .zero-click-demo__log-type {
+    background: rgba(108, 117, 125, 0.15);
+    color: var(--pro-secondary, #6c757d);
+}
+
+.zero-click-demo__log-entry--removed .zero-click-demo__log-type {
+    background: rgba(220, 53, 69, 0.15);
+    color: var(--pro-danger, #dc3545);
+}
+
+.zero-click-demo__log-entry--error .zero-click-demo__log-type {
+    background: rgba(220, 53, 69, 0.15);
+    color: var(--pro-danger, #dc3545);
+}
+
+.zero-click-demo__log-entry--info .zero-click-demo__log-type {
+    background: rgba(0, 123, 255, 0.15);
+    color: var(--pro-primary, #007bff);
+}
+
+.zero-click-demo__log-message {
+    flex: 1;
+    word-break: break-word;
+}
+
+/* API Demo */
+.zero-click-demo__api-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.zero-click-demo__registered-triggers {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border: 1px solid var(--pro-border-color, #dee2e6);
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.zero-click-demo__trigger-list {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+}
+
+.zero-click-demo__trigger-list li {
+    margin-bottom: 0.25rem;
+}
+
+.zero-click-demo__trigger-list code {
+    background: var(--pro-bg-secondary, #e9ecef);
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+}
+
+/* ===========================================
+   DARK THEME - DEMO STYLES
+   =========================================== */
+
+[data-theme="dark"] .zero-click-demo__code,
+.dark .zero-click-demo__code {
+    background: var(--pro-bg-tertiary, #1a202c);
+}
+
+[data-theme="dark"] .zero-click-demo__log,
+.dark .zero-click-demo__log {
+    background: var(--pro-bg-tertiary, #1a202c);
+}
+
+[data-theme="dark"] .zero-click-demo__log-header,
+.dark .zero-click-demo__log-header {
+    background: var(--pro-bg-secondary, #2d3748);
+}
+
+[data-theme="dark"] .zero-click-demo__registered-triggers,
+.dark .zero-click-demo__registered-triggers {
+    background: var(--pro-bg-tertiary, #1a202c);
+}
+
+[data-theme="dark"] .zero-click-demo__trigger-list code,
+.dark .zero-click-demo__trigger-list code {
+    background: var(--pro-bg-secondary, #2d3748);
+}
+
+[data-theme="dark"] .zero-click-demo__hover-zone,
+.dark .zero-click-demo__hover-zone {
+    background: var(--pro-bg-secondary, #2d3748);
+    border-color: var(--pro-border-color, #4a5568);
+}
+
+[data-theme="dark"] .zero-click-demo__hover-zone:hover,
+[data-theme="dark"] .zero-click-demo__hover-zone:focus,
+.dark .zero-click-demo__hover-zone:hover,
+.dark .zero-click-demo__hover-zone:focus {
+    background: var(--pro-info-bg, #1a365d);
+    border-color: var(--pro-info, #4299e1);
+}
+
+[data-theme="dark"] .zero-click-demo__fn,
+.dark .zero-click-demo__fn {
+    color: var(--pro-text, #e2e8f0);
+}
+
+/* ===========================================
+   EVEN FUNKIER THEME - DEMO STYLES
+   =========================================== */
+
+[data-theme="even-funkyer"] .zero-click-demo__event {
+    color: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__action {
+    color: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__condition {
+    color: var(--funkier-neon-yellow, #ffff00);
+    background: rgba(255, 255, 0, 0.1);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__code,
+[data-theme="even-funkyer"] .zero-click-demo__log,
+[data-theme="even-funkyer"] .zero-click-demo__registered-triggers {
+    background: var(--pro-bg-secondary, #1a0033);
+    border-color: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__log-header {
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.2));
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__hover-zone {
+    background: var(--pro-bg-secondary, #1a0033);
+    border-color: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__hover-zone:hover,
+[data-theme="even-funkyer"] .zero-click-demo__hover-zone:focus {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--funkier-neon-pink, #ff00ff);
+    box-shadow: 0 0 10px var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__attr {
+    color: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__string {
+    color: var(--funkier-neon-green, #00ff00);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__prop {
+    color: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .zero-click-demo__fn {
+    color: var(--pro-text, #f0f0f0);
+}
+
+/* ===========================================
+   RESPONSIVE ADJUSTMENTS
+   =========================================== */
+
+@media (max-width: 576px) {
+    .zero-click-demo__declarative-examples {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .zero-click-demo__input {
+        max-width: none;
+    }
+
+    .zero-click-demo__triggers {
+        flex-direction: column;
+    }
+
+    .zero-click-demo__triggers .btn {
+        width: 100%;
+    }
+
+    .zero-click-demo__conditional-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .zero-click-demo__priority-picker {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .zero-click-demo__priority-picker .btn-group {
+        width: 100%;
+    }
+
+    .zero-click-demo__priority-picker .btn-group .btn {
+        flex: 1;
+    }
+
+    .zero-click-demo__syntax {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .zero-click-demo__arrow {
+        transform: rotate(90deg);
+    }
+
+    .zero-click-demo__api-buttons {
+        flex-direction: column;
+    }
+
+    .zero-click-demo__api-buttons .btn {
+        width: 100%;
+    }
+}

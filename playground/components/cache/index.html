@@ -1,0 +1,881 @@
+<div data-page="component-cache" class="component-demo">
+  <h2>Cache</h2>
+  <p class="text-muted">In-memory data cache with TTL and LRU eviction. Supports simple key-value storage and entity-type API for API response caching.</p>
+
+  <!-- Section 1: Simple Key-Value Cache -->
+  <section class="demo-section" aria-labelledby="kv-heading">
+    <h3 id="kv-heading">Simple Key-Value Cache</h3>
+    <p class="text-muted small">Basic set/get/delete operations with optional TTL.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__kv-form">
+        <div class="cache-demo__input-group">
+          <label for="kv-key">Key</label>
+          <input type="text" id="kv-key" class="form-control" placeholder="user:123" value="myKey">
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="kv-value">Value (JSON)</label>
+          <input type="text" id="kv-value" class="form-control" placeholder='{"name": "John"}' value='{"name": "John", "age": 30}'>
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="kv-ttl">TTL (ms)</label>
+          <input type="number" id="kv-ttl" class="form-control" placeholder="60000" value="60000" min="1000">
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-primary" id="kv-set">
+          <i class="fas fa-plus" aria-hidden="true"></i> Set
+        </button>
+        <button type="button" class="btn btn-secondary" id="kv-get">
+          <i class="fas fa-search" aria-hidden="true"></i> Get
+        </button>
+        <button type="button" class="btn btn-warning" id="kv-delete">
+          <i class="fas fa-trash" aria-hidden="true"></i> Delete
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="kv-has">
+          <i class="fas fa-question" aria-hidden="true"></i> Has?
+        </button>
+      </div>
+
+      <div id="kv-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 2: Entity-Type Cache -->
+  <section class="demo-section" aria-labelledby="entity-heading">
+    <h3 id="entity-heading">Entity-Type Cache</h3>
+    <p class="text-muted small">Cache API responses by entity type and ID. Supports list caching.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__entity-form">
+        <div class="cache-demo__input-group">
+          <label for="entity-type">Entity Type</label>
+          <select id="entity-type" class="form-control">
+            <option value="users">users</option>
+            <option value="products">products</option>
+            <option value="orders">orders</option>
+          </select>
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="entity-id">Entity ID</label>
+          <input type="text" id="entity-id" class="form-control" placeholder="123" value="1">
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="entity-data">Data (JSON)</label>
+          <input type="text" id="entity-data" class="form-control" placeholder='{"id": 1, "name": "Item"}' value='{"id": 1, "name": "Product A", "price": 99.99}'>
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-primary" id="entity-set">
+          <i class="fas fa-plus" aria-hidden="true"></i> Set Item
+        </button>
+        <button type="button" class="btn btn-secondary" id="entity-get">
+          <i class="fas fa-search" aria-hidden="true"></i> Get Item
+        </button>
+        <button type="button" class="btn btn-info" id="entity-set-list">
+          <i class="fas fa-list" aria-hidden="true"></i> Set Sample List
+        </button>
+        <button type="button" class="btn btn-secondary" id="entity-get-list">
+          <i class="fas fa-list-ul" aria-hidden="true"></i> Get List
+        </button>
+        <button type="button" class="btn btn-warning" id="entity-invalidate">
+          <i class="fas fa-ban" aria-hidden="true"></i> Invalidate
+        </button>
+      </div>
+
+      <div id="entity-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 3: Cache Configuration -->
+  <section class="demo-section" aria-labelledby="config-heading">
+    <h3 id="config-heading">Cache Configuration</h3>
+    <p class="text-muted small">Configure TTL and max entries per entity type.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__config-form">
+        <div class="cache-demo__input-group">
+          <label for="config-type">Entity Type</label>
+          <select id="config-type" class="form-control">
+            <option value="users">users</option>
+            <option value="products">products</option>
+            <option value="orders">orders</option>
+          </select>
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="config-ttl">TTL (ms)</label>
+          <input type="number" id="config-ttl" class="form-control" value="300000" min="1000">
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="config-max">Max Entries</label>
+          <input type="number" id="config-max" class="form-control" value="100" min="1">
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-primary" id="config-apply">
+          <i class="fas fa-cog" aria-hidden="true"></i> Apply Configuration
+        </button>
+        <button type="button" class="btn btn-secondary" id="config-view">
+          <i class="fas fa-eye" aria-hidden="true"></i> View Config
+        </button>
+      </div>
+
+      <div id="config-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 4: Pattern Operations -->
+  <section class="demo-section" aria-labelledby="pattern-heading">
+    <h3 id="pattern-heading">Pattern Operations</h3>
+    <p class="text-muted small">Clear cache entries by key prefix pattern.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__pattern-form">
+        <div class="cache-demo__input-group">
+          <label for="pattern-prefix">Key Prefix</label>
+          <input type="text" id="pattern-prefix" class="form-control" placeholder="user:" value="user:">
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-primary" id="pattern-add-samples">
+          <i class="fas fa-plus-circle" aria-hidden="true"></i> Add Sample Keys
+        </button>
+        <button type="button" class="btn btn-secondary" id="pattern-list">
+          <i class="fas fa-list" aria-hidden="true"></i> List Keys
+        </button>
+        <button type="button" class="btn btn-warning" id="pattern-clear">
+          <i class="fas fa-eraser" aria-hidden="true"></i> Clear Pattern
+        </button>
+      </div>
+
+      <div id="pattern-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 5: Statistics -->
+  <section class="demo-section" aria-labelledby="stats-heading">
+    <h3 id="stats-heading">Cache Statistics</h3>
+    <p class="text-muted small">Monitor cache performance with hit/miss statistics.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__stats-display" id="stats-display">
+        <div class="cache-demo__stat-card">
+          <div class="cache-demo__stat-label">Hits</div>
+          <div class="cache-demo__stat-value" id="stat-hits">0</div>
+        </div>
+        <div class="cache-demo__stat-card">
+          <div class="cache-demo__stat-label">Misses</div>
+          <div class="cache-demo__stat-value" id="stat-misses">0</div>
+        </div>
+        <div class="cache-demo__stat-card">
+          <div class="cache-demo__stat-label">Hit Rate</div>
+          <div class="cache-demo__stat-value" id="stat-rate">0%</div>
+        </div>
+        <div class="cache-demo__stat-card">
+          <div class="cache-demo__stat-label">KV Size</div>
+          <div class="cache-demo__stat-value" id="stat-size">0</div>
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-secondary" id="stats-refresh">
+          <i class="fas fa-sync-alt" aria-hidden="true"></i> Refresh Stats
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="stats-reset">
+          <i class="fas fa-undo" aria-hidden="true"></i> Reset Stats
+        </button>
+        <button type="button" class="btn btn-secondary" id="stats-entity">
+          <i class="fas fa-database" aria-hidden="true"></i> Entity Stats
+        </button>
+      </div>
+
+      <div id="stats-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 6: Clear Operations -->
+  <section class="demo-section" aria-labelledby="clear-heading">
+    <h3 id="clear-heading">Clear Operations</h3>
+    <p class="text-muted small">Clear cache entries selectively or all at once.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__clear-options">
+        <div class="cache-demo__input-group">
+          <label for="clear-type">Entity Type (for selective clear)</label>
+          <select id="clear-type" class="form-control">
+            <option value="">-- Select Type --</option>
+            <option value="users">users</option>
+            <option value="products">products</option>
+            <option value="orders">orders</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-warning" id="clear-kv">
+          <i class="fas fa-eraser" aria-hidden="true"></i> Clear KV Store
+        </button>
+        <button type="button" class="btn btn-warning" id="clear-entity">
+          <i class="fas fa-trash" aria-hidden="true"></i> Clear Entity Type
+        </button>
+        <button type="button" class="btn btn-danger" id="clear-all">
+          <i class="fas fa-skull-crossbones" aria-hidden="true"></i> Clear All
+        </button>
+      </div>
+
+      <div id="clear-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 7: CacheSync Demo -->
+  <section class="demo-section" aria-labelledby="sync-heading">
+    <h3 id="sync-heading">CacheSync (WebSocket Integration)</h3>
+    <p class="text-muted small">Demonstrates cache invalidation via WebSocket events.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__sync-form">
+        <div class="cache-demo__input-group">
+          <label for="sync-entity">Entity Type</label>
+          <select id="sync-entity" class="form-control">
+            <option value="users">users</option>
+            <option value="products">products</option>
+            <option value="orders">orders</option>
+          </select>
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="sync-id">Entity ID</label>
+          <input type="text" id="sync-id" class="form-control" placeholder="123" value="1">
+        </div>
+        <div class="cache-demo__input-group">
+          <label for="sync-reason">Reason</label>
+          <select id="sync-reason" class="form-control">
+            <option value="updated">updated</option>
+            <option value="deleted">deleted</option>
+            <option value="manual">manual</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-primary" id="sync-invalidate">
+          <i class="fas fa-sync" aria-hidden="true"></i> Trigger Invalidation
+        </button>
+        <button type="button" class="btn btn-warning" id="sync-bulk">
+          <i class="fas fa-layer-group" aria-hidden="true"></i> Bulk Invalidate
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="sync-toggle-dt">
+          <i class="fas fa-table" aria-hidden="true"></i> Toggle DataTable Integration
+        </button>
+      </div>
+
+      <div id="sync-status" class="cache-demo__sync-status">
+        <span class="cache-demo__sync-indicator" id="sync-dt-indicator"></span>
+        <span id="sync-dt-status">DataTable Integration: Checking...</span>
+      </div>
+
+      <div id="sync-result" class="cache-demo__result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Section 8: Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Real-time log of cache events.</p>
+
+    <div class="demo-area">
+      <div class="cache-demo__event-log" id="event-log" aria-live="polite" aria-label="Cache event log">
+        <div class="cache-demo__log-empty">No events yet. Perform cache operations to see events.</div>
+      </div>
+
+      <div class="cache-demo__button-row">
+        <button type="button" class="btn btn-outline-secondary" id="log-clear">
+          <i class="fas fa-trash-alt" aria-hidden="true"></i> Clear Log
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var eventLog = [];
+  var eventHandlers = [];
+  var propsChangedHandler = null;
+
+  function sanitizeForLog(data) {
+    if (!data) return data;
+    var result = {};
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        var val = data[key];
+        if (val instanceof HTMLElement) {
+          result[key] = '<' + val.tagName.toLowerCase() + (val.id ? '#' + val.id : '') + '>';
+        } else if (typeof val === 'object' && val !== null) {
+          result[key] = sanitizeForLog(val);
+        } else {
+          result[key] = val;
+        }
+      }
+    }
+    return result;
+  }
+
+  function logEvent(eventName, data) {
+    var now = new Date();
+    var timestamp = now.toLocaleTimeString();
+
+    var entry = {
+      timestamp: timestamp,
+      event: eventName,
+      data: sanitizeForLog(data)
+    };
+    eventLog.unshift(entry);
+
+    // Keep last 50 entries
+    if (eventLog.length > 50) {
+      eventLog.pop();
+    }
+
+    renderEventLog();
+    emit('event', { event: eventName, payload: entry });
+  }
+
+  function renderEventLog() {
+    var logContainer = document.getElementById('event-log');
+    if (!logContainer) return;
+
+    if (eventLog.length === 0) {
+      logContainer.innerHTML = '<div class="cache-demo__log-empty">No events yet. Perform cache operations to see events.</div>';
+      return;
+    }
+
+    var html = eventLog.map(function(entry) {
+      var dataStr = '';
+      try {
+        dataStr = JSON.stringify(entry.data, null, 2);
+      } catch (e) {
+        dataStr = String(entry.data);
+      }
+      return '<div class="cache-demo__log-entry">' +
+        '<span class="cache-demo__log-time">' + entry.timestamp + '</span> ' +
+        '<span class="cache-demo__log-event">' + entry.event + '</span>' +
+        '<pre class="cache-demo__log-data">' + dataStr + '</pre>' +
+        '</div>';
+    }).join('');
+
+    logContainer.innerHTML = html;
+  }
+
+  function showResult(elementId, message, type) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+
+    el.className = 'cache-demo__result cache-demo__result--' + (type || 'info');
+    if (typeof message === 'object') {
+      el.innerHTML = '<pre>' + JSON.stringify(message, null, 2) + '</pre>';
+    } else {
+      el.textContent = message;
+    }
+  }
+
+  function updateStats() {
+    if (!Funky.Cache) return;
+
+    var stats = Funky.Cache.getStats();
+    var size = Funky.Cache.size();
+
+    document.getElementById('stat-hits').textContent = stats.hits;
+    document.getElementById('stat-misses').textContent = stats.misses;
+    document.getElementById('stat-rate').textContent = (stats.hitRate * 100).toFixed(1) + '%';
+    document.getElementById('stat-size').textContent = size;
+  }
+
+  function updateSyncStatus() {
+    if (!Funky.CacheSync) {
+      document.getElementById('sync-dt-status').textContent = 'CacheSync not available';
+      document.getElementById('sync-dt-indicator').className = 'cache-demo__sync-indicator cache-demo__sync-indicator--disabled';
+      return;
+    }
+
+    var enabled = Funky.CacheSync.isDataTableIntegrationEnabled();
+    document.getElementById('sync-dt-status').textContent = 'DataTable Integration: ' + (enabled ? 'Enabled' : 'Disabled');
+    document.getElementById('sync-dt-indicator').className = 'cache-demo__sync-indicator cache-demo__sync-indicator--' + (enabled ? 'enabled' : 'disabled');
+  }
+
+  // =========================================================================
+  // Key-Value Operations
+  // =========================================================================
+
+  function handleKvSet() {
+    var key = document.getElementById('kv-key').value.trim();
+    var valueStr = document.getElementById('kv-value').value.trim();
+    var ttl = parseInt(document.getElementById('kv-ttl').value, 10) || 60000;
+
+    if (!key) {
+      showResult('kv-result', 'Please enter a key', 'error');
+      return;
+    }
+
+    var value;
+    try {
+      value = JSON.parse(valueStr);
+    } catch (e) {
+      value = valueStr; // Use as string if not valid JSON
+    }
+
+    Funky.Cache.set(key, value, { ttl: ttl });
+    showResult('kv-result', 'Set "' + key + '" with TTL ' + ttl + 'ms', 'success');
+    logEvent('cache:set', { key: key, ttl: ttl });
+    updateStats();
+  }
+
+  function handleKvGet() {
+    var key = document.getElementById('kv-key').value.trim();
+
+    if (!key) {
+      showResult('kv-result', 'Please enter a key', 'error');
+      return;
+    }
+
+    var value = Funky.Cache.get(key);
+    if (value !== undefined) {
+      showResult('kv-result', { key: key, value: value }, 'success');
+      logEvent('cache:get:hit', { key: key });
+    } else {
+      showResult('kv-result', 'Key "' + key + '" not found or expired', 'warning');
+      logEvent('cache:get:miss', { key: key });
+    }
+    updateStats();
+  }
+
+  function handleKvDelete() {
+    var key = document.getElementById('kv-key').value.trim();
+
+    if (!key) {
+      showResult('kv-result', 'Please enter a key', 'error');
+      return;
+    }
+
+    Funky.Cache.delete(key);
+    showResult('kv-result', 'Deleted "' + key + '"', 'success');
+    logEvent('cache:delete', { key: key });
+    updateStats();
+  }
+
+  function handleKvHas() {
+    var key = document.getElementById('kv-key').value.trim();
+
+    if (!key) {
+      showResult('kv-result', 'Please enter a key', 'error');
+      return;
+    }
+
+    // Get and check (has is for entity-type API)
+    var value = Funky.Cache.get(key);
+    var exists = value !== undefined;
+    showResult('kv-result', 'Key "' + key + '": ' + (exists ? 'EXISTS' : 'NOT FOUND'), exists ? 'success' : 'warning');
+    updateStats();
+  }
+
+  // =========================================================================
+  // Entity-Type Operations
+  // =========================================================================
+
+  function handleEntitySet() {
+    var type = document.getElementById('entity-type').value;
+    var id = document.getElementById('entity-id').value.trim();
+    var dataStr = document.getElementById('entity-data').value.trim();
+
+    if (!id) {
+      showResult('entity-result', 'Please enter an entity ID', 'error');
+      return;
+    }
+
+    var data;
+    try {
+      data = JSON.parse(dataStr);
+    } catch (e) {
+      showResult('entity-result', 'Invalid JSON data', 'error');
+      return;
+    }
+
+    Funky.Cache.set(type, id, data);
+    showResult('entity-result', 'Cached ' + type + ':' + id, 'success');
+    logEvent('cache:entity:set', { type: type, id: id });
+    updateStats();
+  }
+
+  function handleEntityGet() {
+    var type = document.getElementById('entity-type').value;
+    var id = document.getElementById('entity-id').value.trim();
+
+    if (!id) {
+      showResult('entity-result', 'Please enter an entity ID', 'error');
+      return;
+    }
+
+    var data = Funky.Cache.get(type, id);
+    if (data !== null) {
+      showResult('entity-result', { type: type, id: id, data: data }, 'success');
+      logEvent('cache:entity:get:hit', { type: type, id: id });
+    } else {
+      showResult('entity-result', type + ':' + id + ' not found or expired', 'warning');
+      logEvent('cache:entity:get:miss', { type: type, id: id });
+    }
+    updateStats();
+  }
+
+  function handleEntitySetList() {
+    var type = document.getElementById('entity-type').value;
+
+    var sampleData = {
+      users: [
+        { id: 1, name: 'Alice', email: 'alice@example.com' },
+        { id: 2, name: 'Bob', email: 'bob@example.com' },
+        { id: 3, name: 'Charlie', email: 'charlie@example.com' }
+      ],
+      products: [
+        { id: 1, name: 'Widget A', price: 29.99 },
+        { id: 2, name: 'Widget B', price: 49.99 },
+        { id: 3, name: 'Widget C', price: 79.99 }
+      ],
+      orders: [
+        { id: 1, status: 'pending', total: 150.00 },
+        { id: 2, status: 'shipped', total: 89.99 },
+        { id: 3, status: 'delivered', total: 299.99 }
+      ]
+    };
+
+    var list = sampleData[type] || [];
+    Funky.Cache.setList(type, list);
+    showResult('entity-result', 'Set list for "' + type + '" with ' + list.length + ' items', 'success');
+    logEvent('cache:entity:setList', { type: type, count: list.length });
+    updateStats();
+  }
+
+  function handleEntityGetList() {
+    var type = document.getElementById('entity-type').value;
+    var list = Funky.Cache.getList(type);
+
+    if (list !== null) {
+      showResult('entity-result', { type: type, count: list.length, items: list }, 'success');
+      logEvent('cache:entity:getList:hit', { type: type, count: list.length });
+    } else {
+      showResult('entity-result', 'No list cached for "' + type + '"', 'warning');
+      logEvent('cache:entity:getList:miss', { type: type });
+    }
+    updateStats();
+  }
+
+  function handleEntityInvalidate() {
+    var type = document.getElementById('entity-type').value;
+    var id = document.getElementById('entity-id').value.trim();
+
+    if (!id) {
+      showResult('entity-result', 'Please enter an entity ID', 'error');
+      return;
+    }
+
+    Funky.Cache.invalidate(type, id);
+    showResult('entity-result', 'Invalidated ' + type + ':' + id, 'success');
+    logEvent('cache:entity:invalidate', { type: type, id: id });
+    updateStats();
+  }
+
+  // =========================================================================
+  // Configuration
+  // =========================================================================
+
+  function handleConfigApply() {
+    var type = document.getElementById('config-type').value;
+    var ttl = parseInt(document.getElementById('config-ttl').value, 10);
+    var maxEntries = parseInt(document.getElementById('config-max').value, 10);
+
+    Funky.Cache.configure(type, { ttl: ttl, maxEntries: maxEntries });
+    showResult('config-result', 'Configured "' + type + '": TTL=' + ttl + 'ms, Max=' + maxEntries, 'success');
+    logEvent('cache:configure', { type: type, ttl: ttl, maxEntries: maxEntries });
+  }
+
+  function handleConfigView() {
+    var stats = Funky.Cache.stats();
+    showResult('config-result', stats, 'info');
+    logEvent('cache:stats:view', { entityTypes: Object.keys(stats) });
+  }
+
+  // =========================================================================
+  // Pattern Operations
+  // =========================================================================
+
+  function handlePatternAddSamples() {
+    var prefix = document.getElementById('pattern-prefix').value.trim() || 'user:';
+
+    // Add sample keys with the prefix
+    Funky.Cache.set(prefix + '1', { id: 1, name: 'Sample 1' });
+    Funky.Cache.set(prefix + '2', { id: 2, name: 'Sample 2' });
+    Funky.Cache.set(prefix + '3', { id: 3, name: 'Sample 3' });
+    Funky.Cache.set('other:key', { note: 'This should not match' });
+
+    showResult('pattern-result', 'Added 3 sample keys with prefix "' + prefix + '" plus 1 other key', 'success');
+    logEvent('cache:pattern:addSamples', { prefix: prefix });
+    updateStats();
+  }
+
+  function handlePatternList() {
+    var prefix = document.getElementById('pattern-prefix').value.trim();
+    var keys = Funky.Cache.keys(prefix || undefined);
+
+    showResult('pattern-result', { prefix: prefix || '(all)', keys: keys, count: keys.length }, 'info');
+    logEvent('cache:pattern:list', { prefix: prefix, count: keys.length });
+  }
+
+  function handlePatternClear() {
+    var prefix = document.getElementById('pattern-prefix').value.trim();
+
+    if (!prefix) {
+      showResult('pattern-result', 'Please enter a prefix pattern', 'error');
+      return;
+    }
+
+    Funky.Cache.clearPattern(prefix);
+    showResult('pattern-result', 'Cleared all keys matching "' + prefix + '*"', 'success');
+    logEvent('cache:pattern:clear', { prefix: prefix });
+    updateStats();
+  }
+
+  // =========================================================================
+  // Statistics
+  // =========================================================================
+
+  function handleStatsRefresh() {
+    updateStats();
+    showResult('stats-result', 'Statistics refreshed', 'info');
+  }
+
+  function handleStatsReset() {
+    Funky.Cache.resetStats();
+    updateStats();
+    showResult('stats-result', 'Statistics reset', 'success');
+    logEvent('cache:stats:reset', {});
+  }
+
+  function handleStatsEntity() {
+    var stats = Funky.Cache.stats();
+    showResult('stats-result', stats, 'info');
+    logEvent('cache:stats:entity', stats);
+  }
+
+  // =========================================================================
+  // Clear Operations
+  // =========================================================================
+
+  function handleClearKv() {
+    Funky.Cache.clear();
+    showResult('clear-result', 'Cleared key-value store', 'success');
+    logEvent('cache:clear:kv', {});
+    updateStats();
+  }
+
+  function handleClearEntity() {
+    var type = document.getElementById('clear-type').value;
+
+    if (!type) {
+      showResult('clear-result', 'Please select an entity type', 'error');
+      return;
+    }
+
+    Funky.Cache.clear(type);
+    showResult('clear-result', 'Cleared all cached data for "' + type + '"', 'success');
+    logEvent('cache:clear:entity', { type: type });
+    updateStats();
+  }
+
+  function handleClearAll() {
+    Funky.Cache.clearAll();
+    Funky.Cache.clear(); // Also clear KV store
+    showResult('clear-result', 'Cleared ALL cache data', 'success');
+    logEvent('cache:clear:all', {});
+    updateStats();
+  }
+
+  // =========================================================================
+  // CacheSync Operations
+  // =========================================================================
+
+  function handleSyncInvalidate() {
+    if (!Funky.CacheSync) {
+      showResult('sync-result', 'CacheSync not available', 'error');
+      return;
+    }
+
+    var entity = document.getElementById('sync-entity').value;
+    var id = document.getElementById('sync-id').value.trim();
+    var reason = document.getElementById('sync-reason').value;
+
+    Funky.CacheSync.invalidate(entity, id, reason);
+    showResult('sync-result', 'Triggered invalidation: ' + entity + ':' + id + ' (' + reason + ')', 'success');
+    logEvent('cacheSync:invalidate', { entity: entity, id: id, reason: reason });
+    updateStats();
+  }
+
+  function handleSyncBulk() {
+    if (!Funky.CacheSync) {
+      showResult('sync-result', 'CacheSync not available', 'error');
+      return;
+    }
+
+    var entity = document.getElementById('sync-entity').value;
+    Funky.CacheSync.invalidateBulk(entity);
+    showResult('sync-result', 'Triggered bulk invalidation for "' + entity + '"', 'success');
+    logEvent('cacheSync:invalidateBulk', { entity: entity });
+    updateStats();
+  }
+
+  function handleSyncToggleDt() {
+    if (!Funky.CacheSync) {
+      showResult('sync-result', 'CacheSync not available', 'error');
+      return;
+    }
+
+    var current = Funky.CacheSync.isDataTableIntegrationEnabled();
+    Funky.CacheSync.setDataTableIntegration(!current);
+    updateSyncStatus();
+    showResult('sync-result', 'DataTable integration ' + (!current ? 'enabled' : 'disabled'), 'success');
+    logEvent('cacheSync:toggleDt', { enabled: !current });
+  }
+
+  function handleLogClear() {
+    eventLog = [];
+    renderEventLog();
+  }
+
+  // =========================================================================
+  // Event Subscriptions
+  // =========================================================================
+
+  function setupEventListeners() {
+    // Cache events
+    var cacheEvents = ['updated', 'invalidated', 'cleared'];
+    cacheEvents.forEach(function(eventName) {
+      var handler = function(data) {
+        logEvent('funky:cache:' + eventName, data);
+        updateStats();
+      };
+      Funky.Cache.on(eventName, handler);
+      eventHandlers.push({ module: 'Cache', event: eventName, handler: handler });
+    });
+
+    // CacheSync events
+    if (Funky.CacheSync) {
+      var syncHandler = function(data) {
+        logEvent('funky:cache-sync:invalidated', data);
+        updateStats();
+      };
+      Funky.CacheSync.on('funky:cache-sync:invalidated', syncHandler);
+      eventHandlers.push({ module: 'CacheSync', event: 'funky:cache-sync:invalidated', handler: syncHandler });
+    }
+  }
+
+  function bindEvents() {
+    // KV operations
+    document.getElementById('kv-set').addEventListener('click', handleKvSet);
+    document.getElementById('kv-get').addEventListener('click', handleKvGet);
+    document.getElementById('kv-delete').addEventListener('click', handleKvDelete);
+    document.getElementById('kv-has').addEventListener('click', handleKvHas);
+
+    // Entity operations
+    document.getElementById('entity-set').addEventListener('click', handleEntitySet);
+    document.getElementById('entity-get').addEventListener('click', handleEntityGet);
+    document.getElementById('entity-set-list').addEventListener('click', handleEntitySetList);
+    document.getElementById('entity-get-list').addEventListener('click', handleEntityGetList);
+    document.getElementById('entity-invalidate').addEventListener('click', handleEntityInvalidate);
+
+    // Configuration
+    document.getElementById('config-apply').addEventListener('click', handleConfigApply);
+    document.getElementById('config-view').addEventListener('click', handleConfigView);
+
+    // Pattern operations
+    document.getElementById('pattern-add-samples').addEventListener('click', handlePatternAddSamples);
+    document.getElementById('pattern-list').addEventListener('click', handlePatternList);
+    document.getElementById('pattern-clear').addEventListener('click', handlePatternClear);
+
+    // Statistics
+    document.getElementById('stats-refresh').addEventListener('click', handleStatsRefresh);
+    document.getElementById('stats-reset').addEventListener('click', handleStatsReset);
+    document.getElementById('stats-entity').addEventListener('click', handleStatsEntity);
+
+    // Clear operations
+    document.getElementById('clear-kv').addEventListener('click', handleClearKv);
+    document.getElementById('clear-entity').addEventListener('click', handleClearEntity);
+    document.getElementById('clear-all').addEventListener('click', handleClearAll);
+
+    // CacheSync operations
+    document.getElementById('sync-invalidate').addEventListener('click', handleSyncInvalidate);
+    document.getElementById('sync-bulk').addEventListener('click', handleSyncBulk);
+    document.getElementById('sync-toggle-dt').addEventListener('click', handleSyncToggleDt);
+
+    // Log
+    document.getElementById('log-clear').addEventListener('click', handleLogClear);
+  }
+
+  Funky.Pages.register('component-cache', {
+    init: function(state) {
+      var props = getProps();
+
+      // Set max size from props
+      if (props.maxEntries) {
+        Funky.Cache.setMaxSize(props.maxEntries);
+      }
+
+      bindEvents();
+      setupEventListeners();
+      updateStats();
+      updateSyncStatus();
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          if (newProps.maxEntries) {
+            Funky.Cache.setMaxSize(newProps.maxEntries);
+          }
+          updateStats();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'cache:init', payload: { size: Funky.Cache.size() } });
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Unsubscribe from Cache events
+      eventHandlers.forEach(function(item) {
+        if (item.module === 'Cache' && Funky.Cache && Funky.Cache.off) {
+          Funky.Cache.off(item.event, item.handler);
+        } else if (item.module === 'CacheSync' && Funky.CacheSync && Funky.CacheSync.off) {
+          Funky.CacheSync.off(item.event, item.handler);
+        }
+      });
+      eventHandlers = [];
+
+      // Reset state
+      eventLog = [];
+
+      return {};
+    }
+  });
+})();
+</script>

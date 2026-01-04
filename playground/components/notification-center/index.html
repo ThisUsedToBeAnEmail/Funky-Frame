@@ -1,0 +1,501 @@
+<div data-page="component-notification-center" class="component-demo">
+  <h2>Notification Center</h2>
+  <p class="text-muted">Centralized notification system with bell icon, dropdown, sound, and desktop notifications.</p>
+
+  <!-- Demo Header with Bell -->
+  <section class="demo-section" aria-labelledby="demo-bell-heading">
+    <h3 id="demo-bell-heading">Notification Bell</h3>
+    <p class="text-muted small">Click the bell icon to open the notification dropdown. Uses props: <code>maxVisible</code>, <code>groupByDate</code>, <code>showTimestamp</code>.</p>
+    <div class="demo-area">
+      <div class="notification-center-demo__header">
+        <span class="notification-center-demo__title">NotificationCenter Demo</span>
+        <div id="demo-notification-bell" class="notification-center-demo__bell-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Control Buttons -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">Controls</h3>
+    <p class="text-muted small">Add, manage, and control notifications. Uses props: <code>sound</code>, <code>soundVolume</code>.</p>
+    <div class="demo-area">
+      <div class="notification-center-demo__controls">
+        <button class="btn btn-funky-primary btn-sm" id="btn-add-random" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> Add Random
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-mark-all-read" type="button">
+          <i class="fas fa-check-double me-1" aria-hidden="true"></i> Mark All Read
+        </button>
+        <button class="btn btn-outline-danger btn-sm" id="btn-clear-all" type="button">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear All
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-toggle" type="button">
+          <i class="fas fa-bell me-1" aria-hidden="true"></i> Toggle
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Display -->
+  <section class="demo-section" aria-labelledby="stats-heading">
+    <h3 id="stats-heading">Stats</h3>
+    <p class="text-muted small">Live updating notification statistics.</p>
+    <div class="demo-area">
+      <div class="notification-center-demo__stats">
+        <div class="notification-center-demo__stat">
+          <span class="notification-center-demo__stat-label">Total:</span>
+          <span class="notification-center-demo__stat-value" id="stat-total">0</span>
+        </div>
+        <div class="notification-center-demo__stat">
+          <span class="notification-center-demo__stat-label">Unread:</span>
+          <span class="notification-center-demo__stat-value notification-center-demo__stat-value--unread" id="stat-unread">0</span>
+        </div>
+        <div class="notification-center-demo__stat">
+          <span class="notification-center-demo__stat-label">Filter:</span>
+          <span class="notification-center-demo__stat-value" id="stat-filter">all</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Filters -->
+  <section class="demo-section" aria-labelledby="filters-heading">
+    <h3 id="filters-heading">Category Filters</h3>
+    <p class="text-muted small">Filter notifications by category.</p>
+    <div class="demo-area">
+      <div class="notification-center-demo__filters" role="group" aria-label="Notification category filters">
+        <button class="btn btn-sm notification-center-demo__filter notification-center-demo__filter--active" data-filter="all" type="button">All</button>
+        <button class="btn btn-sm notification-center-demo__filter" data-filter="trade" type="button">
+          <i class="fas fa-chart-line me-1" aria-hidden="true"></i> Trade
+        </button>
+        <button class="btn btn-sm notification-center-demo__filter" data-filter="alert" type="button">
+          <i class="fas fa-exclamation-triangle me-1" aria-hidden="true"></i> Alert
+        </button>
+        <button class="btn btn-sm notification-center-demo__filter" data-filter="system" type="button">
+          <i class="fas fa-cog me-1" aria-hidden="true"></i> System
+        </button>
+        <button class="btn btn-sm notification-center-demo__filter" data-filter="message" type="button">
+          <i class="fas fa-envelope me-1" aria-hidden="true"></i> Message
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Desktop Notifications -->
+  <section id="desktop-section" class="demo-section" aria-labelledby="desktop-heading" style="display: none;">
+    <h3 id="desktop-heading">Desktop Notifications</h3>
+    <p class="text-muted small">Request browser notification permission and test desktop notifications. Uses prop: <code>desktop</code>.</p>
+    <div class="demo-area">
+      <div class="notification-center-demo__desktop">
+        <button class="btn btn-outline-primary btn-sm" id="btn-request-permission" type="button">
+          <i class="fas fa-desktop me-1" aria-hidden="true"></i> Request Permission
+        </button>
+        <button class="btn btn-funky-primary btn-sm" id="btn-add-desktop" type="button">
+          <i class="fas fa-bell me-1" aria-hidden="true"></i> Add Desktop Notification
+        </button>
+        <span class="notification-center-demo__permission-status" id="permission-status">
+          Permission: <strong>default</strong>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <p class="text-muted small">Shows current prop values from the playground panel.</p>
+    <div class="demo-area">
+      <div class="notification-center-demo__state">
+        <div class="notification-center-demo__state-item">
+          <span class="notification-center-demo__state-label">Sound:</span>
+          <span class="notification-center-demo__state-value" id="state-sound">enabled</span>
+        </div>
+        <div class="notification-center-demo__state-item">
+          <span class="notification-center-demo__state-label">Volume:</span>
+          <span class="notification-center-demo__state-value" id="state-volume">50%</span>
+        </div>
+        <div class="notification-center-demo__state-item">
+          <span class="notification-center-demo__state-label">Desktop:</span>
+          <span class="notification-center-demo__state-value" id="state-desktop">disabled</span>
+        </div>
+        <div class="notification-center-demo__state-item">
+          <span class="notification-center-demo__state-label">Max Visible:</span>
+          <span class="notification-center-demo__state-value" id="state-max-visible">10</span>
+        </div>
+        <div class="notification-center-demo__state-item">
+          <span class="notification-center-demo__state-label">Group by Date:</span>
+          <span class="notification-center-demo__state-value" id="state-group-by-date">disabled</span>
+        </div>
+        <div class="notification-center-demo__state-item">
+          <span class="notification-center-demo__state-label">Show Timestamps:</span>
+          <span class="notification-center-demo__state-value" id="state-show-timestamp">enabled</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keyboard Shortcuts -->
+  <section class="demo-section" aria-labelledby="keyboard-heading">
+    <h3 id="keyboard-heading">Keyboard Shortcuts</h3>
+    <div class="demo-area">
+      <div class="notification-center-demo__shortcuts">
+        <kbd>⌥N</kbd> Toggle
+        <kbd>↑↓</kbd> or <kbd>jk</kbd> Navigate
+        <kbd>Enter</kbd> or <kbd>Space</kbd> View
+        <kbd>Backspace</kbd> Dismiss
+        <kbd>R</kbd> Toggle read
+      </div>
+    </div>
+  </section>
+
+  <!-- Events Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Events Log</h3>
+    <div class="demo-area">
+      <pre class="notification-center-demo__log" id="events-log" aria-live="polite">Interact with notifications to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var NC = null;
+  var propsChangedHandler = null;
+  var eventHandlers = [];
+  var logs = [];
+
+  // Sample notification templates
+  var sampleNotifications = [
+    { title: 'Trade Executed', body: 'AAPL order filled at $150.00', category: 'trade', iconColor: 'success', icon: 'fa-check-circle' },
+    { title: 'Trade Failed', body: 'Order rejected: Insufficient funds', category: 'trade', iconColor: 'danger', icon: 'fa-times-circle' },
+    { title: 'Price Alert', body: 'TSLA reached target price of $250', category: 'alert', iconColor: 'warning', icon: 'fa-exclamation-triangle' },
+    { title: 'System Maintenance', body: 'Scheduled maintenance at 11 PM', category: 'system', iconColor: 'info', icon: 'fa-info-circle' },
+    { title: 'New Message', body: 'You have a new message from Support', category: 'message', iconColor: 'info', icon: 'fa-envelope' },
+    { title: 'Order Pending', body: 'Awaiting market open for execution', category: 'trade', iconColor: 'warning', icon: 'fa-clock' },
+    { title: 'Security Alert', body: 'New login detected from Chrome on Mac', category: 'alert', iconColor: 'danger', icon: 'fa-shield-alt' },
+    { title: 'System Update', body: 'New features available in dashboard', category: 'system', iconColor: 'success', icon: 'fa-rocket' }
+  ];
+
+  // Log helper
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('events-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  // Update stats display
+  function updateStats() {
+    if (!NC) return;
+
+    var totalEl = document.getElementById('stat-total');
+    var unreadEl = document.getElementById('stat-unread');
+    var filterEl = document.getElementById('stat-filter');
+
+    if (totalEl) totalEl.textContent = NC.getData ? NC.getData().length : 0;
+    if (unreadEl) unreadEl.textContent = NC.getUnreadCount ? NC.getUnreadCount() : 0;
+    if (filterEl) filterEl.textContent = NC.getFilter ? NC.getFilter() : 'all';
+  }
+
+  // Update state display from props
+  function updateStateDisplay(props) {
+    var soundEl = document.getElementById('state-sound');
+    var volumeEl = document.getElementById('state-volume');
+    var desktopEl = document.getElementById('state-desktop');
+    var maxVisibleEl = document.getElementById('state-max-visible');
+    var groupByDateEl = document.getElementById('state-group-by-date');
+    var showTimestampEl = document.getElementById('state-show-timestamp');
+    var desktopSection = document.getElementById('desktop-section');
+
+    if (soundEl) soundEl.textContent = props.sound !== false ? 'enabled' : 'disabled';
+    if (volumeEl) volumeEl.textContent = (props.soundVolume || 50) + '%';
+    if (desktopEl) desktopEl.textContent = props.desktop ? 'enabled' : 'disabled';
+    if (maxVisibleEl) maxVisibleEl.textContent = props.maxVisible || 10;
+    if (groupByDateEl) groupByDateEl.textContent = props.groupByDate ? 'enabled' : 'disabled';
+    if (showTimestampEl) showTimestampEl.textContent = props.showTimestamp !== false ? 'enabled' : 'disabled';
+
+    // Toggle Desktop Notifications section visibility
+    if (desktopSection) {
+      desktopSection.style.display = props.desktop ? '' : 'none';
+    }
+  }
+
+  // Update filter button states
+  function updateFilterButtons(currentFilter) {
+    var buttons = document.querySelectorAll('.notification-center-demo__filter');
+    buttons.forEach(function(btn) {
+      var filter = btn.getAttribute('data-filter');
+      if (filter === currentFilter) {
+        btn.classList.add('notification-center-demo__filter--active');
+      } else {
+        btn.classList.remove('notification-center-demo__filter--active');
+      }
+    });
+  }
+
+  // Update permission status display
+  function updatePermissionStatus() {
+    var statusEl = document.getElementById('permission-status');
+    if (statusEl && 'Notification' in window) {
+      statusEl.innerHTML = 'Permission: <strong>' + Notification.permission + '</strong>';
+    }
+  }
+
+  // Apply props to NotificationCenter
+  function applyProps(props) {
+    if (!NC) return;
+
+    // Update NC configuration if methods are available
+    if (NC.setConfig) {
+      NC.setConfig({
+        sound: props.sound !== false,
+        soundVolume: (props.soundVolume || 50) / 100,
+        desktop: props.desktop || false,
+        maxVisible: props.maxVisible || 10,
+        groupByDate: props.groupByDate || false,
+        showTimestamp: props.showTimestamp !== false
+      });
+    }
+
+    updateStateDisplay(props);
+    updateStats();
+  }
+
+  Funky.Pages.register('component-notification-center', {
+    init: function(state) {
+      var props = getProps();
+      NC = Funky.NotificationCenter;
+
+      if (!NC) {
+        log('ERROR: NotificationCenter module not loaded');
+        return {};
+      }
+
+      // Initialize NotificationCenter
+      NC.init({
+        container: '#demo-notification-bell',
+        instanceId: 'playground_demo',
+        sound: props.sound !== false,
+        soundVolume: (props.soundVolume || 50) / 100,
+        desktop: props.desktop || false,
+        maxVisible: props.maxVisible || 10,
+        groupByDate: props.groupByDate || false,
+        showTimestamp: props.showTimestamp !== false,
+        categories: [
+          { id: 'trade', label: 'Trade', icon: 'fa-chart-line' },
+          { id: 'alert', label: 'Alert', icon: 'fa-exclamation-triangle' },
+          { id: 'system', label: 'System', icon: 'fa-cog' },
+          { id: 'message', label: 'Message', icon: 'fa-envelope' }
+        ]
+      });
+
+      // Add initial sample notifications
+      if (NC.setData) {
+        NC.setData([
+          { id: 'init_1', title: 'Welcome!', body: 'Click the bell icon or use controls below', category: 'system', iconColor: 'info', icon: 'fa-info-circle', read: false, timestamp: Date.now() - 60000 },
+          { id: 'init_2', title: 'Sample Trade', body: 'This is a sample trade notification', category: 'trade', iconColor: 'success', icon: 'fa-check-circle', read: true, timestamp: Date.now() - 120000 },
+          { id: 'init_3', title: 'Price Alert', body: 'AAPL is up 5% today', category: 'alert', iconColor: 'warning', icon: 'fa-exclamation-triangle', read: false, timestamp: Date.now() - 180000 }
+        ]);
+      }
+
+      // Update displays
+      updateStateDisplay(props);
+      updateStats();
+      updatePermissionStatus();
+
+      // Control button handlers
+      var addBtn = document.getElementById('btn-add-random');
+      if (addBtn) {
+        addBtn.onclick = function() {
+          var sample = sampleNotifications[Math.floor(Math.random() * sampleNotifications.length)];
+          var notification = {
+            id: 'demo_' + Date.now(),
+            title: sample.title,
+            body: sample.body,
+            category: sample.category,
+            iconColor: sample.iconColor,
+            icon: sample.icon,
+            timestamp: Date.now(),
+            read: false
+          };
+          NC.add(notification);
+          log('Added: ' + sample.title);
+          updateStats();
+          emit('event', { event: 'funky:notification:add', payload: notification });
+        };
+      }
+
+      var markAllBtn = document.getElementById('btn-mark-all-read');
+      if (markAllBtn) {
+        markAllBtn.onclick = function() {
+          NC.markAllRead();
+          log('Marked all as read');
+          updateStats();
+          emit('event', { event: 'funky:notification:read-all' });
+        };
+      }
+
+      var clearBtn = document.getElementById('btn-clear-all');
+      if (clearBtn) {
+        clearBtn.onclick = function() {
+          if (NC.clear) {
+            NC.clear();
+          } else if (NC.setData) {
+            NC.setData([]);
+          }
+          log('Cleared all notifications');
+          updateStats();
+          emit('event', { event: 'funky:notification:clear' });
+        };
+      }
+
+      var toggleBtn = document.getElementById('btn-toggle');
+      if (toggleBtn) {
+        toggleBtn.onclick = function() {
+          NC.toggle();
+          var isOpen = NC.isOpen ? NC.isOpen() : false;
+          log('Toggled dropdown: ' + (isOpen ? 'open' : 'closed'));
+          emit('event', { event: 'funky:notification:toggle', payload: { isOpen: isOpen } });
+        };
+      }
+
+      // Category filter buttons
+      var filterBtns = document.querySelectorAll('.notification-center-demo__filter');
+      filterBtns.forEach(function(btn) {
+        btn.onclick = function() {
+          var filter = this.getAttribute('data-filter');
+          NC.filter(filter);
+          updateFilterButtons(filter);
+          log('Filter changed: ' + filter);
+          updateStats();
+          emit('event', { event: 'funky:notification:filter', payload: { filter: filter } });
+        };
+      });
+
+      // Desktop permission button
+      var permissionBtn = document.getElementById('btn-request-permission');
+      if (permissionBtn) {
+        permissionBtn.onclick = function() {
+          if (NC.requestDesktopPermission) {
+            NC.requestDesktopPermission().then(function(permission) {
+              updatePermissionStatus();
+              log('Desktop permission: ' + permission);
+              emit('event', { event: 'funky:notification:permission', payload: { permission: permission } });
+            });
+          } else if ('Notification' in window) {
+            Notification.requestPermission().then(function(permission) {
+              updatePermissionStatus();
+              log('Desktop permission: ' + permission);
+            });
+          }
+        };
+      }
+
+      // Add desktop notification button
+      var addDesktopBtn = document.getElementById('btn-add-desktop');
+      if (addDesktopBtn) {
+        addDesktopBtn.onclick = function() {
+          var sample = sampleNotifications[Math.floor(Math.random() * sampleNotifications.length)];
+          var notification = {
+            id: 'desktop_' + Date.now(),
+            title: sample.title,
+            body: sample.body,
+            category: sample.category,
+            iconColor: sample.iconColor,
+            icon: sample.icon,
+            timestamp: Date.now(),
+            read: false,
+            desktop: true  // Force desktop notification
+          };
+          NC.add(notification);
+          log('Added desktop notification: ' + sample.title);
+          updateStats();
+          emit('event', { event: 'funky:notification:add', payload: notification });
+        };
+      }
+
+      // Prevent link navigation in playground context
+      var bellContainer = document.getElementById('demo-notification-bell');
+      if (bellContainer) {
+        bellContainer.addEventListener('click', function(e) {
+          var link = e.target.closest('a');
+          if (link && link.href) {
+            e.preventDefault();
+            log('Link clicked: ' + link.href);
+            emit('event', { event: 'funky:notification:link-click', payload: { href: link.href } });
+          }
+        });
+      }
+
+      // Subscribe to PubSub events for logging
+      if (Funky.PubSub) {
+        var events = [
+          'funky:notification:add',
+          'funky:notification:read',
+          'funky:notification:read-all',
+          'funky:notification:remove',
+          'funky:notification:filter',
+          'funky:notification:click'
+        ];
+
+        events.forEach(function(eventName) {
+          var handler = function(data) {
+            updateStats();
+            if (eventName !== 'funky:notification:add') {
+              log(eventName.replace('funky:notification:', '') + (data && data.id ? ': ' + data.id : ''));
+            }
+          };
+          Funky.PubSub.on(eventName, handler);
+          eventHandlers.push({ event: eventName, handler: handler });
+        });
+      }
+
+      // Subscribe to prop changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function() {
+          var newProps = getProps();
+          applyProps(newProps);
+          log('Props updated');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      log('NotificationCenter initialized');
+      emit('event', { event: 'funky:notification:init', payload: props });
+
+      return {};
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Unsubscribe from notification events
+      if (Funky.PubSub && eventHandlers.length) {
+        eventHandlers.forEach(function(item) {
+          Funky.PubSub.off(item.event, item.handler);
+        });
+        eventHandlers = [];
+      }
+
+      // Destroy NotificationCenter instance
+      if (NC && NC.destroy) {
+        NC.destroy();
+      }
+
+      NC = null;
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

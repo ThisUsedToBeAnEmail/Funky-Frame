@@ -1,0 +1,451 @@
+<div data-page="component-action-bar" class="action-bar-demo">
+  <h2>Action Bar</h2>
+  <p class="text-muted">Declarative action toolbar with create, export, import, filter, and bulk action buttons.</p>
+
+  <!-- Main Demo -->
+  <section class="action-bar-demo__section">
+    <h3>Interactive Demo</h3>
+    <p class="text-muted small">Use the Props panel to configure the action bar</p>
+    <div class="action-bar-demo__area">
+      <div id="actionbar-main"></div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="action-bar-demo__section">
+    <h3>Current State</h3>
+    <div class="action-bar-demo__state" id="actionbar-state">
+      <div class="action-bar-demo__state-item">
+        <span class="action-bar-demo__state-label">Entity:</span>
+        <span class="action-bar-demo__state-value" id="state-entity">demo</span>
+      </div>
+      <div class="action-bar-demo__state-item">
+        <span class="action-bar-demo__state-label">Buttons:</span>
+        <span class="action-bar-demo__state-value" id="state-buttons">-</span>
+      </div>
+      <div class="action-bar-demo__state-item">
+        <span class="action-bar-demo__state-label">Filter Count:</span>
+        <span class="action-bar-demo__state-value" id="state-filter-count">0</span>
+      </div>
+      <div class="action-bar-demo__state-item">
+        <span class="action-bar-demo__state-label">Bulk Selected:</span>
+        <span class="action-bar-demo__state-value" id="state-bulk-count">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods -->
+  <section class="action-bar-demo__section">
+    <h3>API Methods</h3>
+    <div class="action-bar-demo__controls">
+      <div class="action-bar-demo__control-group">
+        <h4>Enable/Disable</h4>
+        <div class="action-bar-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="disable-create">Disable Create</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="enable-create">Enable Create</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="disable-export">Disable Export</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="enable-export">Enable Export</button>
+        </div>
+      </div>
+      <div class="action-bar-demo__control-group">
+        <h4>Loading State</h4>
+        <div class="action-bar-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="loading-create">Toggle Create Loading</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="loading-export">Toggle Export Loading</button>
+        </div>
+      </div>
+      <div class="action-bar-demo__control-group">
+        <h4>Filter Badge</h4>
+        <div class="action-bar-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="filter-0">Set Filters: 0</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="filter-3">Set Filters: 3</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="filter-10">Set Filters: 10</button>
+        </div>
+      </div>
+      <div class="action-bar-demo__control-group">
+        <h4>Bulk Selection</h4>
+        <div class="action-bar-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="bulk-0">Clear Selection</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="bulk-5">Select 5 Items</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="bulk-25">Select 25 Items</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Icon-Only Mode -->
+  <section class="action-bar-demo__section">
+    <h3>Icon-Only Mode</h3>
+    <p class="text-muted small">Buttons can be rendered as icon-only for compact layouts</p>
+    <div class="action-bar-demo__area">
+      <div id="actionbar-icons"></div>
+    </div>
+  </section>
+
+  <!-- Custom Actions -->
+  <section class="action-bar-demo__section">
+    <h3>Custom Actions</h3>
+    <p class="text-muted small">Add custom buttons with any icon, label, and click handler</p>
+    <div class="action-bar-demo__area">
+      <div id="actionbar-custom"></div>
+    </div>
+  </section>
+
+  <!-- Keyboard Navigation -->
+  <section class="action-bar-demo__section">
+    <h3>Keyboard Navigation</h3>
+    <div class="action-bar-demo__info">
+      <p>ActionBar uses roving tabindex for keyboard navigation:</p>
+      <ul>
+        <li><kbd>Tab</kbd> - Focus the action bar (first button)</li>
+        <li><kbd>←</kbd> / <kbd>→</kbd> - Move between buttons</li>
+        <li><kbd>Home</kbd> - Focus first button</li>
+        <li><kbd>End</kbd> - Focus last button</li>
+        <li><kbd>Enter</kbd> / <kbd>Space</kbd> - Activate button</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="action-bar-demo__section">
+    <h3>Event Log</h3>
+    <div class="action-bar-demo__log-controls">
+      <button type="button" class="btn btn-sm btn-secondary" data-method="clear-log">Clear Log</button>
+    </div>
+    <pre class="action-bar-demo__log" id="actionbar-log" role="log" aria-live="polite" aria-label="Action event log">Click buttons to see events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = [];
+  var eventHandlers = [];
+  var mainInstance = null;
+  var loadingStates = { create: false, export: false };
+  var filterCount = 0;
+  var bulkCount = 0;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('actionbar-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay(props) {
+    var entityEl = document.getElementById('state-entity');
+    var buttonsEl = document.getElementById('state-buttons');
+    var filterEl = document.getElementById('state-filter-count');
+    var bulkEl = document.getElementById('state-bulk-count');
+
+    if (entityEl) entityEl.textContent = props.entity || 'demo';
+    if (buttonsEl) {
+      var buttons = [];
+      if (props.showCreate !== false) buttons.push('Create');
+      if (props.showExport !== false) buttons.push('Export');
+      if (props.showImport !== false) buttons.push('Import');
+      if (props.showFilter !== false) buttons.push('Filter');
+      if (props.showBulk === true) buttons.push('Bulk');
+      buttonsEl.textContent = buttons.join(', ') || 'None';
+    }
+    if (filterEl) filterEl.textContent = filterCount;
+    if (bulkEl) bulkEl.textContent = bulkCount;
+  }
+
+  function addEventHandler(event, handler) {
+    document.addEventListener(event, handler);
+    eventHandlers.push({ event: event, handler: handler });
+  }
+
+  // Emit bulk selection event - demonstrates how any component can notify ActionBar
+  function emitBulkSelect(ids) {
+    var props = getProps();
+    document.dispatchEvent(new CustomEvent('funky.bulk.select', {
+      detail: {
+        entity: props.entity || 'demo',
+        ids: ids
+      }
+    }));
+  }
+
+  function handleControlClick(e) {
+    var btn = e.target.closest('[data-method]');
+    if (!btn || !mainInstance) return;
+
+    var method = btn.dataset.method;
+
+    switch (method) {
+      case 'disable-create':
+        mainInstance.setEnabled('create', false);
+        log('API: setEnabled("create", false)');
+        break;
+      case 'enable-create':
+        mainInstance.setEnabled('create', true);
+        log('API: setEnabled("create", true)');
+        break;
+      case 'disable-export':
+        mainInstance.setEnabled('export', false);
+        log('API: setEnabled("export", false)');
+        break;
+      case 'enable-export':
+        mainInstance.setEnabled('export', true);
+        log('API: setEnabled("export", true)');
+        break;
+      case 'loading-create':
+        loadingStates.create = !loadingStates.create;
+        mainInstance.setLoading('create', loadingStates.create);
+        log('API: setLoading("create", ' + loadingStates.create + ')');
+        break;
+      case 'loading-export':
+        loadingStates.export = !loadingStates.export;
+        mainInstance.setLoading('export', loadingStates.export);
+        log('API: setLoading("export", ' + loadingStates.export + ')');
+        break;
+      case 'filter-0':
+        filterCount = 0;
+        mainInstance.setFilterCount(0);
+        updateStateDisplay(getProps());
+        log('API: setFilterCount(0)');
+        break;
+      case 'filter-3':
+        filterCount = 3;
+        mainInstance.setFilterCount(3);
+        updateStateDisplay(getProps());
+        log('API: setFilterCount(3)');
+        break;
+      case 'filter-10':
+        filterCount = 10;
+        mainInstance.setFilterCount(10);
+        updateStateDisplay(getProps());
+        log('API: setFilterCount(10)');
+        break;
+      case 'bulk-0':
+        bulkCount = 0;
+        emitBulkSelect([]);
+        updateStateDisplay(getProps());
+        break;
+      case 'bulk-5':
+        bulkCount = 5;
+        emitBulkSelect(['id-1', 'id-2', 'id-3', 'id-4', 'id-5']);
+        updateStateDisplay(getProps());
+        break;
+      case 'bulk-25':
+        bulkCount = 25;
+        var ids = [];
+        for (var i = 1; i <= 25; i++) ids.push('id-' + i);
+        emitBulkSelect(ids);
+        updateStateDisplay(getProps());
+        break;
+      case 'clear-log':
+        logs = [];
+        var logEl = document.getElementById('actionbar-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+        break;
+    }
+  }
+
+  function buildButtons(props) {
+    var buttons = [];
+    var entity = props.entity || 'demo';
+
+    if (props.showCreate !== false) {
+      buttons.push({ action: 'create', label: 'Add ' + entity.charAt(0).toUpperCase() + entity.slice(1) });
+    }
+    if (props.showExport !== false) buttons.push({ action: 'export' });
+    if (props.showImport !== false) buttons.push({ action: 'import' });
+    if (props.showFilter !== false) buttons.push({ action: 'filter' });
+    // Always include bulk button for demo - hidden initially via setBulkSelection(0) after creation
+    buttons.push({ action: 'bulk' });
+
+    return buttons;
+  }
+
+  function createMainActionBar(props) {
+    var container = document.getElementById('actionbar-main');
+    if (!container || !Funky.ActionBar) return null;
+
+    container.innerHTML = '';
+
+    var buttons = buildButtons(props);
+    if (buttons.length === 0) {
+      container.innerHTML = '<p class="text-muted small">No buttons enabled. Use Props panel to enable buttons.</p>';
+      return null;
+    }
+
+    var instance = Funky.ActionBar.create({
+      container: '#actionbar-main',
+      entity: props.entity || 'demo',
+      buttons: buttons,
+      ariaLabel: 'Main action bar'
+    });
+
+    // Hide bulk button initially via event (demonstrates event-driven pattern)
+    if (instance) {
+      document.dispatchEvent(new CustomEvent('funky.bulk.select', {
+        detail: { entity: props.entity || 'demo', ids: [] }
+      }));
+    }
+
+    return instance;
+  }
+
+  Funky.Pages.register('component-action-bar', {
+    init: function(state) {
+      var props = getProps();
+
+      log('Initializing ActionBar demo');
+      emit('event', { event: 'action-bar:init', payload: props });
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Listen for ActionBar events
+      addEventHandler('funky.action-bar.action', function(e) {
+        var detail = e.detail || {};
+        log('Event: action "' + detail.action + '" (entity: ' + detail.entity + ')');
+        emit('event', { event: 'action-bar:action', payload: detail });
+      });
+
+      addEventHandler('funky.action-bar.create', function(e) {
+        var detail = e.detail || {};
+        log('Event: create triggered for "' + detail.entity + '"');
+        emit('event', { event: 'action-bar:create', payload: detail });
+      });
+
+      addEventHandler('funky.action-bar.export', function(e) {
+        var detail = e.detail || {};
+        log('Event: export triggered for "' + detail.entity + '"');
+        emit('event', { event: 'action-bar:export', payload: detail });
+      });
+
+      addEventHandler('funky.action-bar.import', function(e) {
+        var detail = e.detail || {};
+        log('Event: import triggered for "' + detail.entity + '"');
+        emit('event', { event: 'action-bar:import', payload: detail });
+      });
+
+      addEventHandler('funky.action-bar.filter-toggle', function(e) {
+        var detail = e.detail || {};
+        log('Event: filter toggle for "' + detail.entity + '"');
+        emit('event', { event: 'action-bar:filter-toggle', payload: detail });
+      });
+
+      addEventHandler('funky.action-bar.bulk-update', function(e) {
+        var detail = e.detail || {};
+        log('Event: bulk-update { entity: "' + detail.entity + '", count: ' + detail.count + ' }');
+        emit('event', { event: 'action-bar:bulk-update', payload: detail });
+      });
+
+      // Generic bulk selection event (from any source - tables, lists, etc.)
+      addEventHandler('funky.bulk.select', function(e) {
+        var detail = e.detail || {};
+        var idCount = detail.ids ? detail.ids.length : 0;
+        log('Event: funky.bulk.select { entity: "' + detail.entity + '", ids: [...] (' + idCount + ' items) }');
+        emit('event', { event: 'bulk.select', payload: detail });
+      });
+
+      // Control button clicks
+      document.addEventListener('click', handleControlClick);
+
+      if (!Funky.ActionBar) {
+        log('Error: Funky.ActionBar not available');
+        return;
+      }
+
+      // Main configurable action bar
+      mainInstance = createMainActionBar(props);
+      if (mainInstance) instances.push(mainInstance);
+
+      // Icon-only demo
+      var iconsInstance = Funky.ActionBar.create({
+        container: '#actionbar-icons',
+        entity: 'records',
+        buttons: [
+          { action: 'create', iconOnly: true },
+          { action: 'export', iconOnly: true },
+          { action: 'import', iconOnly: true },
+          { action: 'filter', iconOnly: true },
+          { action: 'refresh', iconOnly: true },
+          { action: 'print', iconOnly: true },
+          { action: 'settings', iconOnly: true }
+        ],
+        ariaLabel: 'Icon-only action bar'
+      });
+      instances.push(iconsInstance);
+
+      // Custom actions demo
+      var customInstance = Funky.ActionBar.create({
+        container: '#actionbar-custom',
+        entity: 'tasks',
+        buttons: [
+          { action: 'create', label: 'New Task' },
+          { action: 'custom', label: 'Archive', icon: 'fa-box-archive', variant: 'warning', onClick: function() {
+            log('Custom: Archive clicked');
+            emit('event', { event: 'action-bar:custom', payload: { action: 'archive' } });
+          }},
+          { action: 'custom', label: 'Duplicate', icon: 'fa-copy', onClick: function() {
+            log('Custom: Duplicate clicked');
+            emit('event', { event: 'action-bar:custom', payload: { action: 'duplicate' } });
+          }},
+          { action: 'custom', label: 'Delete', icon: 'fa-trash', variant: 'danger', onClick: function() {
+            log('Custom: Delete clicked');
+            emit('event', { event: 'action-bar:custom', payload: { action: 'delete' } });
+          }},
+          { action: 'export' }
+        ],
+        ariaLabel: 'Custom actions bar'
+      });
+      instances.push(customInstance);
+    },
+
+    propsChanged: function(newProps) {
+      log('Props changed');
+      updateStateDisplay(newProps);
+
+      // Recreate main action bar with new props
+      if (mainInstance) {
+        mainInstance.destroy();
+        var idx = instances.indexOf(mainInstance);
+        if (idx > -1) instances.splice(idx, 1);
+      }
+
+      mainInstance = createMainActionBar(newProps);
+      if (mainInstance) instances.push(mainInstance);
+
+      // Reset states
+      filterCount = 0;
+      bulkCount = 0;
+      loadingStates = { create: false, export: false };
+
+      emit('event', { event: 'action-bar:props-changed', payload: newProps });
+    },
+
+    destroy: function() {
+      // Clean up event listeners
+      eventHandlers.forEach(function(eh) {
+        document.removeEventListener(eh.event, eh.handler);
+      });
+      eventHandlers = [];
+      document.removeEventListener('click', handleControlClick);
+
+      // Destroy all instances
+      instances.forEach(function(instance) {
+        if (instance && instance.destroy) instance.destroy();
+      });
+      instances = [];
+      mainInstance = null;
+
+      // Reset state
+      logs = [];
+      filterCount = 0;
+      bulkCount = 0;
+      loadingStates = { create: false, export: false };
+
+      return {};
+    }
+  });
+})();
+</script>

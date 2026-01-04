@@ -1,0 +1,368 @@
+<div data-page="component-morph-panel" class="component-demo">
+  <h2>MorphPanel</h2>
+  <p class="text-muted">FLIP-animated panels that morph from trigger elements. Click buttons to see the panel morph from the trigger to its final position.</p>
+
+  <!-- Trigger Morphing Demo -->
+  <section class="demo-section morph-panel-demo__triggers" aria-labelledby="triggers-heading">
+    <h3 id="triggers-heading">Trigger Morphing</h3>
+    <p class="text-muted small">Click any button to see the panel morph from that element</p>
+
+    <div class="demo-area">
+      <div class="morph-panel-demo__trigger-grid">
+        <button type="button" class="btn btn-primary morph-panel-demo__trigger" data-trigger="1">
+          <i class="fas fa-expand" aria-hidden="true"></i>
+          <span>Open Panel</span>
+        </button>
+
+        <button type="button" class="btn btn-secondary morph-panel-demo__trigger" data-trigger="2">
+          <i class="fas fa-edit" aria-hidden="true"></i>
+          <span>Edit Item</span>
+        </button>
+
+        <button type="button" class="btn btn-outline-primary morph-panel-demo__trigger" data-trigger="3">
+          <i class="fas fa-info-circle" aria-hidden="true"></i>
+          <span>View Details</span>
+        </button>
+
+        <div class="morph-panel-demo__card" data-trigger="4">
+          <div class="morph-panel-demo__card-icon">
+            <i class="fas fa-user" aria-hidden="true"></i>
+          </div>
+          <div class="morph-panel-demo__card-content">
+            <span class="morph-panel-demo__card-title">User Profile</span>
+            <span class="morph-panel-demo__card-subtitle">Click to expand</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Size Comparison Demo -->
+  <section class="demo-section morph-panel-demo__sizes" aria-labelledby="sizes-heading">
+    <h3 id="sizes-heading">Size Comparison</h3>
+    <p class="text-muted small">Compare different panel sizes</p>
+
+    <div class="demo-area">
+      <div class="morph-panel-demo__size-buttons">
+        <button type="button" class="btn btn-sm btn-outline-secondary morph-panel-demo__size-btn" data-size="sm">Small</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary morph-panel-demo__size-btn" data-size="md">Medium</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary morph-panel-demo__size-btn" data-size="lg">Large</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary morph-panel-demo__size-btn" data-size="xl">X-Large</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary morph-panel-demo__size-btn" data-size="full">Full</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- No Trigger Demo -->
+  <section class="demo-section morph-panel-demo__no-trigger" aria-labelledby="no-trigger-heading">
+    <h3 id="no-trigger-heading">No Trigger (CSS Fallback)</h3>
+    <p class="text-muted small">Panel animates using CSS transitions when opened without a trigger element</p>
+
+    <div class="demo-area">
+      <button type="button" class="btn btn-outline-primary morph-panel-demo__no-trigger-btn">
+        <i class="fas fa-window-maximize" aria-hidden="true"></i>
+        <span>Open Without Trigger</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- API Methods -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Programmatic control of the panel</p>
+
+    <div class="demo-area">
+      <div class="morph-panel-demo__api-buttons">
+        <button type="button" class="btn btn-sm btn-secondary" id="api-show">
+          <i class="fas fa-eye" aria-hidden="true"></i> show()
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" id="api-hide">
+          <i class="fas fa-eye-slash" aria-hidden="true"></i> hide()
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" id="api-set-data">
+          <i class="fas fa-edit" aria-hidden="true"></i> setData()
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" id="api-is-visible">
+          <i class="fas fa-question-circle" aria-hidden="true"></i> isVisible()
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="morph-panel-demo__settings">
+        <span class="badge bg-secondary">Position: <strong id="setting-position">center</strong></span>
+        <span class="badge bg-secondary">Size: <strong id="setting-size">md</strong></span>
+        <span class="badge bg-secondary">Duration: <strong id="setting-duration">300ms</strong></span>
+        <span class="badge bg-secondary">Backdrop: <strong id="setting-backdrop">Yes</strong></span>
+        <span class="badge bg-secondary">Close on Backdrop: <strong id="setting-close-on-backdrop">Yes</strong></span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var PANEL_ID = 'demo-morph-panel';
+  var propsChangedHandler = null;
+
+  function log(message, type) {
+    console.log('[MorphPanel Demo]', message);
+    emit('event', { event: 'morphpanel:' + (type || 'info'), payload: { message: message } });
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      position: props.position || 'center',
+      size: props.size || 'md',
+      duration: parseInt(props.duration, 10) || 300,
+      backdrop: props.backdrop !== false,
+      closeOnBackdrop: props.closeOnBackdrop !== false,
+      demoType: props.demoType || 'triggers'
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+
+    var posEl = document.getElementById('setting-position');
+    var sizeEl = document.getElementById('setting-size');
+    var durEl = document.getElementById('setting-duration');
+    var backdropEl = document.getElementById('setting-backdrop');
+    var closeEl = document.getElementById('setting-close-on-backdrop');
+
+    if (posEl) posEl.textContent = opts.position;
+    if (sizeEl) sizeEl.textContent = opts.size;
+    if (durEl) durEl.textContent = opts.duration + 'ms';
+    if (backdropEl) backdropEl.textContent = opts.backdrop ? 'Yes' : 'No';
+    if (closeEl) closeEl.textContent = opts.closeOnBackdrop ? 'Yes' : 'No';
+  }
+
+  function updateVisibleSections() {
+    var opts = getOptions();
+    var triggersSection = document.querySelector('.morph-panel-demo__triggers');
+    var sizesSection = document.querySelector('.morph-panel-demo__sizes');
+    var noTriggerSection = document.querySelector('.morph-panel-demo__no-trigger');
+
+    if (triggersSection) triggersSection.style.display = opts.demoType === 'triggers' ? '' : 'none';
+    if (sizesSection) sizesSection.style.display = opts.demoType === 'sizes' ? '' : 'none';
+    if (noTriggerSection) noTriggerSection.style.display = opts.demoType === 'no-trigger' ? '' : 'none';
+  }
+
+  function registerPanel(sizeOverride) {
+    var opts = getOptions();
+
+    // Destroy existing panel
+    if (Funky.MorphPanel.getInstance(PANEL_ID)) {
+      Funky.MorphPanel.destroy(PANEL_ID);
+    }
+
+    // Register new panel with current options
+    Funky.MorphPanel.register(PANEL_ID, {
+      position: opts.position,
+      size: sizeOverride || opts.size,
+      duration: opts.duration,
+      backdrop: opts.backdrop,
+      closeOnBackdrop: opts.closeOnBackdrop,
+      keyboard: true,
+      focusTrap: true,
+      scrollLock: true,
+      closeButton: true,
+      onShow: function() {
+        log('Panel showing', 'show');
+      },
+      onShown: function() {
+        log('Panel shown', 'shown');
+      },
+      onHide: function() {
+        log('Panel hiding', 'hide');
+      },
+      onHidden: function() {
+        log('Panel hidden', 'hidden');
+      }
+    });
+
+    return PANEL_ID;
+  }
+
+  function showPanel(trigger, sizeOverride) {
+    var opts = getOptions();
+    registerPanel(sizeOverride);
+    Funky.MorphPanel.show(trigger, PANEL_ID);
+    // setData must be called AFTER show() because instance is created in show()
+    Funky.MorphPanel.setData(PANEL_ID, {
+      title: 'MorphPanel Demo',
+      content: buildPanelContent(opts, sizeOverride)
+    });
+  }
+
+  function buildPanelContent(opts, sizeOverride) {
+    var size = sizeOverride || opts.size;
+    var content = '<div class="morph-panel-demo__panel-content">';
+    content += '<p class="morph-panel-demo__panel-intro">This panel morphs smoothly from the trigger element using FLIP animation.</p>';
+    content += '<div class="morph-panel-demo__panel-info">';
+    content += '<div class="morph-panel-demo__panel-info-item"><strong>Position:</strong> ' + opts.position + '</div>';
+    content += '<div class="morph-panel-demo__panel-info-item"><strong>Size:</strong> ' + size + '</div>';
+    content += '<div class="morph-panel-demo__panel-info-item"><strong>Duration:</strong> ' + opts.duration + 'ms</div>';
+    content += '</div>';
+    content += '<h4>Features</h4>';
+    content += '<ul class="morph-panel-demo__features-list">';
+    content += '<li><i class="fas fa-check" aria-hidden="true"></i> FLIP animation from trigger</li>';
+    content += '<li><i class="fas fa-check" aria-hidden="true"></i> Keyboard accessible (Escape to close)</li>';
+    content += '<li><i class="fas fa-check" aria-hidden="true"></i> Focus trap when open</li>';
+    content += '<li><i class="fas fa-check" aria-hidden="true"></i> Scroll lock on body</li>';
+    content += '<li><i class="fas fa-check" aria-hidden="true"></i> Swipe to dismiss on mobile</li>';
+    content += '<li><i class="fas fa-check" aria-hidden="true"></i> Screen reader announcements</li>';
+    content += '</ul>';
+    content += '</div>';
+    return content;
+  }
+
+  function setupTriggerButtons() {
+    var triggers = document.querySelectorAll('.morph-panel-demo__trigger, .morph-panel-demo__card[data-trigger]');
+
+    triggers.forEach(function(trigger) {
+      trigger.addEventListener('click', function() {
+        showPanel(trigger);
+        log('Opened from trigger #' + trigger.dataset.trigger, 'trigger');
+      });
+    });
+  }
+
+  function setupSizeButtons() {
+    var sizeButtons = document.querySelectorAll('.morph-panel-demo__size-btn');
+
+    sizeButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var size = btn.dataset.size;
+        showPanel(btn, size);
+        log('Opened with size: ' + size, 'size');
+      });
+    });
+  }
+
+  function setupNoTriggerButton() {
+    var btn = document.querySelector('.morph-panel-demo__no-trigger-btn');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        showPanel(null);
+        log('Opened without trigger (CSS fallback)', 'no-trigger');
+      });
+    }
+  }
+
+  function setupApiButtons() {
+    var showBtn = document.getElementById('api-show');
+    var hideBtn = document.getElementById('api-hide');
+    var setDataBtn = document.getElementById('api-set-data');
+    var isVisibleBtn = document.getElementById('api-is-visible');
+
+    if (showBtn) {
+      showBtn.addEventListener('click', function() {
+        showPanel(showBtn);
+        log('API: show() called', 'api');
+      });
+    }
+
+    if (hideBtn) {
+      hideBtn.addEventListener('click', function() {
+        Funky.MorphPanel.hide(PANEL_ID);
+        log('API: hide() called', 'api');
+      });
+    }
+
+    if (setDataBtn) {
+      setDataBtn.addEventListener('click', function() {
+        registerPanel();
+        Funky.MorphPanel.show(setDataBtn, PANEL_ID);
+        // setData must be called AFTER show() because instance is created in show()
+        Funky.MorphPanel.setData(PANEL_ID, {
+          title: 'Updated Title',
+          content: '<div class="morph-panel-demo__panel-content"><p class="morph-panel-demo__panel-intro">Content updated via setData() API!</p><p>The panel title and content can be changed dynamically.</p></div>'
+        });
+        log('API: setData() called', 'api');
+      });
+    }
+
+    if (isVisibleBtn) {
+      isVisibleBtn.addEventListener('click', function() {
+        var visible = Funky.MorphPanel.isVisible(PANEL_ID);
+        log('API: isVisible() = ' + visible, 'api');
+        if (Funky.Toast) {
+          Funky.Toast.info('isVisible(): ' + visible);
+        }
+      });
+    }
+  }
+
+  function setupEventListeners() {
+    document.addEventListener('funky.morphpanel.show', function(e) {
+      emit('event', { event: 'funky.morphpanel.show', payload: e.detail });
+    });
+
+    document.addEventListener('funky.morphpanel.shown', function(e) {
+      emit('event', { event: 'funky.morphpanel.shown', payload: e.detail });
+    });
+
+    document.addEventListener('funky.morphpanel.hide', function(e) {
+      emit('event', { event: 'funky.morphpanel.hide', payload: e.detail });
+    });
+
+    document.addEventListener('funky.morphpanel.hidden', function(e) {
+      emit('event', { event: 'funky.morphpanel.hidden', payload: e.detail });
+    });
+  }
+
+  Funky.Pages.register('component-morph-panel', {
+    init: function(state) {
+      updateSettingsDisplay();
+      updateVisibleSections();
+      setupTriggerButtons();
+      setupSizeButtons();
+      setupNoTriggerButton();
+      setupApiButtons();
+      setupEventListeners();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          updateVisibleSections();
+          // Re-register panel with new options
+          registerPanel();
+          log('Props changed', 'props');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'morphpanel:init', payload: getOptions() });
+      log('Demo initialized', 'init');
+
+      return {};
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy panel instance
+      if (Funky.MorphPanel && Funky.MorphPanel.getInstance(PANEL_ID)) {
+        Funky.MorphPanel.destroy(PANEL_ID);
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

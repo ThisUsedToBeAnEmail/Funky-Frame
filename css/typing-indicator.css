@@ -1,0 +1,410 @@
+/* ============================================
+   TYPING-INDICATOR.CSS - Typing Status Display
+   Funky Framework
+   ============================================ */
+
+/* ============================================
+   CSS VARIABLES
+   ============================================ */
+:root {
+    --typing-dot-size: 6px;
+    --typing-dot-color: var(--pro-text-secondary, #8b949e);
+    --typing-dot-spacing: 3px;
+    --typing-animation-speed: 1.4s;
+    --typing-text-color: var(--pro-text-secondary, #8b949e);
+    --typing-font-size: 0.75rem;
+    --typing-bg: transparent;
+    --typing-border-radius: 4px;
+}
+
+/* ============================================
+   TYPING INDICATOR BASE
+   ============================================ */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 24px;
+    padding: 4px 8px;
+    background: var(--typing-bg);
+    border-radius: var(--typing-border-radius);
+}
+
+.typing-indicator[hidden] {
+    display: none;
+}
+
+/* Active state */
+.typing-indicator--active {
+    display: flex;
+}
+
+/* ============================================
+   ANIMATED DOTS
+   ============================================ */
+.typing-indicator__dots {
+    display: flex;
+    align-items: center;
+    gap: var(--typing-dot-spacing);
+}
+
+.typing-indicator__dots span {
+    width: var(--typing-dot-size);
+    height: var(--typing-dot-size);
+    border-radius: 50%;
+    background: var(--typing-dot-color);
+    animation: typing-bounce var(--typing-animation-speed) infinite ease-in-out;
+}
+
+.typing-indicator__dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator__dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator__dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   TEXT
+   ============================================ */
+.typing-indicator__text {
+    font-size: var(--typing-font-size);
+    color: var(--typing-text-color);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   SIZE VARIANTS
+   ============================================ */
+
+/* Small */
+.typing-indicator--sm {
+    --typing-dot-size: 4px;
+    --typing-dot-spacing: 2px;
+    --typing-font-size: 0.6875rem;
+    min-height: 20px;
+    padding: 2px 6px;
+    gap: 6px;
+}
+
+/* Large */
+.typing-indicator--lg {
+    --typing-dot-size: 8px;
+    --typing-dot-spacing: 4px;
+    --typing-font-size: 0.875rem;
+    min-height: 28px;
+    padding: 6px 10px;
+    gap: 10px;
+}
+
+/* ============================================
+   INLINE VARIANT
+   ============================================ */
+.typing-indicator--inline {
+    padding: 0;
+    min-height: auto;
+    background: transparent;
+    display: inline-flex;
+}
+
+/* ============================================
+   BUBBLE VARIANT (for chat UIs)
+   ============================================ */
+.typing-indicator--bubble {
+    --typing-bg: var(--pro-surface, #21262d);
+    padding: 8px 12px;
+    border-radius: 16px;
+    border: 1px solid var(--pro-border, #30363d);
+}
+
+/* ============================================
+   DOTS-ONLY VARIANT
+   ============================================ */
+.typing-indicator--dots-only .typing-indicator__text {
+    display: none;
+}
+
+/* ============================================
+   DENSITY SUPPORT
+   ============================================ */
+
+/* Compact */
+.density-compact .typing-indicator,
+[data-density="compact"] .typing-indicator {
+    --typing-dot-size: 4px;
+    --typing-dot-spacing: 2px;
+    --typing-font-size: 0.6875rem;
+    min-height: 18px;
+    padding: 2px 6px;
+    gap: 6px;
+}
+
+/* Comfortable */
+.density-comfortable .typing-indicator,
+[data-density="comfortable"] .typing-indicator {
+    --typing-dot-size: 7px;
+    --typing-dot-spacing: 4px;
+    --typing-font-size: 0.8125rem;
+    min-height: 28px;
+    padding: 6px 10px;
+    gap: 10px;
+}
+
+/* ============================================
+   LIGHT THEME
+   ============================================ */
+[data-theme="light"] {
+    --typing-dot-color: var(--pro-text-secondary, #57606a);
+    --typing-text-color: var(--pro-text-secondary, #57606a);
+}
+
+[data-theme="light"] .typing-indicator--bubble {
+    --typing-bg: var(--pro-surface, #f6f8fa);
+    border-color: var(--pro-border, #d0d7de);
+}
+
+/* ============================================
+   EVEN FUNKYER THEME
+   ============================================ */
+[data-theme="even-funkyer"] {
+    --typing-dot-color: var(--pro-accent-primary, #ff00ff);
+    --typing-text-color: var(--pro-accent-secondary, #00ffff);
+}
+
+[data-theme="even-funkyer"] .typing-indicator__dots span {
+    animation: typing-bounce-funkyer var(--typing-animation-speed) infinite ease-in-out;
+}
+
+@keyframes typing-bounce-funkyer {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+        box-shadow: none;
+    }
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+        box-shadow: 0 0 6px var(--pro-accent-primary, #ff00ff);
+    }
+}
+
+[data-theme="even-funkyer"] .typing-indicator--bubble {
+    background: linear-gradient(135deg,
+        rgba(255, 0, 255, 0.1) 0%,
+        rgba(0, 255, 255, 0.1) 100%
+    );
+    border-color: var(--pro-accent-primary, #ff00ff);
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .typing-indicator__dots span {
+        animation: none;
+        opacity: 0.7;
+    }
+
+    [data-theme="even-funkyer"] .typing-indicator__dots span {
+        animation: none;
+        opacity: 0.7;
+        box-shadow: 0 0 4px var(--pro-accent-primary, #ff00ff);
+    }
+}
+
+/* ============================================
+   HIGH CONTRAST
+   ============================================ */
+@media (prefers-contrast: high) {
+    .typing-indicator__dots span {
+        border: 1px solid currentColor;
+    }
+
+    .typing-indicator--bubble {
+        border-width: 2px;
+    }
+
+    .typing-indicator__text {
+        font-weight: 500;
+    }
+}
+
+/* ============================================
+   FOCUS VISIBLE (for interactive indicators)
+   ============================================ */
+.typing-indicator:focus-visible {
+    outline: 2px solid var(--pro-primary, #2f81f7);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   FADE IN/OUT TRANSITIONS
+   ============================================ */
+.typing-indicator--animated {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.typing-indicator--animated[hidden] {
+    display: flex;
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+}
+
+.typing-indicator--animated.typing-indicator--active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================
+   TYPING DEMO STYLES
+   Playground demo-specific styling
+   ============================================ */
+
+.typing-demo__container {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--pro-bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--pro-border);
+}
+
+.typing-demo__state-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--pro-bg-secondary);
+    border-radius: 6px;
+}
+
+.typing-demo__state-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.typing-demo__chat {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.typing-demo__messages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.typing-demo__message {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.typing-demo__message--incoming {
+    background: var(--pro-bg-tertiary);
+    align-self: flex-start;
+}
+
+.typing-demo__message--outgoing {
+    background: var(--pro-primary);
+    color: #fff;
+    align-self: flex-end;
+}
+
+.typing-demo__message--outgoing .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.typing-demo__typing-area {
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--pro-border);
+}
+
+.typing-demo__users-display {
+    min-height: 48px;
+    padding: 0.75rem;
+    background: var(--pro-bg-tertiary);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.typing-demo__button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.typing-demo__variants {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.typing-demo__variant-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--pro-bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--pro-border);
+}
+
+.typing-demo__log {
+    background: var(--pro-bg-tertiary);
+    color: var(--pro-text-muted);
+    padding: 1rem;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow: auto;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+    border: 1px solid var(--pro-border);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .typing-demo__button-grid {
+        flex-direction: column;
+    }
+
+    .typing-demo__button-grid .btn {
+        width: 100%;
+    }
+
+    .typing-demo__variants {
+        grid-template-columns: 1fr;
+    }
+
+    .typing-demo__state-display {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

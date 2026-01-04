@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable" data-animations="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4361ee">
+  <title>Funky Frame - Documentation</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Prevent flash of wrong theme -->
+  <script src="../js/theme-init.js"></script>
+
+  <!-- Vendor CSS: Bootstrap first, then FontAwesome -->
+  <link href="../vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <!-- Funky CSS: Component styles first, themes.css MUST be last -->
+  <link href="../css/layout.css" rel="stylesheet">
+  <link href="../css/navigation.css" rel="stylesheet">
+  <link href="../css/cards.css" rel="stylesheet">
+  <link href="../css/forms.css" rel="stylesheet">
+  <link href="../css/buttons.css" rel="stylesheet">
+  <link href="../css/modals.css" rel="stylesheet">
+  <link href="../css/toasts.css" rel="stylesheet">
+  <link href="../css/sidenav.css" rel="stylesheet">
+  <link href="../css/playground.css" rel="stylesheet">
+  <link href="../css/code-preview.css" rel="stylesheet">
+  <link href="../css/command-palette.css" rel="stylesheet">
+  <link href="../css/selectable-list.css" rel="stylesheet">
+  <link href="../css/keyboard.css" rel="stylesheet">
+  <link href="../css/skip-links.css" rel="stylesheet">
+  <link href="../css/splash.css" rel="stylesheet">
+  <link href="../css/animate.css" rel="stylesheet">
+  <link href="../css/skeleton.css" rel="stylesheet">
+  <link href="../css/tree-view.css" rel="stylesheet">
+  <link href="../css/tables.css" rel="stylesheet">
+  <link href="../css/markdown.css" rel="stylesheet">
+  <link href="../css/docs.css" rel="stylesheet">
+  <link href="../css/test-runner.css" rel="stylesheet">
+  <link href="../css/morph.css" rel="stylesheet">
+  <link href="../css/tour.css" rel="stylesheet">
+  <!-- themes.css MUST load last -->
+  <link href="../css/themes.css" rel="stylesheet">
+</head>
+<body data-theme="dark" data-nav-position="top">
+
+  <!-- Skip Links Container (must be first focusable element) -->
+  <nav id="skip-links" class="skip-links" aria-label="Skip links"></nav>
+
+  <!-- Live Region for Announcements -->
+  <div id="spa-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo">
+        <span class="sidebar-logo-text">Funky Frame</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- About -->
+      <li class="nav-standalone">
+        <a href="/about/" class="nav-link" data-tooltip="About">
+          <span class="nav-icon"><i class="fas fa-home"></i></span>
+          <span class="nav-text">About</span>
+        </a>
+      </li>
+
+      <!-- Documentation -->
+      <li class="nav-standalone">
+        <a href="/docs/" class="nav-link active" data-tooltip="Documentation">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          <span class="nav-text">Docs</span>
+        </a>
+      </li>
+
+      <!-- Playground -->
+      <li class="nav-standalone">
+        <a href="/playground/" class="nav-link" data-tooltip="Playground">
+          <span class="nav-icon"><i class="fas fa-flask"></i></span>
+          <span class="nav-text">Playground</span>
+        </a>
+      </li>
+
+      <!-- Test Runner -->
+      <li class="nav-standalone">
+        <a href="/test-runner/" class="nav-link" data-tooltip="Test Runner">
+          <span class="nav-icon"><i class="fas fa-vial"></i></span>
+          <span class="nav-text">Test Runner</span>
+        </a>
+      </li>
+    </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+      <span class="toggle-icon">◀</span>
+    </button>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <h1 class="page-title">Documentation</h1>
+      </div>
+
+      <div class="header-right">
+        <a href="https://github.com/ThisUsedToBeAnEmail/Funky-Frame" class="btn btn-funky btn-sm" target="_blank">
+          <i class="fab fa-github"></i>
+          <span class="d-none d-sm-inline ms-1">GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="spaContent" class="main-content" data-page="docs" data-breadcrumb-title="Documentation" data-skip-target="main" data-skip-label="main content">
+      <div class="docs-container">
+        <!-- Toggle button for sidebar -->
+        <button class="docs-sidebar-toggle" id="docsSidebarToggle"
+                aria-label="Toggle sidebar" aria-expanded="true">
+          <i class="toggle-icon fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Left: Doc Navigation -->
+        <aside class="docs-sidebar" id="docsSidebar">
+          <div id="docsSideNav" class="funky-sidenav"></div>
+        </aside>
+
+        <!-- Mobile overlay -->
+        <div class="docs-overlay" id="docsOverlay"></div>
+
+        <!-- Right: Markdown Content -->
+        <div class="docs-content" id="docsContent">
+          <div id="markdownContainer" class="funky-markdown">
+            <div class="docs-empty-state">
+              <i class="fas fa-book-open"></i>
+              <h3>Select a document</h3>
+              <p>Choose a topic from the sidebar to view documentation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Registration (must be inside #spaContent for SPA navigation) -->
+      <script>
+        (function() {
+          // Documentation categories and items
+          var DOC_CATEGORIES = [
+            {
+              id: 'getting-started',
+              label: 'Getting Started',
+              icon: 'fas fa-rocket',
+              children: [
+                { id: 'architecture', label: 'Architecture', url: '/md/ARCHITECTURE.md' },
+                { id: 'development', label: 'Development', url: '/md/DEVELOPMENT.md' },
+                { id: 'components', label: 'Components', url: '/md/COMPONENTS.md' }
+              ]
+            },
+            {
+              id: 'guides',
+              label: 'Guides',
+              icon: 'fas fa-map',
+              children: [
+                { id: 'spa', label: 'SPA Architecture', url: '/md/SPA_ARCHITECTURE.md' },
+                { id: 'pwa', label: 'PWA', url: '/md/PWA.md' },
+                { id: 'theming', label: 'Theming', url: '/md/THEMING.md' },
+                { id: 'accessibility', label: 'Accessibility', url: '/md/accessibility-standards.md' },
+                { id: 'queue', label: 'Offline Queue', url: '/md/QUEUE.md' },
+                { id: 'table', label: 'Funky Table', url: '/md/FUNKY_TABLE.md' },
+                { id: 'table-migration', label: 'Table Migration', url: '/md/FUNKY_TABLE_MIGRATION.md' }
+              ]
+            },
+            {
+              id: 'core',
+              label: 'Core Modules',
+              icon: 'fas fa-microchip',
+              children: [
+                { id: 'a11y-enhancer', label: 'A11y Enhancer', url: '/md/js/core/a11y-enhancer.md' },
+                { id: 'animate', label: 'Animate', url: '/md/js/core/animate.md' },
+                { id: 'announce', label: 'Announce', url: '/md/js/core/announce.md' },
+                { id: 'api', label: 'API', url: '/md/js/core/api.md' },
+                { id: 'cache-sync', label: 'Cache Sync', url: '/md/js/core/cache-sync.md' },
+                { id: 'cache', label: 'Cache', url: '/md/js/core/cache.md' },
+                { id: 'date', label: 'Date', url: '/md/js/core/date.md' },
+                { id: 'dom', label: 'DOM', url: '/md/js/core/dom.md' },
+                { id: 'events', label: 'Events', url: '/md/js/core/events.md' },
+                { id: 'focus-manager', label: 'Focus Manager', url: '/md/js/core/focus-manager.md' },
+                { id: 'form-field-registry', label: 'Form Field Registry', url: '/md/js/core/form-field-registry.md' },
+                { id: 'form', label: 'Form', url: '/md/js/core/form.md' },
+                { id: 'forms', label: 'Forms', url: '/md/js/core/forms.md' },
+                { id: 'fuzzy-search', label: 'Fuzzy Search', url: '/md/js/core/fuzzy-search.md' },
+                { id: 'history', label: 'History', url: '/md/js/core/history.md' },
+                { id: 'idle-detector', label: 'Idle Detector', url: '/md/js/core/idle-detector.md' },
+                { id: 'job-queue', label: 'Job Queue', url: '/md/js/core/job-queue.md' },
+                { id: 'keyboard', label: 'Keyboard', url: '/md/js/core/keyboard.md' },
+                { id: 'live-binding', label: 'Live Binding', url: '/md/js/core/live-binding.md' },
+                { id: 'media-query', label: 'Media Query', url: '/md/js/core/media-query.md' },
+                { id: 'modal', label: 'Modal', url: '/md/js/core/modal.md' },
+                { id: 'namespace', label: 'Namespace', url: '/md/js/core/namespace.md' },
+                { id: 'nav-position', label: 'Nav Position', url: '/md/js/core/nav-position.md' },
+                { id: 'navigation', label: 'Navigation', url: '/md/js/core/navigation.md' },
+                { id: 'pointer-tracker', label: 'Pointer Tracker', url: '/md/js/core/pointer-tracker.md' },
+                { id: 'popover', label: 'Popover', url: '/md/js/core/popover.md' },
+                { id: 'pubsub', label: 'PubSub', url: '/md/js/core/pubsub.md' },
+                { id: 'registry', label: 'Registry', url: '/md/js/core/registry.md' },
+                { id: 'request-queue', label: 'Request Queue', url: '/md/js/core/request-queue.md' },
+                { id: 'schema-adapter', label: 'Schema Adapter', url: '/md/js/core/schema-adapter.md' },
+                { id: 'selectable-list', label: 'Selectable List', url: '/md/js/core/selectable-list.md' },
+                { id: 'service-worker', label: 'Service Worker', url: '/md/js/core/service-worker.md' },
+                { id: 'spa', label: 'SPA', url: '/md/js/core/spa.md' },
+                { id: 'storage', label: 'Storage', url: '/md/js/core/storage.md' },
+                { id: 'tabs', label: 'Tabs', url: '/md/js/core/tabs.md' },
+                { id: 'timezone', label: 'Timezone', url: '/md/js/core/timezone.md' },
+                { id: 'tooltip', label: 'Tooltip', url: '/md/js/core/tooltip.md' },
+                { id: 'validator', label: 'Validator', url: '/md/js/core/validator.md' },
+                { id: 'vdom', label: 'Virtual DOM', url: '/md/js/core/vdom.md' },
+                { id: 'websocket', label: 'WebSocket', url: '/md/js/core/websocket.md' }
+              ]
+            },
+            {
+              id: 'components-list',
+              label: 'Components',
+              icon: 'fas fa-puzzle-piece',
+              children: [
+                { id: 'accordion', label: 'Accordion', url: '/md/js/components/accordion.md' },
+                { id: 'action-bar', label: 'Action Bar', url: '/md/js/components/action-bar.md' },
+                { id: 'action-registry', label: 'Action Registry', url: '/md/js/components/action-registry.md' },
+                { id: 'advanced-filter', label: 'Advanced Filter', url: '/md/js/components/advanced-filter.md' },
+                { id: 'aggregations', label: 'Aggregations', url: '/md/js/components/aggregations.md' },
+                { id: 'audio', label: 'Audio', url: '/md/js/components/audio.md' },
+                { id: 'audit-viewer', label: 'Audit Viewer', url: '/md/js/components/audit-viewer.md' },
+                { id: 'badge', label: 'Badge', url: '/md/js/components/badge.md' },
+                { id: 'breadcrumb', label: 'Breadcrumb', url: '/md/js/components/breadcrumb.md' },
+                { id: 'bulk-actions', label: 'Bulk Actions', url: '/md/js/components/bulk-actions.md' },
+                { id: 'calendar', label: 'Calendar', url: '/md/js/components/calendar.md' },
+                { id: 'card-grid', label: 'Card Grid', url: '/md/js/components/card-grid.md' },
+                { id: 'carousel', label: 'Carousel', url: '/md/js/components/carousel.md' },
+                { id: 'channel', label: 'Channel', url: '/md/js/components/channel.md' },
+                { id: 'charts', label: 'Charts', url: '/md/js/components/charts.md' },
+                { id: 'clipboard', label: 'Clipboard', url: '/md/js/components/clipboard.md' },
+                { id: 'clock', label: 'Clock', url: '/md/js/components/clock.md' },
+                { id: 'code-preview', label: 'Code Preview', url: '/md/js/components/code-preview.md' },
+                { id: 'column-profiles', label: 'Column Profiles', url: '/md/js/components/column-profiles.md' },
+                { id: 'column-renderers', label: 'Column Renderers', url: '/md/js/components/column-renderers.md' },
+                { id: 'combobox', label: 'Combobox', url: '/md/js/components/combobox.md' },
+                { id: 'command-palette', label: 'Command Palette', url: '/md/js/components/command-palette.md' },
+                { id: 'conditional-formatting', label: 'Conditional Formatting', url: '/md/js/components/conditional-formatting.md' },
+                { id: 'context-menu', label: 'Context Menu', url: '/md/js/components/context-menu.md' },
+                { id: 'crud', label: 'CRUD', url: '/md/js/components/crud.md' },
+                { id: 'dashboard-grid', label: 'Dashboard Grid', url: '/md/js/components/dashboard-grid.md' },
+                { id: 'datatables', label: 'Datatables', url: '/md/js/components/datatables.md' },
+                { id: 'date-picker', label: 'Date Picker', url: '/md/js/components/date-picker.md' },
+                { id: 'diff', label: 'Diff', url: '/md/js/components/diff.md' },
+                { id: 'empty-state', label: 'Empty State', url: '/md/js/components/empty-state.md' },
+                { id: 'file-manager', label: 'File Manager', url: '/md/js/components/file-manager.md' },
+                { id: 'filter-toolbar', label: 'Filter Toolbar', url: '/md/js/components/filter-toolbar.md' },
+                { id: 'form-modal', label: 'Form Modal', url: '/md/js/components/form-modal.md' },
+                { id: 'format-builder', label: 'Format Builder', url: '/md/js/components/format-builder.md' },
+                { id: 'formatting', label: 'Formatting', url: '/md/js/components/formatting.md' },
+                { id: 'gesture-tracker', label: 'Gesture Tracker', url: '/md/js/components/gesture-tracker.md' },
+                { id: 'highlight', label: 'Highlight', url: '/md/js/components/highlight.md' },
+                { id: 'iframe', label: 'IFrame', url: '/md/js/components/iframe.md' },
+                { id: 'import', label: 'Import', url: '/md/js/components/import.md' },
+                { id: 'inline-edit', label: 'Inline Edit', url: '/md/js/components/inline-edit.md' },
+                { id: 'kanban', label: 'Kanban', url: '/md/js/components/kanban.md' },
+                { id: 'markdown', label: 'Markdown', url: '/md/js/components/markdown.md' },
+                { id: 'mask', label: 'Mask', url: '/md/js/components/mask.md' },
+                { id: 'morph-panel', label: 'Morph Panel', url: '/md/js/components/morph-panel.md' },
+                { id: 'morph', label: 'Morph', url: '/md/js/components/morph.md' },
+                { id: 'notification-center', label: 'Notification Center', url: '/md/js/components/notification-center.md' },
+                { id: 'page-animate', label: 'Page Animate', url: '/md/js/components/page-animate.md' },
+                { id: 'plotly-wrapper', label: 'Plotly Wrapper', url: '/md/js/components/plotly-wrapper.md' },
+                { id: 'preferences', label: 'Preferences', url: '/md/js/components/preferences.md' },
+                { id: 'presence', label: 'Presence', url: '/md/js/components/presence.md' },
+                { id: 'push-notification', label: 'Push Notification', url: '/md/js/components/push-notification.md' },
+                { id: 'queue-status', label: 'Queue Status', url: '/md/js/components/queue-status.md' },
+                { id: 'quick-nav', label: 'Quick Nav', url: '/md/js/components/quick-nav.md' },
+                { id: 'relative-time', label: 'Relative Time', url: '/md/js/components/relative-time.md' },
+                { id: 'schema', label: 'Schema', url: '/md/js/components/schema.md' },
+                { id: 'scroll-tracker', label: 'Scroll Tracker', url: '/md/js/components/scroll-tracker.md' },
+                { id: 'sidenav-panel', label: 'Sidenav Panel', url: '/md/js/components/sidenav-panel.md' },
+                { id: 'sidenav', label: 'Sidenav', url: '/md/js/components/sidenav.md' },
+                { id: 'signature', label: 'Signature', url: '/md/js/components/signature.md' },
+                { id: 'skeleton', label: 'Skeleton', url: '/md/js/components/skeleton.md' },
+                { id: 'skip-link', label: 'Skip Link', url: '/md/js/components/skip-link.md' },
+                { id: 'slide-panel', label: 'Slide Panel', url: '/md/js/components/slide-panel.md' },
+                { id: 'slider', label: 'Slider', url: '/md/js/components/slider.md' },
+                { id: 'spinner', label: 'Spinner', url: '/md/js/components/spinner.md' },
+                { id: 'stats-bar', label: 'Stats Bar', url: '/md/js/components/stats-bar.md' },
+                { id: 'sticky-header', label: 'Sticky Header', url: '/md/js/components/sticky-header.md' },
+                { id: 'tabbed', label: 'Tabbed', url: '/md/js/components/tabbed.md' },
+                { id: 'table', label: 'Table', url: '/md/js/components/table.md' },
+                { id: 'timeline', label: 'Timeline', url: '/md/js/components/timeline.md' },
+                { id: 'toast', label: 'Toast', url: '/md/js/components/toast.md' },
+                { id: 'tour', label: 'Tour', url: '/md/js/components/tour.md' },
+                { id: 'trade-wizard', label: 'Trade Wizard', url: '/md/js/components/trade-wizard.md' },
+                { id: 'tree-view', label: 'Tree View', url: '/md/js/components/tree-view.md' },
+                { id: 'truncate', label: 'Truncate', url: '/md/js/components/truncate.md' },
+                { id: 'typewriter', label: 'Typewriter', url: '/md/js/components/typewriter.md' },
+                { id: 'typing-indicator', label: 'Typing Indicator', url: '/md/js/components/typing-indicator.md' },
+                { id: 'video', label: 'Video', url: '/md/js/components/video.md' },
+                { id: 'view-modal', label: 'View Modal', url: '/md/js/components/view-modal.md' },
+                { id: 'virtualised-list', label: 'Virtualised List', url: '/md/js/components/virtualised-list.md' },
+                { id: 'widget-catalog', label: 'Widget Catalog', url: '/md/js/components/widget-catalog.md' },
+                { id: 'widget-palette', label: 'Widget Palette', url: '/md/js/components/widget-palette.md' },
+                { id: 'wip-overlay', label: 'WIP Overlay', url: '/md/js/components/wip-overlay.md' },
+                { id: 'wizard', label: 'Wizard', url: '/md/js/components/wizard.md' },
+                { id: 'wysimark', label: 'WYSIMARK', url: '/md/js/components/wysimark.md' },
+                { id: 'zero-click', label: 'Zero Click', url: '/md/js/components/zero-click.md' }
+              ]
+            },
+            {
+              id: 'development',
+              label: 'Development',
+              icon: 'fas fa-code',
+              children: [
+                { id: 'dev-guide', label: 'Development Guide', url: '/md/DEVELOPMENT.md' },
+                { id: 'test-framework', label: 'Test Framework', url: '/md/js/dev/test-framework.md' },
+                { id: 'test-runner', label: 'Test Runner', url: '/md/js/dev/test-runner.md' }
+              ]
+            },
+            {
+              id: 'migration',
+              label: 'Migration',
+              icon: 'fas fa-exchange-alt',
+              children: [
+                { id: 'funky-table', label: 'Funky Table', url: '/md/FUNKY_TABLE.md' },
+                { id: 'table-migration', label: 'Table Migration', url: '/md/FUNKY_TABLE_MIGRATION.md' },
+                { id: 'import-guide', label: 'Import Guide', url: '/md/CENTRALISED_IMPORT_GUIDE.md' },
+                { id: 'export-guide', label: 'Export Guide', url: '/md/CENTRALISED_EXPORT_GUIDE.md' }
+              ]
+            }
+          ];
+
+          var _sidenav = null;
+          var _currentDoc = null;
+          var _pubsubUnsubscribes = [];
+
+          function initDocs() {
+            // Initialize sidenav
+            _sidenav = new Funky.SideNav('#docsSideNav', {
+              items: DOC_CATEGORIES,
+              searchable: true,
+              searchPlaceholder: 'Search docs...',
+              collapsible: true,
+              fuzzySearch: true,
+              rememberState: true,
+              storageKey: 'funky_docs_nav_state',
+              onChange: function(item) {
+                if (item && item.url) {
+                  loadDoc(item.url, item.id, item.label);
+                }
+              }
+            });
+
+            // Toggle button handler
+            var toggleBtn = document.getElementById('docsSidebarToggle');
+            var sidebar = document.getElementById('docsSidebar');
+            var container = document.querySelector('.docs-container');
+            var overlay = document.getElementById('docsOverlay');
+
+            if (toggleBtn) {
+              toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                container.classList.toggle('sidebar-collapsed');
+                var isCollapsed = sidebar.classList.contains('collapsed');
+                toggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
+              });
+            }
+
+            // Overlay click closes sidebar on mobile
+            if (overlay) {
+              overlay.addEventListener('click', function() {
+                sidebar.classList.add('collapsed');
+                container.classList.add('sidebar-collapsed');
+              });
+            }
+
+            // Keyboard shortcut for toggle (Cmd/Ctrl + \)
+            if (Funky.Keyboard) {
+              Funky.Keyboard.register({
+                key: '\\',
+                mod: true,
+                description: 'Toggle documentation sidebar',
+                group: 'Documentation',
+                handler: function() {
+                  toggleBtn.click();
+                }
+              });
+            }
+
+            // Load doc from URL hash or default
+            var hash = window.location.hash.slice(1);
+            if (hash) {
+              var item = findItemById(hash);
+              if (item && item.url) {
+                loadDoc(item.url, hash, item.label);
+                if (_sidenav) _sidenav.select(hash, true);
+              }
+            }
+
+            // Set up internal doc link handler
+            var markdownContainer = document.getElementById('markdownContainer');
+            if (markdownContainer) {
+              setupDocLinkHandler(markdownContainer);
+            }
+
+            console.log('[Docs] Page initialized with', DOC_CATEGORIES.length, 'categories');
+          }
+
+          function findItemById(id) {
+            for (var i = 0; i < DOC_CATEGORIES.length; i++) {
+              var cat = DOC_CATEGORIES[i];
+              if (cat.children) {
+                for (var j = 0; j < cat.children.length; j++) {
+                  if (cat.children[j].id === id) {
+                    return cat.children[j];
+                  }
+                }
+              }
+            }
+            return null;
+          }
+
+          function findItemByPath(path) {
+            // Normalize the path - extract just the relative part
+            var cleanPath = path
+              .replace(/^(\.\.\/)+/, '')  // Remove leading ../
+              .replace(/^\.\//, '')        // Remove leading ./
+              .replace(/^\/md\//, '')      // Remove /md/ prefix
+              .replace(/^\//, '');         // Remove leading /
+
+            for (var i = 0; i < DOC_CATEGORIES.length; i++) {
+              var cat = DOC_CATEGORIES[i];
+              if (cat.children) {
+                for (var j = 0; j < cat.children.length; j++) {
+                  var item = cat.children[j];
+                  if (item.url) {
+                    var itemPath = item.url.replace(/^\/md\//, '');
+                    if (itemPath === cleanPath || item.url.indexOf(cleanPath) !== -1) {
+                      return item;
+                    }
+                  }
+                }
+              }
+            }
+            return null;
+          }
+
+          function setupDocLinkHandler(container) {
+            container.addEventListener('click', function(e) {
+              var link = e.target.closest('a[href]');
+              if (!link) return;
+
+              var href = link.getAttribute('href');
+              if (!href) return;
+
+              // Skip external links, anchors, and non-md links
+              if (href.indexOf('://') !== -1 || href.indexOf('mailto:') === 0) {
+                return;
+              }
+              if (href.charAt(0) === '#') {
+                return;
+              }
+              if (href.indexOf('.md') === -1) {
+                return;
+              }
+
+              // Intercept internal markdown links
+              e.preventDefault();
+              e.stopPropagation();
+
+              var item = findItemByPath(href);
+              if (item && item.url) {
+                loadDoc(item.url, item.id, item.label);
+                if (_sidenav) _sidenav.select(item.id, true);
+              } else {
+                console.warn('[Docs] Could not find doc for link:', href);
+                if (Funky.Toast) {
+                  Funky.Toast.warning('Document not found: ' + href);
+                }
+              }
+            });
+          }
+
+          function loadDoc(url, docId, title) {
+            if (_currentDoc === url) return;
+            _currentDoc = url;
+
+            var container = document.getElementById('markdownContainer');
+            var contentArea = document.getElementById('docsContent');
+
+            // Update URL hash
+            if (docId) {
+              history.replaceState(null, '', '#' + docId);
+            }
+
+            // Update page title
+            if (title) {
+              var pageTitle = document.querySelector('.page-title');
+              if (pageTitle) {
+                pageTitle.textContent = title;
+              }
+              document.title = 'Funky Frame - ' + title;
+            }
+
+            // Show loading state
+            contentArea.classList.add('loading');
+
+            // Load and render markdown
+            Funky.Markdown.renderFile(url, container, {
+              // Syntax highlighting
+              highlightCode: true,
+              copyButton: true,
+
+              // Headings
+              headingIds: true,
+              headingAnchors: true,
+
+              // TOC Panel (slide-out with TreeView)
+              tocPanel: true,
+              tocPanelPosition: 'top-right',
+              tocPanelSticky: true,
+              tocMaxLevel: 3,
+
+              // Tables (uses Funky.Table if available)
+              tables: true,
+
+              // Navigation
+              keyboard: true,
+              scrollTracking: true,
+              announcements: true,
+
+              // Caching
+              cache: true,
+
+              onLoad: function() {
+                contentArea.classList.remove('loading');
+                // Scroll content area to top
+                window.scrollTo(0, 0);
+              },
+              onError: function(error) {
+                contentArea.classList.remove('loading');
+                container.innerHTML = '<div class="docs-empty-state">' +
+                  '<i class="fas fa-exclamation-triangle"></i>' +
+                  '<h3>Error Loading Document</h3>' +
+                  '<p>' + error.message + '</p>' +
+                  '</div>';
+              }
+            });
+          }
+
+          function destroyDocs() {
+            // Cleanup PubSub subscriptions
+            _pubsubUnsubscribes.forEach(function(unsub) {
+              if (typeof unsub === 'function') unsub();
+            });
+            _pubsubUnsubscribes = [];
+
+            // Destroy sidenav
+            if (_sidenav && _sidenav.destroy) {
+              _sidenav.destroy();
+            }
+            _sidenav = null;
+            _currentDoc = null;
+          }
+
+          // Page lifecycle
+          if (typeof Funky !== 'undefined' && Funky.Pages) {
+            Funky.Pages.register('docs', {
+              init: function(state) {
+                initDocs();
+              },
+              destroy: function() {
+                destroyDocs();
+                console.log('[Docs] Page destroyed');
+                return {};
+              }
+            });
+          } else {
+            // Direct page load
+            if (document.readyState !== 'loading') {
+              initDocs();
+            } else {
+              document.addEventListener('DOMContentLoaded', initDocs);
+            }
+          }
+        })();
+      </script>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="funky-toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- Core Scripts -->
+  <script src="../js/core/namespace.js"></script>
+  <script src="../js/core/registry.js"></script>
+  <script src="../js/core/util.js"></script>
+  <script src="../js/core/dom.js"></script>
+  <script src="../js/core/events.js"></script>
+  <script src="../js/core/pubsub.js"></script>
+  <script src="../js/core/storage.js"></script>
+  <script src="../js/core/vdom.js"></script>
+  <script src="../js/core/keyboard.js"></script>
+  <script src="../js/core/tooltip.js"></script>
+  <script src="../js/core/announce.js"></script>
+  <script src="../js/core/a11y-enhancer.js"></script>
+  <script src="../js/core/fuzzy-search.js"></script>
+  <script src="../js/core/selectable-list.js"></script>
+  <script src="../js/core/spa.js"></script>
+  <script src="../js/core/animate.js"></script>
+  <script src="../js/core/modal.js"></script>
+  <script src="../js/core/navigation.js"></script>
+  <script src="../js/core/pages.js"></script>
+
+  <!-- Service Worker Client Module -->
+  <script src="../js/core/service-worker.js"></script>
+
+  <!-- Components used by shell and docs -->
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/sidenav.js"></script>
+  <script src="../js/components/clock.js"></script>
+  <script src="../js/components/morph.js"></script>
+  <script src="../js/components/tour.js"></script>
+  <script src="../js/components/code-preview.js"></script>
+  <script src="../js/components/command-palette.js"></script>
+  <script src="../js/components/skip-link.js"></script>
+  <script src="../js/components/page-animate.js"></script>
+  <script src="../js/components/skeleton.js"></script>
+  <script src="../js/components/tree-view.js"></script>
+  <script src="../js/components/scroll-tracker.js"></script>
+  <script src="../js/components/table.js"></script>
+  <script src="../js/components/markdown.js"></script>
+  <script src="../js/components/iframe.js"></script>
+
+  <!-- Mock API (for component demos) -->
+  <script src="/mock-api.js"></script>
+
+  <!-- Playground Component -->
+  <script src="../js/components/playground.js"></script>
+
+  <!-- Test Runner -->
+  <script src="../js/dev/test-manifest.js"></script>
+  <script src="../js/dev/test-runner-ui.js"></script>
+
+  <!-- Shared App Logic -->
+  <script src="../js/app.js"></script>
+
+  <!-- Cross-Page Tour -->
+  <script src="../js/funky-tour.js"></script>
+
+</body>
+</html>

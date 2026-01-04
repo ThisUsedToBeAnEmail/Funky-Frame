@@ -1,0 +1,624 @@
+<div data-page="component-diff" class="diff-demo">
+  <h2>Diff Viewer</h2>
+  <p class="text-muted">Visual diff viewer for text, JSON, and audit trail comparisons with word-level highlighting.</p>
+
+  <!-- Text Diff Demo -->
+  <section class="diff-demo__section">
+    <h3>Text Diff</h3>
+    <p class="text-muted small">Compare text with side-by-side, inline, or split (sync scroll) modes</p>
+    <div class="diff-demo__area">
+      <div id="diff-text"></div>
+    </div>
+  </section>
+
+  <!-- Summary Display -->
+  <section class="diff-demo__section">
+    <h3>Current State</h3>
+    <div class="diff-demo__state">
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Mode:</span>
+        <span class="diff-demo__state-value" id="state-mode">split</span>
+      </div>
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Word Diff:</span>
+        <span class="diff-demo__state-value" id="state-word-diff">on</span>
+      </div>
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Collapse:</span>
+        <span class="diff-demo__state-value" id="state-collapse">off</span>
+      </div>
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Added:</span>
+        <span class="diff-demo__state-value diff-demo__state-value--add" id="state-added">0</span>
+      </div>
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Removed:</span>
+        <span class="diff-demo__state-value diff-demo__state-value--remove" id="state-removed">0</span>
+      </div>
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Changed:</span>
+        <span class="diff-demo__state-value diff-demo__state-value--change" id="state-changed">0</span>
+      </div>
+      <div class="diff-demo__state-item">
+        <span class="diff-demo__state-label">Unchanged:</span>
+        <span class="diff-demo__state-value" id="state-unchanged">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods -->
+  <section class="diff-demo__section">
+    <h3>API Methods</h3>
+    <div class="diff-demo__controls">
+      <div class="diff-demo__control-group">
+        <h4>Display Mode</h4>
+        <div class="diff-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="mode-split">Split (Sync Scroll)</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="mode-side-by-side">Side-by-Side</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="mode-inline">Inline</button>
+        </div>
+      </div>
+      <div class="diff-demo__control-group">
+        <h4>Options</h4>
+        <div class="diff-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-line-numbers">Toggle Line Numbers</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-word-diff">Toggle Word Diff</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="toggle-collapse">Toggle Collapse (5)</button>
+        </div>
+      </div>
+      <div class="diff-demo__control-group">
+        <h4>Instance Methods</h4>
+        <div class="diff-demo__buttons">
+          <button type="button" class="btn btn-sm btn-secondary" data-method="refresh">Refresh</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="get-data">Get Data</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-method="get-summary">Get Summary</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JSON Diff Demo -->
+  <section class="diff-demo__section">
+    <h3>JSON Diff</h3>
+    <p class="text-muted small">Structure-aware comparison with collapsible tree view</p>
+    <div class="diff-demo__area">
+      <div id="diff-json"></div>
+    </div>
+    <div class="diff-demo__buttons" data-json-controls>
+      <button type="button" class="btn btn-sm btn-secondary" data-method="json-expand-all">Expand All</button>
+      <button type="button" class="btn btn-sm btn-secondary" data-method="json-collapse-all">Collapse All</button>
+      <button type="button" class="btn btn-sm btn-secondary" data-method="json-toggle-unchanged">Toggle Unchanged</button>
+    </div>
+  </section>
+
+  <!-- Audit Diff Demo -->
+  <section class="diff-demo__section">
+    <h3>Audit Trail Diff</h3>
+    <p class="text-muted small">Field-by-field comparison with metadata display</p>
+    <div class="diff-demo__area">
+      <div id="diff-audit"></div>
+    </div>
+    <div class="diff-demo__buttons">
+      <button type="button" class="btn btn-sm btn-secondary" data-method="audit-toggle-unchanged">Toggle Unchanged</button>
+      <button type="button" class="btn btn-sm btn-secondary" data-method="audit-change-action">Change Action</button>
+    </div>
+  </section>
+
+  <!-- Features Info -->
+  <section class="diff-demo__section">
+    <h3>Features</h3>
+    <div class="diff-demo__info">
+      <p>The Diff component supports multiple comparison modes:</p>
+      <ul>
+        <li><strong>Text Diff:</strong> Line-by-line comparison with word-level highlighting</li>
+        <li><strong>JSON Diff:</strong> Deep object comparison with collapsible tree view</li>
+        <li><strong>Audit Diff:</strong> Field-by-field comparison with custom renderers</li>
+      </ul>
+      <p>Modes for text diff:</p>
+      <ul>
+        <li><strong>Split:</strong> Side-by-side with synchronized scrolling</li>
+        <li><strong>Side-by-Side:</strong> Independent scrolling panels</li>
+        <li><strong>Inline:</strong> Unified view with +/- markers</li>
+      </ul>
+      <p>Option behaviors:</p>
+      <ul>
+        <li><strong>Toggle Collapse:</strong> Collapses consecutive unchanged lines (the validation section in the example has 10 identical lines - when enabled, these collapse to a "5 unchanged lines" button)</li>
+        <li><strong>Word Diff:</strong> Shows word-level highlights on changed lines (e.g., "old" → "new", "100" → "500")</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="diff-demo__section">
+    <h3>Event Log</h3>
+    <div class="diff-demo__log-controls">
+      <button type="button" class="btn btn-sm btn-secondary" data-method="clear-log">Clear Log</button>
+    </div>
+    <pre class="diff-demo__log" id="diff-log" role="log" aria-live="polite" aria-label="Diff event log">Click buttons to see events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var textInstance = null;
+  var jsonInstance = null;
+  var auditInstance = null;
+  var eventHandlers = [];
+
+  // Current options state
+  var currentOptions = {
+    mode: 'split',
+    lineNumbers: true,
+    wordDiff: true,
+    collapseUnchanged: 0
+  };
+  var jsonShowUnchanged = true;
+  var auditHideUnchanged = false;
+  var auditAction = 'UPDATE';
+
+  // Sample text data - designed to show word diff and collapse features clearly
+  // Word diff: lines with small changes (100->500, 5000->10000, old->new)
+  // Collapse: 8+ consecutive identical lines in the middle section
+  var leftText = 'function processData(items) {\n' +
+    '  // Process data with old algorithm\n' +
+    '  const MAX_ITEMS = 100;\n' +
+    '  const TIMEOUT = 5000;\n' +
+    '  \n' +
+    '  // =============================================\n' +
+    '  // VALIDATION SECTION - UNCHANGED\n' +
+    '  // =============================================\n' +
+    '  // Validate that items is defined\n' +
+    '  if (!items) return [];\n' +
+    '  // Validate that items is an array\n' +
+    '  if (!Array.isArray(items)) return [];\n' +
+    '  // Validate array is not empty\n' +
+    '  if (items.length === 0) return [];\n' +
+    '  // =============================================\n' +
+    '  \n' +
+    '  // Process using old for loop\n' +
+    '  const results = [];\n' +
+    '  for (let i = 0; i < items.length; i++) {\n' +
+    '    results.push(items[i].value);\n' +
+    '  }\n' +
+    '  \n' +
+    '  return results;\n' +
+    '}';
+
+  var rightText = 'function processData(items) {\n' +
+    '  // Process data with new algorithm\n' +
+    '  const MAX_ITEMS = 500;\n' +
+    '  const TIMEOUT = 10000;\n' +
+    '  \n' +
+    '  // =============================================\n' +
+    '  // VALIDATION SECTION - UNCHANGED\n' +
+    '  // =============================================\n' +
+    '  // Validate that items is defined\n' +
+    '  if (!items) return [];\n' +
+    '  // Validate that items is an array\n' +
+    '  if (!Array.isArray(items)) return [];\n' +
+    '  // Validate array is not empty\n' +
+    '  if (items.length === 0) return [];\n' +
+    '  // =============================================\n' +
+    '  \n' +
+    '  // Process using new map syntax\n' +
+    '  const results = items.map(item => item.value);\n' +
+    '  \n' +
+    '  return results;\n' +
+    '}';
+
+  // Sample JSON data - with nested objects for collapse demo
+  var leftJson = {
+    name: 'John Doe',
+    email: 'john@example.com',
+    age: 30,
+    active: true,
+    preferences: {
+      theme: 'dark',
+      notifications: {
+        email: true,
+        sms: false,
+        push: true
+      },
+      language: 'en'
+    },
+    address: {
+      street: '123 Main St',
+      city: 'Springfield',
+      country: 'USA'
+    },
+    roles: ['user', 'editor']
+  };
+
+  var rightJson = {
+    name: 'John Smith',
+    email: 'john.smith@example.com',
+    age: 31,
+    active: true,
+    preferences: {
+      theme: 'light',
+      notifications: {
+        email: true,
+        sms: true,
+        push: false
+      },
+      language: 'en',
+      timezone: 'UTC'
+    },
+    address: {
+      street: '456 Oak Ave',
+      city: 'Springfield',
+      country: 'USA'
+    },
+    roles: ['user', 'editor', 'admin']
+  };
+
+  // Sample audit data
+  var auditBefore = {
+    status: 'active',
+    name: 'Acme Project',
+    budget: 50000,
+    start_date: '2025-01-01',
+    team_lead: 'john@example.com',
+    priority: 'high'
+  };
+
+  var auditAfter = {
+    status: 'on_hold',
+    name: 'Acme Project',
+    budget: 75000,
+    start_date: '2025-01-15',
+    team_lead: 'jane@example.com',
+    priority: 'critical',
+    notes: 'Scope increased'
+  };
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('diff-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay(summary) {
+    var modeEl = document.getElementById('state-mode');
+    var wordDiffEl = document.getElementById('state-word-diff');
+    var collapseEl = document.getElementById('state-collapse');
+    var addedEl = document.getElementById('state-added');
+    var removedEl = document.getElementById('state-removed');
+    var changedEl = document.getElementById('state-changed');
+    var unchangedEl = document.getElementById('state-unchanged');
+
+    if (modeEl) modeEl.textContent = currentOptions.mode;
+    if (wordDiffEl) wordDiffEl.textContent = currentOptions.wordDiff ? 'on' : 'off';
+    if (collapseEl) collapseEl.textContent = currentOptions.collapseUnchanged > 0 ? currentOptions.collapseUnchanged + ' lines' : 'off';
+    if (summary) {
+      if (addedEl) addedEl.textContent = summary.added || 0;
+      if (removedEl) removedEl.textContent = summary.removed || 0;
+      if (changedEl) changedEl.textContent = summary.changed || 0;
+      if (unchangedEl) unchangedEl.textContent = summary.equal || 0;
+    }
+  }
+
+  function addEventHandler(event, handler) {
+    document.addEventListener(event, handler);
+    eventHandlers.push({ event: event, handler: handler });
+  }
+
+  function createTextDiff() {
+    if (textInstance && textInstance.destroy) {
+      textInstance.destroy();
+    }
+
+    var props = getProps();
+    var options = {
+      left: props.left || leftText,
+      right: props.right || rightText,
+      mode: currentOptions.mode,
+      lineNumbers: currentOptions.lineNumbers,
+      wordDiff: currentOptions.wordDiff,
+      collapseUnchanged: currentOptions.collapseUnchanged,
+      headers: {
+        left: 'Original',
+        right: 'Modified'
+      },
+      onLineClick: function(side, lineNum, lineEl) {
+        log('Line clicked: ' + side + ' line ' + lineNum);
+        emit('event', { event: 'diff:line-click', payload: { side: side, line: lineNum } });
+      }
+    };
+
+    textInstance = Funky.Diff.show('#diff-text', options);
+
+    if (textInstance) {
+      updateStateDisplay(textInstance.summary);
+      log('Text diff created (mode: ' + currentOptions.mode + ')');
+      emit('event', { event: 'diff:created', payload: { type: 'text', mode: currentOptions.mode } });
+    }
+
+    return textInstance;
+  }
+
+  function createJsonDiff() {
+    if (jsonInstance && jsonInstance.destroy) {
+      jsonInstance.destroy();
+    }
+
+    jsonInstance = Funky.Diff.json('#diff-json', {
+      left: leftJson,
+      right: rightJson,
+      collapsible: true,
+      expandDepth: 2,
+      showUnchanged: jsonShowUnchanged,
+      highlightChanges: true,
+      headers: {
+        left: 'Before',
+        right: 'After'
+      }
+    });
+
+    if (jsonInstance) {
+      log('JSON diff created (showUnchanged: ' + jsonShowUnchanged + ')');
+      emit('event', { event: 'diff:created', payload: { type: 'json', showUnchanged: jsonShowUnchanged } });
+    }
+
+    return jsonInstance;
+  }
+
+  function createAuditDiff() {
+    if (auditInstance && auditInstance.destroy) {
+      auditInstance.destroy();
+    }
+
+    auditInstance = Funky.Diff.audit('#diff-audit', {
+      before: auditBefore,
+      after: auditAfter,
+      action: auditAction,
+      user: 'admin@example.com',
+      timestamp: new Date().toISOString(),
+      hideUnchanged: auditHideUnchanged,
+      showMeta: true,
+      labels: {
+        status: 'Project Status',
+        name: 'Project Name',
+        budget: 'Budget ($)',
+        start_date: 'Start Date',
+        team_lead: 'Team Lead',
+        priority: 'Priority',
+        notes: 'Notes'
+      },
+      renderers: {
+        budget: function(value) {
+          return '<strong>$' + (value || 0).toLocaleString() + '</strong>';
+        },
+        priority: function(value) {
+          var colors = {
+            'low': 'secondary',
+            'medium': 'info',
+            'high': 'warning',
+            'critical': 'danger'
+          };
+          var color = colors[String(value).toLowerCase()] || 'secondary';
+          return '<span class="badge bg-' + color + '">' + value + '</span>';
+        }
+      },
+      headers: {
+        left: 'Before',
+        right: 'After'
+      }
+    });
+
+    if (auditInstance) {
+      log('Audit diff created (action: ' + auditAction + ', hideUnchanged: ' + auditHideUnchanged + ')');
+      emit('event', { event: 'diff:created', payload: { type: 'audit', action: auditAction } });
+    }
+
+    return auditInstance;
+  }
+
+  function handleControlClick(e) {
+    var btn = e.target.closest('[data-method]');
+    if (!btn) return;
+
+    var method = btn.dataset.method;
+
+    switch (method) {
+      // Text diff modes
+      case 'mode-split':
+        currentOptions.mode = 'split';
+        createTextDiff();
+        log('Mode changed to: split');
+        emit('event', { event: 'diff:mode-change', payload: { mode: 'split' } });
+        break;
+      case 'mode-side-by-side':
+        currentOptions.mode = 'side-by-side';
+        createTextDiff();
+        log('Mode changed to: side-by-side');
+        emit('event', { event: 'diff:mode-change', payload: { mode: 'side-by-side' } });
+        break;
+      case 'mode-inline':
+        currentOptions.mode = 'inline';
+        createTextDiff();
+        log('Mode changed to: inline');
+        emit('event', { event: 'diff:mode-change', payload: { mode: 'inline' } });
+        break;
+
+      // Text diff options
+      case 'toggle-line-numbers':
+        currentOptions.lineNumbers = !currentOptions.lineNumbers;
+        createTextDiff();
+        log('Line numbers: ' + (currentOptions.lineNumbers ? 'on' : 'off'));
+        emit('event', { event: 'diff:option-change', payload: { lineNumbers: currentOptions.lineNumbers } });
+        break;
+      case 'toggle-word-diff':
+        currentOptions.wordDiff = !currentOptions.wordDiff;
+        createTextDiff();
+        log('Word diff: ' + (currentOptions.wordDiff ? 'on' : 'off'));
+        emit('event', { event: 'diff:option-change', payload: { wordDiff: currentOptions.wordDiff } });
+        break;
+      case 'toggle-collapse':
+        currentOptions.collapseUnchanged = currentOptions.collapseUnchanged > 0 ? 0 : 5;
+        createTextDiff();
+        // Debug: check for collapse entries in processed diff
+        if (textInstance && textInstance.diff) {
+          var collapseCount = 0;
+          var equalCount = 0;
+          textInstance.diff.forEach(function(item) {
+            if (item.type === 'collapse') collapseCount++;
+            if (item.type === 'equal') equalCount++;
+          });
+          log('Collapse unchanged: ' + (currentOptions.collapseUnchanged > 0 ? currentOptions.collapseUnchanged + ' lines' : 'off') + ' (collapse entries: ' + collapseCount + ', equal entries: ' + equalCount + ')');
+        } else {
+          log('Collapse unchanged: ' + (currentOptions.collapseUnchanged > 0 ? currentOptions.collapseUnchanged + ' lines' : 'off'));
+        }
+        emit('event', { event: 'diff:option-change', payload: { collapseUnchanged: currentOptions.collapseUnchanged } });
+        break;
+
+      // Instance methods
+      case 'refresh':
+        if (textInstance && textInstance.refresh) {
+          textInstance.refresh();
+          log('API: refresh()');
+          emit('event', { event: 'diff:refresh', payload: {} });
+        }
+        break;
+      case 'get-data':
+        if (textInstance && textInstance.getData) {
+          var data = textInstance.getData();
+          log('API: getData() -> { diff: [' + data.diff.length + ' items], summary: {...} }');
+          emit('event', { event: 'diff:get-data', payload: { diffCount: data.diff.length } });
+        }
+        break;
+      case 'get-summary':
+        if (textInstance && textInstance.summary) {
+          var summary = textInstance.summary;
+          log('API: getSummary() -> added: ' + summary.added + ', removed: ' + summary.removed + ', changed: ' + summary.changed);
+          emit('event', { event: 'diff:get-summary', payload: summary });
+        }
+        break;
+
+      // JSON diff controls
+      case 'json-expand-all':
+        if (jsonInstance && jsonInstance.expandAll) {
+          jsonInstance.expandAll();
+          log('JSON: expandAll()');
+          emit('event', { event: 'diff:json-expand', payload: {} });
+        }
+        break;
+      case 'json-collapse-all':
+        if (jsonInstance && jsonInstance.collapseAll) {
+          jsonInstance.collapseAll();
+          log('JSON: collapseAll()');
+          emit('event', { event: 'diff:json-collapse', payload: {} });
+        }
+        break;
+      case 'json-toggle-unchanged':
+        jsonShowUnchanged = !jsonShowUnchanged;
+        createJsonDiff();
+        log('JSON showUnchanged: ' + jsonShowUnchanged);
+        emit('event', { event: 'diff:json-option', payload: { showUnchanged: jsonShowUnchanged } });
+        break;
+
+      // Audit diff controls
+      case 'audit-toggle-unchanged':
+        auditHideUnchanged = !auditHideUnchanged;
+        createAuditDiff();
+        log('Audit hideUnchanged: ' + auditHideUnchanged);
+        emit('event', { event: 'diff:audit-option', payload: { hideUnchanged: auditHideUnchanged } });
+        break;
+      case 'audit-change-action':
+        var actions = ['CREATE', 'UPDATE', 'DELETE'];
+        var currentIndex = actions.indexOf(auditAction);
+        auditAction = actions[(currentIndex + 1) % actions.length];
+        createAuditDiff();
+        log('Audit action: ' + auditAction);
+        emit('event', { event: 'diff:audit-action', payload: { action: auditAction } });
+        break;
+
+      case 'clear-log':
+        logs = [];
+        var logEl = document.getElementById('diff-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+        break;
+    }
+  }
+
+  Funky.Pages.register('component-diff', {
+    init: function(state) {
+      var props = getProps();
+
+      log('Initializing Diff demo');
+      emit('event', { event: 'diff:init', payload: props });
+
+      // Apply props if provided
+      if (props.mode) currentOptions.mode = props.mode;
+      if (props.lineNumbers !== undefined) currentOptions.lineNumbers = props.lineNumbers;
+      if (props.wordDiff !== undefined) currentOptions.wordDiff = props.wordDiff;
+
+      // Control button clicks
+      document.addEventListener('click', handleControlClick);
+
+      if (!Funky.Diff) {
+        log('Error: Funky.Diff not available');
+        return;
+      }
+
+      // Create all three diff types
+      createTextDiff();
+      createJsonDiff();
+      createAuditDiff();
+    },
+
+    propsChanged: function(newProps) {
+      log('Props changed');
+
+      // Apply new props
+      if (newProps.mode) currentOptions.mode = newProps.mode;
+      if (newProps.lineNumbers !== undefined) currentOptions.lineNumbers = newProps.lineNumbers;
+      if (newProps.wordDiff !== undefined) currentOptions.wordDiff = newProps.wordDiff;
+      if (newProps.left !== undefined || newProps.right !== undefined) {
+        // Text content changed
+      }
+
+      // Recreate text diff with new props
+      createTextDiff();
+
+      emit('event', { event: 'diff:props-changed', payload: newProps });
+    },
+
+    destroy: function() {
+      // Clean up event listeners
+      eventHandlers.forEach(function(eh) {
+        document.removeEventListener(eh.event, eh.handler);
+      });
+      eventHandlers = [];
+      document.removeEventListener('click', handleControlClick);
+
+      // Destroy all instances
+      if (textInstance && textInstance.destroy) textInstance.destroy();
+      if (jsonInstance && jsonInstance.destroy) jsonInstance.destroy();
+      if (auditInstance && auditInstance.destroy) auditInstance.destroy();
+
+      textInstance = null;
+      jsonInstance = null;
+      auditInstance = null;
+
+      // Reset state
+      logs = [];
+      currentOptions = {
+        mode: 'split',
+        lineNumbers: true,
+        wordDiff: true,
+        collapseUnchanged: 0
+      };
+      jsonShowUnchanged = true;
+      auditHideUnchanged = false;
+      auditAction = 'UPDATE';
+
+      return {};
+    }
+  });
+})();
+</script>

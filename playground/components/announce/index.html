@@ -1,0 +1,467 @@
+<div data-page="component-announce" class="component-demo">
+  <h2>Announce</h2>
+  <p class="text-muted">Screen reader announcements via ARIA live regions. Provides polite (non-interrupting) and assertive (interrupting) announcements for accessibility.</p>
+
+  <!-- Section 1: Quick Announce -->
+  <section class="demo-section" aria-labelledby="quick-heading">
+    <h3 id="quick-heading">Quick Announce</h3>
+    <p class="text-muted small">Send announcements to screen readers. Try with a screen reader enabled to hear the announcements.</p>
+
+    <div class="demo-area">
+      <div class="announce-demo__quick-form">
+        <div class="announce-demo__input-group">
+          <label for="quick-message">Message</label>
+          <input type="text" id="quick-message" class="form-control" placeholder="Enter announcement message" value="Content has been updated">
+        </div>
+        <div class="announce-demo__input-group">
+          <label for="quick-politeness">Politeness</label>
+          <select id="quick-politeness" class="form-control">
+            <option value="polite">Polite (non-interrupting)</option>
+            <option value="assertive">Assertive (interrupting)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="announce-demo__button-row">
+        <button type="button" class="btn btn-primary" id="quick-announce">
+          <i class="fas fa-bullhorn" aria-hidden="true"></i> Announce
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="quick-clear">
+          <i class="fas fa-times" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+
+      <div class="announce-demo__visual-feedback" id="visual-feedback" aria-live="off">
+        <div class="announce-demo__feedback-label">Last Announcement (Visual):</div>
+        <div class="announce-demo__feedback-message" id="feedback-message">None</div>
+        <div class="announce-demo__feedback-type" id="feedback-type"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Polite Announcements -->
+  <section class="demo-section" aria-labelledby="polite-heading">
+    <h3 id="polite-heading">Polite Announcements</h3>
+    <p class="text-muted small">Non-interrupting announcements. The screen reader waits for a pause before reading. Best for: updates, loading states, confirmations.</p>
+
+    <div class="demo-area">
+      <div class="announce-demo__preset-grid">
+        <button type="button" class="btn btn-secondary announce-demo__preset-btn" data-message="Loading complete">
+          <i class="fas fa-check-circle" aria-hidden="true"></i> Loading complete
+        </button>
+        <button type="button" class="btn btn-secondary announce-demo__preset-btn" data-message="5 items found">
+          <i class="fas fa-search" aria-hidden="true"></i> 5 items found
+        </button>
+        <button type="button" class="btn btn-secondary announce-demo__preset-btn" data-message="Changes saved successfully">
+          <i class="fas fa-save" aria-hidden="true"></i> Changes saved
+        </button>
+        <button type="button" class="btn btn-secondary announce-demo__preset-btn" data-message="Page 2 of 5 loaded">
+          <i class="fas fa-file" aria-hidden="true"></i> Page loaded
+        </button>
+        <button type="button" class="btn btn-secondary announce-demo__preset-btn" data-message="Filter applied: Status is Active">
+          <i class="fas fa-filter" aria-hidden="true"></i> Filter applied
+        </button>
+        <button type="button" class="btn btn-secondary announce-demo__preset-btn" data-message="Sorted by date, newest first">
+          <i class="fas fa-sort" aria-hidden="true"></i> Sort changed
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Assertive Announcements -->
+  <section class="demo-section" aria-labelledby="assertive-heading">
+    <h3 id="assertive-heading">Assertive Announcements</h3>
+    <p class="text-muted small">Interrupting announcements. The screen reader stops and reads immediately. Best for: errors, urgent alerts, critical information.</p>
+
+    <div class="demo-area">
+      <div class="announce-demo__preset-grid">
+        <button type="button" class="btn btn-danger announce-demo__preset-btn" data-message="Error: Please check your input" data-assertive="true">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i> Error message
+        </button>
+        <button type="button" class="btn btn-danger announce-demo__preset-btn" data-message="Session expired. Please log in again." data-assertive="true">
+          <i class="fas fa-clock" aria-hidden="true"></i> Session expired
+        </button>
+        <button type="button" class="btn btn-danger announce-demo__preset-btn" data-message="Connection lost. Attempting to reconnect." data-assertive="true">
+          <i class="fas fa-wifi" aria-hidden="true"></i> Connection lost
+        </button>
+        <button type="button" class="btn btn-warning announce-demo__preset-btn" data-message="Warning: Unsaved changes will be lost" data-assertive="true">
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Warning
+        </button>
+        <button type="button" class="btn btn-danger announce-demo__preset-btn" data-message="Form validation failed. 3 errors found." data-assertive="true">
+          <i class="fas fa-times-circle" aria-hidden="true"></i> Validation failed
+        </button>
+        <button type="button" class="btn btn-warning announce-demo__preset-btn" data-message="Your session will expire in 5 minutes" data-assertive="true">
+          <i class="fas fa-hourglass-half" aria-hidden="true"></i> Session warning
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Live Region Inspector -->
+  <section class="demo-section" aria-labelledby="inspector-heading">
+    <h3 id="inspector-heading">Live Region Inspector</h3>
+    <p class="text-muted small">View the current content of the ARIA live regions used for announcements.</p>
+
+    <div class="demo-area">
+      <div class="announce-demo__regions">
+        <div class="announce-demo__region-card">
+          <div class="announce-demo__region-header">
+            <span class="announce-demo__region-label">Polite Region</span>
+            <span class="badge badge-secondary">#spa-announcer</span>
+          </div>
+          <div class="announce-demo__region-attrs">
+            <code>aria-live="polite"</code>
+            <code>role="status"</code>
+          </div>
+          <div class="announce-demo__region-content" id="polite-content">
+            <span class="announce-demo__empty">Empty</span>
+          </div>
+        </div>
+
+        <div class="announce-demo__region-card">
+          <div class="announce-demo__region-header">
+            <span class="announce-demo__region-label">Assertive Region</span>
+            <span class="badge badge-danger">#alert-announcer</span>
+          </div>
+          <div class="announce-demo__region-attrs">
+            <code>aria-live="assertive"</code>
+            <code>role="alert"</code>
+          </div>
+          <div class="announce-demo__region-content" id="assertive-content">
+            <span class="announce-demo__empty">Empty</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="announce-demo__button-row">
+        <button type="button" class="btn btn-secondary" id="refresh-regions">
+          <i class="fas fa-sync-alt" aria-hidden="true"></i> Refresh
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="clear-regions">
+          <i class="fas fa-eraser" aria-hidden="true"></i> Clear All
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Best Practices -->
+  <section class="demo-section" aria-labelledby="practices-heading">
+    <h3 id="practices-heading">Best Practices</h3>
+    <p class="text-muted small">Guidelines for when to use polite vs assertive announcements.</p>
+
+    <div class="demo-area">
+      <div class="announce-demo__practices">
+        <div class="announce-demo__practice-card announce-demo__practice-card--polite">
+          <div class="announce-demo__practice-header">
+            <i class="fas fa-comment" aria-hidden="true"></i>
+            <span>Use <strong>Polite</strong> for:</span>
+          </div>
+          <ul class="announce-demo__practice-list">
+            <li>Content updates (new items loaded)</li>
+            <li>Loading states and progress</li>
+            <li>Success confirmations</li>
+            <li>Filter/sort changes</li>
+            <li>Non-critical status updates</li>
+            <li>Search results count</li>
+          </ul>
+        </div>
+
+        <div class="announce-demo__practice-card announce-demo__practice-card--assertive">
+          <div class="announce-demo__practice-header">
+            <i class="fas fa-exclamation" aria-hidden="true"></i>
+            <span>Use <strong>Assertive</strong> for:</span>
+          </div>
+          <ul class="announce-demo__practice-list">
+            <li>Error messages</li>
+            <li>Form validation failures</li>
+            <li>Session timeouts</li>
+            <li>Connection issues</li>
+            <li>Critical warnings</li>
+            <li>Time-sensitive alerts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Announcement History -->
+  <section class="demo-section" aria-labelledby="history-heading">
+    <h3 id="history-heading">Announcement History</h3>
+    <p class="text-muted small">Log of all announcements made during this session.</p>
+
+    <div class="demo-area">
+      <div class="announce-demo__history" id="announcement-history" aria-live="off">
+        <div class="announce-demo__history-empty">No announcements yet. Click buttons above to see history.</div>
+      </div>
+
+      <div class="announce-demo__button-row">
+        <button type="button" class="btn btn-outline-secondary" id="clear-history">
+          <i class="fas fa-trash-alt" aria-hidden="true"></i> Clear History
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var announcementHistory = [];
+  var propsChangedHandler = null;
+  var regionUpdateInterval = null;
+
+  function logAnnouncement(message, type) {
+    var now = new Date();
+    var timestamp = now.toLocaleTimeString();
+
+    var entry = {
+      timestamp: timestamp,
+      message: message,
+      type: type
+    };
+
+    announcementHistory.unshift(entry);
+
+    // Keep last 20 entries
+    if (announcementHistory.length > 20) {
+      announcementHistory.pop();
+    }
+
+    renderHistory();
+    updateVisualFeedback(message, type);
+    emit('event', { event: 'announce:' + type, payload: { message: message } });
+  }
+
+  function renderHistory() {
+    var container = document.getElementById('announcement-history');
+    if (!container) return;
+
+    if (announcementHistory.length === 0) {
+      container.innerHTML = '<div class="announce-demo__history-empty">No announcements yet. Click buttons above to see history.</div>';
+      return;
+    }
+
+    var html = announcementHistory.map(function(entry) {
+      var typeClass = entry.type === 'assertive' ? 'announce-demo__history-entry--assertive' : 'announce-demo__history-entry--polite';
+      var typeLabel = entry.type === 'assertive' ? 'ASSERTIVE' : 'POLITE';
+      return '<div class="announce-demo__history-entry ' + typeClass + '">' +
+        '<span class="announce-demo__history-time">' + entry.timestamp + '</span> ' +
+        '<span class="announce-demo__history-type">' + typeLabel + '</span> ' +
+        '<span class="announce-demo__history-message">' + escapeHtml(entry.message) + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function updateVisualFeedback(message, type) {
+    var messageEl = document.getElementById('feedback-message');
+    var typeEl = document.getElementById('feedback-type');
+    var container = document.getElementById('visual-feedback');
+
+    if (messageEl) {
+      messageEl.textContent = message;
+    }
+    if (typeEl) {
+      typeEl.textContent = type === 'assertive' ? 'Assertive' : 'Polite';
+      typeEl.className = 'announce-demo__feedback-type announce-demo__feedback-type--' + type;
+    }
+    if (container) {
+      container.classList.add('announce-demo__visual-feedback--active');
+      setTimeout(function() {
+        container.classList.remove('announce-demo__visual-feedback--active');
+      }, 2000);
+    }
+  }
+
+  function updateRegionDisplay() {
+    var politeContent = document.getElementById('polite-content');
+    var assertiveContent = document.getElementById('assertive-content');
+
+    if (politeContent && Funky.Announce.politeRegion) {
+      var politeText = Funky.Announce.politeRegion.textContent.trim();
+      politeContent.innerHTML = politeText
+        ? '<span class="announce-demo__region-text">' + escapeHtml(politeText) + '</span>'
+        : '<span class="announce-demo__empty">Empty</span>';
+    }
+
+    if (assertiveContent && Funky.Announce.assertiveRegion) {
+      var assertiveText = Funky.Announce.assertiveRegion.textContent.trim();
+      assertiveContent.innerHTML = assertiveText
+        ? '<span class="announce-demo__region-text">' + escapeHtml(assertiveText) + '</span>'
+        : '<span class="announce-demo__empty">Empty</span>';
+    }
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function handleQuickAnnounce() {
+    var message = document.getElementById('quick-message').value.trim();
+    var politeness = document.getElementById('quick-politeness').value;
+
+    if (!message) {
+      Funky.Announce.assertive('Please enter a message');
+      logAnnouncement('Please enter a message', 'assertive');
+      return;
+    }
+
+    if (politeness === 'assertive') {
+      Funky.Announce.assertive(message);
+      logAnnouncement(message, 'assertive');
+    } else {
+      Funky.Announce.polite(message);
+      logAnnouncement(message, 'polite');
+    }
+
+    // Update region display after a short delay
+    setTimeout(updateRegionDisplay, 100);
+  }
+
+  function handleQuickClear() {
+    Funky.Announce.clear();
+    updateRegionDisplay();
+    logAnnouncement('(Announcements cleared)', 'polite');
+  }
+
+  function handlePresetClick(e) {
+    var btn = e.target.closest('.announce-demo__preset-btn');
+    if (!btn) return;
+
+    var message = btn.getAttribute('data-message');
+    var isAssertive = btn.getAttribute('data-assertive') === 'true';
+
+    if (isAssertive) {
+      Funky.Announce.assertive(message);
+      logAnnouncement(message, 'assertive');
+    } else {
+      Funky.Announce.polite(message);
+      logAnnouncement(message, 'polite');
+    }
+
+    setTimeout(updateRegionDisplay, 100);
+  }
+
+  function handleRefreshRegions() {
+    updateRegionDisplay();
+  }
+
+  function handleClearRegions() {
+    Funky.Announce.clear();
+    updateRegionDisplay();
+  }
+
+  function handleClearHistory() {
+    announcementHistory = [];
+    renderHistory();
+  }
+
+  function syncFromProps(newProps) {
+    var props = newProps || getProps();
+
+    if (props.sampleMessage) {
+      var messageInput = document.getElementById('quick-message');
+      if (messageInput) {
+        messageInput.value = props.sampleMessage;
+      }
+    }
+
+    if (props.politeness) {
+      var politenessSelect = document.getElementById('quick-politeness');
+      if (politenessSelect) {
+        politenessSelect.value = props.politeness;
+      }
+    }
+  }
+
+  function bindEvents() {
+    // Quick announce
+    var announceBtn = document.getElementById('quick-announce');
+    var clearBtn = document.getElementById('quick-clear');
+
+    if (announceBtn) announceBtn.addEventListener('click', handleQuickAnnounce);
+    if (clearBtn) clearBtn.addEventListener('click', handleQuickClear);
+
+    // Preset buttons
+    document.querySelectorAll('.announce-demo__preset-btn').forEach(function(btn) {
+      btn.addEventListener('click', handlePresetClick);
+    });
+
+    // Region controls
+    var refreshBtn = document.getElementById('refresh-regions');
+    var clearRegionsBtn = document.getElementById('clear-regions');
+
+    if (refreshBtn) refreshBtn.addEventListener('click', handleRefreshRegions);
+    if (clearRegionsBtn) clearRegionsBtn.addEventListener('click', handleClearRegions);
+
+    // History
+    var clearHistoryBtn = document.getElementById('clear-history');
+    if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', handleClearHistory);
+
+    // Allow Enter key on message input
+    var messageInput = document.getElementById('quick-message');
+    if (messageInput) {
+      messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleQuickAnnounce();
+        }
+      });
+    }
+  }
+
+  Funky.Pages.register('component-announce', {
+    init: function(state) {
+      var props = getProps();
+
+      // Ensure Announce is initialized
+      if (Funky.Announce && !Funky.Announce.initialized) {
+        Funky.Announce.init();
+      }
+
+      bindEvents();
+      syncFromProps(props);
+      updateRegionDisplay();
+
+      // Auto-refresh region display
+      regionUpdateInterval = setInterval(updateRegionDisplay, 500);
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          syncFromProps(newProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'announce:init', payload: { initialized: Funky.Announce.initialized } });
+    },
+
+    destroy: function() {
+      // Clear interval
+      if (regionUpdateInterval) {
+        clearInterval(regionUpdateInterval);
+        regionUpdateInterval = null;
+      }
+
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Reset state
+      announcementHistory = [];
+
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,264 @@
+<div data-page="component-format" class="component-demo">
+  <h2>Format</h2>
+  <p class="text-muted">Number, currency, percentage, and compact formatting utilities</p>
+
+  <section class="demo-section" aria-labelledby="format-preview-heading">
+    <h3 id="format-preview-heading">Live Preview</h3>
+    <p class="text-muted small">See the formatted result based on current settings</p>
+    <div class="demo-area">
+      <div class="format-demo__preview">
+        <div class="format-demo__input-group">
+          <div class="format-demo__input-label">Input Value</div>
+          <div class="format-demo__input-value" id="format-input-display">1234567.89</div>
+          <div class="format-demo__input-hint" id="format-input-hint"></div>
+        </div>
+        <div class="format-demo__arrow"><i class="fas fa-arrow-right" aria-hidden="true"></i></div>
+        <div class="format-demo__output-group">
+          <div class="format-demo__output-label">Formatted Output</div>
+          <div class="format-demo__output-value" id="format-output-display">1,234,567.89</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="format-examples-heading">
+    <h3 id="format-examples-heading">Format Examples</h3>
+    <p class="text-muted small">Common formatting use cases</p>
+    <div class="demo-area">
+      <div class="format-demo__examples">
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Number:</span>
+          <code class="format-demo__example-code">Funky.Format.number(1234567.89)</code>
+          <span class="format-demo__example-result" id="example-number">1,234,567.89</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Compact:</span>
+          <code class="format-demo__example-code">Funky.Format.compact(1234567)</code>
+          <span class="format-demo__example-result" id="example-compact">1.23M</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Currency (GBP):</span>
+          <code class="format-demo__example-code">Funky.Format.currency(1234.56, 'GBP')</code>
+          <span class="format-demo__example-result" id="example-currency-gbp">£1,234.56</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Currency (USD):</span>
+          <code class="format-demo__example-code">Funky.Format.currency(1234.56, 'USD')</code>
+          <span class="format-demo__example-result" id="example-currency-usd">$1,234.56</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Percentage:</span>
+          <code class="format-demo__example-code">Funky.Format.percentage(0.1234)</code>
+          <span class="format-demo__example-result" id="example-percentage">12.34%</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Change (Positive):</span>
+          <code class="format-demo__example-code">Funky.Format.change(5.25)</code>
+          <span class="format-demo__example-result format-demo__example-result--positive" id="example-change-pos">+5.25%</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Change (Negative):</span>
+          <code class="format-demo__example-code">Funky.Format.change(-3.75)</code>
+          <span class="format-demo__example-result format-demo__example-result--negative" id="example-change-neg">-3.75%</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">File Size:</span>
+          <code class="format-demo__example-code">Funky.Format.fileSize(1536000)</code>
+          <span class="format-demo__example-result" id="example-filesize">1.46 MB</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">Date:</span>
+          <code class="format-demo__example-code">Funky.Format.date('2025-01-15')</code>
+          <span class="format-demo__example-result" id="example-date">15 Jan 2025</span>
+        </div>
+        <div class="format-demo__example-row">
+          <span class="format-demo__example-label">DateTime:</span>
+          <code class="format-demo__example-code">Funky.Format.datetime('2025-01-15T14:30:00')</code>
+          <span class="format-demo__example-result" id="example-datetime">15 Jan 2025, 14:30</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="format-auto-heading">
+    <h3 id="format-auto-heading">Auto-Format (data attributes)</h3>
+    <p class="text-muted small">Elements with data-format attribute are automatically formatted</p>
+    <div class="demo-area">
+      <div class="format-demo__auto-examples">
+        <div class="format-demo__auto-row">
+          <code class="format-demo__auto-code">&lt;span data-format="number" data-value="9876543.21"&gt;</code>
+          <span class="format-demo__auto-result" data-format="number" data-value="9876543.21">Loading...</span>
+        </div>
+        <div class="format-demo__auto-row">
+          <code class="format-demo__auto-code">&lt;span data-format="compact" data-value="5000000"&gt;</code>
+          <span class="format-demo__auto-result" data-format="compact" data-value="5000000">Loading...</span>
+        </div>
+        <div class="format-demo__auto-row">
+          <code class="format-demo__auto-code">&lt;span data-format="currency" data-value="2500" data-currency="EUR"&gt;</code>
+          <span class="format-demo__auto-result" data-format="currency" data-value="2500" data-currency="EUR">Loading...</span>
+        </div>
+        <div class="format-demo__auto-row">
+          <code class="format-demo__auto-code">&lt;span data-format="percentage" data-value="0.8567"&gt;</code>
+          <span class="format-demo__auto-result" data-format="percentage" data-value="0.8567">Loading...</span>
+        </div>
+        <div class="format-demo__auto-row">
+          <code class="format-demo__auto-code">&lt;span data-format="change" data-value="12.5"&gt;</code>
+          <span class="format-demo__auto-result" data-format="change" data-value="12.5">Loading...</span>
+        </div>
+        <div class="format-demo__auto-row">
+          <code class="format-demo__auto-code">&lt;span data-format="filesize" data-value="1073741824"&gt;</code>
+          <span class="format-demo__auto-result" data-format="filesize" data-value="1073741824">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="format-log-heading">
+    <h3 id="format-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="format-log" class="format-demo__log" aria-live="polite">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var logs = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('format-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateExamples() {
+    // Update all the static examples
+    var examples = {
+      'example-number': Funky.Format.number(1234567.89),
+      'example-compact': Funky.Format.compact(1234567),
+      'example-currency-gbp': Funky.Format.currency(1234.56, 'GBP'),
+      'example-currency-usd': Funky.Format.currency(1234.56, 'USD'),
+      'example-percentage': Funky.Format.percentage(0.1234),
+      'example-filesize': Funky.Format.fileSize(1536000),
+      'example-date': Funky.Format.date('2025-01-15'),
+      'example-datetime': Funky.Format.datetime('2025-01-15T14:30:00')
+    };
+
+    Object.keys(examples).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = examples[id];
+    });
+
+    // Change examples with color
+    var changePos = Funky.Format.change(5.25);
+    var posEl = document.getElementById('example-change-pos');
+    if (posEl) {
+      posEl.textContent = changePos.formatted;
+      posEl.className = 'format-demo__example-result format-demo__example-result--positive';
+    }
+
+    var changeNeg = Funky.Format.change(-3.75);
+    var negEl = document.getElementById('example-change-neg');
+    if (negEl) {
+      negEl.textContent = changeNeg.formatted;
+      negEl.className = 'format-demo__example-result format-demo__example-result--negative';
+    }
+  }
+
+  function updatePreview(props) {
+    var value = props.value || 1234567.89;
+    var formatType = props.formatType || 'number';
+    var decimals = props.decimals !== undefined ? props.decimals : 2;
+    var currency = props.currency || 'GBP';
+
+    // Update input display
+    var inputEl = document.getElementById('format-input-display');
+    if (inputEl) inputEl.textContent = value;
+
+    // Update hint based on format type
+    var hintEl = document.getElementById('format-input-hint');
+    if (hintEl) {
+      if (formatType === 'percentage') {
+        hintEl.textContent = '(decimal: ' + value + ' = ' + (value * 100) + '%)';
+      } else if (formatType === 'currency') {
+        hintEl.textContent = '(currency: ' + currency + ')';
+      } else if (formatType === 'compact') {
+        hintEl.textContent = '(will show K/M/B suffix)';
+      } else {
+        hintEl.textContent = '';
+      }
+    }
+
+    // Format based on type
+    var formatted = '-';
+    switch (formatType) {
+      case 'number':
+        formatted = Funky.Format.number(value, decimals);
+        break;
+      case 'currency':
+        formatted = Funky.Format.currency(value, currency);
+        break;
+      case 'percentage':
+        formatted = Funky.Format.percentage(value, decimals);
+        break;
+      case 'compact':
+        formatted = Funky.Format.compact(value, decimals);
+        break;
+    }
+
+    // Update output display
+    var outputEl = document.getElementById('format-output-display');
+    if (outputEl) outputEl.textContent = formatted;
+
+    log('Formatted: ' + formatType + '(' + value + ') → ' + formatted);
+    emit('event', { event: 'format:update', payload: { formatType: formatType, value: value, result: formatted } });
+  }
+
+  Funky.Pages.register('component-format', {
+    init: function(state) {
+      var props = getProps();
+
+      // Run auto-format on elements with data-format
+      if (Funky.Format && Funky.Format.autoFormat) {
+        Funky.Format.autoFormat();
+      }
+
+      // Update static examples
+      updateExamples();
+
+      // Update live preview
+      updatePreview(props);
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updatePreview(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      log('Format demo initialized');
+      emit('event', { event: 'format:init', payload: { formatType: props.formatType, value: props.value } });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      logs = [];
+
+      return {};
+    }
+  });
+})();
+</script>

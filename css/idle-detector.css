@@ -1,0 +1,244 @@
+/**
+ * Funky IdleDetector - Styles
+ *
+ * Styling for the IdleDetector playground demo
+ */
+
+/* ============================================
+   IDLE DETECTOR PLAYGROUND DEMO
+   ============================================ */
+
+/* Status section */
+.idle-demo__status {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.idle-demo__state-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 2rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-lg, 12px);
+  min-width: 120px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.idle-demo__state-indicator--active {
+  border-color: var(--pro-success, #3fb950);
+  background: var(--pro-success-muted, rgba(63, 185, 80, 0.1));
+}
+
+.idle-demo__state-indicator--idle {
+  border-color: var(--pro-warning, #d29922);
+  background: var(--pro-warning-muted, rgba(210, 153, 34, 0.1));
+}
+
+.idle-demo__state-indicator--away {
+  border-color: var(--pro-danger, #f85149);
+  background: var(--pro-danger-muted, rgba(248, 81, 73, 0.1));
+}
+
+.idle-demo__state-icon {
+  font-size: 2rem;
+  color: var(--pro-text-secondary, #888);
+  transition: color 0.3s ease;
+}
+
+.idle-demo__state-indicator--active .idle-demo__state-icon {
+  color: var(--pro-success, #3fb950);
+}
+
+.idle-demo__state-indicator--idle .idle-demo__state-icon {
+  color: var(--pro-warning, #d29922);
+}
+
+.idle-demo__state-indicator--away .idle-demo__state-icon {
+  color: var(--pro-danger, #f85149);
+}
+
+.idle-demo__state-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pro-text-primary, #e0e0e0);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Metrics */
+.idle-demo__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  flex: 1;
+}
+
+.idle-demo__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+  min-width: 100px;
+}
+
+.idle-demo__metric-label {
+  font-size: 0.75rem;
+  color: var(--pro-text-secondary, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.idle-demo__metric-value {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  color: var(--pro-text-primary, #e0e0e0);
+}
+
+/* Progress bar */
+.idle-demo__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.idle-demo__progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--pro-text-secondary, #888);
+}
+
+.idle-demo__progress-label span:last-child {
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-weight: 600;
+  color: var(--pro-accent-primary, #2f81f7);
+}
+
+.idle-demo__progress-bar {
+  height: 0.5rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.idle-demo__progress-fill {
+  height: 100%;
+  background: var(--pro-accent-primary, #2f81f7);
+  border-radius: 0.25rem;
+  transition: width 0.1s linear;
+  width: 100%;
+}
+
+/* Controls */
+.idle-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Settings display */
+.idle-demo__settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.idle-demo__setting {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+}
+
+.idle-demo__setting-label {
+  font-size: 0.8125rem;
+  color: var(--pro-text-secondary, #888);
+}
+
+.idle-demo__setting-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--pro-accent-primary, #2f81f7);
+}
+
+/* Event log */
+.idle-demo__log {
+  margin: 0;
+  padding: 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border: 1px solid var(--pro-border-color, #333);
+  border-radius: var(--pro-radius-sm, 6px);
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--pro-text-secondary, #aaa);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Light theme */
+[data-theme="light"] .idle-demo__state-indicator {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+}
+
+[data-theme="light"] .idle-demo__metric,
+[data-theme="light"] .idle-demo__setting {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+}
+
+[data-theme="light"] .idle-demo__progress-bar {
+  background: var(--pro-bg-tertiary, #e9ecef);
+}
+
+[data-theme="light"] .idle-demo__log {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .idle-demo__status {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .idle-demo__state-indicator {
+    flex-direction: row;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .idle-demo__metrics {
+    justify-content: space-between;
+  }
+
+  .idle-demo__metric {
+    flex: 1;
+    min-width: calc(50% - 0.5rem);
+  }
+
+  .idle-demo__controls {
+    flex-direction: column;
+  }
+
+  .idle-demo__controls .btn {
+    width: 100%;
+  }
+
+  .idle-demo__settings {
+    flex-direction: column;
+  }
+}

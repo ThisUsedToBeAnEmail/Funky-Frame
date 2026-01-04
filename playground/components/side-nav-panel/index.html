@@ -1,0 +1,373 @@
+<div data-page="component-side-nav-panel" class="component-demo">
+  <h2>SideNav Panel</h2>
+  <p class="text-muted">SideNav with content panels, lazy loading, and animations</p>
+
+  <!-- Main Demo Section -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">Click navigation items to switch between panels. Content is lazy-loaded by default.</p>
+    <div class="demo-area">
+      <div class="sidenav-panel-demo__layout">
+        <div id="sidenav-container" class="sidenav-panel-demo__nav"></div>
+        <div id="panels-container" class="sidenav-panel-demo__content"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Active Panel Section -->
+  <section class="demo-section" aria-labelledby="status-heading">
+    <h3 id="status-heading">Active Panel</h3>
+    <p class="text-muted small">Shows the currently active panel</p>
+    <div class="demo-area">
+      <div class="sidenav-panel-demo__status">
+        <div class="sidenav-panel-demo__status-label">Current:</div>
+        <div id="active-panel-display" class="sidenav-panel-demo__status-value">
+          <span class="badge bg-primary">General</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Test the component's public methods</p>
+    <div class="demo-area">
+      <div class="sidenav-panel-demo__controls">
+        <div class="sidenav-panel-demo__control-group">
+          <span class="sidenav-panel-demo__control-label">Navigate:</span>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-select-general">
+            <i class="fa-solid fa-cog" aria-hidden="true"></i> General
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-select-appearance">
+            <i class="fa-solid fa-palette" aria-hidden="true"></i> Appearance
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-select-privacy">
+            <i class="fa-solid fa-shield-alt" aria-hidden="true"></i> Privacy
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-select-notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i> Notifications
+          </button>
+        </div>
+        <div class="sidenav-panel-demo__control-group">
+          <span class="sidenav-panel-demo__control-label">Actions:</span>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-refresh-panel">
+            <i class="fa-solid fa-sync" aria-hidden="true"></i> Refresh Active Panel
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-get-active">
+            <i class="fa-solid fa-info-circle" aria-hidden="true"></i> Get Active ID
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Initialized Panels Section -->
+  <section class="demo-section" aria-labelledby="initialized-heading">
+    <h3 id="initialized-heading">Initialized Panels</h3>
+    <p class="text-muted small">Shows which panels have been lazy-loaded</p>
+    <div class="demo-area">
+      <div id="initialized-panels" class="sidenav-panel-demo__initialized">
+        <span class="text-muted">None yet - navigate to panels to load them</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings Section -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div id="current-settings" class="sidenav-panel-demo__settings"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var panelInstance = null;
+  var propsChangedHandler = null;
+  var initializedPanels = [];
+
+  // Default panel items
+  var DEFAULT_ITEMS = [
+    {
+      id: 'general',
+      label: 'General',
+      icon: 'fa-cog',
+      content: '<div class="sidenav-panel-demo__panel-content"><h4><i class="fas fa-cog me-2"></i>General Settings</h4><p>Configure general application options here.</p><div class="sidenav-panel-demo__panel-options"><label class="form-check"><input type="checkbox" class="form-check-input" checked><span class="form-check-label">Enable auto-save</span></label><label class="form-check"><input type="checkbox" class="form-check-input"><span class="form-check-label">Show tooltips</span></label><label class="form-check"><input type="checkbox" class="form-check-input" checked><span class="form-check-label">Remember last position</span></label></div></div>'
+    },
+    {
+      id: 'appearance',
+      label: 'Appearance',
+      icon: 'fa-palette',
+      content: '<div class="sidenav-panel-demo__panel-content"><h4><i class="fas fa-palette me-2"></i>Appearance</h4><p>Customize the look and feel of your application.</p><div class="sidenav-panel-demo__panel-options"><div class="mb-3"><label class="form-label">Theme</label><select class="form-select form-select-sm"><option>Light</option><option>Dark</option><option>System</option></select></div><div class="mb-3"><label class="form-label">Font Size</label><select class="form-select form-select-sm"><option>Small</option><option selected>Medium</option><option>Large</option></select></div></div></div>'
+    },
+    {
+      id: 'privacy',
+      label: 'Privacy',
+      icon: 'fa-shield-alt',
+      content: '<div class="sidenav-panel-demo__panel-content"><h4><i class="fas fa-shield-alt me-2"></i>Privacy Settings</h4><p>Manage your privacy and security options.</p><div class="sidenav-panel-demo__panel-options"><label class="form-check"><input type="checkbox" class="form-check-input" checked><span class="form-check-label">Enable two-factor authentication</span></label><label class="form-check"><input type="checkbox" class="form-check-input"><span class="form-check-label">Share usage data</span></label><label class="form-check"><input type="checkbox" class="form-check-input" checked><span class="form-check-label">Show online status</span></label></div></div>'
+    },
+    {
+      id: 'notifications',
+      label: 'Notifications',
+      icon: 'fa-bell',
+      content: '<div class="sidenav-panel-demo__panel-content"><h4><i class="fas fa-bell me-2"></i>Notifications</h4><p>Configure notification preferences.</p><div class="sidenav-panel-demo__panel-options"><label class="form-check"><input type="checkbox" class="form-check-input" checked><span class="form-check-label">Email notifications</span></label><label class="form-check"><input type="checkbox" class="form-check-input" checked><span class="form-check-label">Push notifications</span></label><label class="form-check"><input type="checkbox" class="form-check-input"><span class="form-check-label">SMS alerts</span></label></div></div>'
+    }
+  ];
+
+  /**
+   * Update active panel display
+   */
+  function updateActivePanelDisplay(id) {
+    var display = document.getElementById('active-panel-display');
+    if (!display) return;
+
+    var item = DEFAULT_ITEMS.find(function(i) { return i.id === id; });
+    var label = item ? item.label : id;
+    var icon = item ? item.icon : 'fa-square';
+
+    display.innerHTML = '<span class="badge bg-primary"><i class="fas ' + icon + ' me-1"></i>' + escapeHtml(label) + '</span>';
+  }
+
+  /**
+   * Update initialized panels display
+   */
+  function updateInitializedDisplay() {
+    var container = document.getElementById('initialized-panels');
+    if (!container) return;
+
+    if (initializedPanels.length === 0) {
+      container.innerHTML = '<span class="text-muted">None yet - navigate to panels to load them</span>';
+      return;
+    }
+
+    var badges = initializedPanels.map(function(id) {
+      var item = DEFAULT_ITEMS.find(function(i) { return i.id === id; });
+      var label = item ? item.label : id;
+      return '<span class="badge bg-success"><i class="fas fa-check me-1"></i>' + escapeHtml(label) + '</span>';
+    });
+
+    container.innerHTML = badges.join(' ');
+  }
+
+  /**
+   * Escape HTML entities
+   */
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * Update settings display
+   */
+  function updateSettingsDisplay(props) {
+    var container = document.getElementById('current-settings');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var badges = [
+      { label: 'Animation', value: props.animation || 'fade', variant: 'primary' },
+      { label: 'Lazy Load', value: props.lazyLoad !== false ? 'On' : 'Off', variant: props.lazyLoad !== false ? 'success' : 'secondary' },
+      { label: 'Responsive', value: props.responsive !== false ? 'On' : 'Off', variant: props.responsive !== false ? 'success' : 'secondary' },
+      { label: 'Panels', value: DEFAULT_ITEMS.length.toString(), variant: 'info' }
+    ];
+
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var span = document.createElement('span');
+      span.className = 'badge bg-' + badge.variant;
+      span.innerHTML = '<strong>' + badge.label + ':</strong> ' + badge.value;
+      container.appendChild(span);
+    }
+  }
+
+  /**
+   * Create the SideNav Panel
+   */
+  function createPanel(props) {
+    var sidenavContainer = document.getElementById('sidenav-container');
+    var panelsContainer = document.getElementById('panels-container');
+
+    if (!sidenavContainer || !panelsContainer) return;
+
+    // Destroy existing instance
+    if (panelInstance && panelInstance.destroy) {
+      panelInstance.destroy();
+      panelInstance = null;
+    }
+
+    // Reset state
+    initializedPanels = [];
+    updateInitializedDisplay();
+
+    // Clear containers
+    sidenavContainer.innerHTML = '';
+    panelsContainer.innerHTML = '';
+
+    // Get items from props or use defaults
+    var items = props.items && props.items.length > 0 ? props.items : DEFAULT_ITEMS;
+
+    // Create instance
+    panelInstance = Funky.SideNavPanel.init({
+      sidenav: sidenavContainer,
+      panels: panelsContainer,
+      items: items,
+      animation: props.animation || 'fade',
+      lazyLoad: props.lazyLoad !== false,
+      selected: 'general',
+
+      onActivate: function(id, panelEl, isFirstActivation) {
+        updateActivePanelDisplay(id);
+
+        if (isFirstActivation && initializedPanels.indexOf(id) === -1) {
+          initializedPanels.push(id);
+          updateInitializedDisplay();
+        }
+
+        emit('event', {
+          event: 'funky:sidenav-panel:activate',
+          payload: { id: id, firstActivation: isFirstActivation }
+        });
+      },
+
+      onDeactivate: function(id, panelEl) {
+        emit('event', {
+          event: 'funky:sidenav-panel:deactivate',
+          payload: { id: id }
+        });
+      }
+    });
+
+    // Initial panel is activated
+    if (initializedPanels.indexOf('general') === -1) {
+      initializedPanels.push('general');
+      updateInitializedDisplay();
+    }
+    updateActivePanelDisplay('general');
+
+    // Update settings display
+    updateSettingsDisplay(props);
+  }
+
+  /**
+   * Bind button events
+   */
+  function bindEvents() {
+    var btnSelectGeneral = document.getElementById('btn-select-general');
+    var btnSelectAppearance = document.getElementById('btn-select-appearance');
+    var btnSelectPrivacy = document.getElementById('btn-select-privacy');
+    var btnSelectNotifications = document.getElementById('btn-select-notifications');
+    var btnRefreshPanel = document.getElementById('btn-refresh-panel');
+    var btnGetActive = document.getElementById('btn-get-active');
+
+    if (btnSelectGeneral) {
+      btnSelectGeneral.addEventListener('click', function() {
+        if (panelInstance) {
+          panelInstance.select('general');
+          emit('event', { event: 'api:select', payload: { id: 'general' } });
+        }
+      });
+    }
+
+    if (btnSelectAppearance) {
+      btnSelectAppearance.addEventListener('click', function() {
+        if (panelInstance) {
+          panelInstance.select('appearance');
+          emit('event', { event: 'api:select', payload: { id: 'appearance' } });
+        }
+      });
+    }
+
+    if (btnSelectPrivacy) {
+      btnSelectPrivacy.addEventListener('click', function() {
+        if (panelInstance) {
+          panelInstance.select('privacy');
+          emit('event', { event: 'api:select', payload: { id: 'privacy' } });
+        }
+      });
+    }
+
+    if (btnSelectNotifications) {
+      btnSelectNotifications.addEventListener('click', function() {
+        if (panelInstance) {
+          panelInstance.select('notifications');
+          emit('event', { event: 'api:select', payload: { id: 'notifications' } });
+        }
+      });
+    }
+
+    if (btnRefreshPanel) {
+      btnRefreshPanel.addEventListener('click', function() {
+        if (panelInstance) {
+          var activeId = panelInstance.getActive();
+          if (activeId) {
+            panelInstance.refreshPanel(activeId);
+            emit('event', { event: 'api:refreshPanel', payload: { id: activeId } });
+          }
+        }
+      });
+    }
+
+    if (btnGetActive) {
+      btnGetActive.addEventListener('click', function() {
+        if (panelInstance) {
+          var activeId = panelInstance.getActive();
+          emit('event', { event: 'api:getActive', payload: { activeId: activeId } });
+        }
+      });
+    }
+  }
+
+  // Page registration
+  Funky.Pages.register('component-side-nav-panel', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create initial panel
+      createPanel(props);
+
+      // Bind button events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          createPanel(getProps());
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'sidenav-panel:init', payload: props });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy panel instance
+      if (panelInstance && panelInstance.destroy) {
+        panelInstance.destroy();
+        panelInstance = null;
+      }
+
+      // Reset state
+      initializedPanels = [];
+
+      return {};
+    }
+  });
+})();
+</script>

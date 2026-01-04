@@ -1,0 +1,454 @@
+<div data-page="component-iframe" class="iframe-demo">
+  <h2>Iframe</h2>
+  <p class="text-muted">Flexible iframe embedding with embed, modal, and detached modes. Supports postMessage communication.</p>
+
+  <!-- Current State -->
+  <section class="iframe-demo__section" aria-labelledby="iframe-state-heading">
+    <h3 id="iframe-state-heading">Current State</h3>
+    <div class="iframe-demo__state">
+      <div class="iframe-demo__state-item">
+        <span class="iframe-demo__state-label">Source</span>
+        <span class="iframe-demo__state-value" id="state-src" style="font-size: 11px; word-break: break-all;">/playground/pages/iframe-content</span>
+      </div>
+      <div class="iframe-demo__state-item">
+        <span class="iframe-demo__state-label">Mode</span>
+        <span class="iframe-demo__state-value" id="state-mode">embed</span>
+      </div>
+      <div class="iframe-demo__state-item">
+        <span class="iframe-demo__state-label">Width</span>
+        <span class="iframe-demo__state-value" id="state-width">100%</span>
+      </div>
+      <div class="iframe-demo__state-item">
+        <span class="iframe-demo__state-label">Height</span>
+        <span class="iframe-demo__state-value" id="state-height">400px</span>
+      </div>
+      <div class="iframe-demo__state-item">
+        <span class="iframe-demo__state-label">Status</span>
+        <span class="iframe-demo__state-value" id="state-status">initializing</span>
+      </div>
+      <div class="iframe-demo__state-item">
+        <span class="iframe-demo__state-label">Messages</span>
+        <span class="iframe-demo__state-value" id="state-messages">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Embed Mode Demo -->
+  <section class="iframe-demo__section" aria-labelledby="iframe-embed-heading">
+    <h3 id="iframe-embed-heading">Embed Mode</h3>
+    <p class="iframe-demo__hint"><i class="fas fa-window-maximize" aria-hidden="true"></i> Inline iframe embedded in the page. Uses <code>Funky.Iframe.create()</code> with <code>mode: 'embed'</code></p>
+    <div id="iframe-embed-container" class="iframe-demo__embed-container"></div>
+    <div class="iframe-demo__controls">
+      <button class="btn btn-outline-primary btn-sm" id="btn-reload" type="button">
+        <i class="fas fa-sync me-1" aria-hidden="true"></i> Reload
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="btn-resize-small" type="button">
+        <i class="fas fa-compress me-1" aria-hidden="true"></i> Small (300px)
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="btn-resize-medium" type="button">
+        <i class="fas fa-expand me-1" aria-hidden="true"></i> Medium (400px)
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="btn-resize-large" type="button">
+        <i class="fas fa-expand-arrows-alt me-1" aria-hidden="true"></i> Large (600px)
+      </button>
+    </div>
+  </section>
+
+  <!-- PostMessage Communication -->
+  <section class="iframe-demo__section" aria-labelledby="iframe-postmessage-heading">
+    <h3 id="iframe-postmessage-heading">PostMessage Communication</h3>
+    <p class="iframe-demo__hint"><i class="fas fa-comments" aria-hidden="true"></i> Send messages to the iframe and receive responses</p>
+    <div class="iframe-demo__postmessage">
+      <div class="iframe-demo__postmessage-input">
+        <input type="text" class="form-control" id="message-input" placeholder="Enter message to send to iframe...">
+        <button class="btn btn-primary" id="btn-send-message" type="button">
+          <i class="fas fa-paper-plane me-1" aria-hidden="true"></i> Send
+        </button>
+      </div>
+      <div class="iframe-demo__postmessage-presets">
+        <span class="iframe-demo__postmessage-label">Quick Actions:</span>
+        <button class="btn btn-outline-success btn-sm" id="btn-send-greeting" type="button">Say Hello</button>
+        <button class="btn btn-outline-warning btn-sm" id="btn-send-resize" type="button">Request Height</button>
+        <button class="btn btn-outline-info btn-sm" id="btn-send-data" type="button">Send Data</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal & Detached Triggers -->
+  <section class="iframe-demo__section" aria-labelledby="iframe-modes-heading">
+    <h3 id="iframe-modes-heading">Modal & Detached Modes</h3>
+    <p class="iframe-demo__hint"><i class="fas fa-layer-group" aria-hidden="true"></i> Open iframe content in different display modes</p>
+    <div class="iframe-demo__modes">
+      <div class="iframe-demo__mode-card">
+        <h4><i class="fas fa-window-restore me-2"></i>Modal Mode</h4>
+        <p class="text-muted small">Opens in a modal dialog overlay</p>
+        <div id="modal-trigger-container"></div>
+      </div>
+      <div class="iframe-demo__mode-card">
+        <h4><i class="fas fa-external-link-alt me-2"></i>Detached Mode</h4>
+        <p class="text-muted small">Opens in a new browser window</p>
+        <div id="detached-trigger-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sandbox Options -->
+  <section class="iframe-demo__section" aria-labelledby="iframe-sandbox-heading">
+    <h3 id="iframe-sandbox-heading">Sandbox Options</h3>
+    <p class="iframe-demo__hint"><i class="fas fa-shield-alt" aria-hidden="true"></i> Configure iframe security restrictions</p>
+    <div class="iframe-demo__sandbox">
+      <div class="iframe-demo__sandbox-options">
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" id="sandbox-scripts" checked>
+          <span class="form-check-label">allow-scripts</span>
+        </label>
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" id="sandbox-same-origin" checked>
+          <span class="form-check-label">allow-same-origin</span>
+        </label>
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" id="sandbox-forms">
+          <span class="form-check-label">allow-forms</span>
+        </label>
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" id="sandbox-popups">
+          <span class="form-check-label">allow-popups</span>
+        </label>
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" id="sandbox-modals">
+          <span class="form-check-label">allow-modals</span>
+        </label>
+      </div>
+      <div class="iframe-demo__sandbox-value">
+        <strong>Sandbox attribute:</strong>
+        <code id="sandbox-value">allow-scripts allow-same-origin</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="iframe-demo__section" aria-labelledby="iframe-log-heading">
+    <h3 id="iframe-log-heading">Event Log</h3>
+    <div class="iframe-demo__log-controls">
+      <button class="btn btn-outline-secondary btn-sm" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+    <pre id="iframe-log" class="iframe-demo__log" aria-live="polite" aria-label="Iframe event log">Initializing Iframe component...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  Funky.Pages.register('component-iframe', {
+    _logs: [],
+    _messageCount: 0,
+    _embedInstance: null,
+    _modalInstance: null,
+    _detachedInstance: null,
+
+    _log: function(message, data) {
+      var entry = new Date().toLocaleTimeString() + ' - ' + message;
+      if (data) entry += ': ' + JSON.stringify(data);
+      this._logs.unshift(entry);
+      if (this._logs.length > 20) this._logs.pop();
+      var logEl = document.getElementById('iframe-log');
+      if (logEl) logEl.textContent = this._logs.join('\n');
+    },
+
+    _updateState: function(key, value) {
+      var el = document.getElementById('state-' + key);
+      if (el) el.textContent = value;
+    },
+
+    _updateSandboxValue: function() {
+      var values = [];
+      if (document.getElementById('sandbox-scripts').checked) values.push('allow-scripts');
+      if (document.getElementById('sandbox-same-origin').checked) values.push('allow-same-origin');
+      if (document.getElementById('sandbox-forms').checked) values.push('allow-forms');
+      if (document.getElementById('sandbox-popups').checked) values.push('allow-popups');
+      if (document.getElementById('sandbox-modals').checked) values.push('allow-modals');
+      document.getElementById('sandbox-value').textContent = values.join(' ') || '(fully sandboxed)';
+      return values.join(' ');
+    },
+
+    _handleMessage: function(instance, data, event) {
+      var self = this;
+      self._messageCount++;
+      self._updateState('messages', self._messageCount);
+
+      var action = data.action || 'unknown';
+
+      self._log('Message received: ' + action, data);
+      emit('event', { event: 'iframe:message', payload: data });
+
+      // Handle specific actions
+      if (action === 'counter') {
+        if (Funky.Toast) {
+          Funky.Toast.info('Counter: ' + data.value + ' (' + data.direction + ')', 'Iframe Counter');
+        }
+      }
+    },
+
+    init: function(state) {
+      var self = this;
+      var props = getProps();
+
+      self._logs = [];
+      self._messageCount = 0;
+
+      var iframeSrc = props.src || '/playground/pages/iframe-content';
+      var mode = props.mode || 'embed';
+      var width = props.width || '100%';
+      var height = props.height || '400px';
+
+      self._log('Initializing Iframe demo');
+      self._updateState('src', iframeSrc);
+      self._updateState('mode', mode);
+      self._updateState('width', width);
+      self._updateState('height', height);
+      self._updateState('status', 'loading');
+
+      // Create embed mode iframe
+      if (Funky.Iframe) {
+        self._embedInstance = Funky.Iframe.create('#iframe-embed-container', {
+          src: iframeSrc,
+          mode: 'embed',
+          width: width,
+          height: height,
+          sandbox: self._updateSandboxValue(),
+          onLoad: function(iframe) {
+            self._updateState('status', 'loaded');
+            self._log('Embed iframe loaded');
+            emit('event', { event: 'iframe:loaded', payload: { mode: 'embed' } });
+          },
+          onMessage: function(iframe, data, event) {
+            self._handleMessage(iframe, data, event);
+          },
+          onResize: function(iframe, width, height) {
+            self._log('Iframe resized', { width: width, height: height });
+            emit('event', { event: 'iframe:resized', payload: { width: width, height: height } });
+          },
+          onError: function(iframe, error) {
+            self._updateState('status', 'error');
+            self._log('Iframe error', error);
+            emit('event', { event: 'iframe:error', payload: { error: error } });
+          }
+        });
+
+        // Create modal mode trigger
+        self._modalInstance = Funky.Iframe.create('#modal-trigger-container', {
+          src: iframeSrc,
+          mode: 'modal',
+          modalTitle: 'Iframe Modal Demo',
+          modalSize: 'lg',
+          triggerText: 'Open in Modal',
+          triggerIcon: 'fas fa-window-restore',
+          triggerClass: 'btn btn-primary',
+          onLoad: function(iframe) {
+            self._log('Modal iframe loaded');
+            emit('event', { event: 'iframe:modal-loaded', payload: {} });
+          },
+          onMessage: function(iframe, data, event) {
+            self._handleMessage(iframe, data, event);
+          },
+          onClose: function(iframe) {
+            self._log('Modal closed');
+            emit('event', { event: 'iframe:modal-closed', payload: {} });
+          }
+        });
+
+        // Create detached mode trigger
+        self._detachedInstance = Funky.Iframe.create('#detached-trigger-container', {
+          src: iframeSrc,
+          mode: 'detached',
+          triggerText: 'Open in New Window',
+          triggerIcon: 'fas fa-external-link-alt',
+          triggerClass: 'btn btn-secondary',
+          windowWidth: 800,
+          windowHeight: 600,
+          overlayMessage: "Content opened in a new window. Don't see it?",
+          onMessage: function(iframe, data, event) {
+            self._handleMessage(iframe, data, event);
+          },
+          onClose: function(iframe) {
+            self._log('Detached window closed');
+            emit('event', { event: 'iframe:window-closed', payload: {} });
+          }
+        });
+
+        self._log('Iframe instances created', { modes: ['embed', 'modal', 'detached'] });
+        emit('event', { event: 'iframe:init', payload: { src: iframeSrc } });
+      } else {
+        self._log('ERROR: Funky.Iframe not available');
+        self._updateState('status', 'error');
+      }
+
+      // Reload button
+      document.getElementById('btn-reload').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.reload();
+          self._updateState('status', 'reloading');
+          self._log('Iframe reloaded');
+          emit('event', { event: 'iframe:reload', payload: {} });
+        }
+      };
+
+      // Resize buttons
+      document.getElementById('btn-resize-small').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.resize(null, 300);
+          self._log('Resized to 300px');
+        }
+      };
+
+      document.getElementById('btn-resize-medium').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.resize(null, 400);
+          self._log('Resized to 400px');
+        }
+      };
+
+      document.getElementById('btn-resize-large').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.resize(null, 600);
+          self._log('Resized to 600px');
+        }
+      };
+
+      // Send message button
+      document.getElementById('btn-send-message').onclick = function() {
+        var input = document.getElementById('message-input');
+        var message = input.value.trim() || 'Hello from parent!';
+        if (self._embedInstance) {
+          self._embedInstance.postMessage({ action: 'message', text: message });
+          self._log('Sent message: ' + message);
+          emit('event', { event: 'iframe:message-sent', payload: { text: message } });
+        }
+        input.value = '';
+      };
+
+      // Enter key to send
+      document.getElementById('message-input').onkeypress = function(e) {
+        if (e.key === 'Enter') {
+          document.getElementById('btn-send-message').click();
+        }
+      };
+
+      // Quick action buttons
+      document.getElementById('btn-send-greeting').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.postMessage({ action: 'greeting', text: 'Hello from the playground!' });
+          self._log('Sent greeting');
+        }
+      };
+
+      document.getElementById('btn-send-resize').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.postMessage({ action: 'requestHeight' });
+          self._log('Requested iframe height');
+        }
+      };
+
+      document.getElementById('btn-send-data').onclick = function() {
+        if (self._embedInstance) {
+          self._embedInstance.postMessage({
+            action: 'data',
+            payload: {
+              timestamp: Date.now(),
+              random: Math.floor(Math.random() * 1000),
+              items: ['apple', 'banana', 'cherry']
+            }
+          });
+          self._log('Sent data payload');
+        }
+      };
+
+      // Sandbox checkboxes
+      document.querySelectorAll('[id^="sandbox-"]').forEach(function(checkbox) {
+        if (checkbox.type === 'checkbox') {
+          checkbox.onchange = function() {
+            var sandboxValue = self._updateSandboxValue();
+            self._log('Sandbox updated', { value: sandboxValue });
+            emit('event', { event: 'iframe:sandbox-change', payload: { sandbox: sandboxValue } });
+
+            // Note: Changing sandbox requires recreating the iframe
+            if (Funky.Toast) {
+              Funky.Toast.info('Sandbox changed. Reload the iframe to apply.', 'Sandbox Updated');
+            }
+          };
+        }
+      });
+
+      // Clear log
+      document.getElementById('btn-clear-log').onclick = function() {
+        self._logs = [];
+        document.getElementById('iframe-log').textContent = 'Log cleared';
+      };
+
+      // Listen for props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        Funky.PubSub.on('playground:propsChanged', function(newProps) {
+          self._log('Props changed', newProps);
+
+          // Update state display
+          if (newProps.src !== undefined) {
+            self._updateState('src', newProps.src);
+          }
+          if (newProps.mode !== undefined) {
+            self._updateState('mode', newProps.mode);
+          }
+          if (newProps.width !== undefined) {
+            self._updateState('width', newProps.width);
+          }
+          if (newProps.height !== undefined) {
+            self._updateState('height', newProps.height);
+          }
+
+          // Apply size changes to embed iframe
+          if (self._embedInstance) {
+            if (newProps.width !== undefined || newProps.height !== undefined) {
+              self._embedInstance.resize(newProps.width, newProps.height);
+            }
+            if (newProps.src !== undefined) {
+              self._embedInstance.setSrc(newProps.src);
+            }
+          }
+        });
+      }
+
+      self._updateSandboxValue();
+      self._log('Demo ready');
+    },
+
+    destroy: function() {
+      // Destroy iframe instances
+      if (this._embedInstance && this._embedInstance.destroy) {
+        this._embedInstance.destroy();
+      }
+      if (this._modalInstance && this._modalInstance.destroy) {
+        this._modalInstance.destroy();
+      }
+      if (this._detachedInstance && this._detachedInstance.destroy) {
+        this._detachedInstance.destroy();
+      }
+
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && Funky.PubSub.off) {
+        Funky.PubSub.off('playground:propsChanged');
+      }
+
+      this._logs = [];
+      this._messageCount = 0;
+      this._embedInstance = null;
+      this._modalInstance = null;
+      this._detachedInstance = null;
+
+      return {};
+    }
+  });
+})();
+</script>

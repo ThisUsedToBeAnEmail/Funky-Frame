@@ -1,0 +1,625 @@
+<div data-page="component-validator" class="component-demo">
+  <h2>Validator</h2>
+  <p class="text-muted">Generic validation engine with 24 built-in validators and custom validator support.</p>
+
+  <!-- Quick Test Section -->
+  <section class="demo-section" aria-labelledby="quick-test-heading">
+    <h3 id="quick-test-heading">Quick Test</h3>
+    <p class="text-muted small">Test any validator instantly with real-time feedback.</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__quick-test">
+        <div class="validator-demo__quick-inputs">
+          <div class="validator-demo__input-group">
+            <label for="quick-value" class="form-label">Value to Test</label>
+            <input type="text" id="quick-value" class="form-control" placeholder="Enter a value...">
+          </div>
+          <div class="validator-demo__input-group">
+            <label for="quick-validator" class="form-label">Validator</label>
+            <select id="quick-validator" class="form-select">
+              <option value="required">required</option>
+              <option value="email" selected>email</option>
+              <option value="url">url</option>
+              <option value="numeric">numeric</option>
+              <option value="integer">integer</option>
+              <option value="alpha">alpha</option>
+              <option value="alphanumeric">alphanumeric</option>
+              <option value="phone">phone</option>
+              <option value="creditCard">creditCard</option>
+            </select>
+          </div>
+        </div>
+        <div id="quick-result" class="validator-demo__result" aria-live="polite">
+          <span class="validator-demo__result-text">Enter a value to test</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registered Validators -->
+  <section class="demo-section" aria-labelledby="validators-heading">
+    <h3 id="validators-heading">Built-in Validators</h3>
+    <p class="text-muted small">All 24 registered validators with descriptions.</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__toggle-row">
+        <button type="button" id="toggle-validators" class="btn btn-sm btn-secondary">
+          <i class="fas fa-list" aria-hidden="true"></i> Show All Validators
+        </button>
+        <span id="validator-count" class="badge bg-primary">0 validators</span>
+      </div>
+      <div id="validators-list" class="validator-demo__validators-list" hidden>
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Multi-Rule Validation -->
+  <section class="demo-section" aria-labelledby="multi-rule-heading">
+    <h3 id="multi-rule-heading">Multi-Rule Validation</h3>
+    <p class="text-muted small">Validate a value against multiple rules at once.</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__multi-form">
+        <div class="validator-demo__input-group">
+          <label for="multi-value" class="form-label">Value</label>
+          <input type="text" id="multi-value" class="form-control" placeholder="Enter value to validate">
+        </div>
+
+        <div class="validator-demo__rules-grid">
+          <label class="validator-demo__rule-checkbox">
+            <input type="checkbox" id="rule-required"> required
+          </label>
+          <label class="validator-demo__rule-checkbox">
+            <input type="checkbox" id="rule-email"> email
+          </label>
+          <label class="validator-demo__rule-checkbox">
+            <input type="checkbox" id="rule-minLength"> minLength
+            <input type="number" id="rule-minLength-val" class="form-control form-control-sm" value="3" min="1">
+          </label>
+          <label class="validator-demo__rule-checkbox">
+            <input type="checkbox" id="rule-maxLength"> maxLength
+            <input type="number" id="rule-maxLength-val" class="form-control form-control-sm" value="50" min="1">
+          </label>
+          <label class="validator-demo__rule-checkbox">
+            <input type="checkbox" id="rule-numeric"> numeric
+          </label>
+          <label class="validator-demo__rule-checkbox">
+            <input type="checkbox" id="rule-pattern"> pattern
+            <input type="text" id="rule-pattern-val" class="form-control form-control-sm" value="^[A-Z]" placeholder="regex">
+          </label>
+        </div>
+
+        <button type="button" id="multi-validate" class="btn btn-primary">
+          <i class="fas fa-check-circle" aria-hidden="true"></i> Validate
+        </button>
+
+        <div id="multi-result" class="validator-demo__multi-result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Async Validation -->
+  <section class="demo-section" aria-labelledby="async-heading">
+    <h3 id="async-heading">Async Validation</h3>
+    <p class="text-muted small">Simulated async validation (e.g., check username availability).</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__async-form">
+        <div class="validator-demo__input-group">
+          <label for="async-username" class="form-label">Username</label>
+          <input type="text" id="async-username" class="form-control" placeholder="Try: admin, root, test">
+        </div>
+        <button type="button" id="async-check" class="btn btn-primary">
+          <i class="fas fa-spinner fa-spin validator-demo__spinner" aria-hidden="true"></i>
+          <span class="validator-demo__btn-text">Check Availability</span>
+        </button>
+        <div id="async-result" class="validator-demo__result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Custom Validator -->
+  <section class="demo-section" aria-labelledby="custom-heading">
+    <h3 id="custom-heading">Custom Validator</h3>
+    <p class="text-muted small">Register and test your own validator function.</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__custom-form">
+        <div class="validator-demo__input-group">
+          <label for="custom-name" class="form-label">Validator Name</label>
+          <input type="text" id="custom-name" class="form-control" value="startsWithHello">
+        </div>
+        <div class="validator-demo__input-group">
+          <label for="custom-code" class="form-label">Validator Function</label>
+          <textarea id="custom-code" class="form-control validator-demo__code-textarea" rows="6">function(value, options, context) {
+  // Return true for valid, or error message string
+  if (!value || !value.startsWith('Hello')) {
+    return 'Value must start with "Hello"';
+  }
+  return true;
+}</textarea>
+        </div>
+        <div class="validator-demo__button-row">
+          <button type="button" id="custom-register" class="btn btn-success">
+            <i class="fas fa-plus" aria-hidden="true"></i> Register
+          </button>
+          <button type="button" id="custom-unregister" class="btn btn-danger" disabled>
+            <i class="fas fa-trash" aria-hidden="true"></i> Unregister
+          </button>
+        </div>
+        <div class="validator-demo__input-group">
+          <label for="custom-test-value" class="form-label">Test Value</label>
+          <input type="text" id="custom-test-value" class="form-control" placeholder="Enter value to test custom validator">
+        </div>
+        <button type="button" id="custom-test" class="btn btn-primary" disabled>
+          <i class="fas fa-flask" aria-hidden="true"></i> Test Custom Validator
+        </button>
+        <div id="custom-result" class="validator-demo__result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Field Definition -->
+  <section class="demo-section" aria-labelledby="field-def-heading">
+    <h3 id="field-def-heading">Extract Rules from Field Definition</h3>
+    <p class="text-muted small">Extract validation rules from a field configuration object.</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__field-form">
+        <div class="validator-demo__input-group">
+          <label for="field-def" class="form-label">Field Definition (JSON)</label>
+          <textarea id="field-def" class="form-control validator-demo__code-textarea" rows="8">{
+  "name": "email",
+  "label": "Email Address",
+  "type": "email",
+  "required": true,
+  "minLength": 5,
+  "maxLength": 100
+}</textarea>
+        </div>
+        <button type="button" id="extract-rules" class="btn btn-primary">
+          <i class="fas fa-filter" aria-hidden="true"></i> Extract Rules
+        </button>
+        <div id="extracted-rules" class="validator-demo__extracted-rules"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <p class="text-muted small">Real-time log of all validation operations.</p>
+
+    <div class="demo-area">
+      <div class="validator-demo__log-header">
+        <span id="log-count" class="badge bg-secondary">0 events</span>
+        <button type="button" id="clear-log" class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-trash" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+      <div id="event-log" class="validator-demo__log" aria-live="polite" aria-label="Validation event log">
+        <div class="validator-demo__log-empty">No events yet. Try validating a value above.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var customValidatorName = null;
+  var eventLog = [];
+
+  // Validator descriptions for the list
+  var VALIDATOR_DESCRIPTIONS = {
+    required: 'Value must not be empty',
+    minLength: 'String must be at least N characters',
+    maxLength: 'String must be no more than N characters',
+    min: 'Number must be at least N',
+    max: 'Number must be no more than N',
+    pattern: 'Value must match regex pattern',
+    email: 'Must be valid email format',
+    url: 'Must be valid URL format',
+    numeric: 'Must be a number',
+    integer: 'Must be a whole number',
+    alpha: 'Must contain only letters',
+    alphanumeric: 'Must contain only letters and numbers',
+    dateRange: 'Date must be within min/max range',
+    fileSize: 'File must be within size limit',
+    fileType: 'File must be of allowed type',
+    matches: 'Must match another field value',
+    different: 'Must differ from another field value',
+    custom: 'Custom validation function',
+    'in': 'Must be one of allowed values',
+    notIn: 'Must not be a disallowed value',
+    between: 'Number must be between min and max',
+    length: 'Must be exactly N characters',
+    phone: 'Must be valid phone number format',
+    creditCard: 'Must be valid credit card (Luhn algorithm)'
+  };
+
+  function logEvent(operation, details) {
+    var entry = {
+      timestamp: new Date().toLocaleTimeString(),
+      operation: operation,
+      details: details
+    };
+    eventLog.unshift(entry);
+    if (eventLog.length > 50) eventLog.pop();
+    renderLog();
+    emit('event', { event: 'validator:' + operation, payload: details });
+  }
+
+  function renderLog() {
+    var container = document.getElementById('event-log');
+    var countBadge = document.getElementById('log-count');
+
+    if (!container) return;
+
+    if (eventLog.length === 0) {
+      container.innerHTML = '<div class="validator-demo__log-empty">No events yet. Try validating a value above.</div>';
+      countBadge.textContent = '0 events';
+      return;
+    }
+
+    countBadge.textContent = eventLog.length + ' event' + (eventLog.length !== 1 ? 's' : '');
+
+    var html = eventLog.map(function(entry) {
+      var isValid = entry.details && entry.details.valid;
+      var statusClass = entry.details && entry.details.valid !== undefined
+        ? (isValid ? 'validator-demo__log-entry--valid' : 'validator-demo__log-entry--invalid')
+        : '';
+
+      return '<div class="validator-demo__log-entry ' + statusClass + '">' +
+        '<span class="validator-demo__log-time">' + entry.timestamp + '</span>' +
+        '<span class="validator-demo__log-op">' + entry.operation + '</span>' +
+        '<span class="validator-demo__log-details">' + JSON.stringify(entry.details) + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function updateQuickResult(result) {
+    var container = document.getElementById('quick-result');
+    if (!container) return;
+
+    if (result.valid) {
+      container.className = 'validator-demo__result validator-demo__result--valid';
+      container.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> <span class="validator-demo__result-text">Valid</span>';
+    } else {
+      container.className = 'validator-demo__result validator-demo__result--invalid';
+      container.innerHTML = '<i class="fas fa-times-circle" aria-hidden="true"></i> <span class="validator-demo__result-text">' +
+        (result.errors[0] || 'Invalid') + '</span>';
+    }
+  }
+
+  function quickTest() {
+    var quickValueInput = document.getElementById('quick-value');
+    var quickValidatorSelect = document.getElementById('quick-validator');
+
+    if (!quickValueInput || !quickValidatorSelect) return;
+
+    var value = quickValueInput.value;
+    var validatorName = quickValidatorSelect.value;
+
+    // If no value, show neutral state
+    if (!value && validatorName !== 'required') {
+      var container = document.getElementById('quick-result');
+      container.className = 'validator-demo__result';
+      container.innerHTML = '<span class="validator-demo__result-text">Enter a value to test</span>';
+      return;
+    }
+
+    var rules = {};
+    rules[validatorName] = true;
+
+    var result = Funky.Validator.validate(value, rules, {
+      field: { label: 'Test value', name: 'test' }
+    });
+
+    updateQuickResult(result);
+    logEvent('quickTest', { value: value, validator: validatorName, valid: result.valid, errors: result.errors });
+  }
+
+  function renderValidatorsList() {
+    var container = document.getElementById('validators-list');
+    var countBadge = document.getElementById('validator-count');
+    if (!container) return;
+
+    var validators = Funky.Validator.list();
+    countBadge.textContent = validators.length + ' validators';
+
+    var html = validators.map(function(name) {
+      var desc = VALIDATOR_DESCRIPTIONS[name] || 'Custom validator';
+      return '<div class="validator-demo__validator-item">' +
+        '<code class="validator-demo__validator-name">' + name + '</code>' +
+        '<span class="validator-demo__validator-desc">' + desc + '</span>' +
+        '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function multiValidate() {
+    var value = document.getElementById('multi-value').value;
+    var rules = {};
+
+    if (document.getElementById('rule-required').checked) rules.required = true;
+    if (document.getElementById('rule-email').checked) rules.email = true;
+    if (document.getElementById('rule-numeric').checked) rules.numeric = true;
+    if (document.getElementById('rule-minLength').checked) {
+      rules.minLength = parseInt(document.getElementById('rule-minLength-val').value, 10) || 3;
+    }
+    if (document.getElementById('rule-maxLength').checked) {
+      rules.maxLength = parseInt(document.getElementById('rule-maxLength-val').value, 10) || 50;
+    }
+    if (document.getElementById('rule-pattern').checked) {
+      rules.pattern = document.getElementById('rule-pattern-val').value || '^[A-Z]';
+    }
+
+    var result = Funky.Validator.validate(value, rules, {
+      field: { label: 'Value', name: 'value' }
+    });
+
+    var container = document.getElementById('multi-result');
+    if (result.valid) {
+      container.className = 'validator-demo__multi-result validator-demo__multi-result--valid';
+      container.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> All validations passed';
+    } else {
+      container.className = 'validator-demo__multi-result validator-demo__multi-result--invalid';
+      container.innerHTML = '<i class="fas fa-times-circle" aria-hidden="true"></i> ' +
+        '<ul class="validator-demo__error-list">' +
+        result.errors.map(function(e) { return '<li>' + e + '</li>'; }).join('') +
+        '</ul>';
+    }
+
+    logEvent('multiValidate', { value: value, rules: Object.keys(rules), valid: result.valid, errorCount: result.errors.length });
+  }
+
+  function asyncCheck() {
+    var username = document.getElementById('async-username').value;
+    var btn = document.getElementById('async-check');
+    var resultContainer = document.getElementById('async-result');
+
+    if (!username) {
+      resultContainer.className = 'validator-demo__result validator-demo__result--invalid';
+      resultContainer.innerHTML = '<i class="fas fa-exclamation-circle" aria-hidden="true"></i> Please enter a username';
+      return;
+    }
+
+    // Show loading state
+    btn.classList.add('validator-demo__loading');
+    btn.disabled = true;
+    resultContainer.className = 'validator-demo__result';
+    resultContainer.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Checking...';
+
+    // Simulate async validation
+    var taken = ['admin', 'root', 'user', 'test', 'administrator'];
+
+    setTimeout(function() {
+      btn.classList.remove('validator-demo__loading');
+      btn.disabled = false;
+
+      var isAvailable = taken.indexOf(username.toLowerCase()) === -1;
+
+      if (isAvailable) {
+        resultContainer.className = 'validator-demo__result validator-demo__result--valid';
+        resultContainer.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> Username "' + username + '" is available!';
+      } else {
+        resultContainer.className = 'validator-demo__result validator-demo__result--invalid';
+        resultContainer.innerHTML = '<i class="fas fa-times-circle" aria-hidden="true"></i> Username "' + username + '" is already taken';
+      }
+
+      logEvent('asyncValidate', { username: username, available: isAvailable });
+    }, 1000);
+  }
+
+  function registerCustomValidator() {
+    var name = document.getElementById('custom-name').value.trim();
+    var code = document.getElementById('custom-code').value;
+
+    if (!name) {
+      alert('Please enter a validator name');
+      return;
+    }
+
+    try {
+      // Parse the function
+      var fn = eval('(' + code + ')');
+      if (typeof fn !== 'function') {
+        throw new Error('Code must be a function');
+      }
+
+      Funky.Validator.register(name, fn);
+      customValidatorName = name;
+
+      document.getElementById('custom-register').disabled = true;
+      document.getElementById('custom-unregister').disabled = false;
+      document.getElementById('custom-test').disabled = false;
+
+      renderValidatorsList();
+      logEvent('register', { name: name });
+    } catch (e) {
+      alert('Error parsing validator: ' + e.message);
+    }
+  }
+
+  function unregisterCustomValidator() {
+    if (customValidatorName) {
+      Funky.Validator.unregister(customValidatorName);
+      logEvent('unregister', { name: customValidatorName });
+      customValidatorName = null;
+
+      document.getElementById('custom-register').disabled = false;
+      document.getElementById('custom-unregister').disabled = true;
+      document.getElementById('custom-test').disabled = true;
+      document.getElementById('custom-result').innerHTML = '';
+      document.getElementById('custom-result').className = 'validator-demo__result';
+
+      renderValidatorsList();
+    }
+  }
+
+  function testCustomValidator() {
+    if (!customValidatorName) return;
+
+    var value = document.getElementById('custom-test-value').value;
+    var rules = {};
+    rules[customValidatorName] = true;
+
+    var result = Funky.Validator.validate(value, rules, {
+      field: { label: 'Test value', name: 'test' }
+    });
+
+    var container = document.getElementById('custom-result');
+    if (result.valid) {
+      container.className = 'validator-demo__result validator-demo__result--valid';
+      container.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> Valid';
+    } else {
+      container.className = 'validator-demo__result validator-demo__result--invalid';
+      container.innerHTML = '<i class="fas fa-times-circle" aria-hidden="true"></i> ' + (result.errors[0] || 'Invalid');
+    }
+
+    logEvent('testCustom', { validator: customValidatorName, value: value, valid: result.valid });
+  }
+
+  function extractRules() {
+    var jsonText = document.getElementById('field-def').value;
+    var container = document.getElementById('extracted-rules');
+
+    try {
+      var fieldDef = JSON.parse(jsonText);
+      var rules = Funky.Validator.extractRules(fieldDef);
+
+      container.className = 'validator-demo__extracted-rules validator-demo__extracted-rules--success';
+      container.innerHTML = '<strong>Extracted Rules:</strong><pre>' + JSON.stringify(rules, null, 2) + '</pre>';
+
+      logEvent('extractRules', { fieldDef: fieldDef, rules: rules });
+    } catch (e) {
+      container.className = 'validator-demo__extracted-rules validator-demo__extracted-rules--error';
+      container.innerHTML = '<i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Invalid JSON: ' + e.message;
+    }
+  }
+
+  function syncFromProps(newProps) {
+    var props = newProps || getProps();
+    var quickValueInput = document.getElementById('quick-value');
+    var quickValidatorSelect = document.getElementById('quick-validator');
+
+    // Sync test value
+    if (props.testValue !== undefined && quickValueInput) {
+      quickValueInput.value = props.testValue;
+    }
+
+    // Sync selected validator - use ComboBox API if enhanced
+    if (props.selectedValidator && quickValidatorSelect) {
+      // Check if ComboBox has enhanced this select
+      var comboboxInstance = Funky.ComboBox && Funky.ComboBox.getInstance(quickValidatorSelect);
+      if (comboboxInstance) {
+        comboboxInstance.setValue(props.selectedValidator, { silent: true });
+      } else {
+        quickValidatorSelect.value = props.selectedValidator;
+      }
+    }
+  }
+
+  function bindEvents() {
+    // Quick test - real-time validation
+    var quickValue = document.getElementById('quick-value');
+    var quickValidator = document.getElementById('quick-validator');
+    if (quickValue) quickValue.addEventListener('input', quickTest);
+    if (quickValidator) quickValidator.addEventListener('change', quickTest);
+
+    // Toggle validators list
+    var toggleBtn = document.getElementById('toggle-validators');
+    var validatorsList = document.getElementById('validators-list');
+    if (toggleBtn && validatorsList) {
+      toggleBtn.addEventListener('click', function() {
+        var isHidden = validatorsList.hidden;
+        validatorsList.hidden = !isHidden;
+        toggleBtn.innerHTML = isHidden
+          ? '<i class="fas fa-eye-slash" aria-hidden="true"></i> Hide Validators'
+          : '<i class="fas fa-list" aria-hidden="true"></i> Show All Validators';
+      });
+    }
+
+    // Multi-rule validation
+    var multiValidateBtn = document.getElementById('multi-validate');
+    if (multiValidateBtn) multiValidateBtn.addEventListener('click', multiValidate);
+
+    // Async validation
+    var asyncCheckBtn = document.getElementById('async-check');
+    if (asyncCheckBtn) asyncCheckBtn.addEventListener('click', asyncCheck);
+
+    // Custom validator
+    var customRegisterBtn = document.getElementById('custom-register');
+    var customUnregisterBtn = document.getElementById('custom-unregister');
+    var customTestBtn = document.getElementById('custom-test');
+    if (customRegisterBtn) customRegisterBtn.addEventListener('click', registerCustomValidator);
+    if (customUnregisterBtn) customUnregisterBtn.addEventListener('click', unregisterCustomValidator);
+    if (customTestBtn) customTestBtn.addEventListener('click', testCustomValidator);
+
+    // Field definition
+    var extractRulesBtn = document.getElementById('extract-rules');
+    if (extractRulesBtn) extractRulesBtn.addEventListener('click', extractRules);
+
+    // Clear log
+    var clearLogBtn = document.getElementById('clear-log');
+    if (clearLogBtn) {
+      clearLogBtn.addEventListener('click', function() {
+        eventLog = [];
+        renderLog();
+      });
+    }
+  }
+
+  Funky.Pages.register('component-validator', {
+    init: function(state) {
+      renderValidatorsList();
+      syncFromProps();
+      bindEvents();
+
+      // Run initial quick test if there's a value
+      var quickValue = document.getElementById('quick-value');
+      if (quickValue && quickValue.value) {
+        quickTest();
+      }
+
+      // Subscribe to props changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          syncFromProps(newProps);
+          quickTest();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'validator:init', payload: { validatorCount: Funky.Validator.list().length } });
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Unregister custom validator if registered
+      if (customValidatorName) {
+        Funky.Validator.unregister(customValidatorName);
+        customValidatorName = null;
+      }
+
+      eventLog = [];
+
+      return {};
+    }
+  });
+})();
+</script>

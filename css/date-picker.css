@@ -1,0 +1,1218 @@
+/**
+ * Funky.DatePicker Styles
+ * Comprehensive styling for date picker with theme integration
+ * Supports single date, date range, and time picker modes
+ *
+ * WCAG AA Compliant:
+ * - Focus indicators with 3px outlines
+ * - Minimum 4.5:1 contrast for text
+ * - Touch targets 44px minimum
+ * - High contrast mode support
+ * - Reduced motion support
+ *
+ * @version 1.0.0
+ */
+
+/* ============================================================================
+   CSS VARIABLES (inherits from theme, with fallbacks)
+   ============================================================================ */
+.funky-datepicker {
+    /* Colors - all from theme */
+    --dp-bg: var(--pro-bg-secondary, var(--bs-body-bg, #fff));
+    --dp-border: var(--pro-border-color, var(--bs-border-color, #dee2e6));
+    --dp-text: var(--pro-text-primary, var(--bs-body-color, #212529));
+    --dp-text-muted: var(--pro-text-secondary, var(--bs-secondary-color, #6c757d));
+    --dp-text-inverse: var(--pro-text-inverse, #fff);
+    --dp-header-bg: var(--pro-bg-tertiary, var(--bs-tertiary-bg, #f8f9fa));
+    --dp-today-bg: var(--pro-accent-primary-muted, rgba(13, 110, 253, 0.15));
+    --dp-today-border: var(--pro-accent-primary, var(--bs-primary, #0d6efd));
+    --dp-weekend-bg: var(--pro-bg-tertiary, var(--bs-tertiary-bg, #f8f9fa));
+    --dp-other-month: var(--pro-text-muted, var(--bs-secondary-color, #adb5bd));
+    --dp-selected-bg: var(--pro-accent-primary, var(--bs-primary, #0d6efd));
+    --dp-selected-text: var(--pro-text-inverse, #fff);
+    --dp-range-bg: var(--pro-accent-primary-muted, rgba(13, 110, 253, 0.15));
+    --dp-hover-bg: var(--pro-bg-tertiary, var(--bs-tertiary-bg, #e9ecef));
+    --dp-disabled-text: var(--pro-text-muted, var(--bs-secondary-color, #adb5bd));
+    /* Focus ring - inherit from global focus system */
+    --dp-focus-ring-color: var(--focus-ring-color, var(--pro-accent-primary, #0d6efd));
+    --dp-focus-ring-width: var(--focus-ring-width, 2px);
+    --dp-focus-ring-offset: var(--focus-ring-offset, 2px);
+    --dp-focus-ring-style: var(--focus-ring-style, solid);
+    --dp-focus-ring-shadow: var(--focus-ring-shadow, none);
+    --dp-primary: var(--pro-accent-primary, var(--bs-primary, #0d6efd));
+    --dp-primary-hover: var(--pro-accent-primary-hover, #0b5ed7);
+
+    /* Shadows */
+    --dp-shadow: var(--pro-shadow-lg, var(--bs-box-shadow, 0 0.5rem 1rem rgba(0, 0, 0, 0.15)));
+
+    /* Sizing - core variables */
+    --dp-day-size: 36px;
+    --dp-cell-padding: 2px;
+    --dp-padding: 0.75rem;
+    --dp-gap: 0.25rem;
+
+    /* Calculated panel width: (7 days × day size) + (7 × cell padding × 2) + (padding × 2) */
+    --dp-panel-width: calc(
+        (7 * var(--dp-day-size)) +
+        (14 * var(--dp-cell-padding)) +
+        (2 * var(--dp-padding))
+    );
+
+    /* Border radius */
+    --dp-radius: var(--pro-border-radius, var(--bs-border-radius, 0.375rem));
+    --dp-radius-sm: var(--pro-border-radius-sm, var(--bs-border-radius-sm, 0.25rem));
+
+    /* Typography */
+    --dp-font-family: var(--pro-font-family, var(--bs-body-font-family, system-ui, -apple-system, sans-serif));
+    --dp-font-size: var(--pro-font-size-base, var(--bs-body-font-size, 0.875rem));
+    --dp-font-size-sm: var(--pro-font-size-sm, 0.75rem);
+}
+
+/* ============================================================================
+   BASE CONTAINER
+   ============================================================================ */
+.funky-datepicker {
+    position: absolute;
+    z-index: 1050;
+    display: none;
+    background: var(--dp-bg);
+    border: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius);
+    box-shadow: var(--dp-shadow);
+    font-family: var(--dp-font-family);
+    font-size: var(--dp-font-size);
+    color: var(--dp-text);
+    /* CSS-only sizing - width based on content with viewport constraints */
+    width: var(--dp-panel-width);
+    max-width: calc(100vw - 1rem);
+}
+
+.funky-datepicker--open {
+    display: block;
+}
+
+/* Range mode open state uses flex for layout */
+.funky-datepicker--range.funky-datepicker--open {
+    display: flex;
+    flex-direction: column;
+}
+
+.funky-datepicker--inline {
+    position: relative;
+    display: block;
+    z-index: auto;
+    box-shadow: none;
+}
+
+/* Range mode - smaller day size for two panels */
+.funky-datepicker--range {
+    --dp-day-size: 32px;
+    --dp-padding: 0.5rem;
+}
+
+/* Range mode horizontal layout (default) - needs full width for two panels */
+.funky-datepicker--range.funky-datepicker--horizontal {
+    width: calc((var(--dp-panel-width) * 2) + 1px);
+}
+
+/* Size modifiers - Small */
+.funky-datepicker--small {
+    --dp-day-size: 28px;
+    --dp-padding: 0.5rem;
+    --dp-gap: 0.1875rem;
+    --dp-font-size: 0.8125rem;
+    --dp-font-size-sm: 0.6875rem;
+}
+
+.funky-datepicker--small.funky-datepicker--range {
+    --dp-day-size: 26px;
+}
+
+.funky-datepicker--small .funky-datepicker-header {
+    padding: 0.5rem var(--dp-padding);
+}
+
+.funky-datepicker--small .funky-datepicker-prev,
+.funky-datepicker--small .funky-datepicker-next {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.funky-datepicker--small .funky-datepicker-footer {
+    padding: 0.5rem var(--dp-padding);
+}
+
+.funky-datepicker--small .funky-datepicker-footer .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: var(--dp-font-size-sm);
+}
+
+/* Size modifiers - Compact */
+.funky-datepicker--compact {
+    --dp-day-size: 24px;
+    --dp-padding: 0.375rem;
+    --dp-gap: 0.125rem;
+    --dp-font-size: 0.75rem;
+    --dp-font-size-sm: 0.625rem;
+}
+
+.funky-datepicker--compact.funky-datepicker--range {
+    --dp-day-size: 22px;
+    /* Compact range mode: single panel width (no presets sidebar) */
+    width: var(--dp-panel-width);
+    flex-direction: column;
+}
+
+.funky-datepicker--compact .funky-datepicker-header {
+    padding: 0.375rem var(--dp-padding);
+    gap: 0.25rem;
+}
+
+.funky-datepicker--compact .funky-datepicker-prev,
+.funky-datepicker--compact .funky-datepicker-next {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.funky-datepicker--compact .funky-datepicker-title {
+    font-size: var(--dp-font-size);
+}
+
+.funky-datepicker--compact .funky-datepicker-month,
+.funky-datepicker--compact .funky-datepicker-year {
+    padding: 0.125rem 0.25rem;
+    font-size: var(--dp-font-size-sm);
+}
+
+.funky-datepicker--compact .funky-datepicker-footer {
+    padding: 0.375rem var(--dp-padding);
+}
+
+.funky-datepicker--compact .funky-datepicker-footer .btn {
+    padding: 0.125rem 0.375rem;
+    font-size: var(--dp-font-size-sm);
+}
+
+/* Compact mode: responsive actions */
+.funky-datepicker--compact .funky-datepicker-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.5rem var(--dp-padding);
+}
+
+.funky-datepicker--compact .funky-datepicker-range-display {
+    justify-content: center;
+    font-size: var(--dp-font-size-sm);
+}
+
+.funky-datepicker--compact .funky-datepicker-buttons {
+    justify-content: stretch;
+}
+
+.funky-datepicker--compact .funky-datepicker-clear,
+.funky-datepicker--compact .funky-datepicker-cancel,
+.funky-datepicker--compact .funky-datepicker-apply {
+    flex: 1;
+    padding: 0.375rem 0.5rem;
+    font-size: var(--dp-font-size-sm);
+}
+
+/* Compact range: show only left panel (single calendar with nav) */
+.funky-datepicker--compact .funky-datepicker-calendars {
+    flex-direction: column;
+}
+
+.funky-datepicker--compact .funky-datepicker-panel--left {
+    border-right: none;
+    border-bottom: none;
+}
+
+.funky-datepicker--compact .funky-datepicker-panel--right {
+    display: none;
+}
+
+/* ============================================================================
+   LAYOUT MODES (for range mode)
+   ============================================================================ */
+
+/* Horizontal layout (default) - side-by-side calendars */
+.funky-datepicker--horizontal {
+    flex-direction: column;
+}
+
+.funky-datepicker--horizontal .funky-datepicker-calendars {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Presets dropdown (quick selection) */
+.funky-datepicker-presets-dropdown {
+    padding: 0.5rem var(--dp-padding);
+    border-bottom: 1px solid var(--dp-border);
+    background: var(--dp-header-bg);
+    border-radius: var(--dp-radius) var(--dp-radius) 0 0;
+}
+
+.funky-datepicker-presets-select {
+    width: 100%;
+    padding: 0.375rem 0.5rem;
+    font-size: var(--dp-font-size);
+    border: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius-sm);
+    background: var(--dp-bg);
+    color: var(--dp-text);
+    cursor: pointer;
+}
+
+.funky-datepicker-presets-select:focus-visible {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+    border-color: var(--dp-focus-ring-color);
+}
+
+/* Time picker mode */
+.funky-datepicker--time {
+    /* Add a bit more space for time controls */
+}
+
+/* ============================================================================
+   HEADER
+   ============================================================================ */
+.funky-datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem var(--dp-padding);
+    background: var(--dp-header-bg);
+    border-bottom: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius) var(--dp-radius) 0 0;
+    gap: 0.5rem;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Range mode headers - no rounded corners */
+.funky-datepicker--range .funky-datepicker-header {
+    border-radius: 0;
+}
+
+/* First panel header gets top-right radius only (presets has top-left) */
+.funky-datepicker--range .funky-datepicker-panel--left .funky-datepicker-header {
+    border-radius: 0;
+}
+
+/* Right panel header gets top-right radius */
+.funky-datepicker--range .funky-datepicker-panel--right .funky-datepicker-header {
+    border-radius: 0 var(--dp-radius) 0 0;
+}
+
+/* When no presets, left panel gets top-left radius */
+.funky-datepicker--range.funky-datepicker--no-presets .funky-datepicker-panel--left .funky-datepicker-header {
+    border-radius: var(--dp-radius) 0 0 0;
+}
+
+.funky-datepicker-prev,
+.funky-datepicker-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius-sm);
+    color: var(--dp-text);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.funky-datepicker-prev:hover,
+.funky-datepicker-next:hover {
+    background: var(--dp-hover-bg);
+}
+
+.funky-datepicker-prev:focus-visible,
+.funky-datepicker-next:focus-visible {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+}
+
+.funky-datepicker-prev:disabled,
+.funky-datepicker-next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.funky-datepicker-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 0;
+}
+
+.funky-datepicker-month,
+.funky-datepicker-year {
+    padding: 0.25rem 0.5rem;
+    font-size: var(--dp-font-size);
+    font-weight: 500;
+    background: var(--dp-bg);
+    border: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius-sm);
+    color: var(--dp-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.funky-datepicker-month:hover,
+.funky-datepicker-year:hover {
+    border-color: var(--dp-primary);
+}
+
+.funky-datepicker-month:focus-visible,
+.funky-datepicker-year:focus-visible {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+}
+
+/* ============================================================================
+   COMBOBOX OVERRIDES (Month/Year Dropdowns)
+   ============================================================================ */
+
+/* ComboBox wrapper in datepicker header - fixed widths to prevent ellipsis */
+.funky-datepicker-title .combobox {
+    flex-shrink: 0;
+}
+
+/* Month ComboBox - width for longest month name (September ~95px) */
+.funky-datepicker-title .combobox:first-of-type {
+    width: 105px;
+}
+
+/* Year ComboBox - width for 4-digit year */
+.funky-datepicker-title .combobox:last-of-type {
+    width: 70px;
+}
+
+/* Prevent text truncation in combobox values */
+.funky-datepicker-title .combobox__value {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+/* Trigger styling to match datepicker theme */
+.funky-datepicker-title .combobox__trigger {
+    min-height: 28px;
+    padding: 0.125rem 0.5rem;
+    font-size: var(--dp-font-size);
+    font-weight: 500;
+    background: var(--dp-bg);
+    border: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius-sm);
+    color: var(--dp-text);
+}
+
+.funky-datepicker-title .combobox__trigger:hover {
+    border-color: var(--dp-primary);
+}
+
+.funky-datepicker-title .combobox__trigger:focus-visible,
+.funky-datepicker-title .combobox.is-open .combobox__trigger {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+    border-color: var(--dp-focus-ring-color);
+}
+
+/* Value display */
+.funky-datepicker-title .combobox__value {
+    font-weight: 500;
+}
+
+/* Dropdown positioning and sizing */
+.funky-datepicker-title .combobox__dropdown {
+    min-width: 100px;
+    max-height: 200px;
+    width: auto;
+}
+
+/* Year dropdown - ensure full year text is visible */
+.funky-datepicker-title .combobox:last-of-type .combobox__dropdown {
+    max-height: 250px;
+    min-width: 80px;
+}
+
+/* Prevent ellipsis in dropdown items - target the text element which has the ellipsis */
+.funky-datepicker .combobox__item-text,
+.funky-datepicker-title .combobox__item-text {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+/* Size variants - Small */
+.funky-datepicker--small .funky-datepicker-title .combobox__trigger {
+    min-height: 24px;
+    padding: 0.0625rem 0.375rem;
+    font-size: var(--dp-font-size-sm);
+}
+
+/* Small: slightly smaller fixed widths */
+.funky-datepicker--small .funky-datepicker-title .combobox:first-of-type {
+    width: 90px;
+}
+
+.funky-datepicker--small .funky-datepicker-title .combobox:last-of-type {
+    width: 60px;
+}
+
+/* Size variants - Compact */
+.funky-datepicker--compact .funky-datepicker-title .combobox__trigger {
+    min-height: 22px;
+    padding: 0.0625rem 0.25rem;
+    font-size: var(--dp-font-size-sm);
+}
+
+/* Compact: smaller fixed widths */
+.funky-datepicker--compact .funky-datepicker-title .combobox:first-of-type {
+    width: 80px;
+}
+
+.funky-datepicker--compact .funky-datepicker-title .combobox:last-of-type {
+    width: 55px;
+}
+
+/* Ensure dropdown stays above picker content */
+.funky-datepicker .combobox__dropdown {
+    z-index: 1001;
+}
+
+.funky-datepicker-spacer {
+    width: 2rem;
+    flex-shrink: 0;
+}
+
+/* ============================================================================
+   CALENDAR GRID
+   ============================================================================ */
+.funky-datepicker-calendar {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.funky-datepicker-calendar thead {
+    display: table-header-group;
+}
+
+.funky-datepicker-calendar tbody {
+    display: table-row-group;
+}
+
+.funky-datepicker-calendar tr {
+    display: table-row;
+}
+
+.funky-datepicker-calendar th {
+    display: table-cell;
+    padding: 0.5rem 0;
+    font-weight: 500;
+    font-size: var(--dp-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--dp-text-muted);
+    text-align: center;
+}
+
+.funky-datepicker-calendar td {
+    display: table-cell;
+    padding: var(--dp-cell-padding);
+    text-align: center;
+}
+
+/* Add horizontal spacing on first and last columns */
+.funky-datepicker-calendar td:first-child {
+    padding-left: var(--dp-padding);
+}
+
+.funky-datepicker-calendar td:last-child {
+    padding-right: var(--dp-padding);
+}
+
+.funky-datepicker-calendar th:first-child {
+    padding-left: var(--dp-padding);
+}
+
+.funky-datepicker-calendar th:last-child {
+    padding-right: var(--dp-padding);
+}
+
+/* Week number column */
+.funky-datepicker-weeknum {
+    width: 2rem;
+    font-size: var(--dp-font-size-sm);
+    color: var(--dp-text-muted);
+    text-align: center;
+}
+
+/* ============================================================================
+   DAY CELLS
+   ============================================================================ */
+.funky-datepicker-day {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--dp-day-size);
+    height: var(--dp-day-size);
+    border-radius: var(--dp-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-weight: 400;
+    position: relative;
+}
+
+.funky-datepicker-day:hover:not(.funky-datepicker-day--disabled) {
+    background: var(--dp-hover-bg);
+}
+
+.funky-datepicker-day:focus-visible {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+    z-index: 1;
+}
+
+/* Today */
+.funky-datepicker-day--today {
+    font-weight: 600;
+    border: 2px solid var(--dp-today-border);
+}
+
+/* Selected */
+.funky-datepicker-day--selected {
+    background: var(--dp-selected-bg) !important;
+    color: var(--dp-selected-text) !important;
+    font-weight: 600;
+}
+
+/* Disabled */
+.funky-datepicker-day--disabled {
+    color: var(--dp-disabled-text);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Other month days */
+.funky-datepicker-day--other-month {
+    color: var(--dp-other-month);
+}
+
+/* Weekend - subtle background for Saturday/Sunday */
+.funky-datepicker-day--weekend {
+    background: var(--dp-weekend-bg);
+}
+
+/* Focused (keyboard) */
+.funky-datepicker-day--focused {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+}
+
+/* ============================================================================
+   RANGE MODE - DAY STATES
+   ============================================================================ */
+.funky-datepicker-day--in-range {
+    background: var(--dp-range-bg);
+    border-radius: 0;
+}
+
+.funky-datepicker-day--range-start {
+    background: var(--dp-selected-bg) !important;
+    color: var(--dp-selected-text) !important;
+    border-radius: var(--dp-radius-sm) 0 0 var(--dp-radius-sm);
+}
+
+.funky-datepicker-day--range-end {
+    background: var(--dp-selected-bg) !important;
+    color: var(--dp-selected-text) !important;
+    border-radius: 0 var(--dp-radius-sm) var(--dp-radius-sm) 0;
+}
+
+/* When start and end are same day */
+.funky-datepicker-day--range-start.funky-datepicker-day--range-end {
+    border-radius: var(--dp-radius-sm);
+}
+
+/* Hover preview for range */
+.funky-datepicker-day--hover-range {
+    background: var(--dp-range-bg);
+    border-radius: 0;
+}
+
+/* ============================================================================
+   RANGE MODE LAYOUT
+   ============================================================================ */
+.funky-datepicker-calendars {
+    display: flex;
+    flex-direction: row;
+}
+
+.funky-datepicker-panel {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Border between panels */
+.funky-datepicker-panel--left {
+    border-right: 1px solid var(--dp-border);
+}
+
+.funky-datepicker-panel--right {
+    /* Right panel has no left border - border is on left panel's right side */
+}
+
+/* ============================================================================
+   TIME PICKER
+   ============================================================================ */
+.funky-datepicker-time {
+    padding: 0.75rem var(--dp-padding);
+    border-top: 1px solid var(--dp-border);
+    background: var(--dp-header-bg);
+}
+
+.funky-datepicker-time-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.funky-datepicker-time-label {
+    font-size: var(--dp-font-size-sm);
+    font-weight: 500;
+    color: var(--dp-text-muted);
+    margin-right: 0.5rem;
+}
+
+.funky-datepicker-hour,
+.funky-datepicker-minute,
+.funky-datepicker-second,
+.funky-datepicker-period {
+    padding: 0.375rem 0.5rem;
+    font-size: var(--dp-font-size);
+    background: var(--dp-bg);
+    border: 1px solid var(--dp-border);
+    border-radius: var(--dp-radius-sm);
+    color: var(--dp-text);
+    cursor: pointer;
+    min-width: 3.5rem;
+    transition: border-color 0.15s ease;
+}
+
+.funky-datepicker-hour:hover,
+.funky-datepicker-minute:hover,
+.funky-datepicker-second:hover,
+.funky-datepicker-period:hover {
+    border-color: var(--dp-primary);
+}
+
+.funky-datepicker-hour:focus-visible,
+.funky-datepicker-minute:focus-visible,
+.funky-datepicker-second:focus-visible,
+.funky-datepicker-period:focus-visible {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+}
+
+.funky-datepicker-time-separator {
+    font-weight: 600;
+    color: var(--dp-text-muted);
+}
+
+/* Range mode time pickers */
+.funky-datepicker-times {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem var(--dp-padding);
+    border-top: 1px solid var(--dp-border);
+    background: var(--dp-header-bg);
+}
+
+.funky-datepicker-time--start,
+.funky-datepicker-time--end {
+    flex: 1;
+    padding: 0;
+    border-top: none;
+    background: transparent;
+}
+
+/* ============================================================================
+   ACTIONS
+   ============================================================================ */
+.funky-datepicker-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem var(--dp-padding);
+    border-top: 1px solid var(--dp-border);
+    background: var(--dp-header-bg);
+    border-radius: 0 0 var(--dp-radius) var(--dp-radius);
+}
+
+/* Range mode actions with display */
+.funky-datepicker--range .funky-datepicker-actions {
+    justify-content: space-between;
+}
+
+.funky-datepicker-range-display {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: var(--dp-font-size-sm);
+    color: var(--dp-text-muted);
+}
+
+.funky-datepicker-start,
+.funky-datepicker-end {
+    font-weight: 500;
+    color: var(--dp-text);
+}
+
+.funky-datepicker-separator {
+    color: var(--dp-text-muted);
+}
+
+.funky-datepicker-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.funky-datepicker-clear,
+.funky-datepicker-cancel,
+.funky-datepicker-apply {
+    padding: 0.375rem 0.75rem;
+    font-size: var(--dp-font-size);
+    font-weight: 500;
+    border-radius: var(--dp-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.funky-datepicker-clear,
+.funky-datepicker-cancel {
+    background: transparent;
+    border: 1px solid var(--dp-border);
+    color: var(--dp-text);
+}
+
+.funky-datepicker-clear:hover,
+.funky-datepicker-cancel:hover {
+    background: var(--dp-hover-bg);
+}
+
+.funky-datepicker-apply {
+    background: var(--dp-primary);
+    border: 1px solid var(--dp-primary);
+    color: var(--dp-text-inverse);
+}
+
+.funky-datepicker-apply:hover {
+    background: var(--dp-primary-hover);
+    border-color: var(--dp-primary-hover);
+}
+
+.funky-datepicker-clear:focus-visible,
+.funky-datepicker-cancel:focus-visible,
+.funky-datepicker-apply:focus-visible {
+    outline: var(--dp-focus-ring-width) var(--dp-focus-ring-style) var(--dp-focus-ring-color);
+    outline-offset: var(--dp-focus-ring-offset);
+    box-shadow: var(--dp-focus-ring-shadow);
+}
+
+/* ============================================================================
+   HIGH CONTRAST MODE
+   ============================================================================ */
+@media (prefers-contrast: high) {
+    .funky-datepicker {
+        --dp-border: currentColor;
+    }
+
+    .funky-datepicker-day--today {
+        border-width: 3px;
+    }
+
+    .funky-datepicker-day--selected,
+    .funky-datepicker-day--range-start,
+    .funky-datepicker-day--range-end {
+        border: 2px solid currentColor;
+    }
+
+    .funky-datepicker-day:focus-visible,
+    .funky-datepicker-presets-select:focus-visible,
+    .funky-datepicker-clear:focus-visible,
+    .funky-datepicker-cancel:focus-visible,
+    .funky-datepicker-apply:focus-visible {
+        --dp-focus-ring-width: 3px;
+        --dp-focus-ring-color: Highlight;
+    }
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .funky-datepicker *,
+    .funky-datepicker *::before,
+    .funky-datepicker *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================================================
+   DARK MODE (Bootstrap)
+   ============================================================================ */
+[data-bs-theme="dark"] .funky-datepicker {
+    --dp-bg: var(--bs-body-bg, #212529);
+    --dp-border: var(--bs-border-color, #495057);
+    --dp-text: var(--bs-body-color, #dee2e6);
+    --dp-text-muted: var(--bs-secondary-color, #adb5bd);
+    --dp-header-bg: var(--bs-tertiary-bg, #2b3035);
+    --dp-hover-bg: var(--bs-tertiary-bg, #343a40);
+    --dp-weekend-bg: var(--bs-tertiary-bg, #2b3035);
+    --dp-other-month: #6c757d;
+    --dp-disabled-text: #6c757d;
+    --dp-today-bg: rgba(13, 110, 253, 0.2);
+    --dp-range-bg: rgba(13, 110, 253, 0.2);
+    --dp-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+}
+
+/* Theme class dark mode */
+.theme-dark .funky-datepicker,
+[data-theme="dark"] .funky-datepicker {
+    --dp-bg: var(--pro-bg-secondary, #1a1a2e);
+    --dp-border: var(--pro-border-color, #374151);
+    --dp-text: var(--pro-text-primary, #e5e7eb);
+    --dp-text-muted: var(--pro-text-secondary, #9ca3af);
+    --dp-header-bg: var(--pro-bg-tertiary, #111827);
+    --dp-hover-bg: var(--pro-bg-tertiary, #374151);
+    --dp-weekend-bg: var(--pro-bg-tertiary, #111827);
+    --dp-other-month: #6e7681;
+    --dp-today-bg: rgba(47, 129, 247, 0.15);
+    --dp-today-border: #2f81f7;
+    --dp-range-bg: rgba(47, 129, 247, 0.15);
+    --dp-selected-bg: #2f81f7;
+    --dp-primary: #2f81f7;
+    --dp-primary-hover: #388bfd;
+    --dp-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+}
+
+/* System preference dark mode */
+@media (prefers-color-scheme: dark) {
+    .funky-datepicker:not([data-bs-theme="light"]):not(.theme-light) {
+        --dp-bg: #212529;
+        --dp-border: #495057;
+        --dp-text: #dee2e6;
+        --dp-text-muted: #adb5bd;
+        --dp-header-bg: #2b3035;
+        --dp-hover-bg: #343a40;
+        --dp-weekend-bg: #2b3035;
+        --dp-other-month: #6c757d;
+        --dp-today-bg: rgba(13, 110, 253, 0.2);
+        --dp-range-bg: rgba(13, 110, 253, 0.2);
+        --dp-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width: 767.98px) {
+    .funky-datepicker {
+        min-width: 280px;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .funky-datepicker--range {
+        min-width: 280px;
+        flex-direction: column;
+    }
+
+    .funky-datepicker-calendars {
+        flex-direction: column;
+    }
+
+    .funky-datepicker-panel--left {
+        border-right: none;
+        border-bottom: 1px solid var(--dp-border);
+    }
+
+    .funky-datepicker-times {
+        flex-direction: column;
+    }
+
+    .funky-datepicker--range .funky-datepicker-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .funky-datepicker-range-display {
+        justify-content: center;
+    }
+
+    .funky-datepicker-buttons {
+        justify-content: stretch;
+    }
+
+    .funky-datepicker-clear,
+    .funky-datepicker-cancel,
+    .funky-datepicker-apply {
+        flex: 1;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .funky-datepicker {
+        --dp-day-size: 36px;
+        --dp-padding: 0.75rem;
+    }
+
+    .funky-datepicker-header {
+        padding: 0.5rem var(--dp-padding);
+    }
+
+    .funky-datepicker-prev,
+    .funky-datepicker-next {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+
+    .funky-datepicker-month,
+    .funky-datepicker-year {
+        padding: 0.25rem 0.375rem;
+        font-size: var(--dp-font-size-sm);
+    }
+
+    .funky-datepicker-calendar th {
+        font-size: 0.65rem;
+    }
+
+    .funky-datepicker-time-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .funky-datepicker-actions {
+        padding: 0.5rem var(--dp-padding);
+    }
+
+    .funky-datepicker-clear,
+    .funky-datepicker-cancel,
+    .funky-datepicker-apply {
+        padding: 0.375rem 0.5rem;
+        font-size: var(--dp-font-size-sm);
+    }
+}
+
+/* ============================================================================
+   RTL SUPPORT
+   ============================================================================ */
+[dir="rtl"] .funky-datepicker {
+    text-align: right;
+}
+
+[dir="rtl"] .funky-datepicker-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .funky-datepicker-title {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .funky-datepicker-prev i,
+[dir="rtl"] .funky-datepicker-next i {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .funky-datepicker-panel--left {
+    border-right: none;
+    border-left: 1px solid var(--dp-border);
+}
+
+[dir="rtl"] .funky-datepicker-day--range-start {
+    border-radius: 0 var(--dp-radius-sm) var(--dp-radius-sm) 0;
+}
+
+[dir="rtl"] .funky-datepicker-day--range-end {
+    border-radius: var(--dp-radius-sm) 0 0 var(--dp-radius-sm);
+}
+
+[dir="rtl"] .funky-datepicker-actions {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .funky-datepicker-time-group {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .funky-datepicker-time-label {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================ */
+.funky-datepicker {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.funky-datepicker--open {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.funky-datepicker--inline {
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+
+/* Drops up animation */
+.funky-datepicker--drops-up {
+    transform: translateY(10px);
+}
+
+.funky-datepicker--drops-up.funky-datepicker--open {
+    transform: translateY(0);
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+@media print {
+    .funky-datepicker {
+        display: none !important;
+    }
+}
+
+/* ============================================================================
+   EVEN FUNKIER THEME
+   ============================================================================ */
+[data-theme="even-funkier"] .funky-datepicker {
+    --dp-bg: #0a0a1a;
+    --dp-border: #2a2a4a;
+    --dp-text: #e0e0ff;
+    --dp-text-muted: #8888aa;
+    --dp-text-inverse: #0a0a1a;
+    --dp-header-bg: #1a1a3a;
+    --dp-today-bg: rgba(255, 0, 128, 0.15);
+    --dp-today-border: #ff0080;
+    --dp-weekend-bg: rgba(0, 255, 255, 0.05);
+    --dp-selected-bg: #ff0080;
+    --dp-range-bg: rgba(255, 0, 128, 0.2);
+    --dp-hover-bg: rgba(0, 255, 255, 0.1);
+    --dp-primary: #ff0080;
+    --dp-primary-hover: #ff33a0;
+    border-color: #ff0080;
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
+}
+
+[data-theme="even-funkier"] .funky-datepicker-day--selected,
+[data-theme="even-funkier"] .funky-datepicker-day--range-start,
+[data-theme="even-funkier"] .funky-datepicker-day--range-end {
+    box-shadow: 0 0 10px var(--dp-selected-bg);
+}
+
+[data-theme="even-funkier"] .funky-datepicker-day--today {
+    box-shadow: 0 0 10px var(--dp-today-border);
+}
+
+[data-theme="even-funkier"] .funky-datepicker-apply {
+    box-shadow: 0 0 10px var(--dp-primary);
+}
+
+/* ============================================================================
+   PLAYGROUND DEMO STYLES
+   ============================================================================ */
+
+.datepicker-demo__state-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--pro-bg-secondary, #f6f8fa);
+    border-radius: var(--pro-radius-md, 0.5rem);
+}
+
+.datepicker-demo__state-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.datepicker-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.datepicker-demo__controls--values {
+    margin-bottom: 0;
+}
+
+.datepicker-demo__selection {
+    background: var(--pro-bg-secondary, #f6f8fa);
+    padding: 1rem;
+    border-radius: var(--pro-radius-md, 0.5rem);
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.datepicker-demo__log {
+    background: var(--pro-bg-secondary, #f6f8fa);
+    padding: 1rem;
+    border-radius: var(--pro-radius-md, 0.5rem);
+    max-height: 200px;
+    overflow: auto;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .datepicker-demo__state-display {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .datepicker-demo__controls {
+        flex-direction: column;
+    }
+
+    .datepicker-demo__controls .btn {
+        width: 100%;
+    }
+}
+

@@ -1,0 +1,774 @@
+<div data-page="component-api" class="component-demo">
+  <h2>API</h2>
+  <p class="text-muted">Centralized API layer with CSRF, deduplication, retry logic, and event-driven architecture</p>
+
+  <!-- Response Output Section -->
+  <section class="demo-section" aria-labelledby="response-heading">
+    <h3 id="response-heading">Response</h3>
+    <p class="text-muted small">API response output</p>
+    <div class="demo-area">
+      <pre id="response-output" class="api-demo__output" aria-live="polite"><span class="text-muted">// Click a button below to see the response</span></pre>
+    </div>
+  </section>
+
+  <!-- HTTP Methods Section -->
+  <section class="demo-section" aria-labelledby="methods-heading">
+    <h3 id="methods-heading">HTTP Methods</h3>
+    <p class="text-muted small">Test different HTTP request methods with mock responses</p>
+    <div class="demo-area">
+      <div class="api-demo__button-grid" role="group" aria-label="HTTP method buttons">
+        <button type="button" class="btn btn-sm btn-info" id="btn-get">
+          <i class="fa-solid fa-download" aria-hidden="true"></i> GET
+        </button>
+        <button type="button" class="btn btn-sm btn-success" id="btn-post">
+          <i class="fa-solid fa-upload" aria-hidden="true"></i> POST
+        </button>
+        <button type="button" class="btn btn-sm btn-warning" id="btn-put">
+          <i class="fa-solid fa-pen" aria-hidden="true"></i> PUT
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" id="btn-patch">
+          <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> PATCH
+        </button>
+        <button type="button" class="btn btn-sm btn-danger" id="btn-delete">
+          <i class="fa-solid fa-trash" aria-hidden="true"></i> DELETE
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Error Handling Section -->
+  <section class="demo-section" aria-labelledby="errors-heading">
+    <h3 id="errors-heading">Error Handling</h3>
+    <p class="text-muted small">See how different HTTP status codes are handled</p>
+    <div class="demo-area">
+      <div class="api-demo__button-grid" role="group" aria-label="Error simulation buttons">
+        <button type="button" class="btn btn-sm btn-outline-warning" id="btn-error-401">
+          <i class="fa-solid fa-lock" aria-hidden="true"></i> 401 Unauthorized
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-warning" id="btn-error-403">
+          <i class="fa-solid fa-ban" aria-hidden="true"></i> 403 Forbidden
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-error-404">
+          <i class="fa-solid fa-question" aria-hidden="true"></i> 404 Not Found
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-error-422">
+          <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i> 422 Validation
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-error-500">
+          <i class="fa-solid fa-server" aria-hidden="true"></i> 500 Server Error
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deduplication Section -->
+  <section class="demo-section" aria-labelledby="dedupe-heading">
+    <h3 id="dedupe-heading">Request Deduplication</h3>
+    <p class="text-muted small">Identical GET requests are deduplicated - only one actual request is made</p>
+    <div class="demo-area">
+      <div class="api-demo__dedupe">
+        <button type="button" class="btn btn-sm btn-primary" id="btn-dedupe">
+          <i class="fa-solid fa-clone" aria-hidden="true"></i> Fire 5 Identical GETs
+        </button>
+        <div class="api-demo__dedupe-info">
+          <span class="badge bg-secondary">Requests fired: <span id="dedupe-fired">0</span></span>
+          <span class="badge bg-info">Actual requests: <span id="dedupe-actual">0</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeout & Cancel Section -->
+  <section class="demo-section" aria-labelledby="timeout-heading">
+    <h3 id="timeout-heading">Timeout & Cancellation</h3>
+    <p class="text-muted small">Test slow requests and cancellation</p>
+    <div class="demo-area">
+      <div class="api-demo__timeout">
+        <button type="button" class="btn btn-sm btn-primary" id="btn-slow">
+          <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Slow Request (3s)
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-cancel" disabled>
+          <i class="fa-solid fa-stop" aria-hidden="true"></i> Cancel
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-cancel-all">
+          <i class="fa-solid fa-stop-circle" aria-hidden="true"></i> Cancel All
+        </button>
+        <div class="api-demo__status" id="timeout-status">
+          <span class="badge bg-secondary">Ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Retry Logic Section -->
+  <section class="demo-section" aria-labelledby="retry-heading">
+    <h3 id="retry-heading">Retry Logic (503)</h3>
+    <p class="text-muted small">503 errors trigger automatic retry with exponential backoff</p>
+    <div class="demo-area">
+      <div class="api-demo__retry">
+        <button type="button" class="btn btn-sm btn-warning" id="btn-503">
+          <i class="fa-solid fa-redo" aria-hidden="true"></i> Trigger 503 (Retries)
+        </button>
+        <button type="button" class="btn btn-sm btn-success" id="btn-503-recover">
+          <i class="fa-solid fa-check" aria-hidden="true"></i> 503 then Recover
+        </button>
+        <div class="api-demo__retry-info">
+          <span class="badge bg-secondary">Attempts: <span id="retry-count">0</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Entity Factory Section -->
+  <section class="demo-section" aria-labelledby="entity-heading">
+    <h3 id="entity-heading">Entity Factory</h3>
+    <p class="text-muted small">Create CRUD APIs for entities with Api.entity()</p>
+    <div class="demo-area">
+      <div class="api-demo__button-grid" role="group" aria-label="Entity CRUD buttons">
+        <button type="button" class="btn btn-sm btn-outline-info" id="btn-entity-list">
+          <i class="fa-solid fa-list" aria-hidden="true"></i> list()
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-info" id="btn-entity-get">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i> get(1)
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-success" id="btn-entity-create">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i> create()
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-warning" id="btn-entity-update">
+          <i class="fa-solid fa-pen" aria-hidden="true"></i> update(1)
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-entity-delete">
+          <i class="fa-solid fa-trash" aria-hidden="true"></i> delete(1)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log Section -->
+  <section class="demo-section" aria-labelledby="events-heading">
+    <h3 id="events-heading">API Events</h3>
+    <p class="text-muted small">PubSub events emitted by the API layer</p>
+    <div class="demo-area">
+      <div class="api-demo__events-header">
+        <span class="badge bg-info">Events: <span id="event-count">0</span></span>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-clear-events">
+          <i class="fa-solid fa-eraser" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+      <pre id="events-log" class="api-demo__events-log" aria-live="polite"><span class="text-muted">// API events will appear here</span></pre>
+    </div>
+  </section>
+
+  <!-- Config Section -->
+  <section class="demo-section" aria-labelledby="config-heading">
+    <h3 id="config-heading">Configuration</h3>
+    <div class="demo-area">
+      <div class="api-demo__config">
+        <div class="api-demo__config-item">
+          <span class="api-demo__config-label">Timeout:</span>
+          <code id="config-timeout">30000ms</code>
+        </div>
+        <div class="api-demo__config-item">
+          <span class="api-demo__config-label">Max Retries:</span>
+          <code id="config-retries">3</code>
+        </div>
+        <div class="api-demo__config-item">
+          <span class="api-demo__config-label">Retry Delay:</span>
+          <code id="config-delay">1000ms</code>
+        </div>
+        <div class="api-demo__config-item">
+          <span class="api-demo__config-label">Deduplicate GET:</span>
+          <code id="config-dedupe">true</code>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var propsChangedHandler = null;
+  var apiEventHandlers = [];
+  var eventCount = 0;
+  var events = [];
+  var originalFetch = null;
+  var currentAbortController = null;
+  var dedupeActualCount = 0;
+  var retryAttempts = 0;
+  var mock503ShouldRecover = false;
+  var mock503AttemptCount = 0;
+
+  // Mock entity API
+  var mockProducts = null;
+
+  // ============================================
+  // MOCK API SETUP
+  // ============================================
+
+  var mockResponses = {
+    '/api/mock/users': {
+      data: [
+        { id: 1, name: 'John Doe', email: 'john@example.com' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+        { id: 3, name: 'Bob Wilson', email: 'bob@example.com' }
+      ],
+      total: 3
+    },
+    '/api/mock/users/1': { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin' },
+    '/api/mock/products': {
+      data: [
+        { id: 1, name: 'Widget A', price: 29.99 },
+        { id: 2, name: 'Widget B', price: 49.99 }
+      ]
+    },
+    '/api/mock/products/1': { id: 1, name: 'Widget A', price: 29.99, stock: 100 }
+  };
+
+  function setupMockFetch() {
+    originalFetch = window.fetch;
+
+    window.fetch = function(url, options) {
+      options = options || {};
+      var method = (options.method || 'GET').toUpperCase();
+
+      // Track for deduplication demo
+      if (url === '/api/mock/dedupe') {
+        dedupeActualCount++;
+        updateDedupeDisplay();
+      }
+
+      // Check if this is a mock URL
+      if (url.startsWith('/api/mock/')) {
+        return new Promise(function(resolve, reject) {
+          // Handle abort signal
+          if (options.signal) {
+            options.signal.addEventListener('abort', function() {
+              reject(new DOMException('Aborted', 'AbortError'));
+            });
+          }
+
+          // Determine response based on URL
+          var delay = 100;
+          var status = 200;
+          var body = { success: true };
+
+          // Slow request
+          if (url === '/api/mock/slow') {
+            delay = 3000;
+            body = { data: 'Slow response completed', duration: '3s' };
+          }
+
+          // Error responses
+          else if (url === '/api/mock/error/401') {
+            status = 401;
+            body = { error: 'Unauthorized', message: 'Session expired' };
+          }
+          else if (url === '/api/mock/error/403') {
+            status = 403;
+            body = { error: 'Forbidden', message: 'Permission denied' };
+          }
+          else if (url === '/api/mock/error/404') {
+            status = 404;
+            body = { error: 'Not Found', message: 'Resource not found' };
+          }
+          else if (url === '/api/mock/error/422') {
+            status = 422;
+            body = { error: 'Validation Error', errors: { email: 'Invalid email format', name: 'Name is required' } };
+          }
+          else if (url === '/api/mock/error/500') {
+            status = 500;
+            body = { error: 'Internal Server Error', message: 'Something went wrong' };
+          }
+          else if (url === '/api/mock/error/503') {
+            mock503AttemptCount++;
+            updateRetryDisplay();
+
+            // If recovery mode and this is attempt 3+, succeed
+            if (mock503ShouldRecover && mock503AttemptCount >= 3) {
+              status = 200;
+              body = { success: true, message: 'Recovered after retries', attempts: mock503AttemptCount };
+            } else {
+              status = 503;
+              body = { error: 'Service Unavailable', message: 'Server is overloaded' };
+            }
+          }
+
+          // Deduplication test
+          else if (url === '/api/mock/dedupe') {
+            body = { data: 'Deduplicated response', timestamp: Date.now() };
+          }
+
+          // Entity endpoints
+          else if (url.startsWith('/api/mock/products')) {
+            if (url === '/api/mock/products' && method === 'GET') {
+              body = mockResponses['/api/mock/products'];
+            } else if (url === '/api/mock/products' && method === 'POST') {
+              var newProduct = { id: 3, name: 'New Product', price: 99.99 };
+              body = newProduct;
+            } else if (url.match(/\/api\/mock\/products\/\d+/)) {
+              var productId = url.split('/').pop();
+              if (method === 'GET') {
+                body = { id: parseInt(productId), name: 'Widget ' + productId, price: 29.99, stock: 100 };
+              } else if (method === 'PUT' || method === 'PATCH') {
+                body = { id: parseInt(productId), name: 'Updated Product', price: 39.99, updated: true };
+              } else if (method === 'DELETE') {
+                body = { success: true, deleted: parseInt(productId) };
+              }
+            }
+          }
+
+          // Standard mock responses
+          else if (mockResponses[url]) {
+            body = mockResponses[url];
+          }
+
+          // Generic method responses
+          else if (method === 'POST') {
+            body = { success: true, message: 'Created', id: Math.floor(Math.random() * 1000) };
+          }
+          else if (method === 'PUT') {
+            body = { success: true, message: 'Updated' };
+          }
+          else if (method === 'PATCH') {
+            body = { success: true, message: 'Patched' };
+          }
+          else if (method === 'DELETE') {
+            body = { success: true, message: 'Deleted' };
+          }
+
+          setTimeout(function() {
+            resolve({
+              ok: status >= 200 && status < 300,
+              status: status,
+              headers: new Headers({ 'content-type': 'application/json' }),
+              text: function() { return Promise.resolve(JSON.stringify(body)); },
+              json: function() { return Promise.resolve(body); }
+            });
+          }, delay);
+        });
+      }
+
+      // Pass through to original fetch for non-mock URLs
+      return originalFetch.apply(this, arguments);
+    };
+  }
+
+  function restoreFetch() {
+    if (originalFetch) {
+      window.fetch = originalFetch;
+      originalFetch = null;
+    }
+  }
+
+  // ============================================
+  // UI HELPERS
+  // ============================================
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showResponse(data, status, isError) {
+    var output = document.getElementById('response-output');
+    if (!output) return;
+
+    var statusClass = isError ? 'text-danger' : 'text-success';
+    var statusText = status ? '[' + status + '] ' : '';
+    var content = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+
+    output.innerHTML = '<span class="' + statusClass + '">' + statusText + '</span>' + escapeHtml(content);
+  }
+
+  function logEvent(eventName, payload) {
+    eventCount++;
+    events.unshift({
+      time: new Date().toLocaleTimeString(),
+      event: eventName,
+      payload: payload
+    });
+
+    if (events.length > 20) events.pop();
+
+    updateEventsDisplay();
+  }
+
+  function updateEventsDisplay() {
+    var countEl = document.getElementById('event-count');
+    var logEl = document.getElementById('events-log');
+
+    if (countEl) countEl.textContent = eventCount;
+
+    if (logEl) {
+      if (events.length === 0) {
+        logEl.innerHTML = '<span class="text-muted">// API events will appear here</span>';
+      } else {
+        var html = events.map(function(e) {
+          var payloadStr = e.payload ? ' ' + JSON.stringify(e.payload) : '';
+          return '<span class="text-muted">' + e.time + '</span> <span class="text-info">' + escapeHtml(e.event) + '</span>' + escapeHtml(payloadStr);
+        }).join('\n');
+        logEl.innerHTML = html;
+      }
+    }
+  }
+
+  function updateDedupeDisplay() {
+    var actualEl = document.getElementById('dedupe-actual');
+    if (actualEl) actualEl.textContent = dedupeActualCount;
+  }
+
+  function updateRetryDisplay() {
+    var countEl = document.getElementById('retry-count');
+    if (countEl) countEl.textContent = mock503AttemptCount;
+  }
+
+  function setTimeoutStatus(text, type) {
+    var statusEl = document.getElementById('timeout-status');
+    if (!statusEl) return;
+
+    var bgClass = 'bg-secondary';
+    if (type === 'pending') bgClass = 'bg-warning';
+    else if (type === 'success') bgClass = 'bg-success';
+    else if (type === 'error') bgClass = 'bg-danger';
+
+    statusEl.innerHTML = '<span class="badge ' + bgClass + '">' + escapeHtml(text) + '</span>';
+  }
+
+  function updateConfig() {
+    if (Funky.Api && Funky.Api.config) {
+      var config = Funky.Api.config;
+      var el = function(id) { return document.getElementById(id); };
+
+      if (el('config-timeout')) el('config-timeout').textContent = config.timeout + 'ms';
+      if (el('config-retries')) el('config-retries').textContent = config.maxRetries;
+      if (el('config-delay')) el('config-delay').textContent = config.retryDelay + 'ms';
+      if (el('config-dedupe')) el('config-dedupe').textContent = String(config.deduplicateGET);
+    }
+  }
+
+  // ============================================
+  // EVENT BINDINGS
+  // ============================================
+
+  function bindEvents() {
+    // HTTP Methods
+    document.getElementById('btn-get').addEventListener('click', function() {
+      Funky.Api.get('/api/mock/users').then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:get', payload: { url: '/api/mock/users' } });
+      }).catch(function(err) {
+        showResponse(err, err.status, true);
+      });
+    });
+
+    document.getElementById('btn-post').addEventListener('click', function() {
+      Funky.Api.post('/api/mock/users', { name: 'New User', email: 'new@example.com' }).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:post', payload: { url: '/api/mock/users' } });
+      }).catch(function(err) {
+        showResponse(err, err.status, true);
+      });
+    });
+
+    document.getElementById('btn-put').addEventListener('click', function() {
+      Funky.Api.put('/api/mock/users/1', { name: 'Updated User' }).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:put', payload: { url: '/api/mock/users/1' } });
+      }).catch(function(err) {
+        showResponse(err, err.status, true);
+      });
+    });
+
+    document.getElementById('btn-patch').addEventListener('click', function() {
+      Funky.Api.patch('/api/mock/users/1', { email: 'patched@example.com' }).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:patch', payload: { url: '/api/mock/users/1' } });
+      }).catch(function(err) {
+        showResponse(err, err.status, true);
+      });
+    });
+
+    document.getElementById('btn-delete').addEventListener('click', function() {
+      Funky.Api.delete('/api/mock/users/1').then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:delete', payload: { url: '/api/mock/users/1' } });
+      }).catch(function(err) {
+        showResponse(err, err.status, true);
+      });
+    });
+
+    // Error handling
+    document.getElementById('btn-error-401').addEventListener('click', function() {
+      Funky.Api.get('/api/mock/error/401').catch(function(err) {
+        showResponse(err, 401, true);
+      });
+    });
+
+    document.getElementById('btn-error-403').addEventListener('click', function() {
+      Funky.Api.get('/api/mock/error/403').catch(function(err) {
+        showResponse(err, 403, true);
+      });
+    });
+
+    document.getElementById('btn-error-404').addEventListener('click', function() {
+      Funky.Api.get('/api/mock/error/404').catch(function(err) {
+        showResponse(err, 404, true);
+      });
+    });
+
+    document.getElementById('btn-error-422').addEventListener('click', function() {
+      Funky.Api.post('/api/mock/error/422', {}).catch(function(err) {
+        showResponse(err, 422, true);
+      });
+    });
+
+    document.getElementById('btn-error-500').addEventListener('click', function() {
+      Funky.Api.get('/api/mock/error/500').catch(function(err) {
+        showResponse(err, 500, true);
+      });
+    });
+
+    // Deduplication
+    document.getElementById('btn-dedupe').addEventListener('click', function() {
+      dedupeActualCount = 0;
+      var firedEl = document.getElementById('dedupe-fired');
+      if (firedEl) firedEl.textContent = '5';
+      updateDedupeDisplay();
+
+      // Fire 5 identical requests
+      var promises = [];
+      for (var i = 0; i < 5; i++) {
+        promises.push(Funky.Api.get('/api/mock/dedupe'));
+      }
+
+      Promise.all(promises).then(function(results) {
+        showResponse({ message: 'All 5 requests completed', actualRequests: dedupeActualCount, results: results.length }, 200, false);
+        emit('event', { event: 'api:dedupe', payload: { fired: 5, actual: dedupeActualCount } });
+      });
+    });
+
+    // Timeout & Cancel
+    var btnCancel = document.getElementById('btn-cancel');
+
+    document.getElementById('btn-slow').addEventListener('click', function() {
+      setTimeoutStatus('Loading...', 'pending');
+      btnCancel.disabled = false;
+
+      currentAbortController = new AbortController();
+
+      Funky.Api.get('/api/mock/slow', null, { signal: currentAbortController.signal })
+        .then(function(data) {
+          setTimeoutStatus('Complete', 'success');
+          showResponse(data, 200, false);
+          btnCancel.disabled = true;
+          emit('event', { event: 'api:slow:complete', payload: {} });
+        })
+        .catch(function(err) {
+          if (err.aborted) {
+            setTimeoutStatus('Cancelled', 'error');
+            showResponse({ message: 'Request was cancelled' }, null, true);
+          } else {
+            setTimeoutStatus('Error', 'error');
+            showResponse(err, err.status, true);
+          }
+          btnCancel.disabled = true;
+        });
+    });
+
+    btnCancel.addEventListener('click', function() {
+      if (currentAbortController) {
+        currentAbortController.abort();
+        currentAbortController = null;
+        emit('event', { event: 'api:cancelled', payload: {} });
+      }
+    });
+
+    document.getElementById('btn-cancel-all').addEventListener('click', function() {
+      Funky.Api.cancelAll();
+      setTimeoutStatus('All Cancelled', 'error');
+      btnCancel.disabled = true;
+      emit('event', { event: 'api:cancelAll', payload: {} });
+    });
+
+    // Retry logic
+    document.getElementById('btn-503').addEventListener('click', function() {
+      mock503ShouldRecover = false;
+      mock503AttemptCount = 0;
+      updateRetryDisplay();
+
+      Funky.Api.get('/api/mock/error/503', null, { retry: true })
+        .then(function(data) {
+          showResponse(data, 200, false);
+        })
+        .catch(function(err) {
+          showResponse({ error: err.error, attempts: mock503AttemptCount, message: 'Max retries exceeded' }, 503, true);
+          emit('event', { event: 'api:503:failed', payload: { attempts: mock503AttemptCount } });
+        });
+    });
+
+    document.getElementById('btn-503-recover').addEventListener('click', function() {
+      mock503ShouldRecover = true;
+      mock503AttemptCount = 0;
+      updateRetryDisplay();
+
+      Funky.Api.get('/api/mock/error/503', null, { retry: true })
+        .then(function(data) {
+          showResponse(data, 200, false);
+          emit('event', { event: 'api:503:recovered', payload: { attempts: mock503AttemptCount } });
+        })
+        .catch(function(err) {
+          showResponse(err, 503, true);
+        });
+    });
+
+    // Entity Factory
+    document.getElementById('btn-entity-list').addEventListener('click', function() {
+      mockProducts.list().then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:entity:list', payload: {} });
+      });
+    });
+
+    document.getElementById('btn-entity-get').addEventListener('click', function() {
+      mockProducts.get(1).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:entity:get', payload: { id: 1 } });
+      });
+    });
+
+    document.getElementById('btn-entity-create').addEventListener('click', function() {
+      mockProducts.create({ name: 'New Product', price: 99.99 }).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:entity:create', payload: {} });
+      });
+    });
+
+    document.getElementById('btn-entity-update').addEventListener('click', function() {
+      mockProducts.update(1, { name: 'Updated Product', price: 39.99 }).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:entity:update', payload: { id: 1 } });
+      });
+    });
+
+    document.getElementById('btn-entity-delete').addEventListener('click', function() {
+      mockProducts.delete(1).then(function(data) {
+        showResponse(data, 200, false);
+        emit('event', { event: 'api:entity:delete', payload: { id: 1 } });
+      });
+    });
+
+    // Clear events
+    document.getElementById('btn-clear-events').addEventListener('click', function() {
+      eventCount = 0;
+      events = [];
+      updateEventsDisplay();
+    });
+  }
+
+  // ============================================
+  // API EVENT SUBSCRIPTIONS
+  // ============================================
+
+  function subscribeToApiEvents() {
+    if (!Funky.PubSub) return;
+
+    var handler1 = function(data) { logEvent('funky:api:request', { url: data.url, method: data.method }); };
+    var handler2 = function(data) { logEvent('funky:api:success', { url: data.url }); };
+    var handler3 = function(data) { logEvent('funky:api:error', { status: data.status }); };
+    var handler4 = function() { logEvent('funky:session:expired', {}); };
+
+    Funky.PubSub.on('funky:api:request', handler1);
+    Funky.PubSub.on('funky:api:success', handler2);
+    Funky.PubSub.on('funky:api:error', handler3);
+    Funky.PubSub.on('funky:session:expired', handler4);
+
+    apiEventHandlers = [
+      { event: 'funky:api:request', handler: handler1 },
+      { event: 'funky:api:success', handler: handler2 },
+      { event: 'funky:api:error', handler: handler3 },
+      { event: 'funky:session:expired', handler: handler4 }
+    ];
+  }
+
+  function unsubscribeFromApiEvents() {
+    if (!Funky.PubSub) return;
+
+    apiEventHandlers.forEach(function(item) {
+      Funky.PubSub.off(item.event, item.handler);
+    });
+    apiEventHandlers = [];
+  }
+
+  // ============================================
+  // PAGE REGISTRATION
+  // ============================================
+
+  Funky.Pages.register('component-api', {
+    init: function(state) {
+      var props = getProps();
+
+      // Set up mock fetch
+      setupMockFetch();
+
+      // Create mock entity API
+      mockProducts = Funky.Api.entity('products', '/api/mock/products');
+
+      // Subscribe to API events
+      subscribeToApiEvents();
+
+      // Update config display
+      updateConfig();
+
+      // Bind button events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateConfig();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'api:init', payload: props });
+    },
+
+    destroy: function() {
+      // Restore original fetch
+      restoreFetch();
+
+      // Unsubscribe from API events
+      unsubscribeFromApiEvents();
+
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Cancel any pending requests
+      if (currentAbortController) {
+        currentAbortController.abort();
+        currentAbortController = null;
+      }
+
+      // Reset state
+      eventCount = 0;
+      events = [];
+      dedupeActualCount = 0;
+      retryAttempts = 0;
+      mock503AttemptCount = 0;
+      mockProducts = null;
+
+      return {};
+    }
+  });
+})();
+</script>

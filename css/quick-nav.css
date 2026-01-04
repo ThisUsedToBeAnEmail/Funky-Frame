@@ -1,0 +1,673 @@
+/**
+ * Funky.QuickNav Styles
+ * 
+ * Floating navigation widget with FAB, actions, and position variants.
+ * Theme-aware using --pro-* CSS custom properties.
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+
+:root {
+  /* Layout */
+  --quicknav-offset-x: 16px;
+  --quicknav-offset-y: 16px;
+  --quicknav-z-index: 1020;
+  
+  /* FAB - uses theme accent colors */
+  --quicknav-fab-size: 56px;
+  --quicknav-fab-bg: var(--pro-accent-primary, #2f81f7);
+  --quicknav-fab-color: #ffffff;
+  --quicknav-fab-shadow: var(--pro-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.25));
+  --quicknav-fab-hover-bg: var(--pro-accent-primary-hover, #388bfd);
+  
+  /* Actions - uses theme surface/text colors */
+  --quicknav-action-size: 44px;
+  --quicknav-action-gap: 8px;
+  --quicknav-action-bg: var(--pro-bg-elevated, #2d333b);
+  --quicknav-action-color: var(--pro-text-primary, #e6edf3);
+  --quicknav-action-shadow: var(--pro-shadow-md, 0 2px 8px rgba(0, 0, 0, 0.2));
+  --quicknav-action-hover-bg: var(--pro-bg-tertiary, #21262d);
+  
+  /* Animation */
+  --quicknav-animation-duration: 200ms;
+  --quicknav-animation-easing: ease-out;
+}
+
+/* ==========================================================================
+   Base Container
+   ========================================================================== */
+
+.quick-nav {
+  position: fixed !important;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--quicknav-action-gap);
+  z-index: var(--quicknav-z-index);
+  transition: opacity var(--quicknav-animation-duration) var(--quicknav-animation-easing),
+              transform var(--quicknav-animation-duration) var(--quicknav-animation-easing);
+}
+
+/* ==========================================================================
+   Position Variants
+   ========================================================================== */
+
+.quick-nav--bottom-right {
+  bottom: var(--quicknav-offset-y);
+  right: var(--quicknav-offset-x);
+}
+
+.quick-nav--bottom-left {
+  bottom: var(--quicknav-offset-y);
+  left: var(--quicknav-offset-x);
+}
+
+.quick-nav--top-right {
+  top: var(--quicknav-offset-y);
+  right: var(--quicknav-offset-x);
+  flex-direction: column;
+}
+
+.quick-nav--top-left {
+  top: var(--quicknav-offset-y);
+  left: var(--quicknav-offset-x);
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   FAB Button
+   ========================================================================== */
+
+.quick-nav__fab {
+  width: var(--quicknav-fab-size);
+  height: var(--quicknav-fab-size);
+  min-width: var(--quicknav-fab-size);
+  min-height: var(--quicknav-fab-size);
+  border-radius: 50%;
+  border: none;
+  background: var(--quicknav-fab-bg);
+  color: var(--quicknav-fab-color);
+  box-shadow: var(--quicknav-fab-shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform var(--quicknav-animation-duration) var(--quicknav-animation-easing),
+              background var(--quicknav-animation-duration) var(--quicknav-animation-easing),
+              box-shadow var(--quicknav-animation-duration) var(--quicknav-animation-easing);
+}
+
+.quick-nav__fab:hover {
+  background: var(--quicknav-fab-hover-bg);
+  transform: scale(1.05);
+}
+
+.quick-nav__fab:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--quicknav-fab-shadow), var(--focus-ring-shadow);
+}
+
+.quick-nav__fab:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================================
+   FAB Icon Animation
+   ========================================================================== */
+
+.quick-nav__fab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.quick-nav__fab-icon--close {
+  position: absolute;
+  opacity: 0;
+  transform: rotate(-90deg);
+}
+
+/* Expanded state: swap icons */
+.quick-nav--expanded .quick-nav__fab-icon:not(.quick-nav__fab-icon--close) {
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
+.quick-nav--expanded .quick-nav__fab-icon--close {
+  opacity: 1;
+  transform: rotate(0);
+}
+
+/* ==========================================================================
+   Action List
+   ========================================================================== */
+
+.quick-nav__actions {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--quicknav-action-gap);
+  opacity: 0;
+  transform: scale(0.8) translateY(10px);
+  pointer-events: none;
+  transition: opacity var(--quicknav-animation-duration) var(--quicknav-animation-easing),
+              transform var(--quicknav-animation-duration) var(--quicknav-animation-easing);
+}
+
+/* Top positions: actions appear below FAB */
+.quick-nav--top-right .quick-nav__actions,
+.quick-nav--top-left .quick-nav__actions {
+  flex-direction: column;
+  transform: scale(0.8) translateY(-10px);
+}
+
+/* Expanded state */
+.quick-nav--expanded .quick-nav__actions {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* Collapsed state: hide completely */
+.quick-nav--collapsed .quick-nav__actions {
+  display: none;
+}
+
+/* ==========================================================================
+   Action Button (placeholder for Phase 3)
+   ========================================================================== */
+
+.quick-nav__action {
+  width: var(--quicknav-action-size);
+  height: var(--quicknav-action-size);
+  min-width: var(--quicknav-action-size);
+  min-height: var(--quicknav-action-size);
+  border-radius: 50%;
+  border: none;
+  background: var(--quicknav-action-bg);
+  color: var(--quicknav-action-color);
+  box-shadow: var(--quicknav-action-shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform var(--quicknav-animation-duration) var(--quicknav-animation-easing),
+              background var(--quicknav-animation-duration) var(--quicknav-animation-easing);
+}
+
+.quick-nav__action:hover {
+  background: var(--quicknav-action-hover-bg);
+  transform: scale(1.1);
+}
+
+.quick-nav__action:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--quicknav-action-shadow), var(--focus-ring-shadow);
+}
+
+.quick-nav__action:active {
+  transform: scale(0.95);
+}
+
+/* Action icon */
+.quick-nav__action-icon {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   Action Labels (Tooltips)
+   ========================================================================== */
+
+.quick-nav__action-label {
+  position: absolute;
+  right: calc(100% + 8px);
+  background: var(--quicknav-label-bg, var(--pro-bg-elevated, #2d333b));
+  color: var(--quicknav-label-color, var(--pro-text-primary, #e6edf3));
+  border: 1px solid var(--quicknav-label-border, var(--pro-border-color, #30363d));
+  padding: 4px 10px;
+  border-radius: var(--pro-radius-sm, 4px);
+  font-size: var(--pro-font-size-xs, 0.75rem);
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--quicknav-animation-duration) var(--quicknav-animation-easing);
+  box-shadow: var(--pro-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  z-index: 1;
+}
+
+.quick-nav__action:hover .quick-nav__action-label,
+.quick-nav__action:focus-visible .quick-nav__action-label {
+  opacity: 1;
+}
+
+/* Left-positioned QuickNav: flip tooltip to right side */
+.quick-nav--bottom-left .quick-nav__action-label,
+.quick-nav--top-left .quick-nav__action-label {
+  right: auto;
+  left: calc(100% + 8px);
+}
+
+/* ==========================================================================
+   Action Badges (positioning overrides for Funky.Badge)
+   ========================================================================== */
+
+/* Override Funky.Badge positioning for QuickNav buttons */
+.quick-nav__action .funky-badge {
+  top: -4px;
+  right: -4px;
+}
+
+.quick-nav__action .funky-badge--dot {
+  top: -2px;
+  right: -2px;
+}
+
+/* Disabled action state */
+.quick-nav__action[disabled],
+.quick-nav__action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quick-nav__action[disabled]:hover,
+.quick-nav__action:disabled:hover {
+  transform: none;
+  background: var(--quicknav-action-bg);
+}
+
+/* ==========================================================================
+   Visibility States
+   ========================================================================== */
+
+.quick-nav--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quick-nav--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hidden action (e.g., back-to-top when at top) */
+.quick-nav__action--hidden {
+  display: none;
+}
+
+/* ==========================================================================
+   Visibility Animations (Phase 4)
+   ========================================================================== */
+
+/* Slide animation (default) - right positions */
+.quick-nav--animation-slide.quick-nav--entering {
+  animation: quicknav-slide-in-right var(--quicknav-animation-duration, 200ms) ease-out forwards;
+}
+
+.quick-nav--animation-slide.quick-nav--leaving {
+  animation: quicknav-slide-out-right var(--quicknav-animation-duration, 200ms) ease-in forwards;
+}
+
+@keyframes quicknav-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes quicknav-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Slide animation - left positions */
+.quick-nav--bottom-left.quick-nav--animation-slide.quick-nav--entering,
+.quick-nav--top-left.quick-nav--animation-slide.quick-nav--entering {
+  animation-name: quicknav-slide-in-left;
+}
+
+.quick-nav--bottom-left.quick-nav--animation-slide.quick-nav--leaving,
+.quick-nav--top-left.quick-nav--animation-slide.quick-nav--leaving {
+  animation-name: quicknav-slide-out-left;
+}
+
+@keyframes quicknav-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes quicknav-slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+/* Fade animation */
+.quick-nav--animation-fade.quick-nav--entering {
+  animation: quicknav-fade-in var(--quicknav-animation-duration, 200ms) ease-out forwards;
+}
+
+.quick-nav--animation-fade.quick-nav--leaving {
+  animation: quicknav-fade-out var(--quicknav-animation-duration, 200ms) ease-in forwards;
+}
+
+@keyframes quicknav-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes quicknav-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Scale animation */
+.quick-nav--animation-scale.quick-nav--entering {
+  animation: quicknav-scale-in var(--quicknav-animation-duration, 200ms) ease-out forwards;
+}
+
+.quick-nav--animation-scale.quick-nav--leaving {
+  animation: quicknav-scale-out var(--quicknav-animation-duration, 200ms) ease-in forwards;
+}
+
+@keyframes quicknav-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes quicknav-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+/* ==========================================================================
+   Theme Support
+   ========================================================================== */
+
+/* 
+ * Theme support is handled via CSS custom properties in :root.
+ * The --quicknav-* variables inherit from --pro-* theme variables,
+ * which are set per-theme in themes.css (dark, light, even-funkier).
+ * No additional overrides needed here.
+ */
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-nav,
+  .quick-nav__fab,
+  .quick-nav__fab-icon,
+  .quick-nav__actions,
+  .quick-nav__action,
+  .quick-nav--entering,
+  .quick-nav--leaving,
+  .quick-nav__badge--animate {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Instant show/hide for reduced motion */
+  .quick-nav--hidden {
+    opacity: 0;
+  }
+
+  .quick-nav--visible {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   Size Variants (Phase 8)
+   ========================================================================== */
+
+.quick-nav--size-small {
+  --quicknav-fab-size: 44px;
+  --quicknav-action-size: 36px;
+  --quicknav-action-gap: 6px;
+}
+
+.quick-nav--size-medium {
+  --quicknav-fab-size: 56px;
+  --quicknav-action-size: 44px;
+  --quicknav-action-gap: 8px;
+}
+
+.quick-nav--size-large {
+  --quicknav-fab-size: 64px;
+  --quicknav-action-size: 52px;
+  --quicknav-action-gap: 12px;
+}
+
+/* ==========================================================================
+   Mobile Adjustments
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .quick-nav {
+    --quicknav-offset-x: 12px;
+    --quicknav-offset-y: 12px;
+  }
+  
+  /* Larger touch targets on mobile */
+  .quick-nav__fab,
+  .quick-nav__action {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .quick-nav--bottom-right,
+  .quick-nav--bottom-left {
+    bottom: calc(var(--quicknav-offset-y) + env(safe-area-inset-bottom, 0px));
+  }
+  
+  .quick-nav--bottom-right,
+  .quick-nav--top-right {
+    right: calc(var(--quicknav-offset-x) + env(safe-area-inset-right, 0px));
+  }
+  
+  .quick-nav--bottom-left,
+  .quick-nav--top-left {
+    left: calc(var(--quicknav-offset-x) + env(safe-area-inset-left, 0px));
+  }
+}
+
+/* ==========================================================================
+   QUICKNAV PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+.quick-nav-demo {
+  padding: var(--pro-spacing-lg, 24px);
+}
+
+.quick-nav-demo__section {
+  margin-bottom: var(--pro-spacing-xl, 32px);
+}
+
+.quick-nav-demo__section h3 {
+  margin-bottom: var(--pro-spacing-md, 16px);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pro-text-primary);
+}
+
+/* Demo container with sections */
+.quick-nav-demo__container {
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 8px);
+  background: var(--pro-bg-secondary);
+  max-height: 300px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.quick-nav-demo__content-section {
+  padding: var(--pro-spacing-lg, 24px);
+  border-bottom: 1px solid var(--pro-border-color);
+}
+
+.quick-nav-demo__content-section:last-child {
+  border-bottom: none;
+}
+
+.quick-nav-demo__content-section h4 {
+  margin: 0 0 var(--pro-spacing-sm, 8px) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pro-text-primary);
+}
+
+.quick-nav-demo__content-section p {
+  margin: 0 0 var(--pro-spacing-sm, 8px) 0;
+  color: var(--pro-text-secondary);
+  line-height: 1.6;
+}
+
+.quick-nav-demo__content-section p:last-child {
+  margin-bottom: 0;
+}
+
+/* Controls */
+.quick-nav-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pro-spacing-sm, 8px);
+  margin-bottom: var(--pro-spacing-md, 16px);
+}
+
+/* State display */
+.quick-nav-demo__state {
+  background: var(--pro-bg-tertiary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 8px);
+  padding: var(--pro-spacing-md, 16px);
+  font-size: 0.8125rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--pro-text-secondary);
+  margin: 0;
+  overflow-x: auto;
+}
+
+/* Keyboard info */
+.quick-nav-demo__keyboard-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--pro-spacing-sm, 8px);
+}
+
+.quick-nav-demo__key-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pro-spacing-sm, 8px);
+  padding: var(--pro-spacing-sm, 8px) var(--pro-spacing-md, 12px);
+  background: var(--pro-bg-secondary);
+  border-radius: var(--pro-border-radius, 6px);
+  font-size: 0.875rem;
+}
+
+.quick-nav-demo__key-row kbd {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--pro-bg-tertiary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--pro-text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.quick-nav-demo__key-row span {
+  color: var(--pro-text-secondary);
+}
+
+/* Event log */
+.quick-nav-demo__log {
+  background: var(--pro-bg-tertiary);
+  border: 1px solid var(--pro-border-color);
+  border-radius: var(--pro-border-radius, 8px);
+  padding: var(--pro-spacing-md, 16px);
+  font-size: 0.75rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--pro-text-secondary);
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quick-nav-demo__keyboard-info {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-nav-demo__container {
+    max-height: 200px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .quick-nav-demo__container {
+    border-width: 2px;
+  }
+
+  .quick-nav-demo__state,
+  .quick-nav-demo__log {
+    border-width: 2px;
+  }
+
+  .quick-nav-demo__key-row kbd {
+    border-width: 2px;
+  }
+}

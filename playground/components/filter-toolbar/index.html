@@ -1,0 +1,687 @@
+<div data-page="component-filter-toolbar" class="component-demo" tabindex="-1">
+  <h2>Filter Toolbar</h2>
+  <p class="text-muted">Saved filters management with URL persistence, collapsible toolbar, and DataTable integration.</p>
+
+  <!-- Section 1: Interactive Demo -->
+  <section class="demo-section">
+    <h3>Saved Filters Dropdown</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">A toolbar with saved filters dropdown. Filters are persisted to URL and can be loaded, saved, or deleted.</p>
+      <div class="demo-form-row">
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="context-input">Context:</label>
+          <input type="text" id="context-input" class="form-control" value="demo">
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="persist-url">Persist to URL:</label>
+          <select id="persist-url" class="form-select">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="show-quick-filters">Show Quick Filters:</label>
+          <select id="show-quick-filters" class="form-select">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="demo-form-row__field">
+          <label class="demo-form-row__label" for="show-saved-filters">Show Saved Filters:</label>
+          <select id="show-saved-filters" class="form-select">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-create-toolbar">
+          <i class="fas fa-plus me-1"></i> Create Toolbar
+        </button>
+      </div>
+
+      <!-- Toolbar Container -->
+      <div id="filter-toolbar" class="filter-toolbar-demo__container">
+        <div class="filter-toolbar-demo__toolbar">
+          <div class="filter-toolbar-demo__controls">
+            <button type="button" class="btn btn-outline-secondary filter-toggle-btn" aria-label="Toggle filter toolbar">
+              <i class="fas fa-filter me-1"></i>
+              <span class="filter-toggle-label">Filters</span>
+              <i class="fas fa-chevron-down ms-2 filter-toggle-icon"></i>
+            </button>
+            <div id="saved-filter-dropdown" class="saved-filter-dropdown">
+              <!-- Dropdown rendered by FilterToolbar -->
+            </div>
+          </div>
+          <div class="filter-toolbar-demo__fields">
+            <div class="filter-toolbar-demo__field">
+              <label for="filter-search" class="visually-hidden">Search</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
+                <input type="text" id="filter-search" class="form-control" placeholder="Search..." aria-label="Search filter">
+              </div>
+            </div>
+            <div class="filter-toolbar-demo__field">
+              <label for="filter-status" class="visually-hidden">Status</label>
+              <select id="filter-status" class="form-select" aria-label="Status filter">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="filter-toolbar-demo__field">
+              <label for="filter-category" class="visually-hidden">Category</label>
+              <select id="filter-category" class="form-select" aria-label="Category filter">
+                <option value="">All Categories</option>
+                <option value="tech">Technology</option>
+                <option value="finance">Finance</option>
+                <option value="health">Healthcare</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <output id="toolbar-status" class="demo-status mt-3">Status: Ready</output>
+    </div>
+  </section>
+
+  <!-- Section 2: API Methods -->
+  <section class="demo-section">
+    <h3>Programmatic API</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Control the toolbar programmatically using these API methods.</p>
+      <div class="filter-toolbar-demo__api-controls">
+        <button type="button" class="btn btn-primary" id="btn-set-filters">
+          <i class="fas fa-edit me-1"></i> setFilters()
+        </button>
+        <button type="button" class="btn btn-info" id="btn-get-data">
+          <i class="fas fa-download me-1"></i> getData()
+        </button>
+        <button type="button" class="btn btn-success" id="btn-get-link">
+          <i class="fas fa-link me-1"></i> getFilterLink()
+        </button>
+        <button type="button" class="btn btn-warning" id="btn-persist-url">
+          <i class="fas fa-globe me-1"></i> persistToUrl()
+        </button>
+        <button type="button" class="btn btn-danger" id="btn-destroy">
+          <i class="fas fa-trash me-1"></i> destroy()
+        </button>
+      </div>
+      <output id="api-status" class="demo-status">Status: Ready</output>
+    </div>
+  </section>
+
+  <!-- Section 3: Current Filter State -->
+  <section class="demo-section">
+    <h3>Current Filter State</h3>
+    <div class="demo-area">
+      <div class="filter-toolbar-demo__state-grid">
+        <div class="filter-toolbar-demo__state-card">
+          <h4><i class="fas fa-filter" aria-hidden="true"></i> Active Filters</h4>
+          <samp id="active-filters" class="filter-toolbar-demo__code-block">No filters applied</samp>
+        </div>
+        <div class="filter-toolbar-demo__state-card">
+          <h4><i class="fas fa-bookmark" aria-hidden="true"></i> Saved Filters</h4>
+          <samp id="saved-filters" class="filter-toolbar-demo__code-block">No saved filters</samp>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Filter Chips -->
+  <section class="demo-section">
+    <h3>Filter Chips</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Active filters displayed as removable chips.</p>
+      <div id="filter-chips" class="filter-toolbar-demo__chips" role="list" aria-label="Active filters">
+        <span class="filter-toolbar-demo__chip-placeholder">Apply filters above to see chips</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Quick Filters -->
+  <section class="demo-section" id="quick-filters-section">
+    <h3>Quick Filters</h3>
+    <div class="demo-area">
+      <p class="text-muted mb-3">Preset filter buttons for common filter combinations.</p>
+      <div id="quick-filters-container" class="filter-toolbar-demo__quick-filters" role="group" aria-label="Quick filter presets">
+        <button type="button" class="btn btn-outline-primary active" data-quick-filter="all">
+          <i class="fas fa-list me-1" aria-hidden="true"></i> All
+        </button>
+        <button type="button" class="btn btn-outline-success" data-quick-filter="active">
+          <i class="fas fa-check-circle me-1" aria-hidden="true"></i> Active Only
+        </button>
+        <button type="button" class="btn btn-outline-warning" data-quick-filter="pending">
+          <i class="fas fa-clock me-1" aria-hidden="true"></i> Pending
+        </button>
+        <button type="button" class="btn btn-outline-info" data-quick-filter="today">
+          <i class="fas fa-calendar-day me-1" aria-hidden="true"></i> Today
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Keyboard Shortcuts -->
+  <section class="demo-section">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="demo-area">
+      <dl class="filter-toolbar-demo__keyboard-hints">
+        <div class="filter-toolbar-demo__keyboard-hint">
+          <dt><kbd>F</kbd></dt>
+          <dd>Focus search input</dd>
+        </div>
+        <div class="filter-toolbar-demo__keyboard-hint">
+          <dt><kbd>C</kbd></dt>
+          <dd>Clear all filters</dd>
+        </div>
+        <div class="filter-toolbar-demo__keyboard-hint">
+          <dt><kbd>S</kbd></dt>
+          <dd>Save current filter</dd>
+        </div>
+        <div class="filter-toolbar-demo__keyboard-hint">
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Close dropdown</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Section 7: Events Log -->
+  <section class="demo-section">
+    <h3>Events Log</h3>
+    <div class="demo-area">
+      <pre id="filter-log" class="demo-log" aria-live="polite" aria-label="Filter events log">Interact with filters to see events</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var FilterToolbar = window.Funky && window.Funky.FilterToolbar ? window.Funky.FilterToolbar : null;
+  var Toast = window.Funky && window.Funky.Toast ? window.Funky.Toast : null;
+
+  var logs = [];
+  var toolbarInstance = null;
+  var propsChangedHandler = null;
+  var currentFilters = {};
+  var showQuickFilters = true;
+  var showSavedFilters = true;
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('filter-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateStateDisplay() {
+    var activeFiltersEl = document.getElementById('active-filters');
+    var savedFiltersEl = document.getElementById('saved-filters');
+
+    if (activeFiltersEl) {
+      var filterCount = Object.keys(currentFilters).filter(function(k) {
+        return currentFilters[k] !== '' && currentFilters[k] != null;
+      }).length;
+      if (filterCount === 0) {
+        activeFiltersEl.textContent = 'No filters applied';
+      } else {
+        activeFiltersEl.textContent = JSON.stringify(currentFilters, null, 2);
+      }
+    }
+
+    if (savedFiltersEl && toolbarInstance) {
+      var savedCount = toolbarInstance.savedFilters.length;
+      if (savedCount === 0) {
+        savedFiltersEl.textContent = 'No saved filters';
+      } else {
+        savedFiltersEl.textContent = toolbarInstance.savedFilters.map(function(f) {
+          return (f.is_default ? '★ ' : '') + f.name;
+        }).join('\n');
+      }
+    }
+  }
+
+  function updateQuickFiltersVisibility(show) {
+    showQuickFilters = show;
+    var section = document.getElementById('quick-filters-section');
+    if (section) {
+      section.style.display = show ? '' : 'none';
+    }
+    log('Quick filters: ' + (show ? 'visible' : 'hidden'));
+  }
+
+  function updateSavedFiltersVisibility(show) {
+    showSavedFilters = show;
+    var dropdown = document.getElementById('saved-filter-dropdown');
+    if (dropdown) {
+      dropdown.style.display = show ? '' : 'none';
+    }
+    log('Saved filters: ' + (show ? 'visible' : 'hidden'));
+  }
+
+  function syncInputsFromProps(props) {
+    if (props.context != null) {
+      document.getElementById('context-input').value = props.context;
+    }
+    if (props.showQuickFilters != null) {
+      document.getElementById('show-quick-filters').value = props.showQuickFilters.toString();
+      updateQuickFiltersVisibility(props.showQuickFilters);
+    }
+    if (props.showSavedFilters != null) {
+      document.getElementById('show-saved-filters').value = props.showSavedFilters.toString();
+      updateSavedFiltersVisibility(props.showSavedFilters);
+    }
+  }
+
+  function updateChips() {
+    var container = document.getElementById('filter-chips');
+    if (!container) return;
+
+    container.innerHTML = '';
+    var hasFilters = false;
+
+    Object.keys(currentFilters).forEach(function(key) {
+      var value = currentFilters[key];
+      if (value && value !== '') {
+        hasFilters = true;
+        var chip = document.createElement('span');
+        chip.className = 'filter-chip';
+        chip.setAttribute('role', 'listitem');
+        chip.dataset.field = key;
+
+        var label = key.charAt(0).toUpperCase() + key.slice(1);
+        chip.innerHTML = '<span>' + label + ': ' + value + '</span>' +
+          '<button type="button" class="filter-chip-remove" data-remove="' + key + '" aria-label="Remove ' + label + ' filter">' +
+          '<i class="fas fa-times" aria-hidden="true"></i></button>';
+
+        container.appendChild(chip);
+      }
+    });
+
+    if (!hasFilters) {
+      container.innerHTML = '<span class="filter-toolbar-demo__chip-placeholder">Apply filters above to see chips</span>';
+    }
+  }
+
+  function collectFilters() {
+    currentFilters = {
+      search: document.getElementById('filter-search').value,
+      status: document.getElementById('filter-status').value,
+      category: document.getElementById('filter-category').value
+    };
+    return currentFilters;
+  }
+
+  function applyFiltersToInputs(filters) {
+    if (filters.search != null) document.getElementById('filter-search').value = filters.search;
+    if (filters.status != null) document.getElementById('filter-status').value = filters.status;
+    if (filters.category != null) document.getElementById('filter-category').value = filters.category;
+    currentFilters = filters;
+  }
+
+  function createToolbar() {
+    var context = document.getElementById('context-input').value || 'demo';
+    var persistToUrl = document.getElementById('persist-url').value === 'true';
+
+    // Destroy existing instance
+    if (toolbarInstance) {
+      toolbarInstance.destroy();
+      toolbarInstance = null;
+    }
+
+    if (!FilterToolbar) {
+      log('Error: Funky.FilterToolbar not available');
+      document.getElementById('toolbar-status').textContent = 'Status: FilterToolbar not loaded';
+      return;
+    }
+
+    toolbarInstance = FilterToolbar.create({
+      context: context,
+      toolbarSelector: '#filter-toolbar',
+      persistToUrl: persistToUrl,
+      savedFiltersEnabled: true,
+      quickFiltersEnabled: true,
+      onFilterChange: function(filters) {
+        log('Filter change: ' + JSON.stringify(filters));
+        applyFiltersToInputs(filters);
+        updateChips();
+        updateStateDisplay();
+        emit('event', { event: 'filter:change', payload: filters });
+      }
+    });
+
+    document.getElementById('toolbar-status').textContent = 'Status: Toolbar created (context: ' + context + ')';
+    log('Toolbar created with context: ' + context);
+    updateStateDisplay();
+  }
+
+  function flashButton(btn) {
+    if (!btn) return;
+    btn.classList.add('keyboard-active');
+    setTimeout(function() {
+      btn.classList.remove('keyboard-active');
+    }, 150);
+  }
+
+  Funky.Pages.register('component-filter-toolbar', {
+    init: function(state) {
+      var props = getProps();
+      var toolbarStatus = document.getElementById('toolbar-status');
+      var apiStatus = document.getElementById('api-status');
+
+      // Initialize with props - sync all inputs
+      syncInputsFromProps(props);
+
+      // =========================================================================
+      // Section 1: Toolbar Creation
+      // =========================================================================
+
+      document.getElementById('btn-create-toolbar').addEventListener('click', createToolbar);
+
+      // Prop change handlers - sync with playground props panel
+      document.getElementById('show-quick-filters').addEventListener('change', function() {
+        var show = this.value === 'true';
+        updateQuickFiltersVisibility(show);
+        emit('event', { event: 'prop:showQuickFilters', payload: show });
+      });
+
+      document.getElementById('show-saved-filters').addEventListener('change', function() {
+        var show = this.value === 'true';
+        updateSavedFiltersVisibility(show);
+        emit('event', { event: 'prop:showSavedFilters', payload: show });
+      });
+
+      document.getElementById('context-input').addEventListener('change', function() {
+        emit('event', { event: 'prop:context', payload: this.value });
+      });
+
+      // Filter input handlers
+      var filterInputs = ['filter-search', 'filter-status', 'filter-category'];
+      filterInputs.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('change', function() {
+            collectFilters();
+            updateChips();
+            updateStateDisplay();
+            log('Filter changed: ' + id.replace('filter-', '') + ' = ' + this.value);
+
+            if (toolbarInstance) {
+              toolbarInstance.setFilters(currentFilters);
+            }
+
+            emit('event', { event: 'filter:change', payload: currentFilters });
+          });
+
+          if (id === 'filter-search') {
+            el.addEventListener('input', function() {
+              collectFilters();
+              updateChips();
+              updateStateDisplay();
+            });
+          }
+        }
+      });
+
+      // =========================================================================
+      // Section 2: API Methods
+      // =========================================================================
+
+      document.getElementById('btn-set-filters').addEventListener('click', function() {
+        var testFilters = {
+          search: 'test query',
+          status: 'active',
+          category: 'tech'
+        };
+
+        if (toolbarInstance) {
+          toolbarInstance.setFilters(testFilters);
+        }
+        applyFiltersToInputs(testFilters);
+        updateChips();
+        updateStateDisplay();
+
+        apiStatus.textContent = 'Status: setFilters() called';
+        log('API: setFilters(' + JSON.stringify(testFilters) + ')');
+        emit('event', { event: 'api:setFilters', payload: testFilters });
+      });
+
+      document.getElementById('btn-get-data').addEventListener('click', function() {
+        if (!toolbarInstance) {
+          apiStatus.textContent = 'Status: Create toolbar first';
+          return;
+        }
+
+        var containerId = 'filter-toolbar';
+        var data = FilterToolbar.getData(containerId);
+
+        apiStatus.textContent = 'Status: getData() returned ' + Object.keys(data.filters).length + ' filters';
+        log('API: getData() = ' + JSON.stringify(data));
+        emit('event', { event: 'api:getData', payload: data });
+
+        if (Toast) {
+          Toast.info('Check events log for data');
+        }
+      });
+
+      document.getElementById('btn-get-link').addEventListener('click', function() {
+        if (!toolbarInstance) {
+          apiStatus.textContent = 'Status: Create toolbar first';
+          return;
+        }
+
+        var link = toolbarInstance.getFilterLink();
+
+        apiStatus.textContent = 'Status: Filter link generated';
+        log('API: getFilterLink() = ' + link);
+        emit('event', { event: 'api:getFilterLink', payload: { link: link } });
+
+        // Copy to clipboard
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(link).then(function() {
+            if (Toast) {
+              Toast.success('Filter link copied to clipboard!');
+            }
+          });
+        }
+      });
+
+      document.getElementById('btn-persist-url').addEventListener('click', function() {
+        if (!toolbarInstance) {
+          apiStatus.textContent = 'Status: Create toolbar first';
+          return;
+        }
+
+        toolbarInstance.persistToUrl();
+        apiStatus.textContent = 'Status: Filters persisted to URL';
+        log('API: persistToUrl() called');
+
+        if (Toast) {
+          Toast.success('Filters saved to URL');
+        }
+      });
+
+      document.getElementById('btn-destroy').addEventListener('click', function() {
+        if (!toolbarInstance) {
+          apiStatus.textContent = 'Status: No toolbar to destroy';
+          return;
+        }
+
+        toolbarInstance.destroy();
+        toolbarInstance = null;
+
+        apiStatus.textContent = 'Status: Toolbar destroyed';
+        log('API: destroy() called');
+        updateStateDisplay();
+      });
+
+      // =========================================================================
+      // Section 4: Filter Chips
+      // =========================================================================
+
+      document.getElementById('filter-chips').addEventListener('click', function(e) {
+        var removeBtn = e.target.closest('[data-remove]');
+        if (removeBtn) {
+          var field = removeBtn.dataset.remove;
+          currentFilters[field] = '';
+
+          var inputEl = document.getElementById('filter-' + field);
+          if (inputEl) inputEl.value = '';
+
+          if (toolbarInstance) {
+            toolbarInstance.setFilters(currentFilters);
+          }
+
+          updateChips();
+          updateStateDisplay();
+          log('Removed filter: ' + field);
+          emit('event', { event: 'filter:remove', payload: { field: field } });
+        }
+      });
+
+      // =========================================================================
+      // Section 5: Quick Filters
+      // =========================================================================
+
+      document.querySelectorAll('[data-quick-filter]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          // Update active state
+          document.querySelectorAll('[data-quick-filter]').forEach(function(b) {
+            b.classList.remove('active');
+          });
+          this.classList.add('active');
+
+          var preset = this.dataset.quickFilter;
+          var presetFilters = {};
+
+          switch (preset) {
+            case 'all':
+              presetFilters = { search: '', status: '', category: '' };
+              break;
+            case 'active':
+              presetFilters = { search: '', status: 'active', category: '' };
+              break;
+            case 'pending':
+              presetFilters = { search: '', status: 'pending', category: '' };
+              break;
+            case 'today':
+              presetFilters = { search: '', status: '', category: 'tech' };
+              break;
+          }
+
+          applyFiltersToInputs(presetFilters);
+
+          if (toolbarInstance) {
+            toolbarInstance.setFilters(presetFilters);
+          }
+
+          updateChips();
+          updateStateDisplay();
+          log('Quick filter: ' + preset);
+          emit('event', { event: 'filter:quick', payload: { preset: preset, filters: presetFilters } });
+
+          if (Toast) {
+            Toast.info('Applied: ' + this.textContent.trim());
+          }
+        });
+      });
+
+      // =========================================================================
+      // Keyboard Navigation
+      // =========================================================================
+
+      document.querySelector('[data-page="component-filter-toolbar"]').addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+          if (e.key === 'Escape') {
+            e.target.blur();
+            e.preventDefault();
+          }
+          return;
+        }
+
+        switch (e.key.toLowerCase()) {
+          case 'f':
+            var searchInput = document.getElementById('filter-search');
+            if (searchInput) {
+              searchInput.focus();
+              log('Keyboard: Focus search');
+              e.preventDefault();
+            }
+            break;
+          case 'c':
+            // Clear all filters
+            currentFilters = { search: '', status: '', category: '' };
+            applyFiltersToInputs(currentFilters);
+            if (toolbarInstance) {
+              toolbarInstance.setFilters(currentFilters);
+            }
+            updateChips();
+            updateStateDisplay();
+            log('Keyboard: Clear all filters');
+            e.preventDefault();
+            break;
+          case 's':
+            if (toolbarInstance) {
+              toolbarInstance.promptSaveFilter();
+              log('Keyboard: Save filter');
+            }
+            e.preventDefault();
+            break;
+        }
+      });
+
+      // =========================================================================
+      // Props Change Handler
+      // =========================================================================
+
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed');
+
+          if (newProps.context !== undefined) {
+            document.getElementById('context-input').value = newProps.context;
+          }
+          if (newProps.showQuickFilters !== undefined) {
+            document.getElementById('show-quick-filters').value = newProps.showQuickFilters.toString();
+            updateQuickFiltersVisibility(newProps.showQuickFilters);
+          }
+          if (newProps.showSavedFilters !== undefined) {
+            document.getElementById('show-saved-filters').value = newProps.showSavedFilters.toString();
+            updateSavedFiltersVisibility(newProps.showSavedFilters);
+          }
+
+          createToolbar();
+          emit('event', { event: 'props:change', payload: newProps });
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Auto-create toolbar on init
+      createToolbar();
+
+      // Focus page container for keyboard shortcuts
+      var pageContainer = document.querySelector('[data-page="component-filter-toolbar"]');
+      if (pageContainer) {
+        pageContainer.focus();
+      }
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+      if (toolbarInstance) {
+        toolbarInstance.destroy();
+        toolbarInstance = null;
+      }
+      logs = [];
+      currentFilters = {};
+      return {};
+    }
+  });
+})();
+</script>

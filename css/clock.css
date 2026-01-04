@@ -1,0 +1,695 @@
+/**
+ * Funky.Clock Styles
+ * Styling for digital and analog [data-clock] elements
+ */
+
+/* ===========================================
+   DIGITAL CLOCK STYLES
+   =========================================== */
+
+/* Base - tabular numbers for consistent width */
+[data-clock] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: 0.02em;
+}
+
+/* Monospace variant */
+[data-clock].mono {
+    font-family: var(--pro-font-monospace, 'SF Mono', 'Monaco', 'Consolas', monospace);
+}
+
+/* Large display variant */
+[data-clock].clock-lg {
+    font-size: 2rem;
+    font-weight: 300;
+}
+
+[data-clock].clock-xl {
+    font-size: 3rem;
+    font-weight: 200;
+}
+
+/* Blinking colon effect */
+[data-clock].blink .clock-separator {
+    animation: clock-blink 1s step-end infinite;
+}
+
+@keyframes clock-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Muted seconds */
+[data-clock] .clock-seconds {
+    opacity: 0.6;
+    font-size: 0.8em;
+}
+
+/* Badge variant */
+[data-clock].badge {
+    font-variant-numeric: tabular-nums;
+}
+
+/* In cards - subtle styling */
+.funky-card [data-clock] {
+    color: var(--pro-text-primary);
+}
+
+/* Status bar variant */
+.status-bar [data-clock] {
+    font-size: 0.875rem;
+    color: var(--pro-text-muted);
+}
+
+/* ===========================================
+   ANALOG CLOCK STYLES
+   =========================================== */
+
+/* SVG container */
+.clock-analog {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Clock face */
+.clock-face {
+    fill: var(--pro-card-bg, #fff);
+    stroke: var(--pro-border-color, #dee2e6);
+    stroke-width: 2;
+}
+
+/* Dark theme face */
+[data-theme="dark"] .clock-face,
+.dark .clock-face {
+    fill: var(--pro-card-bg, #2d3748);
+    stroke: var(--pro-border-color, #4a5568);
+}
+
+/* Even Funkier theme - neon styling */
+[data-theme="even-funkyer"] .clock-face {
+    fill: var(--pro-bg-primary, #0a0015);
+    stroke: var(--funkier-neon-pink, #ff00ff);
+    stroke-width: 2;
+}
+
+[data-theme="even-funkyer"] .clock-hand-hour,
+[data-theme="even-funkyer"] .clock-hand-minute {
+    stroke: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] .clock-hand-second {
+    stroke: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .clock-center {
+    fill: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] .clock-marker-hour {
+    stroke: var(--funkier-neon-pink, #ff00ff);
+}
+
+[data-theme="even-funkyer"] .clock-marker-min {
+    stroke: rgba(255, 0, 255, 0.4);
+}
+
+[data-theme="even-funkyer"] .clock-number {
+    fill: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] [data-clock] {
+    color: var(--funkier-neon-cyan, #00ffff);
+}
+
+[data-theme="even-funkyer"] [data-clock] .clock-seconds {
+    color: var(--funkier-neon-pink, #ff00ff);
+}
+
+/* Hour/minute markers */
+.clock-marker-hour {
+    stroke: var(--pro-text-primary, #333);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.clock-marker-min {
+    stroke: var(--pro-text-muted, #999);
+    stroke-width: 1;
+    stroke-linecap: round;
+}
+
+/* Hour numbers */
+.clock-number {
+    fill: var(--pro-text-muted, #666);
+    font-size: 8px;
+    font-weight: 500;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-family: var(--pro-font-sans, system-ui, sans-serif);
+}
+
+/* Clock hands */
+.clock-hand {
+    stroke: var(--pro-text-primary, #333);
+    stroke-linecap: round;
+}
+
+.clock-hand-hour {
+    stroke: var(--pro-text-primary, #333);
+    stroke-width: 3;
+}
+
+.clock-hand-minute {
+    stroke: var(--pro-text-primary, #333);
+    stroke-width: 2;
+}
+
+.clock-hand-second {
+    stroke: var(--pro-danger, #dc3545);
+    stroke-width: 1;
+}
+
+/* Center dot */
+.clock-center {
+    fill: var(--pro-text-primary, #333);
+}
+
+/* Smooth second hand (optional class) */
+.clock-analog.smooth .clock-hand-second {
+    transition: transform 0.1s linear;
+}
+
+/* Tick animation (discrete) */
+.clock-analog.tick .clock-hand-second {
+    transition: none;
+}
+
+/* ===========================================
+   SIZE VARIANTS
+   =========================================== */
+
+/* Small analog clock */
+.clock-analog.clock-sm {
+    width: 60px;
+    height: 60px;
+}
+
+/* Medium analog clock (default) */
+.clock-analog.clock-md {
+    width: 100px;
+    height: 100px;
+}
+
+/* Large analog clock */
+.clock-analog.clock-lg {
+    width: 150px;
+    height: 150px;
+}
+
+/* Extra large analog clock */
+.clock-analog.clock-xl {
+    width: 200px;
+    height: 200px;
+}
+
+/* ===========================================
+   COUNTDOWN STYLES
+   =========================================== */
+
+/* Countdown complete state */
+[data-clock].countdown-complete {
+    color: var(--pro-success, #28a745);
+    animation: countdown-pulse 0.5s ease-out;
+}
+
+@keyframes countdown-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Countdown warning (under 30 seconds) */
+[data-clock].countdown-warning {
+    color: var(--pro-warning, #ffc107);
+}
+
+/* Countdown danger (under 10 seconds) */
+[data-clock].countdown-danger {
+    color: var(--pro-danger, #dc3545);
+    animation: countdown-blink 0.5s ease-in-out infinite;
+}
+
+@keyframes countdown-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Countdown paused state */
+[data-clock].countdown-paused {
+    opacity: 0.7;
+}
+
+/* ===========================================
+   WORLD CLOCK STYLES
+   =========================================== */
+
+/* World clock container */
+.world-clocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-md, 1rem);
+}
+
+/* Individual world clock card */
+.world-clock-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--pro-spacing-md, 1rem);
+    background: var(--pro-card-bg, #fff);
+    border: 1px solid var(--pro-border-color, #dee2e6);
+    border-radius: var(--pro-border-radius, 0.375rem);
+    min-width: 120px;
+}
+
+.world-clock-card .clock-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--pro-text-muted);
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+.world-clock-card [data-clock] {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.world-clock-card .clock-offset {
+    font-size: 0.75rem;
+    color: var(--pro-text-muted);
+    margin-top: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* ===========================================
+   UTILITY CLASSES
+   =========================================== */
+
+/* Inline clock */
+.clock-inline {
+    display: inline;
+}
+
+/* Block clock centered */
+.clock-block {
+    display: block;
+    text-align: center;
+}
+
+/* Clock with label */
+.clock-labeled {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+}
+
+.clock-labeled .clock-label {
+    font-size: 0.875rem;
+    color: var(--pro-text-muted);
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   =========================================== */
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    [data-clock].blink .clock-separator,
+    [data-clock].countdown-danger,
+    [data-clock].countdown-complete,
+    .clock-hand {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+    .clock-face {
+        fill: Canvas;
+        stroke: CanvasText;
+    }
+
+    .clock-hand-hour,
+    .clock-hand-minute {
+        stroke: CanvasText;
+    }
+
+    .clock-hand-second {
+        stroke: Highlight;
+    }
+
+    .clock-center {
+        fill: CanvasText;
+    }
+
+    .clock-marker-hour,
+    .clock-marker-min {
+        stroke: CanvasText;
+    }
+}
+
+/* ===========================================
+   CLOCK PLAYGROUND DEMO STYLES
+   =========================================== */
+
+.clock-demo {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    width: 100%;
+}
+
+.clock-demo__section {
+    margin-bottom: var(--pro-spacing-xl, 2rem);
+}
+
+.clock-demo__section h3 {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-text-primary);
+    font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+.clock-demo__section h4 {
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+    color: var(--pro-text-secondary);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* State Display */
+.clock-demo__state {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.clock-demo__state-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.clock-demo__state-label {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.clock-demo__state-value {
+    font-size: var(--pro-font-size-base, 1rem);
+    color: var(--pro-text-primary);
+    font-weight: var(--pro-font-weight-medium, 500);
+}
+
+/* Hero Clock Display */
+.clock-demo__hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: var(--pro-spacing-xl, 2rem);
+    background: linear-gradient(135deg, var(--pro-bg-secondary) 0%, var(--pro-bg-tertiary) 100%);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius-lg, 8px);
+}
+
+.clock-demo__main-clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Display Styles Grid */
+.clock-demo__styles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--pro-spacing-lg, 1.5rem);
+}
+
+.clock-demo__style-card {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    text-align: center;
+}
+
+.clock-demo__style-card h4 {
+    margin-bottom: var(--pro-spacing-md, 1rem);
+    text-align: center;
+}
+
+.clock-demo__clock-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+/* World Clocks Grid */
+.clock-demo__world-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--pro-spacing-md, 1rem);
+}
+
+.clock-demo__world-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.clock-demo__world-label {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    font-weight: var(--pro-font-weight-semibold, 600);
+    text-transform: uppercase;
+    color: var(--pro-text-secondary);
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+.clock-demo__world-time {
+    font-size: var(--pro-font-size-xl, 1.25rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+    font-family: var(--pro-font-mono);
+    color: var(--pro-text-primary);
+}
+
+.clock-demo__world-offset {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-muted);
+    margin-top: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Countdown Area */
+.clock-demo__countdown-area {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    text-align: center;
+}
+
+.clock-demo__countdown-display {
+    margin-bottom: var(--pro-spacing-md, 1rem);
+}
+
+.clock-demo__countdown-value {
+    font-size: var(--pro-font-size-4xl, 2.25rem);
+    font-weight: var(--pro-font-weight-bold, 700);
+    font-family: var(--pro-font-mono);
+    color: var(--pro-text-primary);
+}
+
+.clock-demo__countdown-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--pro-spacing-xs, 0.25rem);
+    margin-bottom: var(--pro-spacing-md, 1rem);
+}
+
+.clock-demo__countdown-remaining {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary);
+    font-family: var(--pro-font-mono);
+}
+
+/* Stopwatch Area */
+.clock-demo__stopwatch-area {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    text-align: center;
+}
+
+.clock-demo__stopwatch-display {
+    margin-bottom: var(--pro-spacing-md, 1rem);
+}
+
+.clock-demo__stopwatch-value {
+    font-size: var(--pro-font-size-3xl, 1.875rem);
+    font-weight: var(--pro-font-weight-bold, 700);
+    font-family: var(--pro-font-mono);
+    color: var(--pro-text-primary);
+}
+
+.clock-demo__stopwatch-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Schedule Area */
+.clock-demo__schedule-area {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.clock-demo__schedule-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-xs, 0.25rem);
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.clock-demo__schedule-info {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-secondary);
+    font-family: var(--pro-font-mono);
+}
+
+/* Controls */
+.clock-demo__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--pro-spacing-lg, 1.5rem);
+}
+
+.clock-demo__control-group {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.clock-demo__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-xs, 0.25rem);
+    margin-top: var(--pro-spacing-sm, 0.5rem);
+}
+
+/* Info Box */
+.clock-demo__info {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.clock-demo__info p {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-text-primary);
+}
+
+.clock-demo__info ul {
+    margin: 0 0 var(--pro-spacing-sm, 0.5rem) 0;
+    padding-left: var(--pro-spacing-lg, 1.5rem);
+    color: var(--pro-text-secondary);
+}
+
+.clock-demo__info li {
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+.clock-demo__info strong {
+    color: var(--pro-text-primary);
+}
+
+.clock-demo__info kbd {
+    display: inline-block;
+    padding: 0.15em 0.4em;
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    font-family: var(--pro-font-mono, monospace);
+    color: var(--pro-text-primary);
+    background-color: var(--pro-bg-tertiary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius-sm, 3px);
+    box-shadow: inset 0 -1px 0 var(--pro-border-color);
+}
+
+/* Event Log */
+.clock-demo__log-controls {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.clock-demo__log {
+    margin: 0;
+    padding: var(--pro-spacing-md, 1rem);
+    max-height: 200px;
+    overflow: auto;
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-family: var(--pro-font-mono, monospace);
+    color: var(--pro-text-secondary);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .clock-demo {
+        padding: var(--pro-spacing-md, 1rem);
+    }
+
+    .clock-demo__styles-grid,
+    .clock-demo__controls {
+        grid-template-columns: 1fr;
+    }
+
+    .clock-demo__world-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .clock-demo__state {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .clock-demo__hero {
+        min-height: 150px;
+        padding: var(--pro-spacing-lg, 1.5rem);
+    }
+
+    .clock-demo__countdown-value {
+        font-size: var(--pro-font-size-2xl, 1.5rem);
+    }
+
+    .clock-demo__stopwatch-value {
+        font-size: var(--pro-font-size-xl, 1.25rem);
+    }
+}

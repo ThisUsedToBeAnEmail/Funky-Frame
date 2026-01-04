@@ -1,0 +1,251 @@
+/**
+ * Funky Video Component Styles
+ * Minimal overlay controls with hover reveal
+ * @version 1.0.0
+ */
+
+/* ========================================
+   Container & Video Element
+   ======================================== */
+
+.funky-video {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  background: var(--pro-bg-tertiary, #000);
+  border-radius: var(--pro-border-radius, 8px);
+  overflow: hidden;
+  outline: none;
+}
+
+.funky-video:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.funky-video-element {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ========================================
+   Controls Overlay
+   ======================================== */
+
+.funky-video-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.funky-video:hover .funky-video-controls,
+.funky-video:focus-visible .funky-video-controls,
+.funky-video:focus-within .funky-video-controls {
+  opacity: 1;
+}
+
+/* Always show controls when paused */
+.funky-video.paused .funky-video-controls {
+  opacity: 1;
+}
+
+/* ========================================
+   Control Buttons
+   ======================================== */
+
+.funky-video-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.funky-video-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.funky-video-btn:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.funky-video-btn:active {
+  transform: scale(0.95);
+}
+
+.funky-video-play {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+/* ========================================
+   Progress Bar
+   ======================================== */
+
+.funky-video-progress-container {
+  flex: 1;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.funky-video-progress {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: height 0.15s ease;
+}
+
+.funky-video-progress-container:hover .funky-video-progress {
+  height: 6px;
+}
+
+.funky-video-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--pro-primary, #0d6efd);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* ========================================
+   Time Display
+   ======================================== */
+
+.funky-video-time {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.75rem;
+  font-family: var(--pro-font-mono, monospace);
+  white-space: nowrap;
+  min-width: 5rem;
+  text-align: center;
+}
+
+/* ========================================
+   Center Play Button Overlay (when paused)
+   ======================================== */
+
+.funky-video::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4rem;
+  height: 4rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.funky-video::after {
+  content: '\f04b';
+  font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', sans-serif;
+  font-weight: 900;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-45%, -50%);
+  font-size: 1.5rem;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.funky-video.paused::before,
+.funky-video.paused::after {
+  opacity: 1;
+}
+
+.funky-video.paused:hover::before,
+.funky-video.paused:hover::after {
+  opacity: 0.7;
+}
+
+/* ========================================
+   Responsive Adjustments
+   ======================================== */
+
+@media (max-width: 576px) {
+  .funky-video-controls {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .funky-video-btn {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .funky-video-play {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.875rem;
+  }
+
+  .funky-video-time {
+    font-size: 0.625rem;
+    min-width: 4rem;
+  }
+
+  .funky-video::before {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .funky-video::after {
+    font-size: 1rem;
+  }
+}
+
+/* ========================================
+   Theme Integration
+   ======================================== */
+
+/* Dark theme adjustments */
+[data-theme="dark"] .funky-video {
+  background: var(--pro-bg-tertiary, #1a1a1a);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .funky-video-controls,
+  .funky-video-btn,
+  .funky-video-progress,
+  .funky-video::before,
+  .funky-video::after {
+    transition: none;
+  }
+}

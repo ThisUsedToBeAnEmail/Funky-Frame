@@ -1,0 +1,198 @@
+<div data-page="component-toast" class="component-demo">
+  <h2>Toast Notifications</h2>
+  <p class="text-muted">Display non-intrusive notification messages to users. Supports success, error, warning, info types plus confirmation dialogs.</p>
+
+  <section class="demo-section" aria-labelledby="toast-types-heading">
+    <h3 id="toast-types-heading">Toast Types</h3>
+    <p class="text-muted small">Click to show each toast type. Props panel values are applied.</p>
+    <div class="demo-area toast-demo__button-grid" role="group" aria-label="Toast type buttons">
+      <button class="btn btn-success" id="toast-success" type="button">
+        <i class="fas fa-check-circle me-1" aria-hidden="true"></i> Success
+      </button>
+      <button class="btn btn-danger" id="toast-error" type="button">
+        <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i> Error
+      </button>
+      <button class="btn btn-warning" id="toast-warning" type="button">
+        <i class="fas fa-exclamation-triangle me-1" aria-hidden="true"></i> Warning
+      </button>
+      <button class="btn btn-info" id="toast-info" type="button">
+        <i class="fas fa-info-circle me-1" aria-hidden="true"></i> Info
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="toast-options-heading">
+    <h3 id="toast-options-heading">Advanced Options</h3>
+    <p class="text-muted small">Demonstrates duration, sticky, and action button features.</p>
+    <div class="demo-area toast-demo__button-grid" role="group" aria-label="Advanced toast options">
+      <button class="btn btn-primary" id="toast-long" type="button">
+        <i class="fas fa-clock me-1" aria-hidden="true"></i> Long Duration (10s)
+      </button>
+      <button class="btn btn-secondary" id="toast-sticky" type="button">
+        <i class="fas fa-thumbtack me-1" aria-hidden="true"></i> Sticky (No Auto-dismiss)
+      </button>
+      <button class="btn btn-dark" id="toast-action" type="button">
+        <i class="fas fa-mouse-pointer me-1" aria-hidden="true"></i> With Action Button
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="toast-confirm-heading">
+    <h3 id="toast-confirm-heading">Confirmation Dialog</h3>
+    <p class="text-muted small">Shows a toast with Yes/No buttons for user confirmation.</p>
+    <div class="demo-area" role="group" aria-label="Confirmation toast">
+      <button class="btn btn-outline-warning" id="toast-confirm" type="button">
+        <i class="fas fa-question-circle me-1" aria-hidden="true"></i> Show Confirmation
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="toast-control-heading">
+    <h3 id="toast-control-heading">Toast Control</h3>
+    <p class="text-muted small">Manage all active toasts.</p>
+    <div class="demo-area" role="group" aria-label="Toast control buttons">
+      <button class="btn btn-outline-danger" id="toast-hide-all" type="button">
+        <i class="fas fa-times-circle me-1" aria-hidden="true"></i> Hide All Toasts
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="toast-log-heading">
+    <h3 id="toast-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="toast-log" class="toast-demo__log" aria-live="polite" aria-label="Toast event log">Click buttons to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('toast-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getToastOptions() {
+    var props = getProps();
+    var options = {};
+
+    // Apply props from playground panel
+    if (props.duration) {
+      options.duration = parseInt(props.duration, 10);
+    }
+    if (props.title) {
+      options.title = props.title;
+    }
+
+    return {
+      message: props.message || 'This is a toast message',
+      type: props.type || 'info',
+      options: options
+    };
+  }
+
+  Funky.Pages.register('component-toast', {
+    init: function(state) {
+      var config = getToastOptions();
+      log('Init with type=' + config.type + ', duration=' + (config.options.duration || 'default'));
+      emit('event', { event: 'toast:init', payload: { type: config.type, message: config.message } });
+
+      // Toast type buttons
+      document.getElementById('toast-success').onclick = function() {
+        var cfg = getToastOptions();
+        Funky.Toast.success(cfg.message, cfg.options);
+        log('Showed success toast');
+        emit('event', { event: 'toast:show', payload: { type: 'success', message: cfg.message } });
+      };
+
+      document.getElementById('toast-error').onclick = function() {
+        var cfg = getToastOptions();
+        Funky.Toast.error(cfg.message, cfg.options);
+        log('Showed error toast');
+        emit('event', { event: 'toast:show', payload: { type: 'error', message: cfg.message } });
+      };
+
+      document.getElementById('toast-warning').onclick = function() {
+        var cfg = getToastOptions();
+        Funky.Toast.warning(cfg.message, cfg.options);
+        log('Showed warning toast');
+        emit('event', { event: 'toast:show', payload: { type: 'warning', message: cfg.message } });
+      };
+
+      document.getElementById('toast-info').onclick = function() {
+        var cfg = getToastOptions();
+        Funky.Toast.info(cfg.message, cfg.options);
+        log('Showed info toast');
+        emit('event', { event: 'toast:show', payload: { type: 'info', message: cfg.message } });
+      };
+
+      // Advanced options
+      document.getElementById('toast-long').onclick = function() {
+        Funky.Toast.success('This notification stays for 10 seconds.', { duration: 10000 });
+        log('Showed long duration toast (10s)');
+        emit('event', { event: 'toast:show', payload: { type: 'success', duration: 10000 } });
+      };
+
+      document.getElementById('toast-sticky').onclick = function() {
+        Funky.Toast.warning('Click the X to dismiss this notification.', { duration: null });
+        log('Showed sticky toast (no auto-dismiss)');
+        emit('event', { event: 'toast:show', payload: { type: 'warning', sticky: true } });
+      };
+
+      document.getElementById('toast-action').onclick = function() {
+        Funky.Toast.info('File uploaded successfully.', {
+          action: {
+            label: 'View',
+            onClick: function() {
+              Funky.Toast.success('Action clicked!');
+              log('Action button clicked');
+              emit('event', { event: 'toast:action', payload: { action: 'view' } });
+            }
+          }
+        });
+        log('Showed toast with action button');
+        emit('event', { event: 'toast:show', payload: { type: 'info', hasAction: true } });
+      };
+
+      // Confirmation dialog
+      document.getElementById('toast-confirm').onclick = function() {
+        Funky.Toast.confirm({
+          message: 'Are you sure you want to proceed with this action?',
+          title: 'Confirm Action',
+          confirmText: 'Yes, proceed',
+          cancelText: 'Cancel',
+          onConfirm: function() {
+            Funky.Toast.success('Action confirmed!');
+            log('Confirmation: Yes clicked');
+            emit('event', { event: 'toast:confirm', payload: { confirmed: true } });
+          },
+          onCancel: function() {
+            Funky.Toast.info('Action cancelled.');
+            log('Confirmation: Cancel clicked');
+            emit('event', { event: 'toast:confirm', payload: { confirmed: false } });
+          }
+        });
+        log('Showed confirmation dialog');
+        emit('event', { event: 'toast:show', payload: { type: 'confirm' } });
+      };
+
+      // Hide all
+      document.getElementById('toast-hide-all').onclick = function() {
+        Funky.Toast.hideAll();
+        log('Hidden all toasts');
+        emit('event', { event: 'toast:hideAll', payload: {} });
+      };
+    },
+    destroy: function() {
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

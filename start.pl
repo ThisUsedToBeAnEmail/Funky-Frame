@@ -1,0 +1,1 @@
+perl -Mojo -e 'a->static->paths->[0]=f;a->hook(before_dispatch=>sub{my$c=shift;my$p=$c->req->url->path->to_string;$p.="/"unless$p=~/\.\w+$/||$p=~m|/$|;$p.="index.html"if$p=~m|/$|;$c->req->url->path($p)});a->start' daemon -l http://0.0.0.0:8000

@@ -1,0 +1,586 @@
+<div data-page="component-zero-click" class="component-demo">
+  <h2>ZeroClick</h2>
+  <p class="text-muted">Event-to-component automation - trigger actions on events without code</p>
+
+  <!-- HTML Declarative Demo -->
+  <section class="demo-section zero-click-demo__section" aria-labelledby="declarative-heading" id="declarative-demo-section">
+    <h3 id="declarative-heading">Declarative Triggers (HTML)</h3>
+    <p class="text-muted small">Use data-zero-click to wire DOM events directly to component actions - no JavaScript needed</p>
+
+    <div class="demo-area">
+      <div class="zero-click-demo__declarative-examples">
+        <button type="button" class="btn btn-primary"
+                data-zero-click="click -> Toast.success('Button clicked!')">
+          <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
+          Click Me (Declarative)
+        </button>
+
+        <div class="zero-click-demo__hover-zone"
+             data-zero-click="mouseenter -> Toast.info('Mouse entered zone')"
+             tabindex="0"
+             role="button"
+             aria-label="Hover zone - triggers toast on mouse enter">
+          <i class="fas fa-hand-pointer" aria-hidden="true"></i>
+          Hover Over Me
+        </div>
+
+        <input type="text"
+               class="form-control zero-click-demo__input"
+               placeholder="Focus me..."
+               data-zero-click="focus -> Toast.info('Input focused')"
+               aria-label="Focus this input to trigger a toast">
+      </div>
+
+      <div class="zero-click-demo__code">
+        <code class="zero-click-demo__syntax">
+          <span class="zero-click-demo__attr">data-zero-click=</span><span class="zero-click-demo__string">"click -> Toast.success('Clicked!')"</span>
+        </code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event-Driven Demo -->
+  <section class="demo-section zero-click-demo__section" aria-labelledby="simple-heading" id="simple-demo-section">
+    <h3 id="simple-heading">Event-Driven Triggers (JavaScript)</h3>
+    <p class="text-muted small">Register triggers that respond to custom application events (PubSub, WebSocket, etc.)</p>
+
+    <div class="demo-area">
+      <div class="zero-click-demo__triggers">
+        <button type="button" class="btn btn-primary" id="zc-btn-welcome">
+          <i class="fas fa-user" aria-hidden="true"></i>
+          Emit Login Event
+        </button>
+        <button type="button" class="btn btn-info" id="zc-btn-cart">
+          <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+          Emit Cart Event
+        </button>
+        <button type="button" class="btn btn-success" id="zc-btn-save">
+          <i class="fas fa-save" aria-hidden="true"></i>
+          Emit Save Event
+        </button>
+      </div>
+
+      <div class="zero-click-demo__code">
+        <code class="zero-click-demo__syntax">
+          <span class="zero-click-demo__comment">// Register: listen for event, trigger action</span>
+        </code>
+        <code class="zero-click-demo__syntax">
+          <span class="zero-click-demo__fn">Funky.ZeroClick.on(</span><span class="zero-click-demo__event">'funky:user:logged-in'</span><span class="zero-click-demo__fn">, {</span>
+        </code>
+        <code class="zero-click-demo__syntax zero-click-demo__syntax--indent">
+          <span class="zero-click-demo__prop">component:</span> <span class="zero-click-demo__string">'Toast'</span>,
+          <span class="zero-click-demo__prop">method:</span> <span class="zero-click-demo__string">'success'</span>,
+          <span class="zero-click-demo__prop">args:</span> [<span class="zero-click-demo__string">'Welcome!'</span>]
+        </code>
+        <code class="zero-click-demo__syntax">
+          <span class="zero-click-demo__fn">});</span>
+        </code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conditional Demo -->
+  <section class="demo-section zero-click-demo__section" aria-labelledby="conditional-heading" id="conditional-demo-section">
+    <h3 id="conditional-heading">Conditional Triggers</h3>
+    <p class="text-muted small">Triggers that only fire when conditions are met</p>
+
+    <div class="demo-area">
+      <div class="zero-click-demo__conditional-controls">
+        <div class="zero-click-demo__priority-picker">
+          <label class="form-label" id="priority-label">Priority Level:</label>
+          <div class="btn-group" role="group" aria-labelledby="priority-label">
+            <button type="button" class="btn btn-outline-secondary active" data-priority="low">Low</button>
+            <button type="button" class="btn btn-outline-secondary" data-priority="medium">Medium</button>
+            <button type="button" class="btn btn-outline-secondary" data-priority="high">High</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-warning" id="zc-btn-notification">
+          <i class="fas fa-bell" aria-hidden="true"></i>
+          Send Notification
+        </button>
+      </div>
+
+      <div class="zero-click-demo__code">
+        <code class="zero-click-demo__syntax">
+          <span class="zero-click-demo__event">funky:notification</span>
+          <span class="zero-click-demo__arrow">→</span>
+          <span class="zero-click-demo__action">Toast.warning()</span>
+          <span class="zero-click-demo__condition">if priority === "high"</span>
+        </code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Debug Panel -->
+  <section class="demo-section zero-click-demo__section" aria-labelledby="debug-heading" id="debug-panel-section">
+    <h3 id="debug-heading">Debug Panel</h3>
+    <p class="text-muted small">Monitor triggers, pause/resume, and control ZeroClick behavior</p>
+
+    <div class="demo-area">
+      <div class="zero-click-demo__debug-controls">
+        <div class="zero-click-demo__status-row">
+          <span class="zeroclick-status active" id="zc-status" role="status" aria-live="polite">Active</span>
+          <span class="badge bg-secondary" id="zc-trigger-count">0 triggers</span>
+        </div>
+
+        <div class="zero-click-demo__control-buttons">
+          <button type="button" class="btn btn-outline-warning btn-sm" id="zc-btn-pause">
+            <i class="fas fa-pause" aria-hidden="true"></i>
+            Pause All
+          </button>
+          <button type="button" class="btn btn-outline-success btn-sm" id="zc-btn-resume" disabled>
+            <i class="fas fa-play" aria-hidden="true"></i>
+            Resume All
+          </button>
+          <button type="button" class="btn btn-outline-info btn-sm" id="zc-btn-debug">
+            <i class="fas fa-bug" aria-hidden="true"></i>
+            Toggle Debug
+          </button>
+        </div>
+      </div>
+
+      <div class="zero-click-demo__log" role="log" aria-live="polite" aria-label="Event log">
+        <div class="zero-click-demo__log-header">
+          <span><i class="fas fa-history" aria-hidden="true"></i> Event Log</span>
+          <button type="button" class="btn btn-link btn-sm" id="zc-btn-clear-log">Clear</button>
+        </div>
+        <div class="zero-click-demo__log-entries" id="zc-log-entries">
+          <div class="zero-click-demo__log-empty">No events yet. Click a button above to trigger events.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Demo -->
+  <section class="demo-section zero-click-demo__section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Programmatically manage triggers</p>
+
+    <div class="demo-area">
+      <div class="zero-click-demo__api-buttons">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="zc-btn-add-trigger">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+          Add Trigger
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm" id="zc-btn-remove-trigger">
+          <i class="fas fa-minus" aria-hidden="true"></i>
+          Remove Last
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="zc-btn-list-triggers">
+          <i class="fas fa-list" aria-hidden="true"></i>
+          List Triggers
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm" id="zc-btn-fire-event">
+          <i class="fas fa-bolt" aria-hidden="true"></i>
+          Fire Custom Event
+        </button>
+      </div>
+
+      <div class="zero-click-demo__registered-triggers" id="zc-registered-triggers">
+        <strong>Registered Triggers:</strong>
+        <ul id="zc-trigger-list" class="zero-click-demo__trigger-list"></ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var triggerIds = [];
+  var propsChangedHandler = null;
+  var eventListeners = [];
+  var selectedPriority = 'low';
+
+  function addLogEntry(type, message) {
+    var logEntries = document.getElementById('zc-log-entries');
+    if (!logEntries) return;
+
+    var emptyMsg = logEntries.querySelector('.zero-click-demo__log-empty');
+    if (emptyMsg) {
+      emptyMsg.remove();
+    }
+
+    var time = new Date().toLocaleTimeString();
+    var entry = document.createElement('div');
+    entry.className = 'zero-click-demo__log-entry zero-click-demo__log-entry--' + type;
+    entry.innerHTML = '<span class="zero-click-demo__log-time">' + time + '</span>' +
+                      '<span class="zero-click-demo__log-type">' + type + '</span>' +
+                      '<span class="zero-click-demo__log-message">' + message + '</span>';
+
+    logEntries.insertBefore(entry, logEntries.firstChild);
+
+    // Keep only last 20 entries
+    while (logEntries.children.length > 20) {
+      logEntries.removeChild(logEntries.lastChild);
+    }
+
+    emit('event', { event: 'zeroclick:log', payload: { type: type, message: message } });
+  }
+
+  function updateStatus() {
+    var statusEl = document.getElementById('zc-status');
+    var countEl = document.getElementById('zc-trigger-count');
+    var pauseBtn = document.getElementById('zc-btn-pause');
+    var resumeBtn = document.getElementById('zc-btn-resume');
+
+    if (Funky.ZeroClick.isPaused()) {
+      statusEl.className = 'zeroclick-status paused';
+      statusEl.textContent = 'Paused';
+      pauseBtn.disabled = true;
+      resumeBtn.disabled = false;
+    } else {
+      statusEl.className = 'zeroclick-status active';
+      statusEl.textContent = 'Active';
+      pauseBtn.disabled = false;
+      resumeBtn.disabled = true;
+    }
+
+    var triggers = Funky.ZeroClick.getTriggers();
+    countEl.textContent = triggers.length + ' trigger' + (triggers.length !== 1 ? 's' : '');
+  }
+
+  function updateTriggerList() {
+    var list = document.getElementById('zc-trigger-list');
+    if (!list) return;
+
+    var triggers = Funky.ZeroClick.getTriggers();
+    list.innerHTML = '';
+
+    if (triggers.length === 0) {
+      list.innerHTML = '<li class="text-muted">No triggers registered</li>';
+      return;
+    }
+
+    triggers.forEach(function(t) {
+      var li = document.createElement('li');
+      li.innerHTML = '<code>#' + t.id + '</code> ' + t.event +
+                     ' <span class="badge bg-secondary">' + t.actionCount + ' action(s)</span>';
+      list.appendChild(li);
+    });
+  }
+
+  function setupTriggers(props) {
+    // Clean up existing triggers
+    triggerIds.forEach(function(id) {
+      Funky.ZeroClick.off(id);
+    });
+    triggerIds = [];
+
+    // Initialize declarative triggers from HTML (data-zero-click attributes)
+    var demoContainer = document.querySelector('[data-page="component-zero-click"]');
+    if (demoContainer) {
+      Funky.ZeroClick.init(demoContainer);
+    }
+
+    // Simple trigger: login
+    var id1 = Funky.ZeroClick.on('funky:demo:login', {
+      component: 'Toast',
+      method: 'success',
+      args: ['Welcome back, user!']
+    });
+    triggerIds.push(id1);
+    addLogEntry('registered', 'funky:demo:login → Toast.success');
+
+    // Simple trigger: cart
+    var id2 = Funky.ZeroClick.on('funky:demo:cart', {
+      component: 'Toast',
+      method: 'info',
+      args: ['Item added to cart ({{count}} items)']
+    });
+    triggerIds.push(id2);
+    addLogEntry('registered', 'funky:demo:cart → Toast.info');
+
+    // Simple trigger: save
+    var id3 = Funky.ZeroClick.on('funky:demo:save', {
+      component: 'Toast',
+      method: 'success',
+      args: ['Document saved successfully!']
+    });
+    triggerIds.push(id3);
+    addLogEntry('registered', 'funky:demo:save → Toast.success');
+
+    // Conditional trigger: high priority notification
+    var id4 = Funky.ZeroClick.on('funky:demo:notification', {
+      component: 'Toast',
+      method: 'warning',
+      args: ['⚠️ High Priority: {{message}}'],
+      condition: '"{{priority}}" === "high"'
+    });
+    triggerIds.push(id4);
+    addLogEntry('registered', 'funky:demo:notification → Toast.warning (if high priority)');
+
+    // Low priority info notification
+    var id5 = Funky.ZeroClick.on('funky:demo:notification', {
+      component: 'Toast',
+      method: 'info',
+      args: ['{{message}}'],
+      condition: '"{{priority}}" !== "high"'
+    });
+    triggerIds.push(id5);
+    addLogEntry('registered', 'funky:demo:notification → Toast.info (if not high priority)');
+
+    updateStatus();
+    updateTriggerList();
+  }
+
+  function setupEventListeners() {
+    // Login button
+    var loginBtn = document.getElementById('zc-btn-welcome');
+    if (loginBtn) {
+      var loginHandler = function() {
+        Funky.ZeroClick.fire('funky:demo:login', { username: 'demo_user' });
+        addLogEntry('fired', 'funky:demo:login');
+        emit('event', { event: 'funky:demo:login', payload: { username: 'demo_user' } });
+      };
+      loginBtn.addEventListener('click', loginHandler);
+      eventListeners.push({ el: loginBtn, event: 'click', handler: loginHandler });
+    }
+
+    // Cart button
+    var cartBtn = document.getElementById('zc-btn-cart');
+    if (cartBtn) {
+      var cartCount = 0;
+      var cartHandler = function() {
+        cartCount++;
+        Funky.ZeroClick.fire('funky:demo:cart', { count: cartCount, product: 'Widget' });
+        addLogEntry('fired', 'funky:demo:cart (count: ' + cartCount + ')');
+        emit('event', { event: 'funky:demo:cart', payload: { count: cartCount } });
+      };
+      cartBtn.addEventListener('click', cartHandler);
+      eventListeners.push({ el: cartBtn, event: 'click', handler: cartHandler });
+    }
+
+    // Save button
+    var saveBtn = document.getElementById('zc-btn-save');
+    if (saveBtn) {
+      var saveHandler = function() {
+        Funky.ZeroClick.fire('funky:demo:save', { filename: 'document.txt' });
+        addLogEntry('fired', 'funky:demo:save');
+        emit('event', { event: 'funky:demo:save', payload: { filename: 'document.txt' } });
+      };
+      saveBtn.addEventListener('click', saveHandler);
+      eventListeners.push({ el: saveBtn, event: 'click', handler: saveHandler });
+    }
+
+    // Priority buttons
+    var priorityBtns = document.querySelectorAll('[data-priority]');
+    priorityBtns.forEach(function(btn) {
+      var priorityHandler = function() {
+        priorityBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        selectedPriority = btn.getAttribute('data-priority');
+        addLogEntry('config', 'Priority set to: ' + selectedPriority);
+      };
+      btn.addEventListener('click', priorityHandler);
+      eventListeners.push({ el: btn, event: 'click', handler: priorityHandler });
+    });
+
+    // Notification button
+    var notifBtn = document.getElementById('zc-btn-notification');
+    if (notifBtn) {
+      var notifHandler = function() {
+        var messages = {
+          low: 'A low priority update occurred',
+          medium: 'Something needs your attention',
+          high: 'Urgent action required!'
+        };
+        Funky.ZeroClick.fire('funky:demo:notification', {
+          priority: selectedPriority,
+          message: messages[selectedPriority]
+        });
+        addLogEntry('fired', 'funky:demo:notification (priority: ' + selectedPriority + ')');
+        emit('event', { event: 'funky:demo:notification', payload: { priority: selectedPriority } });
+      };
+      notifBtn.addEventListener('click', notifHandler);
+      eventListeners.push({ el: notifBtn, event: 'click', handler: notifHandler });
+    }
+
+    // Pause button
+    var pauseBtn = document.getElementById('zc-btn-pause');
+    if (pauseBtn) {
+      var pauseHandler = function() {
+        Funky.ZeroClick.pause();
+        addLogEntry('control', 'ZeroClick paused');
+        updateStatus();
+        emit('event', { event: 'zeroclick:pause', payload: {} });
+      };
+      pauseBtn.addEventListener('click', pauseHandler);
+      eventListeners.push({ el: pauseBtn, event: 'click', handler: pauseHandler });
+    }
+
+    // Resume button
+    var resumeBtn = document.getElementById('zc-btn-resume');
+    if (resumeBtn) {
+      var resumeHandler = function() {
+        Funky.ZeroClick.resume();
+        addLogEntry('control', 'ZeroClick resumed');
+        updateStatus();
+        emit('event', { event: 'zeroclick:resume', payload: {} });
+      };
+      resumeBtn.addEventListener('click', resumeHandler);
+      eventListeners.push({ el: resumeBtn, event: 'click', handler: resumeHandler });
+    }
+
+    // Debug toggle button
+    var debugBtn = document.getElementById('zc-btn-debug');
+    var debugMode = false;
+    if (debugBtn) {
+      var debugHandler = function() {
+        debugMode = !debugMode;
+        Funky.ZeroClick.debug(debugMode);
+        debugBtn.classList.toggle('active', debugMode);
+        addLogEntry('control', 'Debug mode: ' + (debugMode ? 'ON' : 'OFF'));
+        emit('event', { event: 'zeroclick:debug', payload: { enabled: debugMode } });
+      };
+      debugBtn.addEventListener('click', debugHandler);
+      eventListeners.push({ el: debugBtn, event: 'click', handler: debugHandler });
+    }
+
+    // Clear log button
+    var clearBtn = document.getElementById('zc-btn-clear-log');
+    if (clearBtn) {
+      var clearHandler = function() {
+        var logEntries = document.getElementById('zc-log-entries');
+        if (logEntries) {
+          logEntries.innerHTML = '<div class="zero-click-demo__log-empty">No events yet. Click a button above to trigger events.</div>';
+        }
+      };
+      clearBtn.addEventListener('click', clearHandler);
+      eventListeners.push({ el: clearBtn, event: 'click', handler: clearHandler });
+    }
+
+    // Add trigger button
+    var addTriggerBtn = document.getElementById('zc-btn-add-trigger');
+    if (addTriggerBtn) {
+      var addTriggerHandler = function() {
+        var id = Funky.ZeroClick.on('funky:demo:custom', {
+          component: 'Toast',
+          method: 'info',
+          args: ['Custom trigger fired!']
+        });
+        triggerIds.push(id);
+        addLogEntry('registered', 'funky:demo:custom → Toast.info (id: ' + id + ')');
+        updateStatus();
+        updateTriggerList();
+        emit('event', { event: 'zeroclick:triggerAdded', payload: { id: id } });
+      };
+      addTriggerBtn.addEventListener('click', addTriggerHandler);
+      eventListeners.push({ el: addTriggerBtn, event: 'click', handler: addTriggerHandler });
+    }
+
+    // Remove trigger button
+    var removeTriggerBtn = document.getElementById('zc-btn-remove-trigger');
+    if (removeTriggerBtn) {
+      var removeTriggerHandler = function() {
+        if (triggerIds.length > 0) {
+          var id = triggerIds.pop();
+          Funky.ZeroClick.off(id);
+          addLogEntry('removed', 'Trigger #' + id + ' removed');
+          updateStatus();
+          updateTriggerList();
+          emit('event', { event: 'zeroclick:triggerRemoved', payload: { id: id } });
+        } else {
+          addLogEntry('error', 'No triggers to remove');
+        }
+      };
+      removeTriggerBtn.addEventListener('click', removeTriggerHandler);
+      eventListeners.push({ el: removeTriggerBtn, event: 'click', handler: removeTriggerHandler });
+    }
+
+    // List triggers button
+    var listTriggersBtn = document.getElementById('zc-btn-list-triggers');
+    if (listTriggersBtn) {
+      var listTriggersHandler = function() {
+        var triggers = Funky.ZeroClick.getTriggers();
+        addLogEntry('info', 'Found ' + triggers.length + ' trigger(s)');
+        triggers.forEach(function(t) {
+          addLogEntry('info', '  #' + t.id + ': ' + t.event + ' (' + t.actionCount + ' action(s))');
+        });
+        updateTriggerList();
+      };
+      listTriggersBtn.addEventListener('click', listTriggersHandler);
+      eventListeners.push({ el: listTriggersBtn, event: 'click', handler: listTriggersHandler });
+    }
+
+    // Fire custom event button
+    var fireEventBtn = document.getElementById('zc-btn-fire-event');
+    if (fireEventBtn) {
+      var fireEventHandler = function() {
+        Funky.ZeroClick.fire('funky:demo:custom', { timestamp: Date.now() });
+        addLogEntry('fired', 'funky:demo:custom');
+        emit('event', { event: 'funky:demo:custom', payload: { timestamp: Date.now() } });
+      };
+      fireEventBtn.addEventListener('click', fireEventHandler);
+      eventListeners.push({ el: fireEventBtn, event: 'click', handler: fireEventHandler });
+    }
+  }
+
+  function applyProps(props) {
+    var simpleSection = document.getElementById('simple-demo-section');
+    var conditionalSection = document.getElementById('conditional-demo-section');
+    var debugSection = document.getElementById('debug-panel-section');
+
+    if (simpleSection) {
+      simpleSection.style.display = props.showSimpleDemo !== false ? '' : 'none';
+    }
+    if (conditionalSection) {
+      conditionalSection.style.display = props.showConditional !== false ? '' : 'none';
+    }
+    if (debugSection) {
+      debugSection.style.display = props.showDebugPanel !== false ? '' : 'none';
+    }
+  }
+
+  Funky.Pages.register('component-zero-click', {
+    init: function(state) {
+      var props = getProps();
+
+      setupTriggers(props);
+      setupEventListeners();
+      applyProps(props);
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          applyProps(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'zeroclick:init', payload: { triggerCount: triggerIds.length } });
+    },
+
+    destroy: function() {
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Remove event listeners
+      eventListeners.forEach(function(item) {
+        item.el.removeEventListener(item.event, item.handler);
+      });
+      eventListeners = [];
+
+      // Clean up triggers
+      triggerIds.forEach(function(id) {
+        Funky.ZeroClick.off(id);
+      });
+      triggerIds = [];
+
+      // Resume if paused
+      if (Funky.ZeroClick.isPaused()) {
+        Funky.ZeroClick.resume();
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

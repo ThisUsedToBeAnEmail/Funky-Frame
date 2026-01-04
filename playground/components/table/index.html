@@ -1,0 +1,502 @@
+<div data-page="component-table" class="component-demo">
+  <h2>Table</h2>
+  <p class="text-muted">Native ES5 data table with sorting, pagination, selection, export, conditional formatting, context menu, aggregations, and full accessibility support.</p>
+
+  <section class="demo-section" aria-labelledby="table-demo-heading">
+    <h3 id="table-demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">Right-click rows for context menu. Configure via props panel.</p>
+    <div class="demo-area">
+      <div class="table-demo__toolbar" id="table-toolbar" role="toolbar" aria-label="Table actions">
+        <button class="btn btn-success btn-sm" id="table-add-row" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i>Add Row
+        </button>
+        <button class="btn btn-danger btn-sm" id="table-remove-selected" type="button">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i>Remove Selected
+        </button>
+        <button class="btn btn-warning btn-sm" id="table-highlight-first" type="button">
+          <i class="fas fa-star me-1" aria-hidden="true"></i>Highlight First
+        </button>
+        <button class="btn btn-info btn-sm" id="table-reload" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i>Reload
+        </button>
+        <span class="table-demo__selection-badge" id="table-selection-badge">0 selected</span>
+      </div>
+      <div id="table-container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="table-api-heading">
+    <h3 id="table-api-heading">API Methods</h3>
+    <p class="text-muted small">Control the table programmatically.</p>
+    <div class="demo-area table-demo__button-grid" role="group" aria-label="API control buttons">
+      <button class="btn btn-outline-primary btn-sm" id="table-select-all" type="button">
+        <i class="fas fa-check-double me-1" aria-hidden="true"></i>Select All
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="table-deselect-all" type="button">
+        <i class="fas fa-times me-1" aria-hidden="true"></i>Deselect All
+      </button>
+      <button class="btn btn-outline-info btn-sm" id="table-get-selected" type="button">
+        <i class="fas fa-list me-1" aria-hidden="true"></i>Get Selected
+      </button>
+      <button class="btn btn-outline-success btn-sm" id="table-get-data" type="button">
+        <i class="fas fa-database me-1" aria-hidden="true"></i>Get All Data
+      </button>
+      <button class="btn btn-outline-warning btn-sm" id="table-goto-page" type="button">
+        <i class="fas fa-arrow-right me-1" aria-hidden="true"></i>Go to Page 2
+      </button>
+      <button class="btn btn-outline-dark btn-sm" id="table-search" type="button">
+        <i class="fas fa-search me-1" aria-hidden="true"></i>Search "Active"
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" id="table-clear-search" type="button">
+        <i class="fas fa-eraser me-1" aria-hidden="true"></i>Clear Search
+      </button>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="table-state-heading">
+    <h3 id="table-state-heading">Current State</h3>
+    <p class="text-muted small">Real-time table state information.</p>
+    <div class="demo-area">
+      <pre id="table-state" class="table-demo__log" aria-live="polite" aria-label="Table state">Initializing table...</pre>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="table-log-heading">
+    <h3 id="table-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="table-log" class="table-demo__log" aria-live="polite" aria-label="Table event log">Interact with the table to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var tableInstance = null;
+  var logs = [];
+  var propsChangedHandler = null;
+
+  // Sample data with diverse types
+  var sampleData = [
+    { id: 1, name: 'Acme Corporation', status: 'active', amount: 125000.50, progress: 85, email: 'info@acme.com', isActive: true, created_at: '2025-12-01' },
+    { id: 2, name: 'Beta Industries', status: 'pending', amount: 45000.00, progress: 42, email: 'sales@beta.io', isActive: true, created_at: '2025-12-05' },
+    { id: 3, name: 'Gamma Solutions', status: 'active', amount: 89500.75, progress: 67, email: 'hello@gamma.co', isActive: true, created_at: '2025-12-08' },
+    { id: 4, name: 'Delta Dynamics', status: 'inactive', amount: 12300.00, progress: 15, email: 'contact@delta.net', isActive: false, created_at: '2025-12-10' },
+    { id: 5, name: 'Epsilon Labs', status: 'active', amount: 234000.00, progress: 92, email: 'labs@epsilon.org', isActive: true, created_at: '2025-12-12' },
+    { id: 6, name: 'Zeta Ventures', status: 'pending', amount: 67800.25, progress: 55, email: 'invest@zeta.vc', isActive: true, created_at: '2025-12-14' },
+    { id: 7, name: 'Eta Consulting', status: 'active', amount: 156000.00, progress: 78, email: 'consult@eta.biz', isActive: true, created_at: '2025-12-15' },
+    { id: 8, name: 'Theta Tech', status: 'inactive', amount: 8900.00, progress: 10, email: 'tech@theta.dev', isActive: false, created_at: '2025-12-16' },
+    { id: 9, name: 'Iota Innovations', status: 'active', amount: 445000.00, progress: 95, email: 'innovate@iota.ai', isActive: true, created_at: '2025-12-18' },
+    { id: 10, name: 'Kappa Capital', status: 'pending', amount: 78000.00, progress: 38, email: 'capital@kappa.fund', isActive: true, created_at: '2025-12-20' },
+    { id: 11, name: 'Lambda Logic', status: 'active', amount: 198000.00, progress: 88, email: 'logic@lambda.io', isActive: true, created_at: '2025-12-21' },
+    { id: 12, name: 'Mu Manufacturing', status: 'inactive', amount: 34500.00, progress: 22, email: 'orders@mu.mfg', isActive: false, created_at: '2025-12-22' }
+  ];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 15) logs.pop();
+    var logEl = document.getElementById('table-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateState() {
+    var stateEl = document.getElementById('table-state');
+    if (!stateEl || !tableInstance) return;
+
+    var props = getProps();
+    var selectedIds = tableInstance.getSelectedIds ? tableInstance.getSelectedIds() : [];
+    var totalRows = tableInstance.getData ? tableInstance.getData().length : 0;
+
+    stateEl.textContent = JSON.stringify({
+      totalRows: totalRows,
+      selectedCount: selectedIds.length,
+      pageLength: props.pageLength || 10,
+      select: props.select || 'multi',
+      responsive: props.responsive !== false,
+      striped: props.striped !== false,
+      hover: props.hover !== false,
+      enableExport: props.enableExport !== false,
+      enableColvis: props.enableColvis !== false
+    }, null, 2);
+  }
+
+  function updateSelectionBadge() {
+    var badge = document.getElementById('table-selection-badge');
+    if (badge && tableInstance && tableInstance.getSelectedIds) {
+      var count = tableInstance.getSelectedIds().length;
+      badge.textContent = count + ' selected';
+    }
+  }
+
+  function createTable() {
+    var props = getProps();
+    var container = document.getElementById('table-container');
+    if (!container) return;
+
+    // Destroy existing table
+    if (tableInstance && tableInstance.destroy) {
+      tableInstance.destroy();
+      tableInstance = null;
+    }
+    container.innerHTML = '';
+
+    // Build columns with different types and renderers
+    var columns = [
+      { data: 'id', title: 'ID', width: '60px', className: 'text-center', responsivePriority: 1 },
+      { data: 'name', title: 'Company', responsivePriority: 1 },
+      {
+        data: 'status',
+        title: 'Status',
+        responsivePriority: 2,
+        render: function(value) {
+          var colors = { active: 'success', pending: 'warning', inactive: 'secondary' };
+          return '<span class="badge bg-' + (colors[value] || 'secondary') + '">' + value + '</span>';
+        }
+      },
+      {
+        data: 'amount',
+        title: 'Amount',
+        className: 'text-end',
+        responsivePriority: 3,
+        render: function(value) {
+          return '$' + parseFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        }
+      },
+      {
+        data: 'progress',
+        title: 'Progress',
+        responsivePriority: 4,
+        render: function(value) {
+          var color = value >= 80 ? 'success' : value >= 50 ? 'info' : value >= 30 ? 'warning' : 'danger';
+          return '<div class="progress" style="height: 18px; min-width: 80px; background: var(--pro-bg-tertiary, #e9ecef);">' +
+            '<div class="progress-bar bg-' + color + '" style="width: ' + value + '%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">' + value + '%</div>' +
+            '</div>';
+        }
+      },
+      {
+        data: 'email',
+        title: 'Email',
+        responsivePriority: 5,
+        render: function(value) {
+          return '<a href="mailto:' + value + '">' + value + '</a>';
+        }
+      },
+      {
+        data: 'isActive',
+        title: 'Active',
+        className: 'text-center',
+        responsivePriority: 4,
+        render: function(value) {
+          return value ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-muted"></i>';
+        }
+      },
+      { data: 'created_at', title: 'Created', responsivePriority: 5 }
+    ];
+
+    // Build config from props
+    var tableConfig = {
+      data: sampleData.slice(), // Copy data to avoid mutation
+      columns: columns,
+      pageLength: props.pageLength || 10,
+      serverSide: false,
+      responsive: props.responsive !== false,
+      scrollX: props.responsive === false,
+      select: props.select === 'false' ? false : (props.select || 'multi'),
+      selectAllCheckbox: props.select === 'multi',
+      striped: props.striped !== false,
+      hover: props.hover !== false,
+      enableExport: props.enableExport !== false,
+      enableColvis: props.enableColvis !== false,
+
+      // Callbacks
+      onSelect: function(data, table) {
+        updateSelectionBadge();
+        log('Selected: ' + (data.name || data.id));
+        emit('event', { event: 'table:select', payload: { id: data.id, name: data.name } });
+        updateState();
+      },
+      onDeselect: function(data, table) {
+        updateSelectionBadge();
+        log('Deselected: ' + (data.name || data.id));
+        emit('event', { event: 'table:deselect', payload: { id: data.id } });
+        updateState();
+      },
+      onOrder: function(order, table) {
+        log('Sorted: column ' + order[0].column + ' ' + order[0].dir);
+        emit('event', { event: 'table:sort', payload: order });
+      },
+      onPage: function(page, table) {
+        log('Page changed to: ' + page);
+        emit('event', { event: 'table:page', payload: { page: page } });
+      },
+      onSearch: function(query, table) {
+        log('Search: "' + query + '"');
+        emit('event', { event: 'table:search', payload: { query: query } });
+      }
+    };
+
+    // Animations
+    if (props.enableAnimations !== false) {
+      tableConfig.animations = {
+        enabled: true,
+        highlightDuration: 2000
+      };
+    }
+
+    // Context Menu
+    if (props.showContextMenu !== false) {
+      tableConfig.contextMenu = {
+        enabled: true,
+        selectOnContextMenu: true,
+        items: [
+          { label: 'View Details', icon: 'fas fa-eye', action: function(row) {
+            Funky.Toast.info('Viewing: ' + row.name);
+            log('Context menu: View ' + row.name);
+            emit('event', { event: 'table:context-view', payload: { id: row.id } });
+          }},
+          { label: 'Edit', icon: 'fas fa-edit', action: function(row) {
+            Funky.Toast.info('Editing: ' + row.name);
+            log('Context menu: Edit ' + row.name);
+            emit('event', { event: 'table:context-edit', payload: { id: row.id } });
+          }},
+          { type: 'divider' },
+          { label: 'Delete', icon: 'fas fa-trash', className: 'text-danger', action: function(row, table) {
+            table.removeRowAnimated(row.id, function() {
+              Funky.Toast.warning('Deleted: ' + row.name);
+              log('Context menu: Deleted ' + row.name);
+              emit('event', { event: 'table:context-delete', payload: { id: row.id } });
+              updateState();
+            });
+          }}
+        ]
+      };
+    }
+
+    // Aggregations
+    if (props.showAggregations !== false) {
+      tableConfig.aggregations = {
+        enabled: true,
+        position: 'footer',
+        columns: {
+          amount: ['sum', 'avg'],
+          progress: ['avg'],
+          id: ['count']
+        },
+        formatters: {
+          amount: function(value, type) {
+            return '$' + parseFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2 });
+          }
+        }
+      };
+    }
+
+    // Conditional Formatting
+    if (props.showConditionalFormatting !== false) {
+      tableConfig.conditionalFormatting = {
+        enabled: true,
+        rules: [
+          {
+            id: 'high-value',
+            target: 'row',
+            condition: function(row) { return row.amount >= 200000; },
+            style: { backgroundColor: 'rgba(25, 135, 84, 0.1)' }
+          },
+          {
+            id: 'low-progress',
+            target: 'row',
+            condition: function(row) { return row.progress < 25; },
+            style: { backgroundColor: 'rgba(220, 53, 69, 0.1)' }
+          }
+        ]
+      };
+    }
+
+    // Initialize table
+    if (Funky.Table) {
+      tableInstance = Funky.Table.init('#table-container', tableConfig);
+      log('Table created with ' + sampleData.length + ' rows');
+      emit('event', { event: 'table:init', payload: { rows: sampleData.length } });
+      updateState();
+      updateSelectionBadge();
+    }
+  }
+
+  Funky.Pages.register('component-table', {
+    init: function(state) {
+      var props = getProps();
+      logs = [];
+
+      log('Init with pageLength=' + (props.pageLength || 10) + ', select=' + (props.select || 'multi'));
+      emit('event', { event: 'table:init', payload: props });
+
+      // Create the table
+      createTable();
+
+      // Listen for props changes
+      if (Funky.PubSub) {
+        propsChangedHandler = function(newProps) {
+          log('Props changed - recreating table');
+          createTable();
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      // Toolbar action buttons
+      document.getElementById('table-add-row').onclick = function() {
+        if (!tableInstance) return;
+        var newId = Date.now();
+        var newRow = {
+          id: newId,
+          name: 'New Company #' + (Math.floor(Math.random() * 1000)),
+          status: 'pending',
+          amount: Math.round(Math.random() * 100000),
+          progress: Math.round(Math.random() * 100),
+          email: 'new@example.com',
+          isActive: true,
+          created_at: new Date().toISOString().split('T')[0]
+        };
+        if (tableInstance.insertRowAnimated) {
+          tableInstance.insertRowAnimated(newRow, { position: 'top', highlight: true });
+        } else if (tableInstance.addData) {
+          tableInstance.addData(newRow);
+        }
+        Funky.Toast.success('Row added!');
+        log('Added row: ' + newRow.name);
+        emit('event', { event: 'table:add-row', payload: newRow });
+        updateState();
+      };
+
+      document.getElementById('table-remove-selected').onclick = function() {
+        if (!tableInstance) return;
+        var ids = tableInstance.getSelectedIds ? tableInstance.getSelectedIds() : [];
+        if (ids.length === 0) {
+          Funky.Toast.warning('Select rows first');
+          return;
+        }
+        if (tableInstance.removeRowsAnimated) {
+          tableInstance.removeRowsAnimated(ids, function() {
+            Funky.Toast.success(ids.length + ' rows removed');
+            log('Removed ' + ids.length + ' rows');
+            emit('event', { event: 'table:remove-rows', payload: { count: ids.length } });
+            updateSelectionBadge();
+            updateState();
+          });
+        } else if (tableInstance.removeData) {
+          tableInstance.removeData(ids);
+          Funky.Toast.success(ids.length + ' rows removed');
+        }
+      };
+
+      document.getElementById('table-highlight-first').onclick = function() {
+        if (!tableInstance) return;
+        var data = tableInstance.getData ? tableInstance.getData() : [];
+        if (data.length > 0 && tableInstance.highlightRow) {
+          tableInstance.highlightRow(data[0].id, 'success');
+          Funky.Toast.info('Highlighted first row');
+          log('Highlighted row: ' + data[0].name);
+          emit('event', { event: 'table:highlight', payload: { id: data[0].id } });
+        }
+      };
+
+      document.getElementById('table-reload').onclick = function() {
+        if (!tableInstance) return;
+        if (tableInstance.reload) {
+          tableInstance.reload();
+        } else {
+          createTable();
+        }
+        Funky.Toast.info('Table reloaded');
+        log('Table reloaded');
+        emit('event', { event: 'table:reload', payload: {} });
+      };
+
+      // API buttons
+      document.getElementById('table-select-all').onclick = function() {
+        if (!tableInstance) return;
+        if (tableInstance.selectAll) {
+          tableInstance.selectAll();
+          log('Selected all rows');
+          emit('event', { event: 'table:select-all', payload: {} });
+          updateSelectionBadge();
+          updateState();
+        }
+      };
+
+      document.getElementById('table-deselect-all').onclick = function() {
+        if (!tableInstance) return;
+        if (tableInstance.deselectAll) {
+          tableInstance.deselectAll();
+          log('Deselected all rows');
+          emit('event', { event: 'table:deselect-all', payload: {} });
+          updateSelectionBadge();
+          updateState();
+        }
+      };
+
+      document.getElementById('table-get-selected').onclick = function() {
+        if (!tableInstance) return;
+        var ids = tableInstance.getSelectedIds ? tableInstance.getSelectedIds() : [];
+        var data = tableInstance.getSelectedData ? tableInstance.getSelectedData() : [];
+        log('Selected IDs: [' + ids.join(', ') + ']');
+        emit('event', { event: 'table:get-selected', payload: { ids: ids, count: ids.length } });
+        Funky.Toast.info('Selected: ' + ids.length + ' rows');
+      };
+
+      document.getElementById('table-get-data').onclick = function() {
+        if (!tableInstance) return;
+        var data = tableInstance.getData ? tableInstance.getData() : [];
+        log('Total rows: ' + data.length);
+        emit('event', { event: 'table:get-data', payload: { count: data.length } });
+        Funky.Toast.info('Total rows: ' + data.length);
+      };
+
+      document.getElementById('table-goto-page').onclick = function() {
+        if (!tableInstance) return;
+        if (tableInstance.page) {
+          tableInstance.page(2);
+          log('Navigated to page 2');
+          emit('event', { event: 'table:page', payload: { page: 2 } });
+        }
+      };
+
+      document.getElementById('table-search').onclick = function() {
+        if (!tableInstance) return;
+        if (tableInstance.search) {
+          tableInstance.search('active');
+          log('Searched for "active"');
+          emit('event', { event: 'table:search', payload: { query: 'active' } });
+        }
+      };
+
+      document.getElementById('table-clear-search').onclick = function() {
+        if (!tableInstance) return;
+        if (tableInstance.clearSearch) {
+          tableInstance.clearSearch();
+          log('Search cleared');
+          emit('event', { event: 'table:clear-search', payload: {} });
+        } else if (tableInstance.search) {
+          tableInstance.search('');
+        }
+      };
+    },
+
+    destroy: function() {
+      // Unsubscribe from props changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy table instance
+      if (tableInstance && tableInstance.destroy) {
+        tableInstance.destroy();
+      }
+      tableInstance = null;
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

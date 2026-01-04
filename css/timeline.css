@@ -1,0 +1,1562 @@
+/**
+ * Funky Timeline Component
+ * 
+ * Chronological event display with vertical layout, date grouping,
+ * expandable details, and category markers.
+ */
+
+/* ==========================================================================
+   Timeline Container
+   ========================================================================== */
+
+.funky-timeline {
+    --timeline-line-color: var(--pro-accent-primary, var(--pro-primary, #2f81f7));
+    --timeline-node-bg: var(--pro-accent-primary, var(--pro-primary, #2f81f7));
+    --timeline-node-color: var(--pro-primary-contrast, #fff);
+    --timeline-marker-size: 2.5rem;
+    --timeline-marker-border: 3px;
+    --timeline-content-gap: 1rem;
+    --timeline-group-gap: 2rem;
+    --timeline-event-gap: 1.5rem;
+    
+    position: relative;
+    padding: var(--pro-spacing-md) 0;
+}
+
+.funky-timeline__container {
+    position: relative;
+}
+
+/* ==========================================================================
+   Date Groups
+   ========================================================================== */
+
+.funky-timeline__group {
+    position: relative;
+    margin-bottom: var(--timeline-group-gap);
+}
+
+.funky-timeline__group:last-child {
+    margin-bottom: 0;
+}
+
+.funky-timeline__date {
+    font-size: var(--pro-font-size-sm);
+    font-weight: var(--pro-font-weight-semibold);
+    color: var(--pro-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 var(--pro-spacing-md) 0;
+    padding-left: calc(var(--timeline-marker-size) + var(--timeline-content-gap));
+}
+
+.funky-timeline__events {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+/* ==========================================================================
+   Timeline Events
+   ========================================================================== */
+
+.funky-timeline__event {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--timeline-event-gap);
+    padding-left: calc(var(--timeline-marker-size) + var(--timeline-content-gap));
+}
+
+.funky-timeline__event:last-child {
+    margin-bottom: 0;
+}
+
+.funky-timeline__event:focus {
+    outline: none;
+}
+
+.funky-timeline__event:focus .funky-timeline__content {
+    box-shadow: 0 0 0 2px var(--pro-focus-ring);
+}
+
+/* ==========================================================================
+   Marker & Connector
+   ========================================================================== */
+
+.funky-timeline__marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--timeline-marker-size);
+    height: var(--timeline-marker-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--timeline-node-bg);
+    border: var(--timeline-marker-border) solid var(--timeline-line-color);
+    border-radius: 50%;
+    z-index: 2;
+    font-size: 0.875rem;
+    color: var(--timeline-node-color);
+}
+
+.funky-timeline__marker i {
+    color: inherit;
+}
+
+.funky-timeline__connector {
+    position: absolute;
+    left: calc(var(--timeline-marker-size) / 2 - 1px);
+    top: var(--timeline-marker-size);
+    bottom: calc(-1 * var(--timeline-event-gap));
+    width: 2px;
+    background: var(--timeline-line-color);
+    z-index: 1;
+}
+
+.funky-timeline__event:last-child .funky-timeline__connector {
+    display: none;
+}
+
+/* ==========================================================================
+   Content Card
+   ========================================================================== */
+
+.funky-timeline__content {
+    flex: 1;
+    background: var(--pro-surface);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-radius-md);
+    padding: var(--pro-spacing-md);
+    transition: box-shadow var(--pro-transition-fast);
+}
+
+.funky-timeline__content:hover {
+    box-shadow: var(--pro-shadow-sm);
+}
+
+/* Header */
+.funky-timeline__header {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-sm);
+    margin-bottom: var(--pro-spacing-xs);
+    flex-wrap: wrap;
+}
+
+.funky-timeline__time {
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-muted);
+}
+
+.funky-timeline__category {
+    font-size: var(--pro-font-size-xs);
+    font-weight: var(--pro-font-weight-medium);
+    padding: 0.125rem 0.5rem;
+    background: var(--pro-surface-alt);
+    border-radius: var(--pro-radius-sm);
+}
+
+.funky-timeline__expand-toggle {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--pro-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--pro-radius-sm);
+    transition: color var(--pro-transition-fast), transform var(--pro-transition-fast);
+}
+
+.funky-timeline__expand-toggle:hover {
+    color: var(--pro-text);
+}
+
+.funky-timeline__expand-toggle[aria-expanded="true"] {
+    transform: rotate(180deg);
+}
+
+/* Title & Description */
+.funky-timeline__title {
+    font-size: var(--pro-font-size-base);
+    font-weight: var(--pro-font-weight-semibold);
+    color: var(--pro-text);
+    margin: 0 0 var(--pro-spacing-xs) 0;
+}
+
+.funky-timeline__description {
+    font-size: var(--pro-font-size-sm);
+    color: var(--pro-text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Details */
+.funky-timeline__details {
+    margin-top: var(--pro-spacing-md);
+    padding-top: var(--pro-spacing-md);
+    border-top: 1px solid var(--pro-border-color);
+}
+
+.funky-timeline__details-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--pro-spacing-xs) var(--pro-spacing-md);
+    font-size: var(--pro-font-size-sm);
+    margin: 0;
+}
+
+.funky-timeline__details-list dt {
+    color: var(--pro-text-muted);
+    font-weight: var(--pro-font-weight-medium);
+}
+
+.funky-timeline__details-list dd {
+    color: var(--pro-text);
+    margin: 0;
+}
+
+/* Footer */
+.funky-timeline__footer {
+    margin-top: var(--pro-spacing-md);
+}
+
+.funky-timeline__link {
+    font-size: var(--pro-font-size-sm);
+    color: var(--pro-primary);
+    text-decoration: none;
+}
+
+.funky-timeline__link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Loading & Empty States
+   ========================================================================== */
+
+.funky-timeline__loading,
+.funky-timeline__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pro-spacing-xl);
+    color: var(--pro-text-muted);
+    text-align: center;
+    gap: var(--pro-spacing-sm);
+}
+
+.funky-timeline__loading i,
+.funky-timeline__empty i {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.funky-timeline__empty p {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Animation
+   ========================================================================== */
+
+.funky-timeline__event--entering {
+    animation: timeline-slide-in 0.3s ease-out;
+}
+
+@keyframes timeline-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-1rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.funky-timeline__event--expanded .funky-timeline__content {
+    background: var(--pro-surface-alt);
+}
+
+/* ==========================================================================
+   Horizontal Layout
+   ========================================================================== */
+
+.funky-timeline--horizontal {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+    --timeline-node-size: 2rem;
+    --timeline-track-padding: 1.5rem;
+}
+
+.funky-timeline__track-container {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: visible; /* Allow node scale on hover to show */
+    scroll-snap-type: x proximity;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding-top: 0.5rem; /* Extra space for hover scale */
+}
+
+.funky-timeline__track-container::-webkit-scrollbar {
+    display: none;
+}
+
+.funky-timeline__track {
+    display: inline-flex;
+    align-items: flex-start;
+    position: relative;
+    padding: var(--timeline-track-padding) var(--pro-spacing-md, 1rem);
+    min-width: 100%;
+}
+
+.funky-timeline--horizontal .funky-timeline__line {
+    position: absolute;
+    /* Center line with node: track padding + half node height - half line height */
+    top: calc(var(--timeline-track-padding) + var(--timeline-node-size) / 2 - 1px);
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--timeline-line-color, var(--pro-border-color, #ddd));
+    z-index: 0;
+}
+
+.funky-timeline--horizontal .funky-timeline__events {
+    display: flex;
+    gap: var(--pro-spacing-lg, 1.5rem);
+    position: relative;
+    z-index: 1;
+}
+
+/* Horizontal Event Item */
+.funky-timeline__event--horizontal {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    scroll-snap-align: center;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.funky-timeline__event--horizontal:focus {
+    outline: none;
+}
+
+.funky-timeline__event--horizontal:focus .funky-timeline__card {
+    box-shadow: 0 0 0 2px var(--pro-focus-ring);
+}
+
+/* Node on the line */
+.funky-timeline__node {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--timeline-node-bg);
+    border: 3px solid var(--timeline-line-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--timeline-node-color);
+    margin-bottom: var(--pro-spacing-sm);
+    transition: transform var(--pro-transition-fast), border-color var(--pro-transition-fast), box-shadow var(--pro-transition-fast);
+    position: relative;
+    z-index: 5; /* Node appears on top of line */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.funky-timeline__event--horizontal:hover .funky-timeline__node,
+.funky-timeline__event--selected .funky-timeline__node {
+    transform: scale(1.2);
+}
+
+/* Card below the line */
+.funky-timeline__card {
+    background: var(--pro-surface);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-radius-md);
+    padding: var(--pro-spacing-md);
+    text-align: center;
+    width: 100%;
+    transition: box-shadow var(--pro-transition-fast), transform var(--pro-transition-fast);
+}
+
+.funky-timeline__event--horizontal:hover .funky-timeline__card {
+    box-shadow: var(--pro-shadow-md);
+    transform: translateY(-2px);
+}
+
+.funky-timeline__event--selected .funky-timeline__card {
+    border-color: var(--pro-primary);
+    box-shadow: var(--pro-shadow-md);
+}
+
+.funky-timeline__card-title {
+    font-size: var(--pro-font-size-base);
+    font-weight: var(--pro-font-weight-semibold);
+    color: var(--pro-text);
+    margin-bottom: var(--pro-spacing-xs);
+}
+
+.funky-timeline__card-date {
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-muted);
+    margin-bottom: var(--pro-spacing-xs);
+}
+
+.funky-timeline__card-description {
+    font-size: var(--pro-font-size-sm);
+    color: var(--pro-text-secondary);
+    line-height: 1.4;
+}
+
+/* Horizontal Card Details (Expandable) */
+.funky-timeline__card-details {
+    margin-top: var(--pro-spacing-sm);
+    padding-top: var(--pro-spacing-sm);
+    border-top: 1px solid var(--pro-border-color);
+}
+
+.funky-timeline__card-details[hidden] {
+    display: none;
+}
+
+.funky-timeline__card-details-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--pro-spacing-xs) var(--pro-spacing-sm);
+    font-size: var(--pro-font-size-xs);
+    margin: 0;
+}
+
+.funky-timeline__card-details-list dt {
+    color: var(--pro-text-muted);
+    font-weight: var(--pro-font-weight-medium);
+}
+
+.funky-timeline__card-details-list dd {
+    color: var(--pro-text);
+    margin: 0;
+}
+
+.funky-timeline__card-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--pro-spacing-sm);
+    padding: var(--pro-spacing-xs);
+    background: transparent;
+    border: none;
+    color: var(--pro-text-muted);
+    cursor: pointer;
+    border-radius: var(--pro-radius-sm);
+    transition: color var(--pro-transition-fast), transform var(--pro-transition-fast);
+}
+
+.funky-timeline__card-toggle:hover {
+    color: var(--pro-text);
+    background: var(--pro-surface-alt);
+}
+
+.funky-timeline__card-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pro-focus-ring);
+}
+
+.funky-timeline__event--expanded .funky-timeline__card-toggle {
+    transform: rotate(180deg);
+}
+
+/* Navigation Arrows */
+.funky-timeline__arrow {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid var(--timeline-line-color);
+    border-radius: 50%;
+    background: var(--pro-bg-secondary, var(--pro-surface));
+    color: var(--pro-text-primary, var(--pro-text));
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--pro-transition-fast);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.funky-timeline__arrow:hover:not(:disabled) {
+    background: var(--timeline-node-bg);
+    border-color: var(--timeline-line-color);
+    color: var(--timeline-node-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.funky-timeline__arrow:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pro-focus-ring);
+}
+
+.funky-timeline__arrow:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--pro-bg-tertiary, var(--pro-surface));
+}
+
+.funky-timeline__arrow--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Navigation Dots */
+.funky-timeline__dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--pro-spacing-xs);
+    padding: var(--pro-spacing-md) 0;
+}
+
+.funky-timeline__dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--pro-text-muted, #6e7681);
+    cursor: pointer;
+    padding: 0;
+    transition: all var(--pro-transition-fast);
+    opacity: 0.6;
+}
+
+.funky-timeline__dot:hover {
+    background: var(--timeline-line-color);
+    transform: scale(1.4);
+    opacity: 1;
+}
+
+.funky-timeline__dot:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pro-focus-ring);
+}
+
+.funky-timeline__dot--active {
+    background: var(--pro-primary);
+    transform: scale(1.5);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 576px) {
+    .funky-timeline {
+        --timeline-marker-size: 2rem;
+        --timeline-content-gap: 0.75rem;
+    }
+    
+    .funky-timeline__date {
+        font-size: var(--pro-font-size-xs);
+    }
+    
+    .funky-timeline__content {
+        padding: var(--pro-spacing-sm);
+    }
+    
+    .funky-timeline__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .funky-timeline__expand-toggle {
+        position: absolute;
+        top: var(--pro-spacing-sm);
+        right: var(--pro-spacing-sm);
+        margin-left: 0;
+    }
+    
+    /* Horizontal on mobile: hide arrows, keep dots */
+    .funky-timeline--horizontal .funky-timeline__arrow {
+        display: none;
+    }
+    
+    .funky-timeline--horizontal {
+        flex-direction: column;
+    }
+    
+    .funky-timeline__dots {
+        order: 1;
+    }
+}
+
+/* ==========================================================================
+   Skeleton Loader
+   ========================================================================== */
+
+.funky-timeline__skeleton {
+    padding: var(--pro-spacing-md) 0;
+}
+
+.funky-timeline__skeleton-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--timeline-event-gap);
+    padding-left: calc(var(--timeline-marker-size) + var(--timeline-content-gap));
+    position: relative;
+}
+
+.funky-timeline__skeleton-node {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--timeline-marker-size);
+    height: var(--timeline-marker-size);
+    border-radius: 50%;
+    background: var(--pro-skeleton-base, #e0e0e0);
+    animation: timeline-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.funky-timeline__skeleton-content {
+    flex: 1;
+    padding: var(--pro-spacing-md);
+    background: var(--pro-surface);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-radius-md);
+}
+
+.funky-timeline__skeleton-title {
+    height: 1rem;
+    width: 60%;
+    background: var(--pro-skeleton-base, #e0e0e0);
+    border-radius: var(--pro-radius-sm);
+    margin-bottom: var(--pro-spacing-sm);
+    animation: timeline-skeleton-pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.1s;
+}
+
+.funky-timeline__skeleton-text {
+    height: 0.75rem;
+    width: 90%;
+    background: var(--pro-skeleton-base, #e0e0e0);
+    border-radius: var(--pro-radius-sm);
+    margin-bottom: var(--pro-spacing-xs);
+    animation: timeline-skeleton-pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.2s;
+}
+
+.funky-timeline__skeleton-text--short {
+    width: 40%;
+    animation-delay: 0.3s;
+}
+
+@keyframes timeline-skeleton-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* ==========================================================================
+   Bottom Loader
+   ========================================================================== */
+
+.funky-timeline__loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pro-spacing-sm);
+    padding: var(--pro-spacing-lg);
+    color: var(--pro-text-muted);
+    font-size: var(--pro-font-size-sm);
+}
+
+.funky-timeline__loader-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.funky-timeline__loader-spinner i {
+    font-size: 1.25rem;
+    color: var(--pro-primary);
+}
+
+/* ==========================================================================
+   Error State
+   ========================================================================== */
+
+.funky-timeline__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pro-spacing-sm);
+    padding: var(--pro-spacing-xl);
+    color: var(--pro-danger, #dc3545);
+    text-align: center;
+}
+
+.funky-timeline__error i {
+    font-size: 2rem;
+    opacity: 0.7;
+}
+
+.funky-timeline__error span {
+    font-size: var(--pro-font-size-sm);
+}
+
+/* ==========================================================================
+   Loading State Modifier
+   ========================================================================== */
+
+.funky-timeline--loading {
+    pointer-events: none;
+}
+
+.funky-timeline--loading .funky-timeline__container {
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+   LiveBinding Container (Hidden)
+   ========================================================================== */
+
+.funky-timeline__live-bind {
+    display: none !important;
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Status Indicator
+   ========================================================================== */
+
+.funky-timeline__status {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-xs);
+    padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-muted);
+    margin-bottom: var(--pro-spacing-sm);
+}
+
+.funky-timeline__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pro-border-color);
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+}
+
+.funky-timeline__status-dot--connected {
+    background: var(--pro-success);
+    animation: funky-timeline-pulse 2s infinite;
+}
+
+.funky-timeline__status-dot--disconnected {
+    background: var(--pro-danger);
+}
+
+.funky-timeline__status-text {
+    font-weight: var(--pro-font-weight-medium);
+}
+
+/* ==========================================================================
+   Live Event States
+   ========================================================================== */
+
+/* New event highlight */
+.funky-timeline__event--new {
+    background: var(--pro-primary-subtle, rgba(var(--pro-primary-rgb), 0.1));
+    border-radius: var(--pro-border-radius);
+    transition: background 0.5s ease;
+}
+
+.funky-timeline__event--new .funky-timeline__card {
+    border-color: var(--pro-primary);
+    box-shadow: 0 0 0 2px var(--pro-primary-subtle, rgba(var(--pro-primary-rgb), 0.2));
+}
+
+/* CSS fallback animation for new events */
+.funky-timeline__event--animating {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: funky-timeline-slide-in 0.3s ease forwards;
+}
+
+/* Updated event flash */
+.funky-timeline__event--updated .funky-timeline__card {
+    animation: funky-timeline-flash 0.5s ease;
+}
+
+/* Removing event */
+.funky-timeline__event--removing {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ==========================================================================
+   Live Update Animations
+   ========================================================================== */
+
+@keyframes funky-timeline-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes funky-timeline-flash {
+    0%, 100% {
+        background: var(--pro-surface-color);
+    }
+    50% {
+        background: var(--pro-warning-subtle, rgba(var(--pro-warning-rgb), 0.15));
+    }
+}
+
+@keyframes funky-timeline-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Centered Vertical Layout
+   ========================================================================== */
+
+.funky-timeline--centered .funky-timeline__events {
+    position: relative;
+}
+
+.funky-timeline--centered .funky-timeline__events::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--timeline-line-color);
+    transform: translateX(-50%);
+}
+
+.funky-timeline--centered .funky-timeline__date {
+    text-align: center;
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pro-spacing-sm);
+}
+
+.funky-timeline--centered .funky-timeline__date::before,
+.funky-timeline--centered .funky-timeline__date::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--pro-border-color);
+    max-width: 60px;
+}
+
+.funky-timeline--centered .funky-timeline__event {
+    width: calc(50% - var(--timeline-marker-size) / 2 - var(--pro-spacing-md, 1rem));
+    margin-left: calc(50% + var(--timeline-marker-size) / 2 + var(--pro-spacing-md, 1rem));
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.funky-timeline--centered .funky-timeline__event:nth-child(even) {
+    margin-left: 0;
+    margin-right: calc(50% + var(--timeline-marker-size) / 2 + var(--pro-spacing-md, 1rem));
+    padding-left: 0;
+    padding-right: 0;
+    flex-direction: row-reverse;
+}
+
+.funky-timeline--centered .funky-timeline__event:nth-child(even) .funky-timeline__content {
+    text-align: right;
+}
+
+.funky-timeline--centered .funky-timeline__event:nth-child(even) .funky-timeline__header {
+    justify-content: flex-end;
+}
+
+.funky-timeline--centered .funky-timeline__marker {
+    position: absolute;
+    left: calc(-1 * var(--pro-spacing-md, 1rem) - var(--timeline-marker-size));
+    right: auto;
+    transform: none;
+}
+
+.funky-timeline--centered .funky-timeline__event:nth-child(even) .funky-timeline__marker {
+    left: auto;
+    right: calc(-1 * var(--pro-spacing-md, 1rem) - var(--timeline-marker-size));
+    transform: none;
+}
+
+.funky-timeline--centered .funky-timeline__connector {
+    display: none;
+}
+
+/* ==========================================================================
+   Density Modes
+   ========================================================================== */
+
+/* Compact Mode */
+.funky-timeline--compact {
+    --timeline-marker-size: 1.75rem;
+    --timeline-content-gap: 0.75rem;
+    --timeline-group-gap: 1.25rem;
+    --timeline-event-gap: 1rem;
+}
+
+.funky-timeline--compact .funky-timeline__content {
+    padding: var(--pro-spacing-sm);
+}
+
+.funky-timeline--compact .funky-timeline__title {
+    font-size: var(--pro-font-size-sm);
+}
+
+.funky-timeline--compact .funky-timeline__description {
+    font-size: var(--pro-font-size-xs);
+}
+
+.funky-timeline--compact .funky-timeline__marker {
+    font-size: 0.625rem;
+}
+
+.funky-timeline--compact .funky-timeline__node {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.625rem;
+}
+
+.funky-timeline--compact .funky-timeline__card {
+    padding: var(--pro-spacing-sm);
+}
+
+.funky-timeline--compact .funky-timeline__card-title {
+    font-size: var(--pro-font-size-sm);
+}
+
+.funky-timeline--compact .funky-timeline__card-description {
+    font-size: var(--pro-font-size-xs);
+}
+
+/* Spacious Mode */
+.funky-timeline--spacious {
+    --timeline-marker-size: 3rem;
+    --timeline-content-gap: 1.5rem;
+    --timeline-group-gap: 3rem;
+    --timeline-event-gap: 2rem;
+}
+
+.funky-timeline--spacious .funky-timeline__content {
+    padding: var(--pro-spacing-lg);
+}
+
+.funky-timeline--spacious .funky-timeline__marker {
+    font-size: 1rem;
+}
+
+.funky-timeline--spacious .funky-timeline__node {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+}
+
+.funky-timeline--spacious .funky-timeline__card {
+    padding: var(--pro-spacing-lg);
+}
+
+/* ==========================================================================
+   Card Meta & Actions
+   ========================================================================== */
+
+.funky-timeline__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-sm);
+    margin-top: var(--pro-spacing-sm);
+    padding-top: var(--pro-spacing-sm);
+    border-top: 1px solid var(--pro-border-color);
+}
+
+.funky-timeline__meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-xs);
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-muted);
+}
+
+.funky-timeline__meta-item i {
+    opacity: 0.7;
+}
+
+.funky-timeline__actions {
+    display: flex;
+    gap: var(--pro-spacing-xs);
+    margin-top: var(--pro-spacing-sm);
+}
+
+.funky-timeline__actions .btn {
+    font-size: var(--pro-font-size-xs);
+    padding: var(--pro-spacing-xs) var(--pro-spacing-sm);
+}
+
+/* ==========================================================================
+   Tablet Responsive (max 991px)
+   ========================================================================== */
+
+@media (max-width: 991px) {
+    /* Collapse centered layout to single column */
+    .funky-timeline--centered .funky-timeline__events::before {
+        left: calc(var(--timeline-marker-size) / 2);
+        transform: none;
+    }
+    
+    .funky-timeline--centered .funky-timeline__event,
+    .funky-timeline--centered .funky-timeline__event:nth-child(even) {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: calc(var(--timeline-marker-size) + var(--timeline-content-gap));
+        padding-right: 0;
+        flex-direction: row;
+    }
+    
+    .funky-timeline--centered .funky-timeline__event:nth-child(even) .funky-timeline__content {
+        text-align: left;
+    }
+    
+    .funky-timeline--centered .funky-timeline__event:nth-child(even) .funky-timeline__header {
+        justify-content: flex-start;
+    }
+    
+    .funky-timeline--centered .funky-timeline__marker,
+    .funky-timeline--centered .funky-timeline__event:nth-child(even) .funky-timeline__marker {
+        left: 0;
+        right: auto;
+        transform: none;
+    }
+    
+    .funky-timeline--centered .funky-timeline__date::before,
+    .funky-timeline--centered .funky-timeline__date::after {
+        display: none;
+    }
+    
+    .funky-timeline--centered .funky-timeline__date {
+        justify-content: flex-start;
+        padding-left: calc(var(--timeline-marker-size) + var(--timeline-content-gap));
+    }
+}
+
+/* ==========================================================================
+   Mobile Horizontal to Vertical (max 575px)
+   ========================================================================== */
+
+@media (max-width: 575px) {
+    /* Horizontal layout becomes vertical on mobile */
+    .funky-timeline--horizontal .funky-timeline__track-container {
+        width: 100%;
+        overflow-x: visible;
+        overflow-y: visible;
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__track {
+        flex-direction: column;
+        padding: var(--pro-spacing-md);
+        min-width: auto;
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__line {
+        top: 0;
+        bottom: 0;
+        /* Center line with node: half node width - half line width */
+        left: calc(var(--timeline-node-size, 2rem) / 2 - 1px);
+        right: auto;
+        width: 2px;
+        height: auto;
+        z-index: 0;
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__events {
+        flex-direction: column;
+        gap: var(--pro-spacing-md);
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__event--horizontal {
+        width: 100%;
+        flex-direction: row;
+        align-items: flex-start;
+        padding-left: calc(var(--timeline-node-size, 2rem) + var(--pro-spacing-md));
+        position: relative;
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__node {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin-bottom: 0;
+        z-index: 2; /* Node on top of line */
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__card {
+        text-align: left;
+        width: 100%;
+    }
+    
+    /* Hide dots on mobile horizontal */
+    .funky-timeline--horizontal .funky-timeline__dots {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Focus Visible & Accessibility
+   ========================================================================== */
+
+.funky-timeline__event:focus-visible .funky-timeline__content,
+.funky-timeline__event--horizontal:focus-visible .funky-timeline__card {
+    outline: 2px solid var(--pro-focus-ring);
+    outline-offset: 2px;
+}
+
+.funky-timeline__arrow:focus-visible,
+.funky-timeline__dot:focus-visible {
+    outline: 2px solid var(--pro-focus-ring);
+    outline-offset: 2px;
+}
+
+.funky-timeline__expand-toggle:focus-visible {
+    outline: 2px solid var(--pro-focus-ring);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Light Theme Overrides
+   ========================================================================== */
+
+[data-theme="light"] .funky-timeline {
+    --timeline-line-color: var(--pro-accent-primary, var(--pro-primary, #0969da));
+    --timeline-node-bg: var(--pro-accent-primary, var(--pro-primary, #0969da));
+    --timeline-node-color: var(--pro-primary-contrast, var(--pro-text-inverse, #ffffff));
+}
+
+[data-theme="light"] .funky-timeline__content,
+[data-theme="light"] .funky-timeline__card {
+    background: var(--pro-bg-elevated, #ffffff);
+    border-color: var(--pro-border-color, #d0d7de);
+    box-shadow: var(--pro-shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+[data-theme="light"] .funky-timeline__content:hover,
+[data-theme="light"] .funky-timeline__card:hover {
+    box-shadow: var(--pro-shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="light"] .funky-timeline__arrow {
+    background: var(--pro-bg-elevated, #ffffff);
+    border-color: var(--pro-accent-primary, var(--pro-primary, #0969da));
+    color: var(--pro-accent-primary, var(--pro-primary, #0969da));
+}
+
+[data-theme="light"] .funky-timeline__date,
+[data-theme="light"] .funky-timeline__time {
+    color: var(--pro-text-muted, #8c959f);
+}
+
+[data-theme="light"] .funky-timeline__title {
+    color: var(--pro-text-primary, #1f2328);
+}
+
+[data-theme="light"] .funky-timeline__description {
+    color: var(--pro-text-secondary, #656d76);
+}
+
+/* ==========================================================================
+   Even Funkyer Theme Overrides
+   ========================================================================== */
+
+[data-theme="even-funkyer"] .funky-timeline {
+    --timeline-line-color: #ff00ff;
+    --timeline-node-bg: #00ffff;
+    --timeline-node-color: #000000;
+}
+
+[data-theme="even-funkyer"] .funky-timeline__content,
+[data-theme="even-funkyer"] .funky-timeline__card {
+    background: rgba(32, 0, 64, 0.9);
+    border-color: #ff00ff;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__content:hover,
+[data-theme="even-funkyer"] .funky-timeline__card:hover {
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.5), 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__marker,
+[data-theme="even-funkyer"] .funky-timeline__node {
+    background: #00ffff;
+    border-color: #ff00ff;
+    color: #000000;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__marker:hover,
+[data-theme="even-funkyer"] .funky-timeline__node:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__date {
+    color: #cc99ff;
+    text-shadow: 0 0 5px rgba(204, 153, 255, 0.5);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__title {
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__description {
+    color: #cc99ff;
+}
+
+[data-theme="even-funkyer"] .funky-timeline__time {
+    color: #00ffff;
+}
+
+[data-theme="even-funkyer"] .funky-timeline__category {
+    background: rgba(255, 0, 255, 0.2);
+    color: #ff66cc;
+    border: 1px solid rgba(255, 0, 255, 0.4);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__link {
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__expand-toggle {
+    color: #cc99ff;
+}
+
+[data-theme="even-funkyer"] .funky-timeline__expand-toggle:hover {
+    color: #00ffff;
+}
+
+[data-theme="even-funkyer"] .funky-timeline__arrow {
+    background: rgba(255, 0, 255, 0.2);
+    border-color: #ff00ff;
+    color: #00ffff;
+}
+
+[data-theme="even-funkyer"] .funky-timeline__arrow:hover:not(:disabled) {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__dot--active {
+    background: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__connector,
+[data-theme="even-funkyer"] .funky-timeline--horizontal .funky-timeline__line {
+    background: linear-gradient(180deg, #ff00ff, #00ffff);
+}
+
+[data-theme="even-funkyer"] .funky-timeline--centered .funky-timeline__events::before {
+    background: linear-gradient(180deg, #ff00ff, #00ffff);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__event--new .funky-timeline__card {
+    border-color: #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+}
+
+[data-theme="even-funkyer"] .funky-timeline__status-dot--connected {
+    background: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+/* ==========================================================================
+   High Contrast Theme Overrides
+   ========================================================================== */
+
+[data-theme="high-contrast"] .funky-timeline {
+    --timeline-line-color: currentColor;
+}
+
+[data-theme="high-contrast"] .funky-timeline__content,
+[data-theme="high-contrast"] .funky-timeline__card {
+    border-width: 2px;
+    border-color: currentColor;
+}
+
+[data-theme="high-contrast"] .funky-timeline__marker,
+[data-theme="high-contrast"] .funky-timeline__node {
+    border-width: 3px;
+    border-color: currentColor;
+}
+
+/* ==========================================================================
+   Density Mode: Compact
+   ========================================================================== */
+
+[data-density="compact"] .funky-timeline {
+    --timeline-marker-size: 2rem;
+    --timeline-marker-border: 2px;
+    --timeline-content-gap: 0.75rem;
+    --timeline-group-gap: 1.25rem;
+    --timeline-event-gap: 1rem;
+}
+
+[data-density="compact"] .funky-timeline__content,
+[data-density="compact"] .funky-timeline__card {
+    padding: var(--pro-spacing-sm, 0.5rem);
+}
+
+[data-density="compact"] .funky-timeline__title {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+}
+
+[data-density="compact"] .funky-timeline__description {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+}
+
+[data-density="compact"] .funky-timeline__date {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    margin-bottom: var(--pro-spacing-xs, 0.25rem);
+}
+
+[data-density="compact"] .funky-timeline__marker i,
+[data-density="compact"] .funky-timeline__node i {
+    font-size: 0.75rem;
+}
+
+[data-density="compact"] .funky-timeline--horizontal {
+    --timeline-node-size: 1.5rem;
+    --timeline-track-padding: 1rem;
+}
+
+[data-density="compact"] .funky-timeline__horizontal .funky-timeline__event--horizontal {
+    min-width: 140px;
+}
+
+/* ==========================================================================
+   Density Mode: Comfortable (Default)
+   ========================================================================== */
+
+[data-density="comfortable"] .funky-timeline {
+    --timeline-marker-size: 2.5rem;
+    --timeline-marker-border: 3px;
+    --timeline-content-gap: 1rem;
+    --timeline-group-gap: 2rem;
+    --timeline-event-gap: 1.5rem;
+}
+
+[data-density="comfortable"] .funky-timeline--horizontal {
+    --timeline-node-size: 2rem;
+    --timeline-track-padding: 1.5rem;
+}
+
+/* ==========================================================================
+   Density Mode: Spacious
+   ========================================================================== */
+
+[data-density="spacious"] .funky-timeline {
+    --timeline-marker-size: 3rem;
+    --timeline-marker-border: 4px;
+    --timeline-content-gap: 1.5rem;
+    --timeline-group-gap: 3rem;
+    --timeline-event-gap: 2rem;
+}
+
+[data-density="spacious"] .funky-timeline__content,
+[data-density="spacious"] .funky-timeline__card {
+    padding: var(--pro-spacing-lg, 1.5rem);
+}
+
+[data-density="spacious"] .funky-timeline__title {
+    font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+[data-density="spacious"] .funky-timeline__description {
+    font-size: var(--pro-font-size-base, 1rem);
+    line-height: 1.6;
+}
+
+[data-density="spacious"] .funky-timeline__date {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    margin-bottom: var(--pro-spacing-md, 1rem);
+}
+
+[data-density="spacious"] .funky-timeline__marker i,
+[data-density="spacious"] .funky-timeline__node i {
+    font-size: 1.125rem;
+}
+
+[data-density="spacious"] .funky-timeline--horizontal {
+    --timeline-node-size: 2.5rem;
+    --timeline-track-padding: 2rem;
+}
+
+[data-density="spacious"] .funky-timeline--horizontal .funky-timeline__event--horizontal {
+    min-width: 240px;
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .funky-timeline__connector,
+    .funky-timeline--centered .funky-timeline__events::before,
+    .funky-timeline--horizontal .funky-timeline__line {
+        background: currentColor;
+    }
+    
+    .funky-timeline__marker,
+    .funky-timeline__node {
+        border-width: 3px;
+    }
+    
+    .funky-timeline__content,
+    .funky-timeline__card {
+        border-width: 2px;
+    }
+    
+    .funky-timeline__dot {
+        border: 1px solid currentColor;
+    }
+    
+    .funky-timeline__event--selected .funky-timeline__card,
+    .funky-timeline__event--new .funky-timeline__card {
+        border-width: 3px;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .funky-timeline__arrow,
+    .funky-timeline__dots,
+    .funky-timeline__status,
+    .funky-timeline__expand-toggle {
+        display: none !important;
+    }
+    
+    .funky-timeline__event {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .funky-timeline__content,
+    .funky-timeline__card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    .funky-timeline__connector,
+    .funky-timeline--centered .funky-timeline__events::before {
+        background: #ccc !important;
+    }
+    
+    .funky-timeline__marker,
+    .funky-timeline__node {
+        border-color: #ccc !important;
+        background: #fff !important;
+    }
+    
+    /* Always show details in print */
+    .funky-timeline__details {
+        display: block !important;
+    }
+    
+    /* Collapse horizontal to vertical for print */
+    .funky-timeline--horizontal {
+        display: block;
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__track-container {
+        overflow: visible;
+    }
+    
+    .funky-timeline--horizontal .funky-timeline__events {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .funky-timeline__event--entering {
+        animation: none;
+    }
+    
+    .funky-timeline__expand-toggle {
+        transition: none;
+    }
+    
+    .funky-timeline__content {
+        transition: none;
+    }
+    
+    .funky-timeline__skeleton-node,
+    .funky-timeline__skeleton-title,
+    .funky-timeline__skeleton-text {
+        animation: none;
+    }
+    
+    .funky-timeline__status-dot--connected {
+        animation: none;
+    }
+    
+    .funky-timeline__event--updated .funky-timeline__card {
+        animation: none;
+    }
+    
+    .funky-timeline__event--animating {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+    
+    .funky-timeline__event--new {
+        transition: none;
+    }
+    
+    .funky-timeline__event--removing {
+        transition: none;
+    }
+}

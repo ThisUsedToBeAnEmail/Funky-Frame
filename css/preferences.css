@@ -1,0 +1,464 @@
+/**
+ * Preferences Component Styles
+ * BEM naming with theme-aware CSS variables
+ */
+
+/* ==========================================================================
+   PREFERENCES PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+.preferences-demo {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--pro-spacing-lg, 1.5rem);
+}
+
+.preferences-demo__section {
+    width: 100%;
+    margin-bottom: var(--pro-spacing-xl, 2rem);
+    box-sizing: border-box;
+}
+
+.preferences-demo__section h3 {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-text-primary);
+    font-size: var(--pro-font-size-lg, 1.125rem);
+}
+
+/* State Display */
+.preferences-demo__state {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.preferences-demo__state-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.preferences-demo__state-label {
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.preferences-demo__state-value {
+    font-size: var(--pro-font-size-base, 1rem);
+    color: var(--pro-text-primary);
+    font-weight: var(--pro-font-weight-medium, 500);
+    min-width: 0;
+    word-break: break-word;
+}
+
+/* API Controls */
+.preferences-demo__controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pro-spacing-md, 1rem);
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    overflow: hidden;
+}
+
+.preferences-demo__control-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+}
+
+.preferences-demo__control-label {
+    min-width: 100px;
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    font-weight: var(--pro-font-weight-medium, 500);
+    color: var(--pro-text-secondary);
+}
+
+.preferences-demo__control-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Preference Panels */
+.preferences-demo__panel {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+}
+
+.preferences-demo__panel-title {
+    font-size: var(--pro-font-size-base, 1rem);
+    font-weight: var(--pro-font-weight-semibold, 600);
+    color: var(--pro-text-primary);
+    margin-bottom: var(--pro-spacing-md, 1rem);
+    padding-bottom: var(--pro-spacing-sm, 0.5rem);
+    border-bottom: 1px solid var(--pro-border-color);
+}
+
+.preferences-demo__panel-title i {
+    margin-right: var(--pro-spacing-sm, 0.5rem);
+    color: var(--pro-accent-primary);
+}
+
+/* Preference Rows */
+.preferences-demo__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--pro-spacing-sm, 0.5rem) 0;
+    border-bottom: 1px solid var(--pro-border-muted, rgba(255, 255, 255, 0.05));
+}
+
+.preferences-demo__row:last-child {
+    border-bottom: none;
+}
+
+.preferences-demo__row-label {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-primary);
+}
+
+.preferences-demo__row-value {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-sm, 0.5rem);
+}
+
+/* Color Swatches */
+.preferences-demo__colors {
+    display: flex;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.preferences-demo__color-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    box-shadow: var(--pro-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.preferences-demo__color-btn:hover {
+    transform: scale(1.1);
+}
+
+.preferences-demo__color-btn--selected {
+    border-color: var(--pro-text-primary);
+    box-shadow: 0 0 0 2px var(--pro-bg-primary), 0 0 0 4px var(--pro-accent-primary);
+}
+
+.preferences-demo__color-btn--blue { background-color: #0d6efd; }
+.preferences-demo__color-btn--green { background-color: #198754; }
+.preferences-demo__color-btn--purple { background-color: #6f42c1; }
+.preferences-demo__color-btn--red { background-color: #dc3545; }
+.preferences-demo__color-btn--orange { background-color: #fd7e14; }
+.preferences-demo__color-btn--teal { background-color: #20c997; }
+
+/* Preview Area */
+.preferences-demo__preview {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    background-color: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pro-spacing-md, 1rem);
+    text-align: center;
+    transition: background-color 0.2s ease, color 0.2s ease, padding 0.2s ease;
+}
+
+/* Theme mode variants */
+.preferences-demo__preview--light {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.preferences-demo__preview--light .preferences-demo__preview-text {
+    color: #212529;
+}
+
+.preferences-demo__preview--light .preferences-demo__preview-subtext,
+.preferences-demo__preview--light .preferences-demo__preview-layout {
+    color: #6c757d;
+}
+
+.preferences-demo__preview--dark {
+    background-color: #1a1a2e;
+    border-color: #2d2d44;
+}
+
+.preferences-demo__preview--dark .preferences-demo__preview-text {
+    color: #e9ecef;
+}
+
+.preferences-demo__preview--dark .preferences-demo__preview-subtext,
+.preferences-demo__preview--dark .preferences-demo__preview-layout {
+    color: #adb5bd;
+}
+
+.preferences-demo__preview--high-contrast {
+    background-color: #000000;
+    border-color: #ffffff;
+    border-width: 2px;
+}
+
+.preferences-demo__preview--high-contrast .preferences-demo__preview-text {
+    color: #ffffff;
+}
+
+.preferences-demo__preview--high-contrast .preferences-demo__preview-subtext {
+    color: #ffff00;
+}
+
+.preferences-demo__preview--high-contrast .preferences-demo__preview-layout {
+    color: #00ffff;
+    border-color: #ffffff;
+}
+
+/* Density variants */
+.preferences-demo__preview--compact {
+    padding: var(--pro-spacing-sm, 0.5rem);
+    gap: var(--pro-spacing-xs, 0.25rem);
+    min-height: 100px;
+}
+
+.preferences-demo__preview--comfortable {
+    padding: var(--pro-spacing-lg, 1.5rem);
+    gap: var(--pro-spacing-md, 1rem);
+    min-height: 150px;
+}
+
+.preferences-demo__preview--spacious {
+    padding: var(--pro-spacing-xl, 2rem);
+    gap: var(--pro-spacing-lg, 1.5rem);
+    min-height: 200px;
+}
+
+.preferences-demo__preview-icon {
+    font-size: 3em;
+    color: var(--pro-accent-primary);
+    transition: color 0.2s ease, font-size 0.2s ease;
+}
+
+.preferences-demo__preview-text {
+    font-size: 1.25em;
+    font-weight: var(--pro-font-weight-semibold, 600);
+    color: var(--pro-text-primary);
+    transition: color 0.2s ease, font-size 0.2s ease;
+}
+
+.preferences-demo__preview-subtext {
+    font-size: 0.875em;
+    color: var(--pro-text-secondary);
+    transition: color 0.2s ease, font-size 0.2s ease;
+}
+
+.preferences-demo__preview-layout {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--pro-spacing-md, 1rem);
+    margin-top: var(--pro-spacing-sm, 0.5rem);
+    padding-top: var(--pro-spacing-sm, 0.5rem);
+    border-top: 1px solid currentColor;
+    opacity: 0.6;
+    font-size: 0.75em;
+}
+
+.preferences-demo__preview-layout-item {
+    display: flex;
+    align-items: center;
+    gap: var(--pro-spacing-xs, 0.25rem);
+}
+
+.preferences-demo__preview-layout-item i {
+    opacity: 0.8;
+}
+
+/* Grid Layout for Panels */
+.preferences-demo__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--pro-spacing-lg, 1.5rem);
+}
+
+/* Data Display */
+.preferences-demo__data {
+    padding: var(--pro-spacing-md, 1rem);
+    background-color: var(--pro-bg-tertiary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    font-family: var(--pro-font-mono);
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    color: var(--pro-text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 300px;
+    overflow: auto;
+}
+
+/* Events Log */
+.preferences-demo__log-controls {
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.preferences-demo__log {
+    width: 100%;
+    min-height: 150px;
+    max-height: 250px;
+    padding: var(--pro-spacing-md, 1rem);
+    margin: 0;
+    overflow: auto;
+    font-family: var(--pro-font-mono);
+    font-size: var(--pro-font-size-xs, 0.75rem);
+    line-height: 1.5;
+    color: var(--pro-text-secondary);
+    background-color: var(--pro-bg-tertiary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--pro-border-radius, 6px);
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-sizing: border-box;
+}
+
+/* Hint text */
+.preferences-demo__hint {
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-muted);
+    margin-bottom: var(--pro-spacing-sm, 0.5rem);
+}
+
+.preferences-demo__hint i {
+    margin-right: var(--pro-spacing-xs, 0.25rem);
+}
+
+/* Range Slider */
+.preferences-demo__range {
+    width: 150px;
+}
+
+.preferences-demo__range-value {
+    min-width: 40px;
+    text-align: right;
+    font-family: var(--pro-font-mono);
+    font-size: var(--pro-font-size-sm, 0.875rem);
+    color: var(--pro-text-primary);
+}
+
+/* Toggle Switch in demo context */
+.preferences-demo__toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.preferences-demo__toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.preferences-demo__toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--pro-bg-tertiary);
+    border: 1px solid var(--pro-border-color);
+    transition: 0.2s;
+    border-radius: 24px;
+}
+
+.preferences-demo__toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--pro-text-secondary);
+    transition: 0.2s;
+    border-radius: 50%;
+}
+
+.preferences-demo__toggle input:checked + .preferences-demo__toggle-slider {
+    background-color: var(--pro-accent-primary);
+    border-color: var(--pro-accent-primary);
+}
+
+.preferences-demo__toggle input:checked + .preferences-demo__toggle-slider::before {
+    transform: translateX(20px);
+    background-color: white;
+}
+
+.preferences-demo__toggle input:focus + .preferences-demo__toggle-slider {
+    box-shadow: 0 0 0 2px var(--pro-accent-primary-muted, rgba(13, 110, 253, 0.25));
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .preferences-demo__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .preferences-demo {
+        padding: var(--pro-spacing-md, 1rem);
+    }
+
+    .preferences-demo__control-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .preferences-demo__control-label {
+        margin-bottom: var(--pro-spacing-xs, 0.25rem);
+    }
+
+    .preferences-demo__state {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .preferences-demo__row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--pro-spacing-sm, 0.5rem);
+    }
+
+    .preferences-demo__row-value {
+        width: 100%;
+    }
+
+    .preferences-demo__range {
+        width: 100%;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .preferences-demo__color-btn,
+    .preferences-demo__toggle-slider,
+    .preferences-demo__toggle-slider::before {
+        transition: none;
+    }
+}

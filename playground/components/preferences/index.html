@@ -1,0 +1,685 @@
+<div data-page="component-preferences" class="preferences-demo">
+  <!-- State Display -->
+  <section class="preferences-demo__section" aria-labelledby="preferences-state-heading">
+    <h3 id="preferences-state-heading">State</h3>
+    <div class="preferences-demo__state" role="status" aria-live="polite">
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Theme</span>
+        <span id="state-theme" class="preferences-demo__state-value">dark</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Accent</span>
+        <span id="state-accent" class="preferences-demo__state-value">#0d6efd</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Font Scale</span>
+        <span id="state-font-scale" class="preferences-demo__state-value">1.0</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Density</span>
+        <span id="state-density" class="preferences-demo__state-value">comfortable</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Animations</span>
+        <span id="state-animations" class="preferences-demo__state-value">On</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Nav Position</span>
+        <span id="state-nav-position" class="preferences-demo__state-value">left</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Sidebar</span>
+        <span id="state-sidebar" class="preferences-demo__state-value">Expanded</span>
+      </div>
+      <div class="preferences-demo__state-item">
+        <span class="preferences-demo__state-label">Changes</span>
+        <span id="state-changes" class="preferences-demo__state-value">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Buttons -->
+  <section class="preferences-demo__section" aria-labelledby="preferences-controls-heading">
+    <h3 id="preferences-controls-heading">API Controls</h3>
+    <p class="preferences-demo__hint">
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
+      These demonstrate local preference operations. Use the Theme Slideout (gear icon) for actual preference persistence.
+    </p>
+    <div class="preferences-demo__controls">
+      <div class="preferences-demo__control-group">
+        <span class="preferences-demo__control-label">Actions</span>
+        <div class="preferences-demo__control-buttons">
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="get-all" aria-label="Get all preferences">
+            <i class="fas fa-download" aria-hidden="true"></i> Get All
+          </button>
+          <button type="button" class="btn btn-funky-success btn-sm" data-action="apply" aria-label="Apply preferences to UI">
+            <i class="fas fa-check" aria-hidden="true"></i> Apply to UI
+          </button>
+          <button type="button" class="btn btn-funky-danger btn-sm" data-action="reset-local" aria-label="Reset to defaults">
+            <i class="fas fa-undo" aria-hidden="true"></i> Reset Local
+          </button>
+        </div>
+      </div>
+      <div class="preferences-demo__control-group">
+        <span class="preferences-demo__control-label">Theme Mode</span>
+        <div class="preferences-demo__control-buttons">
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="theme-light" aria-label="Light theme">
+            <i class="fas fa-sun" aria-hidden="true"></i> Light
+          </button>
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="theme-dark" aria-label="Dark theme">
+            <i class="fas fa-moon" aria-hidden="true"></i> Dark
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="theme-system" aria-label="System theme">
+            <i class="fas fa-desktop" aria-hidden="true"></i> System
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="theme-high-contrast" aria-label="High contrast theme">
+            <i class="fas fa-adjust" aria-hidden="true"></i> High Contrast
+          </button>
+        </div>
+      </div>
+      <div class="preferences-demo__control-group">
+        <span class="preferences-demo__control-label">Density</span>
+        <div class="preferences-demo__control-buttons">
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="density-compact" aria-label="Compact density">
+            Compact
+          </button>
+          <button type="button" class="btn btn-funky-primary btn-sm" data-action="density-comfortable" aria-label="Comfortable density">
+            Comfortable
+          </button>
+          <button type="button" class="btn btn-funky-outline btn-sm" data-action="density-spacious" aria-label="Spacious density">
+            Spacious
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Theme Settings Panel -->
+  <section class="preferences-demo__section" aria-labelledby="preferences-theme-heading">
+    <h3 id="preferences-theme-heading">Theme Settings</h3>
+    <div class="preferences-demo__grid">
+      <div class="preferences-demo__panel">
+        <div class="preferences-demo__panel-title">
+          <i class="fas fa-palette" aria-hidden="true"></i> Appearance
+        </div>
+        <div class="preferences-demo__row">
+          <span class="preferences-demo__row-label">Accent Color</span>
+          <div class="preferences-demo__row-value">
+            <div class="preferences-demo__colors" role="group" aria-label="Accent color selection">
+              <button type="button" class="preferences-demo__color-btn preferences-demo__color-btn--blue preferences-demo__color-btn--selected"
+                      data-color="#0d6efd" aria-label="Blue accent" aria-pressed="true"></button>
+              <button type="button" class="preferences-demo__color-btn preferences-demo__color-btn--green"
+                      data-color="#198754" aria-label="Green accent" aria-pressed="false"></button>
+              <button type="button" class="preferences-demo__color-btn preferences-demo__color-btn--purple"
+                      data-color="#6f42c1" aria-label="Purple accent" aria-pressed="false"></button>
+              <button type="button" class="preferences-demo__color-btn preferences-demo__color-btn--red"
+                      data-color="#dc3545" aria-label="Red accent" aria-pressed="false"></button>
+              <button type="button" class="preferences-demo__color-btn preferences-demo__color-btn--orange"
+                      data-color="#fd7e14" aria-label="Orange accent" aria-pressed="false"></button>
+              <button type="button" class="preferences-demo__color-btn preferences-demo__color-btn--teal"
+                      data-color="#20c997" aria-label="Teal accent" aria-pressed="false"></button>
+            </div>
+          </div>
+        </div>
+        <div class="preferences-demo__row">
+          <span class="preferences-demo__row-label">Font Scale</span>
+          <div class="preferences-demo__row-value">
+            <input type="range" class="preferences-demo__range form-range" id="font-scale-range"
+                   min="0.8" max="1.5" step="0.1" value="1.0"
+                   aria-label="Font scale" aria-valuemin="0.8" aria-valuemax="1.5" aria-valuenow="1.0">
+            <span id="font-scale-value" class="preferences-demo__range-value">1.0x</span>
+          </div>
+        </div>
+        <div class="preferences-demo__row">
+          <span class="preferences-demo__row-label">Animations</span>
+          <div class="preferences-demo__row-value">
+            <label class="preferences-demo__toggle">
+              <input type="checkbox" id="animations-toggle" checked aria-label="Enable animations">
+              <span class="preferences-demo__toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="preferences-demo__panel">
+        <div class="preferences-demo__panel-title">
+          <i class="fas fa-columns" aria-hidden="true"></i> Layout
+        </div>
+        <div class="preferences-demo__row">
+          <span class="preferences-demo__row-label">Navigation Position</span>
+          <div class="preferences-demo__row-value">
+            <select class="form-select form-select-sm" id="nav-position-select" aria-label="Navigation position">
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+            </select>
+          </div>
+        </div>
+        <div class="preferences-demo__row">
+          <span class="preferences-demo__row-label">Sidebar Collapsed</span>
+          <div class="preferences-demo__row-value">
+            <label class="preferences-demo__toggle">
+              <input type="checkbox" id="sidebar-toggle" aria-label="Collapse sidebar">
+              <span class="preferences-demo__toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preview -->
+  <section class="preferences-demo__section" aria-labelledby="preferences-preview-heading">
+    <h3 id="preferences-preview-heading">Live Preview</h3>
+    <div id="preview-area" class="preferences-demo__preview" role="region" aria-label="Theme preview">
+      <i class="fas fa-paint-brush preferences-demo__preview-icon" aria-hidden="true"></i>
+      <span class="preferences-demo__preview-text">Theme Preview Area</span>
+      <span class="preferences-demo__preview-subtext">Comfortable density • 1.0x scale</span>
+      <div class="preferences-demo__preview-layout">
+        <span class="preferences-demo__preview-layout-item">
+          <i class="fas fa-arrows-alt-h" aria-hidden="true"></i>
+          <span id="preview-nav-position">Nav: Left</span>
+        </span>
+        <span class="preferences-demo__preview-layout-item">
+          <i class="fas fa-columns" aria-hidden="true"></i>
+          <span id="preview-sidebar">Sidebar: Expanded</span>
+        </span>
+        <span class="preferences-demo__preview-layout-item">
+          <i class="fas fa-magic" aria-hidden="true"></i>
+          <span id="preview-animations">Animations: On</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Preferences Data -->
+  <section class="preferences-demo__section" aria-labelledby="preferences-data-heading">
+    <h3 id="preferences-data-heading">Current Preferences</h3>
+    <pre id="preferences-data" class="preferences-demo__data" aria-label="Current preferences data">Loading preferences...</pre>
+  </section>
+
+  <!-- Events Log -->
+  <section class="preferences-demo__section" aria-labelledby="preferences-log-heading">
+    <h3 id="preferences-log-heading">Events Log</h3>
+    <div class="preferences-demo__log-controls">
+      <button type="button" class="btn btn-funky-outline btn-sm" data-action="clear-log" aria-label="Clear log">
+        <i class="fas fa-eraser" aria-hidden="true"></i> Clear
+      </button>
+    </div>
+    <pre id="preferences-log" class="preferences-demo__log" role="log" aria-live="polite" aria-label="Event log">Waiting for events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var logs = [];
+  var changeListener = null;
+  var changeCount = 0;
+
+  // Local preferences state - no API calls
+  var currentOptions = {
+    themeMode: 'dark',
+    accentColor: '#0d6efd',
+    fontScale: 1.0,
+    density: 'comfortable',
+    animationsEnabled: true,
+    navPosition: 'left',
+    sidebarCollapsed: false
+  };
+
+  // Default values for reset
+  var defaults = {
+    themeMode: 'dark',
+    accentColor: '#0d6efd',
+    fontScale: 1.0,
+    density: 'comfortable',
+    animationsEnabled: true,
+    navPosition: 'left',
+    sidebarCollapsed: false
+  };
+
+  function log(message, type) {
+    type = type || 'info';
+    var timestamp = new Date().toLocaleTimeString();
+    var prefix = type === 'get' ? '[GET]' : type === 'set' ? '[SET]' : type === 'change' ? '[CHANGE]' : '[INFO]';
+    logs.unshift(timestamp + ' ' + prefix + ' ' + message);
+    if (logs.length > 30) logs.pop();
+    var logEl = document.getElementById('preferences-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+    emit('log', { message: message, type: type });
+  }
+
+  function updateState() {
+    var themeEl = document.getElementById('state-theme');
+    var accentEl = document.getElementById('state-accent');
+    var fontScaleEl = document.getElementById('state-font-scale');
+    var densityEl = document.getElementById('state-density');
+    var animationsEl = document.getElementById('state-animations');
+    var navPositionEl = document.getElementById('state-nav-position');
+    var sidebarEl = document.getElementById('state-sidebar');
+    var changesEl = document.getElementById('state-changes');
+
+    if (themeEl) themeEl.textContent = currentOptions.themeMode;
+    if (accentEl) accentEl.textContent = currentOptions.accentColor;
+    if (fontScaleEl) fontScaleEl.textContent = currentOptions.fontScale.toFixed(1);
+    if (densityEl) densityEl.textContent = currentOptions.density;
+    if (animationsEl) animationsEl.textContent = currentOptions.animationsEnabled ? 'On' : 'Off';
+    if (navPositionEl) navPositionEl.textContent = currentOptions.navPosition;
+    if (sidebarEl) sidebarEl.textContent = currentOptions.sidebarCollapsed ? 'Collapsed' : 'Expanded';
+    if (changesEl) changesEl.textContent = changeCount;
+
+    updateThemeButtons();
+    updateDensityButtons();
+    updatePreview();
+    updateDataDisplay();
+  }
+
+  function updateThemeButtons() {
+    var themes = ['light', 'dark', 'system', 'high-contrast'];
+    themes.forEach(function(theme) {
+      var btn = document.querySelector('[data-action="theme-' + theme + '"]');
+      if (btn) {
+        if (currentOptions.themeMode === theme) {
+          btn.classList.remove('btn-funky-outline');
+          btn.classList.add('btn-funky-primary');
+        } else {
+          btn.classList.remove('btn-funky-primary');
+          btn.classList.add('btn-funky-outline');
+        }
+      }
+    });
+  }
+
+  function updateDensityButtons() {
+    var densities = ['compact', 'comfortable', 'spacious'];
+    densities.forEach(function(density) {
+      var btn = document.querySelector('[data-action="density-' + density + '"]');
+      if (btn) {
+        if (currentOptions.density === density) {
+          btn.classList.remove('btn-funky-outline');
+          btn.classList.add('btn-funky-primary');
+        } else {
+          btn.classList.remove('btn-funky-primary');
+          btn.classList.add('btn-funky-outline');
+        }
+      }
+    });
+  }
+
+  function updateColorButtons() {
+    document.querySelectorAll('.preferences-demo__color-btn').forEach(function(btn) {
+      var isSelected = btn.getAttribute('data-color') === currentOptions.accentColor;
+      btn.classList.toggle('preferences-demo__color-btn--selected', isSelected);
+      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
+  }
+
+  function updatePreview() {
+    var preview = document.getElementById('preview-area');
+    if (!preview) return;
+
+    var icon = preview.querySelector('.preferences-demo__preview-icon');
+    var text = preview.querySelector('.preferences-demo__preview-text');
+    var subtext = preview.querySelector('.preferences-demo__preview-subtext');
+
+    // Apply accent color to icon
+    if (icon) {
+      icon.style.color = currentOptions.accentColor;
+    }
+
+    // Apply font scale
+    preview.style.fontSize = (currentOptions.fontScale * 100) + '%';
+
+    // Apply theme mode visual - update preview background/text colors
+    preview.classList.remove('preferences-demo__preview--light', 'preferences-demo__preview--dark', 'preferences-demo__preview--high-contrast');
+    if (currentOptions.themeMode === 'light') {
+      preview.classList.add('preferences-demo__preview--light');
+    } else if (currentOptions.themeMode === 'high-contrast') {
+      preview.classList.add('preferences-demo__preview--high-contrast');
+    } else {
+      preview.classList.add('preferences-demo__preview--dark');
+    }
+
+    // Apply density visual - adjust padding
+    preview.classList.remove('preferences-demo__preview--compact', 'preferences-demo__preview--comfortable', 'preferences-demo__preview--spacious');
+    preview.classList.add('preferences-demo__preview--' + currentOptions.density);
+
+    // Update preview text to reflect current settings
+    if (text) {
+      text.textContent = currentOptions.themeMode.charAt(0).toUpperCase() + currentOptions.themeMode.slice(1) + ' Theme';
+    }
+    if (subtext) {
+      subtext.textContent = currentOptions.density.charAt(0).toUpperCase() + currentOptions.density.slice(1) + ' density • ' + currentOptions.fontScale.toFixed(1) + 'x scale';
+    }
+
+    // Update layout indicators
+    var navEl = document.getElementById('preview-nav-position');
+    var sidebarEl = document.getElementById('preview-sidebar');
+    var animEl = document.getElementById('preview-animations');
+
+    if (navEl) {
+      navEl.textContent = 'Nav: ' + currentOptions.navPosition.charAt(0).toUpperCase() + currentOptions.navPosition.slice(1);
+    }
+    if (sidebarEl) {
+      sidebarEl.textContent = 'Sidebar: ' + (currentOptions.sidebarCollapsed ? 'Collapsed' : 'Expanded');
+    }
+    if (animEl) {
+      animEl.textContent = 'Animations: ' + (currentOptions.animationsEnabled ? 'On' : 'Off');
+    }
+  }
+
+  function updateDataDisplay() {
+    var dataEl = document.getElementById('preferences-data');
+    if (dataEl) {
+      // Show local state - this is what would be sent to the API
+      var displayData = {
+        theme: {
+          mode: currentOptions.themeMode,
+          accent_color: currentOptions.accentColor,
+          font_scale: currentOptions.fontScale,
+          density: currentOptions.density,
+          animations_enabled: currentOptions.animationsEnabled,
+          nav_position: currentOptions.navPosition,
+          sidebar_collapsed: currentOptions.sidebarCollapsed
+        }
+      };
+      dataEl.textContent = JSON.stringify(displayData, null, 2);
+    }
+  }
+
+  function syncFromLivePreferences() {
+    // Read from Funky.Preferences cache if available (no API call)
+    if (Funky.Preferences && Funky.Preferences.cache) {
+      var cache = Funky.Preferences.cache;
+      if (cache.theme) {
+        if (cache.theme.mode) currentOptions.themeMode = cache.theme.mode;
+        if (cache.theme.accent_color) currentOptions.accentColor = cache.theme.accent_color;
+        if (cache.theme.font_scale) currentOptions.fontScale = cache.theme.font_scale;
+        if (cache.theme.density) currentOptions.density = cache.theme.density;
+        if (cache.theme.animations_enabled !== undefined) currentOptions.animationsEnabled = cache.theme.animations_enabled;
+        if (cache.theme.nav_position) currentOptions.navPosition = cache.theme.nav_position;
+        if (cache.theme.sidebar_collapsed !== undefined) currentOptions.sidebarCollapsed = cache.theme.sidebar_collapsed;
+      }
+    }
+
+    // Update form elements
+    var fontRange = document.getElementById('font-scale-range');
+    var fontValue = document.getElementById('font-scale-value');
+    var animToggle = document.getElementById('animations-toggle');
+    var navSelect = document.getElementById('nav-position-select');
+    var sidebarToggle = document.getElementById('sidebar-toggle');
+
+    if (fontRange) fontRange.value = currentOptions.fontScale;
+    if (fontValue) fontValue.textContent = currentOptions.fontScale.toFixed(1) + 'x';
+    if (animToggle) animToggle.checked = currentOptions.animationsEnabled;
+    if (navSelect) navSelect.value = currentOptions.navPosition;
+    if (sidebarToggle) sidebarToggle.checked = currentOptions.sidebarCollapsed;
+
+    updateColorButtons();
+    updateState();
+  }
+
+  function applyProps(props) {
+    if (!props) return;
+
+    if (props.themeMode !== undefined && props.themeMode !== currentOptions.themeMode) {
+      currentOptions.themeMode = props.themeMode;
+      changeCount++;
+      log('Theme mode set to: ' + props.themeMode, 'set');
+    }
+
+    if (props.accentColor !== undefined && props.accentColor !== currentOptions.accentColor) {
+      currentOptions.accentColor = props.accentColor;
+      updateColorButtons();
+      changeCount++;
+      log('Accent color set to: ' + props.accentColor, 'set');
+    }
+
+    if (props.fontScale !== undefined && props.fontScale !== currentOptions.fontScale) {
+      currentOptions.fontScale = props.fontScale;
+      document.getElementById('font-scale-range').value = props.fontScale;
+      document.getElementById('font-scale-value').textContent = props.fontScale.toFixed(1) + 'x';
+      changeCount++;
+      log('Font scale set to: ' + props.fontScale, 'set');
+    }
+
+    if (props.density !== undefined && props.density !== currentOptions.density) {
+      currentOptions.density = props.density;
+      changeCount++;
+      log('Density set to: ' + props.density, 'set');
+    }
+
+    if (props.animationsEnabled !== undefined && props.animationsEnabled !== currentOptions.animationsEnabled) {
+      currentOptions.animationsEnabled = props.animationsEnabled;
+      document.getElementById('animations-toggle').checked = props.animationsEnabled;
+      changeCount++;
+      log('Animations: ' + (props.animationsEnabled ? 'enabled' : 'disabled'), 'set');
+    }
+
+    if (props.navPosition !== undefined && props.navPosition !== currentOptions.navPosition) {
+      currentOptions.navPosition = props.navPosition;
+      document.getElementById('nav-position-select').value = props.navPosition;
+      changeCount++;
+      log('Nav position set to: ' + props.navPosition, 'set');
+    }
+
+    if (props.sidebarCollapsed !== undefined && props.sidebarCollapsed !== currentOptions.sidebarCollapsed) {
+      currentOptions.sidebarCollapsed = props.sidebarCollapsed;
+      document.getElementById('sidebar-toggle').checked = props.sidebarCollapsed;
+      changeCount++;
+      log('Sidebar: ' + (props.sidebarCollapsed ? 'collapsed' : 'expanded'), 'set');
+    }
+
+    updateState();
+    emit('state', { options: currentOptions });
+  }
+
+  function setupButtonHandlers() {
+    var actions = {
+      'get-all': function() {
+        // Demonstrate getting all preferences from cache (no API call)
+        log('Get all preferences (from local state)', 'get');
+        var data = {
+          theme: {
+            mode: currentOptions.themeMode,
+            accent_color: currentOptions.accentColor,
+            font_scale: currentOptions.fontScale,
+            density: currentOptions.density,
+            animations_enabled: currentOptions.animationsEnabled,
+            nav_position: currentOptions.navPosition,
+            sidebar_collapsed: currentOptions.sidebarCollapsed
+          }
+        };
+        log('Retrieved: ' + Object.keys(data.theme).length + ' theme settings', 'get');
+        updateDataDisplay();
+      },
+      'apply': function() {
+        // Apply current preferences to the UI (locally)
+        log('Applying preferences to UI preview', 'info');
+        updatePreview();
+        if (Funky.Toast) {
+          Funky.Toast.info('Preferences applied to preview');
+        }
+      },
+      'reset-local': function() {
+        // Reset to defaults locally (no API call)
+        currentOptions = Object.assign({}, defaults);
+        changeCount = 0;
+
+        // Update form elements
+        document.getElementById('font-scale-range').value = defaults.fontScale;
+        document.getElementById('font-scale-value').textContent = defaults.fontScale.toFixed(1) + 'x';
+        document.getElementById('animations-toggle').checked = defaults.animationsEnabled;
+        document.getElementById('nav-position-select').value = defaults.navPosition;
+        document.getElementById('sidebar-toggle').checked = defaults.sidebarCollapsed;
+
+        updateColorButtons();
+        updateState();
+        log('Reset to default values (local only)', 'info');
+        emit('event', { event: 'preferences:reset', payload: defaults });
+      },
+      'theme-light': function() { setTheme('light'); },
+      'theme-dark': function() { setTheme('dark'); },
+      'theme-system': function() { setTheme('system'); },
+      'theme-high-contrast': function() { setTheme('high-contrast'); },
+      'density-compact': function() { setDensity('compact'); },
+      'density-comfortable': function() { setDensity('comfortable'); },
+      'density-spacious': function() { setDensity('spacious'); },
+      'clear-log': function() {
+        logs = [];
+        document.getElementById('preferences-log').textContent = 'Log cleared';
+      }
+    };
+
+    document.querySelectorAll('[data-action]').forEach(function(btn) {
+      var action = btn.getAttribute('data-action');
+      if (actions[action]) {
+        btn.addEventListener('click', actions[action]);
+      }
+    });
+  }
+
+  function setTheme(mode) {
+    currentOptions.themeMode = mode;
+    changeCount++;
+    log('Theme mode: ' + mode, 'change');
+    updateState();
+    emit('event', { event: 'preferences:theme', payload: { mode: mode } });
+  }
+
+  function setDensity(density) {
+    currentOptions.density = density;
+    changeCount++;
+    log('Density: ' + density, 'change');
+    updateState();
+    emit('event', { event: 'preferences:density', payload: { density: density } });
+  }
+
+  function setupInteractiveControls() {
+    document.querySelectorAll('.preferences-demo__color-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var color = this.getAttribute('data-color');
+        currentOptions.accentColor = color;
+        changeCount++;
+        updateColorButtons();
+        updateState();
+        log('Accent color: ' + color, 'change');
+        emit('event', { event: 'preferences:accent', payload: { color: color } });
+      });
+    });
+
+    document.getElementById('font-scale-range').addEventListener('input', function() {
+      var scale = parseFloat(this.value);
+      currentOptions.fontScale = scale;
+      document.getElementById('font-scale-value').textContent = scale.toFixed(1) + 'x';
+      var stateEl = document.getElementById('state-font-scale');
+      if (stateEl) stateEl.textContent = scale.toFixed(1);
+      updatePreview();
+    });
+
+    document.getElementById('font-scale-range').addEventListener('change', function() {
+      var scale = parseFloat(this.value);
+      changeCount++;
+      log('Font scale: ' + scale.toFixed(1), 'change');
+      updateState();
+      emit('event', { event: 'preferences:fontScale', payload: { scale: scale } });
+    });
+
+    document.getElementById('animations-toggle').addEventListener('change', function() {
+      currentOptions.animationsEnabled = this.checked;
+      changeCount++;
+      log('Animations: ' + (this.checked ? 'enabled' : 'disabled'), 'change');
+      updateState();
+      emit('event', { event: 'preferences:animations', payload: { enabled: this.checked } });
+    });
+
+    document.getElementById('nav-position-select').addEventListener('change', function() {
+      currentOptions.navPosition = this.value;
+      changeCount++;
+      log('Nav position: ' + this.value, 'change');
+      updateState();
+      emit('event', { event: 'preferences:navPosition', payload: { position: this.value } });
+    });
+
+    document.getElementById('sidebar-toggle').addEventListener('change', function() {
+      currentOptions.sidebarCollapsed = this.checked;
+      changeCount++;
+      log('Sidebar: ' + (this.checked ? 'collapsed' : 'expanded'), 'change');
+      updateState();
+      emit('event', { event: 'preferences:sidebar', payload: { collapsed: this.checked } });
+    });
+  }
+
+  Funky.Pages.register('component-preferences', {
+    init: function(state) {
+      var props = getProps();
+      if (props.themeMode !== undefined) currentOptions.themeMode = props.themeMode;
+      if (props.accentColor !== undefined) currentOptions.accentColor = props.accentColor;
+      if (props.fontScale !== undefined) currentOptions.fontScale = props.fontScale;
+      if (props.density !== undefined) currentOptions.density = props.density;
+      if (props.animationsEnabled !== undefined) currentOptions.animationsEnabled = props.animationsEnabled;
+      if (props.navPosition !== undefined) currentOptions.navPosition = props.navPosition;
+      if (props.sidebarCollapsed !== undefined) currentOptions.sidebarCollapsed = props.sidebarCollapsed;
+
+      setupButtonHandlers();
+      setupInteractiveControls();
+
+      // Sync form elements with current options
+      document.getElementById('font-scale-range').value = currentOptions.fontScale;
+      document.getElementById('font-scale-value').textContent = currentOptions.fontScale.toFixed(1) + 'x';
+      document.getElementById('animations-toggle').checked = currentOptions.animationsEnabled;
+      document.getElementById('nav-position-select').value = currentOptions.navPosition;
+      document.getElementById('sidebar-toggle').checked = currentOptions.sidebarCollapsed;
+      updateColorButtons();
+
+      // Read from existing Funky.Preferences cache if available (no API call)
+      if (Funky.Preferences && Funky.Preferences.cache) {
+        syncFromLivePreferences();
+        log('Synced from existing preferences cache', 'info');
+      }
+
+      // Listen for preference changes from the Theme Slideout
+      if (Funky.Preferences) {
+        changeListener = function(category, data) {
+          if (category === 'theme' && data) {
+            log('External preference change: ' + JSON.stringify(data), 'change');
+            syncFromLivePreferences();
+          }
+        };
+        Funky.Preferences.addListener(changeListener);
+      }
+
+      // Subscribe to playground prop changes
+      if (Funky.PubSub) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          var props = data && data.props ? data.props : data;
+          if (props && typeof props === 'object') {
+            log('Props changed: ' + Object.keys(props).join(', '), 'info');
+            applyProps(props);
+          }
+        });
+      }
+
+      updateState();
+      log('Preferences demo initialized (local mode)', 'info');
+    },
+
+    destroy: function() {
+      if (changeListener && Funky.Preferences) {
+        Funky.Preferences.removeListener(changeListener);
+        changeListener = null;
+      }
+
+      logs = [];
+      changeCount = 0;
+      return {};
+    }
+  });
+})();
+</script>

@@ -1,0 +1,1318 @@
+/**
+ * Funky Keyboard - Help Overlay Styles
+ * 
+ * @module Funky.Keyboard
+ */
+
+/* ==========================================================================
+   HELP OVERLAY
+   ========================================================================== */
+
+.funky-keyboard-help {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: fkh-fadein 0.15s ease-out;
+}
+
+.funky-keyboard-help.fkh--closing {
+    animation: fkh-fadeout 0.15s ease-out forwards;
+}
+
+@keyframes fkh-fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fkh-fadeout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   DIALOG
+   ========================================================================== */
+
+.fkh-dialog {
+    background: var(--modal-bg, #1e293b);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fkh-slideup 0.2s ease-out;
+}
+
+@keyframes fkh-slideup {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.funky-keyboard-help.fkh--closing .fkh-dialog {
+    animation: fkh-slidedown 0.15s ease-out forwards;
+}
+
+@keyframes fkh-slidedown {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.fkh-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.fkh-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary, #f1f5f9);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fkh-header h2 i {
+    color: var(--primary, #60a5fa);
+}
+
+.fkh-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.fkh-close:hover {
+    background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--text-primary, #f1f5f9);
+}
+
+.fkh-close:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+}
+
+/* ==========================================================================
+   SEARCH BAR
+   ========================================================================== */
+
+.fkh-search {
+    padding: 0 1.5rem 0.75rem;
+}
+
+.fkh-search-input {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background: var(--input-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    color: var(--text-primary, #f1f5f9);
+    font-size: 0.875rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fkh-search-input::placeholder {
+    color: var(--text-secondary, #94a3b8);
+}
+
+.fkh-search-input:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+    border-color: var(--focus-ring-color);
+}
+
+/* ==========================================================================
+   CONTENT
+   ========================================================================== */
+
+.fkh-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Custom scrollbar */
+.fkh-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fkh-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fkh-content::-webkit-scrollbar-thumb {
+    background: var(--border-color, rgba(255, 255, 255, 0.2));
+    border-radius: 3px;
+}
+
+.fkh-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary, #94a3b8);
+}
+
+/* ==========================================================================
+   GROUPS
+   ========================================================================== */
+
+.fkh-group {
+    background: var(--card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.fkh-group h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary, #60a5fa);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Active scope indicator */
+.fkh-group--active {
+    border-color: var(--primary, #60a5fa);
+    background: rgba(96, 165, 250, 0.05);
+}
+
+.fkh-active-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    background: var(--primary, #60a5fa);
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+}
+
+.fkh-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fkh-group li {
+    padding: 0;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+}
+
+.fkh-group li:last-child {
+    border-bottom: none;
+}
+
+/* Interactive shortcut button */
+.fkh-shortcut-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.fkh-shortcut-btn:hover {
+    background: var(--hover-bg, rgba(255, 255, 255, 0.05));
+}
+
+.fkh-shortcut-btn:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+    background: var(--hover-bg, rgba(255, 255, 255, 0.08));
+}
+
+.fkh-shortcut-btn:active {
+    transform: scale(0.98);
+}
+
+.fkh-shortcut-btn span {
+    color: var(--text-primary, #f1f5f9);
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+/* ==========================================================================
+   KBD KEY STYLES
+   ========================================================================== */
+
+.fkh-group kbd,
+.fkh-footer kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+    border-radius: 5px;
+    box-shadow: 0 2px 0 var(--shadow-color, rgba(0, 0, 0, 0.3)),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-primary, #f1f5f9);
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   NAVIGATION TIPS
+   ========================================================================== */
+
+.fkh-tips {
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    background: var(--card-bg, rgba(0, 0, 0, 0.15));
+}
+
+.fkh-tips-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.fkh-tips ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem 1rem;
+}
+
+.fkh-tips li {
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.fkh-tips kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+    border-radius: 3px;
+    box-shadow: 0 1px 0 var(--shadow-color, rgba(0, 0, 0, 0.3));
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--text-primary, #f1f5f9);
+    white-space: nowrap;
+}
+
+/* Light theme tips */
+[data-theme="light"] .fkh-tips {
+    background: #f1f5f9;
+}
+
+[data-theme="light"] .fkh-tips kbd {
+    background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+/* Responsive tips */
+@media (max-width: 640px) {
+    .fkh-tips ul {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.fkh-footer {
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    background: var(--card-bg, rgba(0, 0, 0, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.fkh-footer > span {
+    color: var(--text-secondary, #94a3b8);
+    font-size: 0.8125rem;
+}
+
+.fkh-footer-sep {
+    opacity: 0.4;
+}
+
+.fkh-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+    border-radius: 4px;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.fkh-filter-btn:hover {
+    background: var(--hover-bg, rgba(255, 255, 255, 0.05));
+    border-color: var(--text-secondary, #94a3b8);
+}
+
+.fkh-filter-btn--active {
+    background: var(--primary, #60a5fa);
+    border-color: var(--primary, #60a5fa);
+    color: #fff;
+}
+
+.fkh-filter-btn--active:hover {
+    background: var(--primary-hover, #3b82f6);
+    border-color: var(--primary-hover, #3b82f6);
+}
+
+.fkh-filter-btn kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 18px;
+    padding: 0 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.625rem;
+    font-weight: 500;
+    box-shadow: none;
+}
+
+.fkh-filter-btn--active kbd {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   EMPTY STATE
+   ========================================================================== */
+
+.fkh-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.fkh-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.fkh-empty p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* ==========================================================================
+   NO RESULTS STATE
+   ========================================================================== */
+
+.fkh-no-results {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.fkh-no-results i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.fkh-no-results p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================== */
+
+[data-theme="light"] .funky-keyboard-help {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .fkh-dialog {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+
+[data-theme="light"] .fkh-header {
+    border-color: #e2e8f0;
+}
+
+[data-theme="light"] .fkh-header h2 {
+    color: #1e293b;
+}
+
+[data-theme="light"] .fkh-close {
+    color: #64748b;
+}
+
+[data-theme="light"] .fkh-close:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+[data-theme="light"] .fkh-search-input {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #1e293b;
+}
+
+[data-theme="light"] .fkh-search-input::placeholder {
+    color: #94a3b8;
+}
+
+[data-theme="light"] .fkh-group {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+[data-theme="light"] .fkh-group--active {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+[data-theme="light"] .fkh-group h3 {
+    color: #3b82f6;
+}
+
+[data-theme="light"] .fkh-group li {
+    border-color: #e2e8f0;
+}
+
+[data-theme="light"] .fkh-group li span {
+    color: #334155;
+}
+
+[data-theme="light"] .fkh-group kbd,
+[data-theme="light"] .fkh-footer kbd {
+    background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    color: #1e293b;
+}
+
+[data-theme="light"] .fkh-footer {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+[data-theme="light"] .fkh-footer span {
+    color: #64748b;
+}
+
+[data-theme="light"] .fkh-filter-btn {
+    border-color: #e2e8f0;
+    color: #64748b;
+}
+
+[data-theme="light"] .fkh-filter-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+[data-theme="light"] .fkh-filter-btn kbd {
+    background: #e2e8f0;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .fkh-dialog {
+        max-width: 95%;
+        max-height: 90vh;
+        margin: 1rem;
+    }
+
+    .fkh-content {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+
+    .fkh-header h2 {
+        font-size: 1.1rem;
+    }
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .funky-keyboard-help,
+    .funky-keyboard-help.fkh--closing,
+    .fkh-dialog,
+    .funky-keyboard-help.fkh--closing .fkh-dialog {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   PRINT
+   ========================================================================== */
+
+@media print {
+    .funky-keyboard-help {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   FOCUS INDICATORS
+   ========================================================================== */
+
+/**
+ * Global focus outline
+ * Uses :focus-visible to only show for keyboard navigation
+ * Uses CSS variables for configurable focus styles
+ */
+:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+}
+
+/* Remove default outline when using :focus-visible */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/**
+ * Enhanced focus for interactive elements
+ */
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+}
+
+/**
+ * Focus within a region
+ * Subtle indicator when focus is inside a navigation region
+ */
+[data-nav-region]:focus-within {
+    /* Subtle left border to indicate active region */
+    border-left: 3px solid var(--pro-accent-primary, #2f81f7);
+}
+
+/* Don't add border to main content region (too wide) */
+[data-nav-region="main"]:focus-within {
+    border-left: none;
+}
+
+/**
+ * Tree view focus
+ */
+.tree-view-row:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+    background-color: var(--pro-bg-tertiary, #21262d);
+}
+
+.tree-view-row.tree-view-focused {
+    background-color: var(--pro-bg-tertiary, #21262d);
+}
+
+/**
+ * List item focus
+ */
+.selectable-list-item:focus-visible,
+[role="option"]:focus-visible,
+[role="treeitem"]:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+    background-color: var(--pro-bg-tertiary, #21262d);
+}
+
+/**
+ * Modal focus trap indicator
+ */
+.modal-dialog:focus-visible {
+    outline: none; /* Dialog itself doesn't need outline */
+}
+
+.modal-dialog *:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+}
+
+/* ==========================================================================
+   FOCUS INDICATOR THEME VARIATIONS
+   ========================================================================== */
+
+/**
+ * Light theme focus - uses --pro-accent-primary which is set per theme
+ * Background colors need light-appropriate values
+ */
+[data-theme="light"] .tree-view-row:focus-visible,
+[data-theme="light"] .tree-view-row.tree-view-focused,
+[data-theme="light"] .selectable-list-item:focus-visible,
+[data-theme="light"] [role="option"]:focus-visible,
+[data-theme="light"] [role="treeitem"]:focus-visible {
+    background-color: var(--pro-bg-tertiary, #eaeef2);
+}
+
+/**
+ * Even Funkyer theme focus - neon glow effect
+ * Note: Uses CSS variables but adds theme-specific glow
+ */
+[data-theme="even-funkyer"] {
+    --focus-ring-color: #ff00ff;
+}
+
+[data-theme="even-funkyer"] button:focus-visible,
+[data-theme="even-funkyer"] [role="button"]:focus-visible,
+[data-theme="even-funkyer"] a:focus-visible,
+[data-theme="even-funkyer"] input:focus-visible,
+[data-theme="even-funkyer"] select:focus-visible,
+[data-theme="even-funkyer"] textarea:focus-visible,
+[data-theme="even-funkyer"] [tabindex]:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow), 0 0 20px rgba(255, 0, 255, 0.4);
+}
+
+[data-theme="even-funkyer"] [data-nav-region]:focus-within {
+    border-left-color: #ff00ff;
+    box-shadow: inset 3px 0 10px rgba(255, 0, 255, 0.3);
+}
+
+[data-theme="even-funkyer"] .tree-view-row:focus-visible,
+[data-theme="even-funkyer"] .tree-view-row.tree-view-focused,
+[data-theme="even-funkyer"] .selectable-list-item:focus-visible,
+[data-theme="even-funkyer"] [role="option"]:focus-visible,
+[data-theme="even-funkyer"] [role="treeitem"]:focus-visible {
+    background-color: rgba(255, 0, 255, 0.15);
+}
+
+/* ==========================================================================
+   HIGH CONTRAST MODE (OS preference)
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    :root {
+        --focus-ring-width: 3px;
+        --focus-ring-offset: 3px;
+    }
+
+    :root:not([data-focus-style]) {
+        --focus-ring-color: currentColor;
+    }
+
+    :focus-visible {
+        outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+        box-shadow: var(--focus-ring-shadow);
+    }
+
+    [data-nav-region]:focus-within {
+        border-left: 4px solid currentColor !important;
+    }
+}
+
+/* ==========================================================================
+   FOCUS INDICATOR REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    :focus-visible {
+        transition: none !important;
+    }
+
+    /* Remove glow animations */
+    [data-theme="even-funkyer"] button:focus-visible,
+    [data-theme="even-funkyer"] [role="button"]:focus-visible,
+    [data-theme="even-funkyer"] a:focus-visible,
+    [data-theme="even-funkyer"] input:focus-visible,
+    [data-theme="even-funkyer"] select:focus-visible,
+    [data-theme="even-funkyer"] textarea:focus-visible,
+    [data-theme="even-funkyer"] [tabindex]:focus-visible {
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
+    }
+}
+
+/* ==========================================================================
+   SKIP LINK ENHANCEMENTS
+   ========================================================================== */
+
+/**
+ * Skip link visible on focus
+ */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-accent, #3b82f6);
+    color: white;
+    font-weight: 600;
+    border-radius: 0 0 0.5rem 0.5rem;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   REGION INDICATORS
+   ========================================================================== */
+
+/**
+ * Visual indicator for current region (optional, for debugging)
+ */
+.debug-regions [data-nav-region]::before {
+    content: attr(data-nav-region);
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 0 0 0 0.25rem;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.debug-regions [data-nav-region]:focus-within::before {
+    background: var(--color-accent, #3b82f6);
+}
+
+/**
+ * Programmatic active region indicator
+ * Applied via JavaScript when navigating regions
+ */
+.nav-region-active {
+    /* Subtle highlight for active region */
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-shadow);
+}
+
+/* Light outline for dark themes */
+[data-theme="dark"] .nav-region-active {
+    outline-color: var(--focus-ring-color);
+}
+
+[data-theme="even-funkyer"] .nav-region-active {
+    outline-color: var(--focus-ring-color);
+    box-shadow: var(--focus-ring-shadow), 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+/* ==========================================================================
+   KEYBOARD PLAYGROUND DEMO
+   ========================================================================== */
+
+/* Status section */
+.keyboard-demo__status {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.keyboard-demo__key-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  padding: 1.5rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-lg, 12px);
+  border: 2px solid var(--pro-border-color, #333);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.keyboard-demo__key-display--active {
+  border-color: var(--pro-accent-primary, #2f81f7);
+  background: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.1));
+}
+
+.keyboard-demo__key-label {
+  font-size: 1rem;
+  color: var(--pro-text-secondary, #888);
+}
+
+.keyboard-demo__key-pressed {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
+  box-shadow: 0 3px 0 var(--pro-shadow-color, rgba(0, 0, 0, 0.3)),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: var(--pro-text-primary, #e0e0e0);
+}
+
+.keyboard-demo__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.keyboard-demo__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+  min-width: 100px;
+  flex: 1;
+}
+
+.keyboard-demo__metric-label {
+  font-size: 0.75rem;
+  color: var(--pro-text-secondary, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.keyboard-demo__metric-value {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  color: var(--pro-text-primary, #e0e0e0);
+}
+
+/* Demo shortcuts list */
+.keyboard-demo__shortcuts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.keyboard-demo__shortcut {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+  border: 1px solid var(--pro-border-color, #333);
+}
+
+.keyboard-demo__shortcut kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.15));
+  border-radius: 5px;
+  box-shadow: 0 2px 0 var(--pro-shadow-color, rgba(0, 0, 0, 0.3)),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--pro-text-primary, #e0e0e0);
+  white-space: nowrap;
+}
+
+.keyboard-demo__shortcut span {
+  font-size: 0.875rem;
+  color: var(--pro-text-secondary, #aaa);
+}
+
+/* Scope management */
+.keyboard-demo__scope-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.keyboard-demo__scope-input {
+  flex: 1;
+}
+
+.keyboard-demo__scope-input .form-control {
+  background: var(--pro-bg-secondary, #252525);
+  border-color: var(--pro-border-color, #333);
+  color: var(--pro-text-primary, #e0e0e0);
+}
+
+.keyboard-demo__scope-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyboard-demo__scope-stack {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+}
+
+.keyboard-demo__scope-stack-label {
+  font-size: 0.8125rem;
+  color: var(--pro-text-secondary, #888);
+  white-space: nowrap;
+}
+
+.keyboard-demo__scope-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyboard-demo__scope-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--pro-bg-secondary, #252525);
+  border: 1px solid var(--pro-border-color, #333);
+  border-radius: var(--pro-radius-xs, 4px);
+  color: var(--pro-text-secondary, #aaa);
+}
+
+.keyboard-demo__scope-badge--active {
+  background: var(--pro-accent-primary-muted, rgba(47, 129, 247, 0.15));
+  border-color: var(--pro-accent-primary, #2f81f7);
+  color: var(--pro-accent-primary, #2f81f7);
+}
+
+/* Register form */
+.keyboard-demo__register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--pro-border-color, #333);
+}
+
+.keyboard-demo__register-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.keyboard-demo__register-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1;
+  min-width: 100px;
+}
+
+.keyboard-demo__register-field--wide {
+  flex: 2;
+  min-width: 200px;
+}
+
+.keyboard-demo__register-field label {
+  font-size: 0.75rem;
+  color: var(--pro-text-secondary, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.keyboard-demo__register-field .form-control {
+  background: var(--pro-bg-secondary, #252525);
+  border-color: var(--pro-border-color, #333);
+  color: var(--pro-text-primary, #e0e0e0);
+}
+
+.keyboard-demo__register-modifiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  flex: 1;
+}
+
+.keyboard-demo__modifier {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--pro-text-secondary, #aaa);
+  cursor: pointer;
+}
+
+.keyboard-demo__modifier input {
+  cursor: pointer;
+}
+
+.keyboard-demo__modifier span {
+  white-space: nowrap;
+}
+
+/* Registered list */
+.keyboard-demo__registered-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.keyboard-demo__registered-empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--pro-text-secondary, #888);
+  font-size: 0.875rem;
+}
+
+.keyboard-demo__registered-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border-radius: var(--pro-radius-sm, 6px);
+  border: 1px solid var(--pro-border-color, #333);
+}
+
+.keyboard-demo__registered-item kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+  border: 1px solid var(--pro-border-color, rgba(255, 255, 255, 0.15));
+  border-radius: 5px;
+  box-shadow: 0 2px 0 var(--pro-shadow-color, rgba(0, 0, 0, 0.3));
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--pro-text-primary, #e0e0e0);
+  white-space: nowrap;
+}
+
+.keyboard-demo__registered-desc {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--pro-text-primary, #e0e0e0);
+}
+
+.keyboard-demo__registered-scope {
+  font-size: 0.75rem;
+  color: var(--pro-text-secondary, #888);
+  padding: 0.125rem 0.5rem;
+  background: var(--pro-bg-secondary, #252525);
+  border-radius: var(--pro-radius-xs, 4px);
+}
+
+.keyboard-demo__unregister-btn {
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.keyboard-demo__registered-item:hover .keyboard-demo__unregister-btn {
+  opacity: 1;
+}
+
+/* Help controls */
+.keyboard-demo__help-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Event log */
+.keyboard-demo__log {
+  margin: 0;
+  padding: 1rem;
+  background: var(--pro-bg-tertiary, #1a1a1a);
+  border: 1px solid var(--pro-border-color, #333);
+  border-radius: var(--pro-radius-sm, 6px);
+  font-family: var(--pro-font-mono, 'SF Mono', 'Monaco', monospace);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--pro-text-secondary, #aaa);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Light theme */
+[data-theme="light"] .keyboard-demo__key-display {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .keyboard-demo__key-pressed {
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+[data-theme="light"] .keyboard-demo__metric,
+[data-theme="light"] .keyboard-demo__shortcut,
+[data-theme="light"] .keyboard-demo__scope-stack,
+[data-theme="light"] .keyboard-demo__registered-item {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .keyboard-demo__shortcut kbd,
+[data-theme="light"] .keyboard-demo__registered-item kbd {
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+[data-theme="light"] .keyboard-demo__scope-input .form-control,
+[data-theme="light"] .keyboard-demo__register-field .form-control {
+  background: var(--pro-bg-secondary, #fff);
+  border-color: var(--pro-border-color, #dee2e6);
+  color: var(--pro-text-primary, #212529);
+}
+
+[data-theme="light"] .keyboard-demo__log {
+  background: var(--pro-bg-tertiary, #f1f3f5);
+  border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .keyboard-demo__shortcuts {
+    grid-template-columns: 1fr;
+  }
+
+  .keyboard-demo__scope-buttons {
+    flex-direction: column;
+  }
+
+  .keyboard-demo__scope-buttons .btn {
+    width: 100%;
+  }
+
+  .keyboard-demo__register-row {
+    flex-direction: column;
+  }
+
+  .keyboard-demo__register-field,
+  .keyboard-demo__register-field--wide {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .keyboard-demo__register-modifiers {
+    width: 100%;
+  }
+
+  .keyboard-demo__help-controls {
+    flex-direction: column;
+  }
+
+  .keyboard-demo__help-controls .btn {
+    width: 100%;
+  }
+}

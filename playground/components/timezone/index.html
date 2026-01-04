@@ -1,0 +1,548 @@
+<div data-page="component-timezone" class="component-demo">
+  <h2>Timezone</h2>
+  <p class="text-muted">Timezone detection, storage, and formatting with browser sync</p>
+
+  <!-- Current Timezone Section -->
+  <section class="demo-section" aria-labelledby="current-heading">
+    <h3 id="current-heading">Current Timezone</h3>
+    <p class="text-muted small">Detected browser timezone and current session timezone</p>
+    <div class="demo-area">
+      <div class="timezone-demo__current">
+        <div class="timezone-demo__current-item">
+          <span class="timezone-demo__current-label">Browser Timezone:</span>
+          <span id="browser-tz" class="badge bg-secondary">Detecting...</span>
+        </div>
+        <div class="timezone-demo__current-item">
+          <span class="timezone-demo__current-label">Session Timezone:</span>
+          <span id="session-tz" class="badge bg-primary">Loading...</span>
+        </div>
+        <div class="timezone-demo__current-item">
+          <span class="timezone-demo__current-label">Abbreviation:</span>
+          <span id="tz-abbr" class="badge bg-info">--</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Clock Section -->
+  <section class="demo-section" aria-labelledby="clock-heading">
+    <h3 id="clock-heading">Live Clock</h3>
+    <p class="text-muted small">Current time formatted in different timezones</p>
+    <div class="demo-area">
+      <div class="timezone-demo__clocks">
+        <div class="timezone-demo__clock" id="clock-current">
+          <span class="timezone-demo__clock-label">Current TZ</span>
+          <span class="timezone-demo__clock-time">--:--:--</span>
+          <span class="timezone-demo__clock-date">---</span>
+        </div>
+        <div class="timezone-demo__clock" id="clock-utc">
+          <span class="timezone-demo__clock-label">UTC</span>
+          <span class="timezone-demo__clock-time">--:--:--</span>
+          <span class="timezone-demo__clock-date">---</span>
+        </div>
+        <div class="timezone-demo__clock" id="clock-compare">
+          <span class="timezone-demo__clock-label">Compare TZ</span>
+          <span class="timezone-demo__clock-time">--:--:--</span>
+          <span class="timezone-demo__clock-date">---</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Format Demo Section -->
+  <section class="demo-section" aria-labelledby="format-heading">
+    <h3 id="format-heading">Format Demo</h3>
+    <p class="text-muted small">Test timestamp formatting with different options</p>
+    <div class="demo-area">
+      <div class="timezone-demo__format">
+        <div class="timezone-demo__format-input">
+          <label for="input-timestamp" class="timezone-demo__label">Input Timestamp:</label>
+          <input type="text" id="input-timestamp" class="form-control form-control-sm" placeholder="2024-01-15T10:30:00Z">
+        </div>
+        <div class="timezone-demo__format-actions">
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-use-now">
+            <i class="fa-solid fa-clock" aria-hidden="true"></i> Use Now
+          </button>
+          <button type="button" class="btn btn-sm btn-primary" id="btn-format">
+            <i class="fa-solid fa-magic" aria-hidden="true"></i> Format
+          </button>
+        </div>
+      </div>
+      <div class="timezone-demo__format-results" id="format-results">
+        <div class="timezone-demo__format-result">
+          <span class="timezone-demo__format-label">format():</span>
+          <code id="result-format">--</code>
+        </div>
+        <div class="timezone-demo__format-result">
+          <span class="timezone-demo__format-label">formatString(format prop):</span>
+          <code id="result-format-string">--</code>
+        </div>
+        <div class="timezone-demo__format-result">
+          <span class="timezone-demo__format-label">formatWithTZ():</span>
+          <code id="result-format-tz">--</code>
+        </div>
+        <div class="timezone-demo__format-result">
+          <span class="timezone-demo__format-label">renderDate():</span>
+          <span id="result-render">--</span>
+        </div>
+        <div class="timezone-demo__format-result">
+          <span class="timezone-demo__format-label">renderDate({ dateOnly: true }):</span>
+          <span id="result-render-date">--</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timezone Picker Section -->
+  <section class="demo-section" aria-labelledby="picker-heading">
+    <h3 id="picker-heading">Timezone Picker</h3>
+    <p class="text-muted small">Select a timezone to change the session timezone</p>
+    <div class="demo-area">
+      <div class="timezone-demo__picker">
+        <label for="timezone-select" class="timezone-demo__label">Select Timezone:</label>
+        <select id="timezone-select" class="form-select form-select-sm" data-no-combobox>
+          <option value="">Loading timezones...</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Test the component's public methods</p>
+    <div class="demo-area">
+      <div class="timezone-demo__controls">
+        <div class="timezone-demo__control-group">
+          <span class="timezone-demo__control-label">Detection:</span>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-detect">
+            <i class="fa-solid fa-compass" aria-hidden="true"></i> Detect Browser TZ
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info" id="btn-get-abbr">
+            <i class="fa-solid fa-tag" aria-hidden="true"></i> Get Abbreviation
+          </button>
+        </div>
+        <div class="timezone-demo__control-group">
+          <span class="timezone-demo__control-label">Actions:</span>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-set-utc">
+            <i class="fa-solid fa-globe" aria-hidden="true"></i> Set UTC
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-set-local">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i> Set Local
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-fetch-tzs">
+            <i class="fa-solid fa-list" aria-hidden="true"></i> Fetch Timezones
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Result Output Section -->
+  <section class="demo-section" aria-labelledby="result-heading">
+    <h3 id="result-heading">Result</h3>
+    <p class="text-muted small">Output from API calls</p>
+    <div class="demo-area">
+      <pre id="result-output" class="timezone-demo__output"><span class="text-muted">// Results will appear here</span></pre>
+    </div>
+  </section>
+
+  <!-- Current Settings Section -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div id="current-settings" class="timezone-demo__settings"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  // State
+  var propsChangedHandler = null;
+  var clockInterval = null;
+  var compareTz = 'America/New_York';
+
+  /**
+   * Escape HTML entities
+   */
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * Show result in output area
+   */
+  function showResult(message, type) {
+    var output = document.getElementById('result-output');
+    if (!output) return;
+
+    var colorClass = '';
+    switch (type) {
+      case 'success': colorClass = 'text-success'; break;
+      case 'error': colorClass = 'text-danger'; break;
+      case 'info': colorClass = 'text-info'; break;
+      default: colorClass = '';
+    }
+
+    if (typeof message === 'object') {
+      message = JSON.stringify(message, null, 2);
+    }
+
+    output.innerHTML = '<span class="' + colorClass + '">' + escapeHtml(message) + '</span>';
+  }
+
+  /**
+   * Update timezone display
+   */
+  function updateTimezoneDisplay() {
+    var browserTzEl = document.getElementById('browser-tz');
+    var sessionTzEl = document.getElementById('session-tz');
+    var abbrEl = document.getElementById('tz-abbr');
+
+    if (browserTzEl) {
+      browserTzEl.textContent = Funky.Timezone.detectBrowserTimezone();
+    }
+
+    if (sessionTzEl) {
+      sessionTzEl.textContent = Funky.Timezone.getEffectiveTimezone();
+    }
+
+    if (abbrEl) {
+      abbrEl.textContent = Funky.Timezone.getAbbreviation() || '--';
+    }
+  }
+
+  /**
+   * Format time for clock display
+   */
+  function formatClockTime(date, timezone) {
+    try {
+      return date.toLocaleString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: timezone
+      });
+    } catch (e) {
+      return '--:--:--';
+    }
+  }
+
+  /**
+   * Format date for clock display
+   */
+  function formatClockDate(date, timezone) {
+    try {
+      return date.toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        timeZone: timezone
+      });
+    } catch (e) {
+      return '---';
+    }
+  }
+
+  /**
+   * Update clocks
+   */
+  function updateClocks() {
+    var now = new Date();
+    var currentTz = Funky.Timezone.getEffectiveTimezone();
+
+    // Current timezone clock
+    var clockCurrent = document.getElementById('clock-current');
+    if (clockCurrent) {
+      var labelEl = clockCurrent.querySelector('.timezone-demo__clock-label');
+      var timeEl = clockCurrent.querySelector('.timezone-demo__clock-time');
+      var dateEl = clockCurrent.querySelector('.timezone-demo__clock-date');
+
+      if (labelEl) labelEl.textContent = Funky.Timezone.getAbbreviation() || currentTz;
+      if (timeEl) timeEl.textContent = formatClockTime(now, currentTz);
+      if (dateEl) dateEl.textContent = formatClockDate(now, currentTz);
+    }
+
+    // UTC clock
+    var clockUtc = document.getElementById('clock-utc');
+    if (clockUtc) {
+      var timeEl = clockUtc.querySelector('.timezone-demo__clock-time');
+      var dateEl = clockUtc.querySelector('.timezone-demo__clock-date');
+
+      if (timeEl) timeEl.textContent = formatClockTime(now, 'UTC');
+      if (dateEl) dateEl.textContent = formatClockDate(now, 'UTC');
+    }
+
+    // Compare timezone clock
+    var clockCompare = document.getElementById('clock-compare');
+    if (clockCompare) {
+      var labelEl = clockCompare.querySelector('.timezone-demo__clock-label');
+      var timeEl = clockCompare.querySelector('.timezone-demo__clock-time');
+      var dateEl = clockCompare.querySelector('.timezone-demo__clock-date');
+
+      try {
+        var abbr = new Intl.DateTimeFormat('en-US', {
+          timeZone: compareTz,
+          timeZoneName: 'short'
+        }).formatToParts(now).find(function(p) { return p.type === 'timeZoneName'; });
+
+        if (labelEl) labelEl.textContent = abbr ? abbr.value : compareTz;
+        if (timeEl) timeEl.textContent = formatClockTime(now, compareTz);
+        if (dateEl) dateEl.textContent = formatClockDate(now, compareTz);
+      } catch (e) {
+        if (labelEl) labelEl.textContent = compareTz;
+        if (timeEl) timeEl.textContent = '--:--:--';
+        if (dateEl) dateEl.textContent = '---';
+      }
+    }
+  }
+
+  /**
+   * Format the input timestamp
+   */
+  function formatTimestamp() {
+    var input = document.getElementById('input-timestamp');
+    if (!input || !input.value.trim()) {
+      showResult('Error: Please enter a timestamp', 'error');
+      return;
+    }
+
+    var timestamp = input.value.trim();
+
+    var props = getProps();
+    var formatStr = props.format || 'YYYY-MM-DD HH:mm:ss';
+
+    try {
+      var resultFormat = document.getElementById('result-format');
+      var resultFormatString = document.getElementById('result-format-string');
+      var resultFormatTz = document.getElementById('result-format-tz');
+      var resultRender = document.getElementById('result-render');
+      var resultRenderDate = document.getElementById('result-render-date');
+
+      if (resultFormat) {
+        resultFormat.textContent = Funky.Timezone.format(timestamp);
+      }
+
+      if (resultFormatString) {
+        resultFormatString.textContent = Funky.Timezone.formatString(timestamp, formatStr);
+      }
+
+      if (resultFormatTz) {
+        resultFormatTz.textContent = Funky.Timezone.formatWithTZ(timestamp);
+      }
+
+      if (resultRender) {
+        resultRender.innerHTML = Funky.Timezone.renderDate(timestamp);
+      }
+
+      if (resultRenderDate) {
+        resultRenderDate.innerHTML = Funky.Timezone.renderDate(timestamp, { dateOnly: true });
+      }
+
+      showResult('Formatted with: ' + formatStr + '\nTimestamp: ' + timestamp, 'success');
+      emit('event', { event: 'timezone:format', payload: { timestamp: timestamp, format: formatStr } });
+    } catch (e) {
+      showResult('Error formatting timestamp: ' + e.message, 'error');
+    }
+  }
+
+  /**
+   * Update settings display
+   */
+  function updateSettingsDisplay(props) {
+    var container = document.getElementById('current-settings');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    var badges = [
+      { label: 'Timezone', value: props.timezone || 'UTC', variant: 'primary' },
+      { label: 'Format', value: props.format || 'YYYY-MM-DD HH:mm:ss', variant: 'secondary' }
+    ];
+
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var span = document.createElement('span');
+      span.className = 'badge bg-' + badge.variant;
+      span.innerHTML = '<strong>' + badge.label + ':</strong> ' + escapeHtml(badge.value);
+      container.appendChild(span);
+    }
+  }
+
+  /**
+   * Bind events
+   */
+  function bindEvents() {
+    var btnUseNow = document.getElementById('btn-use-now');
+    var btnFormat = document.getElementById('btn-format');
+    var btnDetect = document.getElementById('btn-detect');
+    var btnGetAbbr = document.getElementById('btn-get-abbr');
+    var btnSetUtc = document.getElementById('btn-set-utc');
+    var btnSetLocal = document.getElementById('btn-set-local');
+    var btnFetchTzs = document.getElementById('btn-fetch-tzs');
+    var timezoneSelect = document.getElementById('timezone-select');
+
+    // Use current time
+    if (btnUseNow) {
+      btnUseNow.addEventListener('click', function() {
+        var input = document.getElementById('input-timestamp');
+        if (input) {
+          input.value = new Date().toISOString();
+        }
+      });
+    }
+
+    // Format timestamp
+    if (btnFormat) {
+      btnFormat.addEventListener('click', formatTimestamp);
+    }
+
+    // Detect browser timezone
+    if (btnDetect) {
+      btnDetect.addEventListener('click', function() {
+        var tz = Funky.Timezone.detectBrowserTimezone();
+        showResult('Browser timezone detected: ' + tz, 'success');
+        emit('event', { event: 'timezone:detect', payload: { timezone: tz } });
+      });
+    }
+
+    // Get abbreviation
+    if (btnGetAbbr) {
+      btnGetAbbr.addEventListener('click', function() {
+        var abbr = Funky.Timezone.getAbbreviation();
+        var tz = Funky.Timezone.getEffectiveTimezone();
+        showResult('Timezone: ' + tz + '\nAbbreviation: ' + abbr, 'success');
+        emit('event', { event: 'timezone:getAbbreviation', payload: { timezone: tz, abbreviation: abbr } });
+      });
+    }
+
+    // Set UTC
+    if (btnSetUtc) {
+      btnSetUtc.addEventListener('click', function() {
+        Funky.Timezone.setTimezone('UTC').then(function() {
+          updateTimezoneDisplay();
+          showResult('Timezone set to UTC', 'success');
+          emit('event', { event: 'timezone:set', payload: { timezone: 'UTC' } });
+        }).catch(function(e) {
+          showResult('Error setting timezone: ' + e.message, 'error');
+        });
+      });
+    }
+
+    // Set local (browser) timezone
+    if (btnSetLocal) {
+      btnSetLocal.addEventListener('click', function() {
+        var localTz = Funky.Timezone.detectBrowserTimezone();
+        Funky.Timezone.setTimezone(localTz).then(function() {
+          updateTimezoneDisplay();
+          showResult('Timezone set to local: ' + localTz, 'success');
+          emit('event', { event: 'timezone:set', payload: { timezone: localTz } });
+        }).catch(function(e) {
+          showResult('Error setting timezone: ' + e.message, 'error');
+        });
+      });
+    }
+
+    // Fetch timezones list
+    if (btnFetchTzs) {
+      btnFetchTzs.addEventListener('click', function() {
+        Funky.Timezone.fetchTimezones().then(function(timezones) {
+          var count = Object.keys(timezones).reduce(function(sum, region) {
+            return sum + timezones[region].length;
+          }, 0);
+          showResult('Fetched ' + count + ' timezones in ' + Object.keys(timezones).length + ' regions:\n\n' +
+            Object.keys(timezones).sort().join(', '), 'success');
+          emit('event', { event: 'timezone:fetchTimezones', payload: { regions: Object.keys(timezones).length, count: count } });
+        }).catch(function(e) {
+          showResult('Error fetching timezones: ' + e.message, 'error');
+        });
+      });
+    }
+
+    // Listen for timezone changes (fired by initializeSelector's ComboBox)
+    document.addEventListener('funky.timezone.changed', function(e) {
+      updateTimezoneDisplay();
+      formatTimestamp();
+      showResult('Timezone changed to: ' + e.detail.timezone, 'success');
+      emit('event', { event: 'timezone:set', payload: { timezone: e.detail.timezone } });
+    });
+  }
+
+  // Page registration
+  Funky.Pages.register('component-timezone', {
+    init: function(state) {
+      var props = getProps();
+
+      // Set default timestamp input
+      var inputTimestamp = document.getElementById('input-timestamp');
+      if (inputTimestamp) {
+        inputTimestamp.value = new Date().toISOString();
+      }
+
+      // Set compare timezone from props
+      if (props.timezone && props.timezone !== 'UTC') {
+        compareTz = props.timezone;
+      }
+
+      // Initialize timezone and update display
+      Funky.Timezone.initialize().then(function() {
+        updateTimezoneDisplay();
+        // Use the proper Timezone API to initialize the selector with ComboBox
+        Funky.Timezone.initializeSelector('#timezone-select', {
+          placeholder: 'Select timezone',
+          searchable: true
+        });
+        formatTimestamp();
+      });
+
+      // Start clock updates
+      updateClocks();
+      clockInterval = setInterval(updateClocks, 1000);
+
+      // Update settings display
+      updateSettingsDisplay(props);
+
+      // Bind events
+      bindEvents();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay(getProps());
+          if (newProps.timezone) {
+            compareTz = newProps.timezone;
+          }
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'timezone:init', payload: props });
+    },
+
+    destroy: function() {
+      // Stop clock updates
+      if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+      }
+
+      // Unsubscribe from PubSub
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      return {};
+    }
+  });
+})();
+</script>

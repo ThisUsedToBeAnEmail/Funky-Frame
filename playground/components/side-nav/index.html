@@ -1,0 +1,632 @@
+<div data-page="component-side-nav" class="component-demo sidenav-demo">
+  <h2>SideNav</h2>
+  <p class="text-muted">Searchable sidebar navigation with flat or grouped items, sorting, fuzzy search, and recent searches.</p>
+
+  <!-- Interactive Demo -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-demo-heading">
+    <h3 id="sidenav-demo-heading">Interactive Demo</h3>
+    <div class="sidenav-demo__layout">
+      <div id="sidenav-demo" class="sidenav-demo__nav" aria-label="Demo navigation"></div>
+      <div id="sidenav-content" class="sidenav-demo__content">
+        <div class="sidenav-demo__placeholder">
+          <i class="fas fa-hand-pointer" aria-hidden="true"></i>
+          <p>Select an item from the navigation</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-state-heading">
+    <h3 id="sidenav-state-heading">Current State</h3>
+    <pre id="sidenav-state" class="sidenav-demo__state" aria-live="polite">Loading...</pre>
+  </section>
+
+  <!-- Group Operations -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-groups-heading">
+    <h3 id="sidenav-groups-heading">Group Operations</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-expand-all" aria-describedby="expand-all-desc">
+        <i class="fas fa-chevron-down" aria-hidden="true"></i> Expand All
+      </button>
+      <span id="expand-all-desc" class="visually-hidden">Expand all collapsed groups</span>
+
+      <button type="button" class="btn btn-primary" id="btn-collapse-all" aria-describedby="collapse-all-desc">
+        <i class="fas fa-chevron-up" aria-hidden="true"></i> Collapse All
+      </button>
+      <span id="collapse-all-desc" class="visually-hidden">Collapse all expanded groups</span>
+
+      <button type="button" class="btn btn-secondary" id="btn-toggle-analytics">
+        <i class="fas fa-exchange-alt" aria-hidden="true"></i> Toggle Analytics
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-expand-settings">
+        <i class="fas fa-folder-open" aria-hidden="true"></i> Expand Settings
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-collapse-users">
+        <i class="fas fa-folder" aria-hidden="true"></i> Collapse Users
+      </button>
+    </div>
+  </section>
+
+  <!-- Selection Operations -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-selection-heading">
+    <h3 id="sidenav-selection-heading">Selection</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-select-dashboard">
+        <i class="fas fa-home" aria-hidden="true"></i> Select Dashboard
+      </button>
+
+      <button type="button" class="btn btn-primary" id="btn-select-reports">
+        <i class="fas fa-chart-line" aria-hidden="true"></i> Select Reports
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-select-security">
+        <i class="fas fa-shield-alt" aria-hidden="true"></i> Select Security
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-get-selected">
+        <i class="fas fa-info-circle" aria-hidden="true"></i> Get Selected
+      </button>
+    </div>
+  </section>
+
+  <!-- Filter Operations -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-filter-heading">
+    <h3 id="sidenav-filter-heading">Filter / Search</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-filter-settings">
+        <i class="fas fa-filter" aria-hidden="true"></i> Filter "settings"
+      </button>
+
+      <button type="button" class="btn btn-primary" id="btn-filter-dashboard">
+        <i class="fas fa-filter" aria-hidden="true"></i> Filter "dash"
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-clear-filter">
+        <i class="fas fa-times" aria-hidden="true"></i> Clear Filter
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-get-recent">
+        <i class="fas fa-history" aria-hidden="true"></i> Get Recent Searches
+      </button>
+
+      <button type="button" class="btn btn-danger" id="btn-clear-recent">
+        <i class="fas fa-trash" aria-hidden="true"></i> Clear Recent
+      </button>
+    </div>
+  </section>
+
+  <!-- Sorting -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-sort-heading">
+    <h3 id="sidenav-sort-heading">Sorting</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-toggle-sort">
+        <i class="fas fa-sort-alpha-down" aria-hidden="true"></i> Toggle Sort Order
+      </button>
+    </div>
+  </section>
+
+  <!-- Open/Close Toggle (Mobile Behavior) -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-toggle-heading">
+    <h3 id="sidenav-toggle-heading">Open / Close (Mobile)</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-open-nav">
+        <i class="fas fa-bars" aria-hidden="true"></i> Open
+      </button>
+
+      <button type="button" class="btn btn-primary" id="btn-close-nav">
+        <i class="fas fa-times" aria-hidden="true"></i> Close
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-toggle-nav">
+        <i class="fas fa-exchange-alt" aria-hidden="true"></i> Toggle
+      </button>
+    </div>
+  </section>
+
+  <!-- Data Operations -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-data-heading">
+    <h3 id="sidenav-data-heading">Data Operations</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-primary" id="btn-set-items">
+        <i class="fas fa-database" aria-hidden="true"></i> Set New Items
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-get-data">
+        <i class="fas fa-download" aria-hidden="true"></i> Get Data
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-get-state">
+        <i class="fas fa-info" aria-hidden="true"></i> Get State
+      </button>
+
+      <button type="button" class="btn btn-warning" id="btn-reset-items">
+        <i class="fas fa-undo" aria-hidden="true"></i> Reset Items
+      </button>
+    </div>
+  </section>
+
+  <!-- Keyboard Navigation Info -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-keyboard-heading">
+    <h3 id="sidenav-keyboard-heading">Keyboard Navigation</h3>
+    <div class="sidenav-demo__keyboard-info">
+      <div class="sidenav-demo__key-row">
+        <kbd>↑</kbd> / <kbd>↓</kbd>
+        <span>Navigate items</span>
+      </div>
+      <div class="sidenav-demo__key-row">
+        <kbd>Enter</kbd>
+        <span>Select focused item</span>
+      </div>
+      <div class="sidenav-demo__key-row">
+        <kbd>Escape</kbd>
+        <span>Clear search / Return to search</span>
+      </div>
+      <div class="sidenav-demo__key-row">
+        <kbd>Type</kbd>
+        <span>Filter items (when search focused)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="sidenav-demo__section" aria-labelledby="sidenav-events-heading">
+    <h3 id="sidenav-events-heading">Event Log</h3>
+    <div class="sidenav-demo__controls">
+      <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-log">
+        <i class="fas fa-trash" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+    <pre id="sidenav-log" class="sidenav-demo__log" aria-live="polite" aria-label="Event log">Waiting for events...</pre>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var sidenavInstance = null;
+  var logs = [];
+  var originalItems = null;
+
+  function log(message, data) {
+    var timestamp = new Date().toLocaleTimeString();
+    var entry = timestamp + ' - ' + message;
+    if (data) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 50) logs.pop();
+    var logEl = document.getElementById('sidenav-log');
+    if (logEl) {
+      logEl.textContent = logs.join('\n');
+    }
+  }
+
+  function updateState() {
+    if (!sidenavInstance) return;
+
+    var stateEl = document.getElementById('sidenav-state');
+    if (!stateEl) return;
+
+    var state = sidenavInstance.getState ? sidenavInstance.getState() : {};
+    var selected = sidenavInstance.getSelected ? sidenavInstance.getSelected() : null;
+    var data = sidenavInstance.getData ? sidenavInstance.getData() : {};
+
+    stateEl.textContent = JSON.stringify({
+      isOpen: state.isOpen,
+      selectedId: state.selectedId,
+      selectedLabel: selected ? selected.label : null,
+      collapsedGroups: state.collapsedGroups,
+      totalItems: data.items ? data.items.length : 0,
+      sortOrder: sidenavInstance.currentSortOrder || 'asc'
+    }, null, 2);
+  }
+
+  function updateContentArea(item) {
+    var contentEl = document.getElementById('sidenav-content');
+    if (!contentEl || !item) return;
+
+    // Icons in item data are just 'fa-xxx', need to add 'fas ' prefix for display
+    var iconClass = item.icon ? 'fas ' + item.icon : '';
+
+    contentEl.innerHTML =
+      '<div class="sidenav-demo__content-item">' +
+        '<div class="sidenav-demo__content-header">' +
+          (item.icon ? '<i class="' + iconClass + '" aria-hidden="true"></i>' : '') +
+          '<h4>' + item.label + '</h4>' +
+        '</div>' +
+        '<p class="text-muted">Content for <strong>' + item.label + '</strong></p>' +
+        '<p>ID: <code>' + item.id + '</code></p>' +
+        (item.badge !== undefined ? '<p>Badge: <span class="badge">' + item.badge + '</span></p>' : '') +
+      '</div>';
+  }
+
+  function getDefaultItems() {
+    return [
+      {
+        id: 'dashboard',
+        label: 'Dashboard',
+        icon: 'fa-home',
+        badge: 3
+      },
+      {
+        id: 'analytics',
+        label: 'Analytics',
+        icon: 'fa-chart-line',
+        children: [
+          { id: 'overview', label: 'Overview' },
+          { id: 'reports', label: 'Reports', badge: 5 },
+          { id: 'realtime', label: 'Real-time' }
+        ]
+      },
+      {
+        id: 'users',
+        label: 'Users',
+        icon: 'fa-users',
+        children: [
+          { id: 'all-users', label: 'All Users', badge: 42 },
+          { id: 'groups', label: 'Groups' },
+          { id: 'permissions', label: 'Permissions' },
+          { id: 'roles', label: 'Roles' }
+        ]
+      },
+      {
+        id: 'settings',
+        label: 'Settings',
+        icon: 'fa-cog',
+        children: [
+          { id: 'general', label: 'General' },
+          { id: 'security', label: 'Security' },
+          { id: 'integrations', label: 'Integrations' },
+          { id: 'notifications', label: 'Notifications' }
+        ]
+      },
+      {
+        id: 'products',
+        label: 'Products',
+        icon: 'fa-box'
+      },
+      {
+        id: 'orders',
+        label: 'Orders',
+        icon: 'fa-shopping-cart',
+        badge: 12
+      },
+      {
+        id: 'help',
+        label: 'Help & Support',
+        icon: 'fa-question-circle'
+      }
+    ];
+  }
+
+  function getAlternateItems() {
+    return [
+      { id: 'home', label: 'Home', icon: 'fa-home' },
+      { id: 'projects', label: 'Projects', icon: 'fa-project-diagram', badge: 8 },
+      { id: 'tasks', label: 'Tasks', icon: 'fa-tasks', children: [
+        { id: 'active', label: 'Active Tasks', badge: 15 },
+        { id: 'completed', label: 'Completed' },
+        { id: 'archived', label: 'Archived' }
+      ]},
+      { id: 'calendar', label: 'Calendar', icon: 'fa-calendar-alt' },
+      { id: 'messages', label: 'Messages', icon: 'fa-envelope', badge: 3 },
+      { id: 'profile', label: 'Profile', icon: 'fa-user' }
+    ];
+  }
+
+  Funky.Pages.register('component-side-nav', {
+    init: function(state) {
+      var props = getProps();
+      originalItems = getDefaultItems();
+
+      var container = document.getElementById('sidenav-demo');
+      if (!container) {
+        log('ERROR', 'Container not found');
+        return;
+      }
+
+      if (!Funky.SideNav) {
+        log('ERROR', 'Funky.SideNav not available');
+        container.innerHTML = '<p class="text-danger">SideNav component not loaded</p>';
+        return;
+      }
+
+      // Merge props with defaults
+      var config = {
+        items: props.items || originalItems,
+        searchable: props.searchable !== false,
+        searchPlaceholder: props.searchPlaceholder || 'Search navigation...',
+        collapsible: props.collapsible !== false,
+        sortable: props.sortable !== false,
+        sortOrder: props.sortOrder || 'asc',
+        sortKey: props.sortKey || 'label',
+        rememberState: false, // Don't persist for demo
+        selected: props.selected || null,
+        // Fuzzy search
+        fuzzySearch: props.fuzzySearch !== false,
+        fuzzyThreshold: props.fuzzyThreshold || 0.3,
+        highlightMatches: props.highlightMatches !== false,
+        // Recent searches
+        recentSearches: props.recentSearches !== false,
+        maxRecentSearches: props.maxRecentSearches || 5,
+        // Callbacks
+        onChange: function(item) {
+          log('onChange', { id: item.id, label: item.label });
+          updateContentArea(item);
+          updateState();
+          emit('event', { event: 'sidenav:change', payload: { id: item.id, label: item.label } });
+        },
+        onFilter: function(term, count) {
+          log('onFilter', { term: term, visibleCount: count });
+          updateState();
+          emit('event', { event: 'sidenav:filter', payload: { term: term, count: count } });
+        },
+        onExpand: function(groupId) {
+          log('onExpand', { groupId: groupId });
+          updateState();
+          emit('event', { event: 'sidenav:expand', payload: { groupId: groupId } });
+        },
+        onCollapse: function(groupId) {
+          log('onCollapse', { groupId: groupId });
+          updateState();
+          emit('event', { event: 'sidenav:collapse', payload: { groupId: groupId } });
+        },
+        onSort: function(order) {
+          log('onSort', { order: order });
+          updateState();
+          emit('event', { event: 'sidenav:sort', payload: { order: order } });
+        }
+      };
+
+      // Initialize SideNav
+      sidenavInstance = Funky.SideNav.init(container, config);
+      log('SideNav initialized', { itemCount: config.items.length, searchable: config.searchable, sortable: config.sortable });
+      updateState();
+
+      // Listen for prop changes from playground
+      if (Funky.PubSub) {
+        Funky.PubSub.on('playground:propsChanged', function(data) {
+          if (data && data.props && sidenavInstance) {
+            log('Props changed', data.props);
+            // Reinitialize with new props
+            sidenavInstance.destroy();
+            var newConfig = Object.assign({}, config, data.props);
+            sidenavInstance = Funky.SideNav.init(container, newConfig);
+            updateState();
+          }
+        });
+      }
+
+      // ===== GROUP OPERATIONS =====
+      document.getElementById('btn-expand-all').onclick = function() {
+        if (sidenavInstance && sidenavInstance.expandAll) {
+          sidenavInstance.expandAll();
+          log('expandAll called');
+          updateState();
+        }
+      };
+
+      document.getElementById('btn-collapse-all').onclick = function() {
+        if (sidenavInstance && sidenavInstance.collapseAll) {
+          sidenavInstance.collapseAll();
+          log('collapseAll called');
+          updateState();
+        }
+      };
+
+      document.getElementById('btn-toggle-analytics').onclick = function() {
+        if (!sidenavInstance) {
+          log('ERROR: sidenavInstance is null');
+          return;
+        }
+        if (!sidenavInstance.toggleGroup) {
+          log('ERROR: toggleGroup method not found');
+          return;
+        }
+        // Check if the group exists
+        var groupEl = sidenavInstance.elements.list.querySelector('.sidenav-group[data-group="analytics"]');
+        if (!groupEl) {
+          log('WARNING: Group "analytics" not found in DOM. Available groups:',
+            Array.from(sidenavInstance.elements.list.querySelectorAll('.sidenav-group')).map(function(g) { return g.dataset.group; }));
+        }
+        sidenavInstance.toggleGroup('analytics');
+        log('toggleGroup called', { groupId: 'analytics', collapsed: sidenavInstance.collapsedGroups['analytics'] });
+        updateState();
+      };
+
+      document.getElementById('btn-expand-settings').onclick = function() {
+        if (sidenavInstance && sidenavInstance.expand) {
+          sidenavInstance.expand('settings');
+          log('expand called', { groupId: 'settings' });
+          updateState();
+        }
+      };
+
+      document.getElementById('btn-collapse-users').onclick = function() {
+        if (sidenavInstance && sidenavInstance.collapse) {
+          sidenavInstance.collapse('users');
+          log('collapse called', { groupId: 'users' });
+          updateState();
+        }
+      };
+
+      // ===== SELECTION OPERATIONS =====
+      document.getElementById('btn-select-dashboard').onclick = function() {
+        if (sidenavInstance && sidenavInstance.select) {
+          sidenavInstance.select('dashboard');
+          log('select called', { id: 'dashboard' });
+        }
+      };
+
+      document.getElementById('btn-select-reports').onclick = function() {
+        if (sidenavInstance && sidenavInstance.select) {
+          sidenavInstance.select('reports');
+          log('select called', { id: 'reports' });
+        }
+      };
+
+      document.getElementById('btn-select-security').onclick = function() {
+        if (sidenavInstance && sidenavInstance.select) {
+          sidenavInstance.select('security');
+          log('select called', { id: 'security' });
+        }
+      };
+
+      document.getElementById('btn-get-selected').onclick = function() {
+        if (sidenavInstance && sidenavInstance.getSelected) {
+          var selected = sidenavInstance.getSelected();
+          log('getSelected result', selected);
+          alert('Selected: ' + (selected ? selected.label + ' (' + selected.id + ')' : 'None'));
+        }
+      };
+
+      // ===== FILTER OPERATIONS =====
+      document.getElementById('btn-filter-settings').onclick = function() {
+        if (sidenavInstance && sidenavInstance.filter) {
+          sidenavInstance.filter('settings');
+          // Also update the search input value
+          if (sidenavInstance.elements && sidenavInstance.elements.search) {
+            sidenavInstance.elements.search.value = 'settings';
+          }
+          log('filter called', { term: 'settings' });
+        }
+      };
+
+      document.getElementById('btn-filter-dashboard').onclick = function() {
+        if (sidenavInstance && sidenavInstance.filter) {
+          sidenavInstance.filter('dash');
+          if (sidenavInstance.elements && sidenavInstance.elements.search) {
+            sidenavInstance.elements.search.value = 'dash';
+          }
+          log('filter called', { term: 'dash' });
+        }
+      };
+
+      document.getElementById('btn-clear-filter').onclick = function() {
+        if (sidenavInstance && sidenavInstance.clearFilter) {
+          sidenavInstance.clearFilter();
+          log('clearFilter called');
+        }
+      };
+
+      document.getElementById('btn-get-recent').onclick = function() {
+        if (sidenavInstance && sidenavInstance.getRecentSearches) {
+          var recent = sidenavInstance.getRecentSearches();
+          log('getRecentSearches result', recent);
+          alert('Recent searches: ' + (recent.length > 0 ? recent.join(', ') : 'None'));
+        }
+      };
+
+      document.getElementById('btn-clear-recent').onclick = function() {
+        if (sidenavInstance && sidenavInstance.clearRecentSearches) {
+          sidenavInstance.clearRecentSearches();
+          log('clearRecentSearches called');
+        }
+      };
+
+      // ===== SORTING =====
+      document.getElementById('btn-toggle-sort').onclick = function() {
+        if (sidenavInstance && sidenavInstance.toggleSort) {
+          sidenavInstance.toggleSort();
+          log('toggleSort called', { newOrder: sidenavInstance.currentSortOrder });
+        }
+      };
+
+      // ===== OPEN/CLOSE (MOBILE) =====
+      document.getElementById('btn-open-nav').onclick = function() {
+        if (sidenavInstance && sidenavInstance.open) {
+          sidenavInstance.open();
+          log('open called');
+        }
+      };
+
+      document.getElementById('btn-close-nav').onclick = function() {
+        if (sidenavInstance && sidenavInstance.close) {
+          sidenavInstance.close();
+          log('close called');
+        }
+      };
+
+      document.getElementById('btn-toggle-nav').onclick = function() {
+        if (sidenavInstance && sidenavInstance.toggle) {
+          sidenavInstance.toggle();
+          log('toggle called', { isOpen: sidenavInstance.isOpen });
+        }
+      };
+
+      // ===== DATA OPERATIONS =====
+      document.getElementById('btn-set-items').onclick = function() {
+        if (sidenavInstance && sidenavInstance.setItems) {
+          var newItems = getAlternateItems();
+          sidenavInstance.setItems(newItems);
+          log('setItems called', { itemCount: newItems.length });
+          updateState();
+        }
+      };
+
+      document.getElementById('btn-get-data').onclick = function() {
+        if (sidenavInstance && sidenavInstance.getData) {
+          var data = sidenavInstance.getData();
+          log('getData result', { itemCount: data.items.length, selectedId: data.selectedId });
+          console.log('[SideNav Demo] getData:', data);
+          alert('Data logged to console. Items: ' + data.items.length + ', Selected: ' + (data.selectedId || 'None'));
+        }
+      };
+
+      document.getElementById('btn-get-state').onclick = function() {
+        if (sidenavInstance && sidenavInstance.getState) {
+          var state = sidenavInstance.getState();
+          log('getState result', state);
+          alert('State: ' + JSON.stringify(state, null, 2));
+        }
+      };
+
+      document.getElementById('btn-reset-items').onclick = function() {
+        if (sidenavInstance && sidenavInstance.setItems) {
+          sidenavInstance.setItems(originalItems);
+          log('Reset to original items', { itemCount: originalItems.length });
+          updateState();
+        }
+      };
+
+      // ===== CLEAR LOG =====
+      document.getElementById('btn-clear-log').onclick = function() {
+        logs = [];
+        document.getElementById('sidenav-log').textContent = 'Log cleared...';
+      };
+
+      // ===== PUBSUB EVENTS =====
+      if (Funky.PubSub) {
+        Funky.PubSub.on('funky:sidenav:select', function(data) {
+          log('PubSub: sidenav:select', { id: data.id, keyboard: data.keyboard });
+        });
+
+        Funky.PubSub.on('funky:sidenav:open', function(data) {
+          log('PubSub: sidenav:open');
+          updateState();
+        });
+
+        Funky.PubSub.on('funky:sidenav:close', function(data) {
+          log('PubSub: sidenav:close');
+          updateState();
+        });
+      }
+    },
+
+    destroy: function() {
+      if (sidenavInstance && sidenavInstance.destroy) {
+        sidenavInstance.destroy();
+        log('SideNav destroyed');
+      }
+      sidenavInstance = null;
+      logs = [];
+      originalItems = null;
+      return {};
+    }
+  });
+})();
+</script>

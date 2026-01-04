@@ -1,0 +1,430 @@
+<div data-page="component-calendar" class="component-demo">
+  <h2>Calendar</h2>
+  <p class="text-muted">Full-featured event calendar with month, week, day, and agenda views.</p>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current Configuration</h3>
+    <div class="demo-area">
+      <div class="calendar-demo__state-display">
+        <div class="calendar-demo__state-item">
+          <span class="badge bg-secondary">View</span>
+          <span id="state-view">month</span>
+        </div>
+        <div class="calendar-demo__state-item">
+          <span class="badge bg-secondary">Locale</span>
+          <span id="state-locale">en-GB</span>
+        </div>
+        <div class="calendar-demo__state-item">
+          <span class="badge bg-secondary">Week Starts</span>
+          <span id="state-weekStarts">Monday</span>
+        </div>
+        <div class="calendar-demo__state-item">
+          <span class="badge bg-secondary">Week Numbers</span>
+          <span id="state-weekNumbers">false</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Demo -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">All props from the props panel are applied to this calendar.</p>
+    <div class="demo-area">
+      <div id="calendar-main" class="calendar-demo__container"></div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">API Controls</h3>
+    <p class="text-muted small">Test Calendar methods programmatically.</p>
+    <div class="demo-area">
+      <div class="calendar-demo__controls">
+        <button class="btn btn-primary btn-sm" id="btn-today" type="button">
+          <i class="fas fa-calendar-day me-1" aria-hidden="true"></i> Today
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-prev" type="button">
+          <i class="fas fa-chevron-left me-1" aria-hidden="true"></i> Prev
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-next" type="button">
+          <i class="fas fa-chevron-right me-1" aria-hidden="true"></i> Next
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-refresh" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i> Refresh
+        </button>
+      </div>
+      <div class="calendar-demo__controls calendar-demo__controls--views">
+        <button class="btn btn-outline-secondary btn-sm" id="btn-month" type="button">
+          <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i> Month
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-week" type="button">
+          <i class="fas fa-calendar-week me-1" aria-hidden="true"></i> Week
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-day" type="button">
+          <i class="fas fa-calendar me-1" aria-hidden="true"></i> Day
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-agenda" type="button">
+          <i class="fas fa-list me-1" aria-hidden="true"></i> Agenda
+        </button>
+      </div>
+      <div class="calendar-demo__controls calendar-demo__controls--events">
+        <button class="btn btn-success btn-sm" id="btn-add-event" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> Add Event
+        </button>
+        <button class="btn btn-info btn-sm" id="btn-get-events" type="button">
+          <i class="fas fa-list-ul me-1" aria-hidden="true"></i> Get Events
+        </button>
+        <button class="btn btn-warning btn-sm" id="btn-get-view" type="button">
+          <i class="fas fa-eye me-1" aria-hidden="true"></i> Get View
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="calendar-log" class="calendar-demo__log" aria-live="polite">Interact with the calendar to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var calendarInstance = null;
+  var propsChangedHandler = null;
+  var logs = [];
+  var eventCounter = 0;
+
+  // Sample events
+  function getSampleEvents() {
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth();
+    var d = today.getDate();
+
+    return [
+      {
+        id: 'event-1',
+        title: 'Team Meeting',
+        start: new Date(y, m, d, 10, 0),
+        end: new Date(y, m, d, 11, 0),
+        color: '#0d6efd'
+      },
+      {
+        id: 'event-2',
+        title: 'Lunch Break',
+        start: new Date(y, m, d, 12, 0),
+        end: new Date(y, m, d, 13, 0),
+        color: '#198754'
+      },
+      {
+        id: 'event-3',
+        title: 'Project Review',
+        start: new Date(y, m, d + 1, 14, 0),
+        end: new Date(y, m, d + 1, 15, 30),
+        color: '#6f42c1'
+      },
+      {
+        id: 'event-4',
+        title: 'Client Call',
+        start: new Date(y, m, d + 2, 9, 0),
+        end: new Date(y, m, d + 2, 10, 0),
+        color: '#dc3545'
+      },
+      {
+        id: 'event-5',
+        title: 'Weekly Standup',
+        start: new Date(y, m, d - 1, 9, 30),
+        end: new Date(y, m, d - 1, 10, 0),
+        color: '#fd7e14'
+      }
+    ];
+  }
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data !== undefined) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('calendar-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function getWeekStartLabel(day) {
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[day] || 'Monday';
+  }
+
+  function updateStateDisplay(props) {
+    var stateView = document.getElementById('state-view');
+    var stateLocale = document.getElementById('state-locale');
+    var stateWeekStarts = document.getElementById('state-weekStarts');
+    var stateWeekNumbers = document.getElementById('state-weekNumbers');
+
+    if (stateView) stateView.textContent = props.initialView || 'month';
+    if (stateLocale) stateLocale.textContent = props.locale || 'en-GB';
+    if (stateWeekStarts) stateWeekStarts.textContent = getWeekStartLabel(props.firstDayOfWeek || 1);
+    if (stateWeekNumbers) stateWeekNumbers.textContent = String(props.showWeekNumbers === true);
+  }
+
+  function createCalendar(props) {
+    // Destroy existing instance
+    if (calendarInstance && calendarInstance.destroy) {
+      calendarInstance.destroy();
+      calendarInstance = null;
+    }
+
+    var container = document.getElementById('calendar-main');
+    if (!container || !Funky.Calendar) {
+      log('Calendar not available');
+      return;
+    }
+
+    // Clear container
+    container.innerHTML = '';
+
+    // Build config from ALL props
+    var config = {
+      events: getSampleEvents(),
+      view: props.initialView || 'month',
+      locale: props.locale || 'en-GB',
+      weekStarts: props.firstDayOfWeek !== undefined ? parseInt(props.firstDayOfWeek, 10) : 1,
+      showWeekNumbers: props.showWeekNumbers === true,
+      editable: true,
+      clickable: true
+    };
+
+    // Event handlers
+    config.onEventClick = function(event) {
+      log('Event clicked', { id: event.id, title: event.title });
+      emit('event', { event: 'funky:calendar:event-click', payload: { id: event.id, title: event.title } });
+    };
+
+    config.onDateClick = function(date) {
+      log('Date clicked', date.toISOString().split('T')[0]);
+      emit('event', { event: 'funky:calendar:date-click', payload: { date: date.toISOString() } });
+    };
+
+    config.onEventDrop = function(event, start, end) {
+      log('Event moved', { id: event.id, title: event.title });
+      emit('event', { event: 'funky:calendar:event-drop', payload: { id: event.id } });
+    };
+
+    config.onViewChange = function(view) {
+      log('View changed', view);
+      emit('event', { event: 'funky:calendar:view-change', payload: { view: view } });
+    };
+
+    // Initialize using .init() (standard API)
+    calendarInstance = Funky.Calendar.init(container, config);
+
+    eventCounter = 5; // We have 5 sample events
+    log('initialized', { view: config.view, locale: config.locale, weekStarts: config.weekStarts });
+    emit('event', { event: 'funky:calendar:init', payload: { view: config.view } });
+  }
+
+  function setupControls() {
+    // Today
+    var btnToday = document.getElementById('btn-today');
+    if (btnToday) {
+      btnToday.onclick = function() {
+        if (calendarInstance && calendarInstance.today) {
+          calendarInstance.today();
+          log('API: today()');
+        }
+      };
+    }
+
+    // Prev
+    var btnPrev = document.getElementById('btn-prev');
+    if (btnPrev) {
+      btnPrev.onclick = function() {
+        if (calendarInstance && calendarInstance.prev) {
+          calendarInstance.prev();
+          log('API: prev()');
+        }
+      };
+    }
+
+    // Next
+    var btnNext = document.getElementById('btn-next');
+    if (btnNext) {
+      btnNext.onclick = function() {
+        if (calendarInstance && calendarInstance.next) {
+          calendarInstance.next();
+          log('API: next()');
+        }
+      };
+    }
+
+    // Refresh
+    var btnRefresh = document.getElementById('btn-refresh');
+    if (btnRefresh) {
+      btnRefresh.onclick = function() {
+        if (calendarInstance && calendarInstance.refresh) {
+          calendarInstance.refresh();
+          log('API: refresh()');
+        }
+      };
+    }
+
+    // Month view
+    var btnMonth = document.getElementById('btn-month');
+    if (btnMonth) {
+      btnMonth.onclick = function() {
+        if (calendarInstance && calendarInstance.setView) {
+          calendarInstance.setView('month');
+          log('API: setView(month)');
+        }
+      };
+    }
+
+    // Week view
+    var btnWeek = document.getElementById('btn-week');
+    if (btnWeek) {
+      btnWeek.onclick = function() {
+        if (calendarInstance && calendarInstance.setView) {
+          calendarInstance.setView('week');
+          log('API: setView(week)');
+        }
+      };
+    }
+
+    // Day view
+    var btnDay = document.getElementById('btn-day');
+    if (btnDay) {
+      btnDay.onclick = function() {
+        if (calendarInstance && calendarInstance.setView) {
+          calendarInstance.setView('day');
+          log('API: setView(day)');
+        }
+      };
+    }
+
+    // Agenda view
+    var btnAgenda = document.getElementById('btn-agenda');
+    if (btnAgenda) {
+      btnAgenda.onclick = function() {
+        if (calendarInstance && calendarInstance.setView) {
+          calendarInstance.setView('agenda');
+          log('API: setView(agenda)');
+        }
+      };
+    }
+
+    // Add Event
+    var btnAddEvent = document.getElementById('btn-add-event');
+    if (btnAddEvent) {
+      btnAddEvent.onclick = function() {
+        if (calendarInstance && calendarInstance.addEvent) {
+          eventCounter++;
+          var now = new Date();
+          var newEvent = {
+            id: 'event-new-' + eventCounter,
+            title: 'New Event ' + eventCounter,
+            start: new Date(now.getTime() + 3600000), // 1 hour from now
+            end: new Date(now.getTime() + 7200000),   // 2 hours from now
+            color: '#17a2b8'
+          };
+          calendarInstance.addEvent(newEvent);
+          log('API: addEvent()', { id: newEvent.id, title: newEvent.title });
+        }
+      };
+    }
+
+    // Get Events
+    var btnGetEvents = document.getElementById('btn-get-events');
+    if (btnGetEvents) {
+      btnGetEvents.onclick = function() {
+        if (calendarInstance && calendarInstance.getEvents) {
+          var events = calendarInstance.getEvents();
+          log('API: getEvents()', { count: events.length });
+        }
+      };
+    }
+
+    // Get View
+    var btnGetView = document.getElementById('btn-get-view');
+    if (btnGetView) {
+      btnGetView.onclick = function() {
+        if (calendarInstance && calendarInstance.getView) {
+          var view = calendarInstance.getView();
+          log('API: getView()', view);
+        }
+      };
+    }
+
+    // Clear Log
+    var btnClearLog = document.getElementById('btn-clear-log');
+    if (btnClearLog) {
+      btnClearLog.onclick = function() {
+        logs = [];
+        var logEl = document.getElementById('calendar-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+      };
+    }
+  }
+
+  Funky.Pages.register('component-calendar', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Create calendar with current props
+      createCalendar(props);
+
+      // Setup control buttons
+      setupControls();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          // Recreate calendar with new props
+          createCalendar(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return {};
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy calendar instance
+      if (calendarInstance && calendarInstance.destroy) {
+        calendarInstance.destroy();
+        calendarInstance = null;
+      }
+
+      // Reset state
+      logs = [];
+      eventCounter = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

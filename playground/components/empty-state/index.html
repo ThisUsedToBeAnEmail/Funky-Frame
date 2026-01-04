@@ -1,0 +1,321 @@
+<div data-page="component-empty-state" class="component-demo">
+  <h2>Empty State</h2>
+  <p class="text-muted">Informative placeholders for when there's no data to display, with optional actions.</p>
+
+  <section class="demo-section" aria-labelledby="empty-state-configured-heading">
+    <h3 id="empty-state-configured-heading">Props-Configured Demo</h3>
+    <p class="text-muted small">Configured by props panel settings (type, size, variant, actions).</p>
+    <div class="demo-area" id="empty-state-demo" role="status" aria-label="Configurable empty state"></div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-presets-heading">
+    <h3 id="empty-state-presets-heading">Preset Types</h3>
+    <p class="text-muted small">Common empty state presets for different scenarios.</p>
+    <div class="demo-area empty-state-demo__grid" role="group" aria-label="Empty state preset examples">
+      <div id="empty-no-data" role="status" aria-label="No data empty state"></div>
+      <div id="empty-no-results" role="status" aria-label="No results empty state"></div>
+      <div id="empty-error" role="status" aria-label="Error empty state"></div>
+      <div id="empty-no-access" role="status" aria-label="Access denied empty state"></div>
+      <div id="empty-offline" role="status" aria-label="Offline empty state"></div>
+      <div id="empty-coming-soon" role="status" aria-label="Coming soon empty state"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-sizes-heading">
+    <h3 id="empty-state-sizes-heading">Sizes</h3>
+    <p class="text-muted small">Different sizes for various container contexts.</p>
+    <div class="demo-area empty-state-demo__sizes" role="group" aria-label="Empty state size examples">
+      <div class="empty-state-demo__size-item">
+        <small class="text-muted">Small</small>
+        <div id="empty-sm" role="status" aria-label="Small empty state"></div>
+      </div>
+      <div class="empty-state-demo__size-item">
+        <small class="text-muted">Medium</small>
+        <div id="empty-md" role="status" aria-label="Medium empty state"></div>
+      </div>
+      <div class="empty-state-demo__size-item">
+        <small class="text-muted">Large</small>
+        <div id="empty-lg" role="status" aria-label="Large empty state"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-variants-heading">
+    <h3 id="empty-state-variants-heading">Color Variants</h3>
+    <p class="text-muted small">Semantic color variants for different contexts.</p>
+    <div class="demo-area empty-state-demo__grid" role="group" aria-label="Empty state color variant examples">
+      <div id="empty-variant-primary" role="status" aria-label="Primary variant empty state"></div>
+      <div id="empty-variant-success" role="status" aria-label="Success variant empty state"></div>
+      <div id="empty-variant-warning" role="status" aria-label="Warning variant empty state"></div>
+      <div id="empty-variant-danger" role="status" aria-label="Danger variant empty state"></div>
+      <div id="empty-variant-info" role="status" aria-label="Info variant empty state"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-actions-heading">
+    <h3 id="empty-state-actions-heading">With Actions</h3>
+    <p class="text-muted small">Empty states with primary and secondary action buttons.</p>
+    <div class="demo-area" id="empty-with-actions" role="status" aria-label="Empty state with actions"></div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-custom-heading">
+    <h3 id="empty-state-custom-heading">Custom Content</h3>
+    <p class="text-muted small">Fully customized title, message, and icon.</p>
+    <div class="demo-area" id="empty-custom" role="status" aria-label="Custom empty state"></div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-controls-heading">
+    <h3 id="empty-state-controls-heading">Controls</h3>
+    <p class="text-muted small">Show and hide empty states dynamically.</p>
+    <div class="demo-area">
+      <div class="empty-state-demo__button-grid" role="group" aria-label="Empty state control buttons">
+        <button class="btn btn-primary" id="empty-toggle" type="button">
+          <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i> Toggle Empty State
+        </button>
+        <button class="btn btn-secondary" id="empty-refresh" type="button">
+          <i class="fas fa-sync me-1" aria-hidden="true"></i> Refresh All
+        </button>
+        <button class="btn btn-outline-primary" id="empty-cycle-type" type="button">
+          <i class="fas fa-random me-1" aria-hidden="true"></i> Cycle Types
+        </button>
+      </div>
+      <div id="empty-toggle-container" class="empty-state-demo__toggle-container"></div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="empty-state-log-heading">
+    <h3 id="empty-state-log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="empty-state-log" class="empty-state-demo__log" aria-live="polite" aria-label="Empty state event log">Interact with empty states to see events...</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var toggleVisible = true;
+  var typeIndex = 0;
+  var types = ['no-data', 'no-results', 'error', 'offline', 'empty-list', 'empty-table', 'access-denied', 'coming-soon'];
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 10) logs.pop();
+    var logEl = document.getElementById('empty-state-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function renderAllEmptyStates() {
+    var props = getProps();
+    var type = props.type || 'no-data';
+    var size = props.size || 'md';
+    var variant = props.variant || '';
+    var animate = props.animate !== false;
+
+    if (!Funky.EmptyState) {
+      log('Error: Funky.EmptyState not available');
+      return;
+    }
+
+    // Props-configured demo
+    var demoConfig = {
+      type: type,
+      size: size,
+      variant: variant,
+      animate: animate
+    };
+
+    if (props.customTitle) demoConfig.title = props.customTitle;
+    if (props.customMessage) demoConfig.message = props.customMessage;
+    if (props.customIcon) demoConfig.icon = props.customIcon;
+
+    if (props.showAction) {
+      demoConfig.action = {
+        text: props.actionText || 'Add Item',
+        icon: props.actionIcon || 'fa-plus',
+        variant: props.actionVariant || 'primary',
+        onClick: function() {
+          Funky.Toast.success('Primary action clicked!');
+          log('Primary action clicked');
+          emit('event', { event: 'empty-state:action', payload: { action: 'primary' } });
+        }
+      };
+    }
+
+    if (props.showSecondaryAction) {
+      demoConfig.secondaryAction = {
+        text: props.secondaryActionText || 'Learn More',
+        onClick: function() {
+          Funky.Toast.info('Secondary action clicked');
+          log('Secondary action clicked');
+          emit('event', { event: 'empty-state:action', payload: { action: 'secondary' } });
+        }
+      };
+    }
+
+    Funky.EmptyState.show('#empty-state-demo', demoConfig);
+
+    // Preset types
+    Funky.EmptyState.show('#empty-no-data', { type: 'no-data', size: 'sm', animate: animate });
+    Funky.EmptyState.show('#empty-no-results', { type: 'no-results', size: 'sm', animate: animate });
+    Funky.EmptyState.show('#empty-error', { type: 'error', size: 'sm', animate: animate });
+    Funky.EmptyState.show('#empty-no-access', { type: 'access-denied', size: 'sm', animate: animate });
+    Funky.EmptyState.show('#empty-offline', { type: 'offline', size: 'sm', animate: animate });
+    Funky.EmptyState.show('#empty-coming-soon', { type: 'coming-soon', size: 'sm', animate: animate });
+
+    // Sizes
+    Funky.EmptyState.show('#empty-sm', { type: 'no-data', size: 'sm', title: 'Small', animate: animate });
+    Funky.EmptyState.show('#empty-md', { type: 'no-data', size: 'md', title: 'Medium', animate: animate });
+    Funky.EmptyState.show('#empty-lg', { type: 'no-data', size: 'lg', title: 'Large', animate: animate });
+
+    // Color variants
+    Funky.EmptyState.show('#empty-variant-primary', { type: 'no-data', size: 'sm', variant: 'primary', title: 'Primary', animate: animate });
+    Funky.EmptyState.show('#empty-variant-success', { type: 'no-data', size: 'sm', variant: 'success', title: 'Success', animate: animate });
+    Funky.EmptyState.show('#empty-variant-warning', { type: 'no-data', size: 'sm', variant: 'warning', title: 'Warning', animate: animate });
+    Funky.EmptyState.show('#empty-variant-danger', { type: 'no-data', size: 'sm', variant: 'danger', title: 'Danger', animate: animate });
+    Funky.EmptyState.show('#empty-variant-info', { type: 'no-data', size: 'sm', variant: 'info', title: 'Info', animate: animate });
+
+    // With actions
+    Funky.EmptyState.show('#empty-with-actions', {
+      type: 'no-data',
+      title: 'No Items Yet',
+      message: 'Get started by creating your first item or importing existing data.',
+      animate: animate,
+      action: {
+        text: 'Create Item',
+        icon: 'fas fa-plus',
+        variant: 'primary',
+        onClick: function() {
+          Funky.Toast.success('Create clicked!');
+          log('Create action clicked');
+          emit('event', { event: 'empty-state:create', payload: {} });
+        }
+      },
+      secondaryAction: {
+        text: 'Import Data',
+        onClick: function() {
+          Funky.Toast.info('Import clicked');
+          log('Import action clicked');
+          emit('event', { event: 'empty-state:import', payload: {} });
+        }
+      }
+    });
+
+    // Custom content
+    Funky.EmptyState.show('#empty-custom', {
+      title: 'Custom Empty State',
+      message: 'This empty state uses custom title, message, and icon instead of a preset.',
+      icon: 'fas fa-rocket',
+      variant: 'primary',
+      size: 'md',
+      animate: animate,
+      action: {
+        text: 'Get Started',
+        icon: 'fas fa-arrow-right',
+        variant: 'primary',
+        onClick: function() {
+          Funky.Toast.success('Getting started!');
+          log('Get started clicked');
+          emit('event', { event: 'empty-state:custom-action', payload: {} });
+        }
+      }
+    });
+
+    // Toggle container
+    if (toggleVisible) {
+      Funky.EmptyState.show('#empty-toggle-container', {
+        type: type,
+        size: 'md',
+        variant: variant,
+        animate: animate
+      });
+    }
+  }
+
+  Funky.Pages.register('component-empty-state', {
+    init: function(state) {
+      var props = getProps();
+      var type = props.type || 'no-data';
+      var size = props.size || 'md';
+      var variant = props.variant || '';
+
+      log('Init with type=' + type + ', size=' + size + ', variant=' + (variant || 'default'));
+      emit('event', { event: 'empty-state:init', payload: { type: type, size: size, variant: variant } });
+
+      renderAllEmptyStates();
+
+      // Toggle button
+      document.getElementById('empty-toggle').onclick = function() {
+        var container = document.getElementById('empty-toggle-container');
+        if (toggleVisible) {
+          Funky.EmptyState.hide(container);
+          toggleVisible = false;
+          log('Hidden toggle empty state');
+          emit('event', { event: 'empty-state:hide', payload: {} });
+        } else {
+          var props = getProps();
+          Funky.EmptyState.show(container, {
+            type: props.type || 'no-data',
+            size: 'md',
+            variant: props.variant || '',
+            animate: props.animate !== false
+          });
+          toggleVisible = true;
+          log('Shown toggle empty state');
+          emit('event', { event: 'empty-state:show', payload: {} });
+        }
+      };
+
+      // Refresh button
+      document.getElementById('empty-refresh').onclick = function() {
+        renderAllEmptyStates();
+        log('Refreshed all empty states');
+        emit('event', { event: 'empty-state:refresh', payload: {} });
+      };
+
+      // Cycle types button
+      document.getElementById('empty-cycle-type').onclick = function() {
+        typeIndex = (typeIndex + 1) % types.length;
+        var newType = types[typeIndex];
+        Funky.EmptyState.show('#empty-toggle-container', {
+          type: newType,
+          size: 'md',
+          animate: true
+        });
+        toggleVisible = true;
+        log('Cycled to type: ' + newType);
+        emit('event', { event: 'empty-state:cycle', payload: { type: newType } });
+      };
+    },
+    destroy: function() {
+      // Clean up empty states
+      if (Funky.EmptyState) {
+        Funky.EmptyState.hide('#empty-state-demo');
+        Funky.EmptyState.hide('#empty-no-data');
+        Funky.EmptyState.hide('#empty-no-results');
+        Funky.EmptyState.hide('#empty-error');
+        Funky.EmptyState.hide('#empty-no-access');
+        Funky.EmptyState.hide('#empty-offline');
+        Funky.EmptyState.hide('#empty-coming-soon');
+        Funky.EmptyState.hide('#empty-sm');
+        Funky.EmptyState.hide('#empty-md');
+        Funky.EmptyState.hide('#empty-lg');
+        Funky.EmptyState.hide('#empty-variant-primary');
+        Funky.EmptyState.hide('#empty-variant-success');
+        Funky.EmptyState.hide('#empty-variant-warning');
+        Funky.EmptyState.hide('#empty-variant-danger');
+        Funky.EmptyState.hide('#empty-variant-info');
+        Funky.EmptyState.hide('#empty-with-actions');
+        Funky.EmptyState.hide('#empty-custom');
+        Funky.EmptyState.hide('#empty-toggle-container');
+      }
+      toggleVisible = true;
+      typeIndex = 0;
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

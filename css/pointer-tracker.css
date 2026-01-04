@@ -1,0 +1,312 @@
+/**
+ * Pointer Tracker Playground Demo Styles
+ * BEM naming with theme-aware CSS variables
+ */
+
+/* ==========================================================================
+   POINTER TRACKER PLAYGROUND DEMO STYLES
+   ========================================================================== */
+
+/* Canvas Container */
+.pointer-tracker-demo__canvas-container {
+    position: relative;
+    width: 100%;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: var(--pro-radius-md, 8px);
+    overflow: hidden;
+}
+
+.pointer-tracker-demo__canvas {
+    display: block;
+    width: 100%;
+    height: 300px;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+/* Pointer Type Indicator */
+.pointer-tracker-demo__pointer-indicator {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--pro-bg-secondary, #252525);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: var(--pro-radius-sm, 6px);
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary, #888);
+}
+
+.pointer-tracker-demo__pointer-indicator i {
+    font-size: 0.875rem;
+}
+
+.pointer-tracker-demo__pointer-indicator--mouse i {
+    color: var(--pro-accent-primary, #2f81f7);
+}
+
+.pointer-tracker-demo__pointer-indicator--touch i {
+    color: var(--pro-color-success, #22c55e);
+}
+
+.pointer-tracker-demo__pointer-indicator--pen i {
+    color: var(--pro-accent-secondary, #a855f7);
+}
+
+/* Data Grid */
+.pointer-tracker-demo__data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.pointer-tracker-demo__data-card {
+    padding: 1rem;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: var(--pro-radius-sm, 6px);
+}
+
+.pointer-tracker-demo__data-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.pointer-tracker-demo__data-label i {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.pointer-tracker-demo__data-value {
+    font-family: var(--font-mono, monospace);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--pro-text-primary, #e0e0e0);
+}
+
+.pointer-tracker-demo__data-value--coords {
+    color: var(--pro-accent-primary, #2f81f7);
+}
+
+.pointer-tracker-demo__data-value--pressure {
+    color: var(--pro-color-warning, #eab308);
+}
+
+.pointer-tracker-demo__data-value--velocity {
+    color: var(--pro-color-success, #22c55e);
+}
+
+.pointer-tracker-demo__data-value--tilt {
+    color: var(--pro-accent-secondary, #a855f7);
+}
+
+/* Pressure Bar */
+.pointer-tracker-demo__pressure-bar {
+    margin-top: 0.5rem;
+    height: 6px;
+    background: var(--pro-bg-secondary, #252525);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.pointer-tracker-demo__pressure-fill {
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(90deg, var(--pro-color-warning, #eab308), var(--pro-color-danger, #ef4444));
+    border-radius: 3px;
+    transition: width 0.05s ease-out;
+}
+
+/* Velocity Components */
+.pointer-tracker-demo__velocity-components {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary, #888);
+    font-family: var(--font-mono, monospace);
+}
+
+/* Tilt Info */
+.pointer-tracker-demo__tilt-info {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary, #888);
+    font-family: var(--font-mono, monospace);
+}
+
+/* Event Rate */
+.pointer-tracker-demo__event-rate {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--pro-text-secondary, #888);
+}
+
+/* State Indicator */
+.pointer-tracker-demo__state-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: var(--pro-bg-secondary, #252525);
+    border-radius: var(--pro-radius-sm, 6px);
+    font-size: 0.875rem;
+}
+
+.pointer-tracker-demo__state-indicator::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pro-text-muted, #666);
+    margin-right: 0.5rem;
+}
+
+.pointer-tracker-demo__state-indicator--active {
+    background: var(--pro-color-success-muted, rgba(34, 197, 94, 0.15));
+    color: var(--pro-color-success, #22c55e);
+}
+
+.pointer-tracker-demo__state-indicator--active::before {
+    background: var(--pro-color-success, #22c55e);
+    animation: pointer-tracker-pulse 1s infinite;
+}
+
+@keyframes pointer-tracker-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Controls */
+.pointer-tracker-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* API Result Display */
+.pointer-tracker-demo__result {
+    padding: 0.75rem 1rem;
+    background: var(--pro-bg-tertiary, #1a1a1a);
+    border: 1px solid var(--pro-border-color, #333);
+    border-radius: var(--pro-radius-sm, 6px);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+}
+
+.pointer-tracker-demo__result-empty {
+    color: var(--pro-text-muted, #666);
+}
+
+.pointer-tracker-demo__result-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.pointer-tracker-demo__result-method {
+    color: var(--pro-text-secondary, #888);
+}
+
+.pointer-tracker-demo__result-arrow {
+    color: var(--pro-text-muted, #666);
+}
+
+.pointer-tracker-demo__result-value {
+    font-weight: 600;
+}
+
+.pointer-tracker-demo__result-value--string {
+    color: var(--pro-color-success, #22c55e);
+}
+
+.pointer-tracker-demo__result-value--boolean {
+    color: var(--pro-color-warning, #eab308);
+}
+
+.pointer-tracker-demo__result-value--number {
+    color: var(--pro-accent-secondary, #a855f7);
+}
+
+.pointer-tracker-demo__result-type {
+    font-size: 0.75rem;
+    color: var(--pro-text-muted, #666);
+    margin-left: 0.25rem;
+}
+
+/* Settings Display */
+.pointer-tracker-demo__settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.pointer-tracker-demo__settings .badge {
+    font-weight: 400;
+}
+
+.pointer-tracker-demo__settings .badge strong {
+    font-weight: 600;
+}
+
+/* Light Theme */
+[data-theme="light"] .pointer-tracker-demo__canvas-container {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .pointer-tracker-demo__pointer-indicator {
+    background: var(--pro-bg-secondary, #fff);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .pointer-tracker-demo__data-card {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+[data-theme="light"] .pointer-tracker-demo__result {
+    background: var(--pro-bg-tertiary, #f1f3f5);
+    border-color: var(--pro-border-color, #dee2e6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pointer-tracker-demo__data-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pointer-tracker-demo__controls {
+        flex-direction: column;
+    }
+
+    .pointer-tracker-demo__controls .btn {
+        width: 100%;
+    }
+
+    .pointer-tracker-demo__settings {
+        flex-direction: column;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .pointer-tracker-demo__pressure-fill {
+        transition: none;
+    }
+
+    .pointer-tracker-demo__state-indicator--active::before {
+        animation: none;
+    }
+}

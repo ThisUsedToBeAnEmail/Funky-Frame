@@ -1,0 +1,569 @@
+<div data-page="component-tooltip" class="component-demo">
+  <h2>Tooltip</h2>
+  <p class="text-muted">Lightweight tooltips with multiple triggers and placements</p>
+
+  <!-- Interactive Demo -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">This tooltip uses all props from the sidebar panel</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__interactive">
+        <button type="button" id="main-tooltip-btn" class="btn btn-primary btn-lg">
+          <i class="fas fa-comment-dots me-2" aria-hidden="true"></i>
+          <span id="main-btn-text">Hover for Tooltip</span>
+        </button>
+      </div>
+      <div class="tooltip-demo__interactive-info">
+        <span class="badge bg-primary" id="main-placement-badge">top</span>
+        <span class="badge bg-success" id="main-trigger-badge">hover</span>
+        <span class="badge bg-info" id="main-html-badge">text</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Controls</h3>
+    <p class="text-muted small">Control the Interactive Demo tooltip programmatically</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__controls">
+        <button type="button" class="btn btn-sm btn-success" data-api="show">
+          <i class="fas fa-eye me-1" aria-hidden="true"></i> show()
+        </button>
+        <button type="button" class="btn btn-sm btn-danger" data-api="hide">
+          <i class="fas fa-eye-slash me-1" aria-hidden="true"></i> hide()
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" data-api="toggle">
+          <i class="fas fa-toggle-on me-1" aria-hidden="true"></i> toggle()
+        </button>
+        <button type="button" class="btn btn-sm btn-warning" data-api="dispose">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> dispose()
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" data-api="recreate">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> recreate
+        </button>
+      </div>
+      <div class="tooltip-demo__result" id="api-result">
+        <span class="tooltip-demo__result-empty">Click an API button to see the result</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Placements -->
+  <section class="demo-section" aria-labelledby="placements-heading">
+    <h3 id="placements-heading">Placements</h3>
+    <p class="text-muted small">Tooltips can be positioned on any side of the trigger</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__placements">
+        <button type="button" class="btn btn-outline-secondary tooltip-demo__placement-btn tooltip-demo__placement-btn--top" data-placement="top">
+          <i class="fas fa-arrow-up me-1" aria-hidden="true"></i> Top
+        </button>
+        <div class="tooltip-demo__placements-row">
+          <button type="button" class="btn btn-outline-secondary tooltip-demo__placement-btn tooltip-demo__placement-btn--left" data-placement="left">
+            <i class="fas fa-arrow-left me-1" aria-hidden="true"></i> Left
+          </button>
+          <div class="tooltip-demo__placements-center">
+            <i class="fas fa-crosshairs" aria-hidden="true"></i>
+          </div>
+          <button type="button" class="btn btn-outline-secondary tooltip-demo__placement-btn tooltip-demo__placement-btn--right" data-placement="right">
+            Right <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button type="button" class="btn btn-outline-secondary tooltip-demo__placement-btn tooltip-demo__placement-btn--bottom" data-placement="bottom">
+          <i class="fas fa-arrow-down me-1" aria-hidden="true"></i> Bottom
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trigger Types -->
+  <section class="demo-section" aria-labelledby="triggers-heading">
+    <h3 id="triggers-heading">Trigger Types</h3>
+    <p class="text-muted small">Different ways to show/hide tooltips</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__triggers">
+        <button type="button" class="btn btn-outline-primary tooltip-demo__trigger-btn" id="trigger-hover">
+          <i class="fas fa-hand-pointer me-2" aria-hidden="true"></i> Hover
+        </button>
+        <button type="button" class="btn btn-outline-success tooltip-demo__trigger-btn" id="trigger-click">
+          <i class="fas fa-mouse-pointer me-2" aria-hidden="true"></i> Click
+        </button>
+        <input type="text" class="form-control tooltip-demo__trigger-input" id="trigger-focus" placeholder="Focus me for tooltip">
+      </div>
+    </div>
+  </section>
+
+  <!-- Delays -->
+  <section class="demo-section" aria-labelledby="delays-heading">
+    <h3 id="delays-heading">Delays</h3>
+    <p class="text-muted small">Configure show/hide delays for better UX</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__delays">
+        <button type="button" class="btn btn-outline-info" id="delay-tooltip-btn">
+          <i class="fas fa-clock me-2" aria-hidden="true"></i> Hover with Delay
+        </button>
+        <div class="tooltip-demo__delay-info">
+          <span class="badge bg-secondary">Show: <strong id="delay-show-value">500</strong>ms</span>
+          <span class="badge bg-secondary">Hide: <strong id="delay-hide-value">200</strong>ms</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HTML Content -->
+  <section class="demo-section" aria-labelledby="html-heading">
+    <h3 id="html-heading">HTML Content</h3>
+    <p class="text-muted small">Tooltips can render rich HTML content</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__html-demo">
+        <button type="button" class="btn btn-info" id="html-tooltip-btn">
+          <i class="fas fa-code me-2" aria-hidden="true"></i> Rich HTML Tooltip
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Content -->
+  <section class="demo-section" aria-labelledby="dynamic-heading">
+    <h3 id="dynamic-heading">Dynamic Content</h3>
+    <p class="text-muted small">Update tooltip content programmatically with setContent()</p>
+
+    <div class="demo-area">
+      <div class="tooltip-demo__dynamic">
+        <button type="button" class="btn btn-secondary" id="dynamic-tooltip-btn">
+          <i class="fas fa-sync me-2" aria-hidden="true"></i> Dynamic Tooltip
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="update-content-btn">
+          <i class="fas fa-refresh me-2" aria-hidden="true"></i> Update Content
+        </button>
+      </div>
+      <div class="tooltip-demo__dynamic-info">
+        <span class="badge bg-secondary">Updates: <strong id="update-count">0</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Settings -->
+  <section class="demo-section" aria-labelledby="settings-heading">
+    <h3 id="settings-heading">Current Settings</h3>
+    <div class="demo-area">
+      <div class="tooltip-demo__settings">
+        <span class="badge bg-secondary">placement: <strong id="setting-placement">top</strong></span>
+        <span class="badge bg-secondary">trigger: <strong id="setting-trigger">hover</strong></span>
+        <span class="badge bg-secondary">title: <strong id="setting-title">Tooltip text</strong></span>
+        <span class="badge bg-secondary">html: <strong id="setting-html">false</strong></span>
+        <span class="badge bg-secondary">delayShow: <strong id="setting-delay-show">0</strong>ms</span>
+        <span class="badge bg-secondary">delayHide: <strong id="setting-delay-hide">0</strong>ms</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var mainTooltip = null;
+  var placementTooltips = [];
+  var triggerTooltips = {};
+  var delayTooltip = null;
+  var htmlTooltip = null;
+  var dynamicTooltip = null;
+  var propsChangedHandler = null;
+  var updateCount = 0;
+
+  function log(message, type) {
+    console.log('[Tooltip Demo]', message);
+    emit('event', { event: 'tooltip:' + (type || 'info'), payload: { message: message } });
+  }
+
+  function getOptions() {
+    var props = getProps();
+    return {
+      placement: props.placement || 'top',
+      trigger: props.trigger || 'hover',
+      title: props.title || 'Tooltip text',
+      html: props.html === true,
+      delayShow: parseInt(props.delayShow, 10) || 0,
+      delayHide: parseInt(props.delayHide, 10) || 0
+    };
+  }
+
+  function updateSettingsDisplay() {
+    var opts = getOptions();
+    var el = function(id) { return document.getElementById(id); };
+
+    // Current Settings section
+    if (el('setting-placement')) el('setting-placement').textContent = opts.placement;
+    if (el('setting-trigger')) el('setting-trigger').textContent = opts.trigger;
+    if (el('setting-title')) {
+      var titlePreview = opts.title.length > 30 ? opts.title.substring(0, 30) + '...' : opts.title;
+      el('setting-title').textContent = titlePreview;
+    }
+    if (el('setting-html')) el('setting-html').textContent = String(opts.html);
+    if (el('setting-delay-show')) el('setting-delay-show').textContent = opts.delayShow;
+    if (el('setting-delay-hide')) el('setting-delay-hide').textContent = opts.delayHide;
+
+    // Interactive Demo badges
+    if (el('main-placement-badge')) el('main-placement-badge').textContent = opts.placement;
+    if (el('main-trigger-badge')) el('main-trigger-badge').textContent = opts.trigger;
+    if (el('main-html-badge')) el('main-html-badge').textContent = opts.html ? 'html' : 'text';
+
+    // Delay section
+    if (el('delay-show-value')) el('delay-show-value').textContent = opts.delayShow || 500;
+    if (el('delay-hide-value')) el('delay-hide-value').textContent = opts.delayHide || 200;
+  }
+
+  function showApiResult(method, result) {
+    var resultEl = document.getElementById('api-result');
+    if (!resultEl) return;
+
+    var typeStr = typeof result;
+    var valueStr = result === undefined ? 'void' : JSON.stringify(result);
+
+    resultEl.innerHTML = '<div class="tooltip-demo__result-content">' +
+      '<span class="tooltip-demo__result-method">' + method + '</span>' +
+      '<span class="tooltip-demo__result-arrow">&rarr;</span>' +
+      '<span class="tooltip-demo__result-value tooltip-demo__result-value--' + typeStr + '">' + valueStr + '</span>' +
+      '</div>';
+
+    log(method + ' called', 'api');
+  }
+
+  function updateMainButtonText() {
+    var opts = getOptions();
+    var btnText = document.getElementById('main-btn-text');
+    if (btnText) {
+      var triggerText = opts.trigger === 'hover' ? 'Hover' : opts.trigger === 'focus' ? 'Focus' : opts.trigger === 'click' ? 'Click' : 'Manual';
+      btnText.textContent = triggerText + ' for Tooltip';
+    }
+  }
+
+  function createMainTooltip() {
+    var opts = getOptions();
+    var btn = document.getElementById('main-tooltip-btn');
+    if (!btn) return;
+
+    // Dispose existing
+    if (mainTooltip) {
+      mainTooltip.dispose();
+      mainTooltip = null;
+    }
+
+    // Re-get the button after dispose (it replaces the element)
+    btn = document.getElementById('main-tooltip-btn');
+    if (!btn) return;
+
+    mainTooltip = new Funky.Tooltip(btn, {
+      title: opts.title,
+      placement: opts.placement,
+      trigger: opts.trigger,
+      html: opts.html,
+      delay: { show: opts.delayShow, hide: opts.delayHide }
+    });
+
+    updateMainButtonText();
+    log('Main tooltip created with placement=' + opts.placement + ', trigger=' + opts.trigger, 'init');
+  }
+
+  function createPlacementTooltips() {
+    // Dispose existing
+    placementTooltips.forEach(function(t) {
+      if (t && t.dispose) t.dispose();
+    });
+    placementTooltips = [];
+
+    var placements = ['top', 'bottom', 'left', 'right'];
+    placements.forEach(function(placement) {
+      var btn = document.querySelector('.tooltip-demo__placement-btn--' + placement);
+      if (!btn) return;
+
+      // Re-query after potential dispose
+      btn = document.querySelector('.tooltip-demo__placement-btn--' + placement);
+      if (!btn) return;
+
+      var tooltip = new Funky.Tooltip(btn, {
+        title: 'Tooltip on ' + placement,
+        placement: placement,
+        trigger: 'hover'
+      });
+      placementTooltips.push(tooltip);
+    });
+  }
+
+  function createTriggerTooltips() {
+    // Dispose existing
+    Object.keys(triggerTooltips).forEach(function(key) {
+      if (triggerTooltips[key] && triggerTooltips[key].dispose) {
+        triggerTooltips[key].dispose();
+      }
+    });
+    triggerTooltips = {};
+
+    var triggers = [
+      { id: 'trigger-hover', trigger: 'hover', title: 'Appears on hover' },
+      { id: 'trigger-click', trigger: 'click', title: 'Click to toggle' },
+      { id: 'trigger-focus', trigger: 'focus', title: 'Appears on focus' }
+    ];
+
+    triggers.forEach(function(t) {
+      var el = document.getElementById(t.id);
+      if (!el) return;
+
+      // Re-query after potential dispose
+      el = document.getElementById(t.id);
+      if (!el) return;
+
+      triggerTooltips[t.trigger] = new Funky.Tooltip(el, {
+        title: t.title,
+        placement: 'top',
+        trigger: t.trigger
+      });
+    });
+  }
+
+  function createDelayTooltip() {
+    if (delayTooltip) {
+      delayTooltip.dispose();
+      delayTooltip = null;
+    }
+
+    var btn = document.getElementById('delay-tooltip-btn');
+    if (!btn) return;
+
+    // Re-query
+    btn = document.getElementById('delay-tooltip-btn');
+    if (!btn) return;
+
+    var opts = getOptions();
+    var showDelay = opts.delayShow || 500;
+    var hideDelay = opts.delayHide || 200;
+
+    delayTooltip = new Funky.Tooltip(btn, {
+      title: 'Delayed tooltip (show: ' + showDelay + 'ms, hide: ' + hideDelay + 'ms)',
+      placement: 'top',
+      trigger: 'hover',
+      delay: { show: showDelay, hide: hideDelay }
+    });
+  }
+
+  function createHtmlTooltip() {
+    if (htmlTooltip) {
+      htmlTooltip.dispose();
+      htmlTooltip = null;
+    }
+
+    var btn = document.getElementById('html-tooltip-btn');
+    if (!btn) return;
+
+    // Re-query
+    btn = document.getElementById('html-tooltip-btn');
+    if (!btn) return;
+
+    var htmlContent = '<strong>Rich Content</strong><br>' +
+      '<em>With formatting</em> and<br>' +
+      '<span class="badge bg-primary">badges</span>';
+
+    htmlTooltip = new Funky.Tooltip(btn, {
+      title: htmlContent,
+      placement: 'bottom',
+      trigger: 'hover',
+      html: true
+    });
+  }
+
+  function createDynamicTooltip() {
+    if (dynamicTooltip) {
+      dynamicTooltip.dispose();
+      dynamicTooltip = null;
+    }
+
+    var btn = document.getElementById('dynamic-tooltip-btn');
+    if (!btn) return;
+
+    // Re-query
+    btn = document.getElementById('dynamic-tooltip-btn');
+    if (!btn) return;
+
+    updateCount = 0;
+    updateCountDisplay();
+
+    dynamicTooltip = new Funky.Tooltip(btn, {
+      title: 'Click "Update Content" to change this',
+      placement: 'top',
+      trigger: 'hover'
+    });
+  }
+
+  function updateCountDisplay() {
+    var el = document.getElementById('update-count');
+    if (el) el.textContent = updateCount;
+  }
+
+  function setupUpdateContentButton() {
+    var btn = document.getElementById('update-content-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function() {
+      if (!dynamicTooltip) {
+        log('Dynamic tooltip not initialized', 'warn');
+        return;
+      }
+
+      updateCount++;
+      updateCountDisplay();
+
+      var now = new Date();
+      var timeStr = now.toLocaleTimeString();
+
+      dynamicTooltip.setContent('Update #' + updateCount + ' at ' + timeStr);
+
+      // Show the tooltip if not visible
+      if (!dynamicTooltip.isShown) {
+        dynamicTooltip.show();
+      }
+
+      log('setContent() called, update #' + updateCount, 'setContent');
+      emit('event', { event: 'tooltip:setContent', payload: { count: updateCount, time: timeStr } });
+    });
+  }
+
+  function setupApiControls() {
+    var btns = document.querySelectorAll('[data-api]');
+
+    btns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var method = btn.dataset.api;
+
+        if (method === 'recreate') {
+          createMainTooltip();
+          showApiResult('recreate()', 'Tooltip recreated');
+          return;
+        }
+
+        if (!mainTooltip) {
+          showApiResult(method + '()', 'No tooltip instance');
+          return;
+        }
+
+        switch (method) {
+          case 'show':
+            mainTooltip.show();
+            showApiResult('show()', undefined);
+            emit('event', { event: 'tooltip:show', payload: {} });
+            break;
+          case 'hide':
+            mainTooltip.hide();
+            showApiResult('hide()', undefined);
+            emit('event', { event: 'tooltip:hide', payload: {} });
+            break;
+          case 'toggle':
+            mainTooltip.toggle();
+            showApiResult('toggle()', undefined);
+            emit('event', { event: 'tooltip:toggle', payload: {} });
+            break;
+          case 'dispose':
+            mainTooltip.dispose();
+            mainTooltip = null;
+            showApiResult('dispose()', undefined);
+            emit('event', { event: 'tooltip:dispose', payload: {} });
+            break;
+        }
+      });
+    });
+  }
+
+  function initAllTooltips() {
+    createMainTooltip();
+    createPlacementTooltips();
+    createTriggerTooltips();
+    createDelayTooltip();
+    createHtmlTooltip();
+    createDynamicTooltip();
+  }
+
+  function destroyAllTooltips() {
+    if (mainTooltip) {
+      mainTooltip.dispose();
+      mainTooltip = null;
+    }
+
+    placementTooltips.forEach(function(t) {
+      if (t && t.dispose) t.dispose();
+    });
+    placementTooltips = [];
+
+    Object.keys(triggerTooltips).forEach(function(key) {
+      if (triggerTooltips[key] && triggerTooltips[key].dispose) {
+        triggerTooltips[key].dispose();
+      }
+    });
+    triggerTooltips = {};
+
+    if (delayTooltip) {
+      delayTooltip.dispose();
+      delayTooltip = null;
+    }
+
+    if (htmlTooltip) {
+      htmlTooltip.dispose();
+      htmlTooltip = null;
+    }
+
+    if (dynamicTooltip) {
+      dynamicTooltip.dispose();
+      dynamicTooltip = null;
+    }
+  }
+
+  Funky.Pages.register('component-tooltip', {
+    init: function(state) {
+      updateSettingsDisplay();
+
+      // Small delay to ensure DOM is ready after potential SPA navigation
+      setTimeout(function() {
+        initAllTooltips();
+        setupUpdateContentButton();
+        setupApiControls();
+      }, 50);
+
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          updateSettingsDisplay();
+          // Recreate main tooltip and delay tooltip with new props
+          createMainTooltip();
+          createDelayTooltip();
+          log('Props changed, tooltips recreated', 'props');
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', { event: 'tooltip:init', payload: getOptions() });
+      log('Demo initialized', 'init');
+
+      return {};
+    },
+
+    destroy: function() {
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      destroyAllTooltips();
+      updateCount = 0;
+
+      return {};
+    }
+  });
+})();
+</script>

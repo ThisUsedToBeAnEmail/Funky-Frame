@@ -1,0 +1,457 @@
+<div data-page="component-combo-box" class="component-demo">
+  <h2>ComboBox</h2>
+  <p class="text-muted">Searchable dropdown with remote data support, multi-select, and customizable rendering.</p>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current Configuration</h3>
+    <div class="demo-area">
+      <div class="combobox-demo__state-display">
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Mode</span>
+          <span id="state-mode">single</span>
+        </div>
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Searchable</span>
+          <span id="state-searchable">true</span>
+        </div>
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Clearable</span>
+          <span id="state-clearable">true</span>
+        </div>
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Tags</span>
+          <span id="state-tags">false</span>
+        </div>
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Max Tags</span>
+          <span id="state-maxTags">5</span>
+        </div>
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Size</span>
+          <span id="state-size">default</span>
+        </div>
+        <div class="combobox-demo__state-item">
+          <span class="badge bg-secondary">Fit Content</span>
+          <span id="state-fitContent">false</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Demo -->
+  <section class="demo-section" aria-labelledby="demo-heading">
+    <h3 id="demo-heading">Interactive Demo</h3>
+    <p class="text-muted small">All props from the props panel are applied to this combobox.</p>
+    <div class="demo-area">
+      <label class="form-label" for="combo-main-trigger">Select an Option</label>
+      <div id="combo-main"></div>
+    </div>
+  </section>
+
+  <!-- API Controls -->
+  <section class="demo-section" aria-labelledby="controls-heading">
+    <h3 id="controls-heading">API Controls</h3>
+    <p class="text-muted small">Test ComboBox methods programmatically.</p>
+    <div class="demo-area">
+      <div class="combobox-demo__controls">
+        <button class="btn btn-primary btn-sm" id="btn-open" type="button">
+          <i class="fas fa-chevron-down me-1" aria-hidden="true"></i> Open
+        </button>
+        <button class="btn btn-primary btn-sm" id="btn-close" type="button">
+          <i class="fas fa-chevron-up me-1" aria-hidden="true"></i> Close
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-clear" type="button">
+          <i class="fas fa-times me-1" aria-hidden="true"></i> Clear
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" id="btn-toggle" type="button">
+          <i class="fas fa-exchange-alt me-1" aria-hidden="true"></i> Toggle
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btn-focus" type="button">
+          <i class="fas fa-crosshairs me-1" aria-hidden="true"></i> Focus
+        </button>
+      </div>
+      <div class="combobox-demo__controls combobox-demo__controls--values">
+        <button class="btn btn-success btn-sm" id="btn-set-value" type="button">
+          <i class="fas fa-check me-1" aria-hidden="true"></i> Set Value
+        </button>
+        <button class="btn btn-info btn-sm" id="btn-get-value" type="button">
+          <i class="fas fa-info me-1" aria-hidden="true"></i> Get Value
+        </button>
+        <button class="btn btn-warning btn-sm" id="btn-set-items" type="button">
+          <i class="fas fa-list me-1" aria-hidden="true"></i> Change Items
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selection Display -->
+  <section class="demo-section" aria-labelledby="selection-heading">
+    <h3 id="selection-heading">Current Selection</h3>
+    <div class="demo-area">
+      <pre id="combo-selection" class="combobox-demo__selection" aria-live="polite">No selection</pre>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="combo-log" class="combobox-demo__log" aria-live="polite">Interact with the combobox to see events...</pre>
+      <button class="btn btn-outline-secondary btn-sm mt-2" id="btn-clear-log" type="button">
+        <i class="fas fa-trash me-1" aria-hidden="true"></i> Clear Log
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+  var comboInstance = null;
+  var propsChangedHandler = null;
+  var logs = [];
+
+  // Sample data
+  var fruits = [
+    { value: 'apple', label: 'Apple', icon: 'fa-apple-alt', group: 'Common' },
+    { value: 'banana', label: 'Banana', icon: 'fa-carrot', group: 'Common' },
+    { value: 'cherry', label: 'Cherry', icon: 'fa-circle', group: 'Common' },
+    { value: 'date', label: 'Date', icon: 'fa-leaf', group: 'Exotic' },
+    { value: 'elderberry', label: 'Elderberry', icon: 'fa-seedling', group: 'Exotic' },
+    { value: 'fig', label: 'Fig', icon: 'fa-leaf', group: 'Exotic' },
+    { value: 'grape', label: 'Grape', icon: 'fa-circle', group: 'Common' },
+    { value: 'honeydew', label: 'Honeydew', icon: 'fa-lemon', group: 'Melons' },
+    { value: 'kiwi', label: 'Kiwi', icon: 'fa-circle', group: 'Exotic' },
+    { value: 'lemon', label: 'Lemon', icon: 'fa-lemon', group: 'Citrus' },
+    { value: 'mango', label: 'Mango', icon: 'fa-leaf', group: 'Exotic' },
+    { value: 'orange', label: 'Orange', icon: 'fa-circle', group: 'Citrus' }
+  ];
+
+  var vegetables = [
+    { value: 'artichoke', label: 'Artichoke' },
+    { value: 'broccoli', label: 'Broccoli' },
+    { value: 'carrot', label: 'Carrot' },
+    { value: 'daikon', label: 'Daikon' },
+    { value: 'eggplant', label: 'Eggplant' },
+    { value: 'fennel', label: 'Fennel' }
+  ];
+
+  var currentItemSet = 'fruits';
+
+  function log(message, data) {
+    var entry = new Date().toLocaleTimeString() + ' - ' + message;
+    if (data !== undefined) {
+      entry += ': ' + JSON.stringify(data);
+    }
+    logs.unshift(entry);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('combo-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  function updateSelection(value, items) {
+    var selectionEl = document.getElementById('combo-selection');
+    if (selectionEl) {
+      if (value === null || value === undefined || (Array.isArray(value) && value.length === 0)) {
+        selectionEl.textContent = 'No selection';
+      } else {
+        selectionEl.textContent = JSON.stringify({ value: value, items: items }, null, 2);
+      }
+    }
+  }
+
+  function updateStateDisplay(props) {
+    var stateMode = document.getElementById('state-mode');
+    var stateSearchable = document.getElementById('state-searchable');
+    var stateClearable = document.getElementById('state-clearable');
+    var stateTags = document.getElementById('state-tags');
+    var stateMaxTags = document.getElementById('state-maxTags');
+    var stateSize = document.getElementById('state-size');
+    var stateFitContent = document.getElementById('state-fitContent');
+
+    if (stateMode) stateMode.textContent = props.mode || 'single';
+    if (stateSearchable) stateSearchable.textContent = String(props.searchable !== false);
+    if (stateClearable) stateClearable.textContent = String(props.clearable !== false);
+    if (stateTags) stateTags.textContent = String(props.tags === true);
+    if (stateMaxTags) stateMaxTags.textContent = String(props.maxTags || 5);
+    if (stateSize) stateSize.textContent = props.size || 'default';
+    if (stateFitContent) stateFitContent.textContent = String(props.dropdownFitContent === true);
+  }
+
+  function createComboBox(props) {
+    // Destroy existing instance
+    if (comboInstance && comboInstance.destroy) {
+      comboInstance.destroy();
+      comboInstance = null;
+    }
+
+    var container = document.getElementById('combo-main');
+    if (!container || !Funky.ComboBox) {
+      log('ComboBox not available');
+      return;
+    }
+
+    // Clear container
+    container.innerHTML = '';
+
+    // Build config from ALL props
+    var config = {
+      items: currentItemSet === 'fruits' ? fruits : vegetables,
+      valueKey: 'value',
+      textKey: 'label',
+      placeholder: props.placeholder || 'Select an option...',
+      mode: props.mode || 'single',
+      searchable: props.searchable !== false,
+      clearable: props.clearable !== false,
+      tags: props.tags === true,
+      minSearchLength: props.minSearchLength || 0,
+      scrollTags: props.scrollTags === true
+    };
+
+    // Size variant
+    if (props.size) {
+      config.size = props.size;
+    }
+
+    // Dropdown fit content - sets trigger min-width to widest option
+    if (props.dropdownFitContent) {
+      config.dropdownFitContent = true;
+    }
+
+    // Multi-select specific options
+    if (props.mode === 'multi') {
+      if (props.maxSelection) {
+        config.maxSelection = parseInt(props.maxSelection, 10);
+      }
+      if (props.maxTags) {
+        config.maxTags = parseInt(props.maxTags, 10);
+      }
+      if (props.showSelectAll) {
+        config.showSelectAll = true;
+      }
+    }
+
+    // Fixed width
+    if (props.fixedWidth) {
+      config.fixedWidth = parseInt(props.fixedWidth, 10);
+    }
+
+    // Event handlers
+    config.onChange = function(value) {
+      var items = comboInstance ? comboInstance.getSelectedItems() : [];
+      updateSelection(value, items);
+      log('change', value);
+      emit('event', { event: 'funky:combobox:change', payload: { value: value } });
+    };
+
+    config.onOpen = function() {
+      log('open');
+      emit('event', { event: 'funky:combobox:open' });
+    };
+
+    config.onClose = function() {
+      log('close');
+      emit('event', { event: 'funky:combobox:close' });
+    };
+
+    config.onSearch = function(query) {
+      log('search', query);
+      emit('event', { event: 'funky:combobox:search', payload: { query: query } });
+    };
+
+    config.onClear = function() {
+      updateSelection(null, []);
+      log('clear');
+      emit('event', { event: 'funky:combobox:clear' });
+    };
+
+    if (props.tags) {
+      config.onTagCreate = function(tag) {
+        log('tag created', tag);
+        emit('event', { event: 'funky:combobox:tagcreate', payload: { tag: tag } });
+      };
+    }
+
+    // Initialize
+    comboInstance = Funky.ComboBox.init(container, config);
+
+    log('initialized', { mode: config.mode, searchable: config.searchable });
+    emit('event', { event: 'funky:combobox:init', payload: { mode: config.mode, searchable: config.searchable } });
+  }
+
+  function setupControls() {
+    // Open
+    var btnOpen = document.getElementById('btn-open');
+    if (btnOpen) {
+      btnOpen.onclick = function() {
+        if (comboInstance && comboInstance.open) {
+          comboInstance.open();
+          log('API: open()');
+        }
+      };
+    }
+
+    // Close
+    var btnClose = document.getElementById('btn-close');
+    if (btnClose) {
+      btnClose.onclick = function() {
+        if (comboInstance && comboInstance.close) {
+          comboInstance.close();
+          log('API: close()');
+        }
+      };
+    }
+
+    // Clear
+    var btnClear = document.getElementById('btn-clear');
+    if (btnClear) {
+      btnClear.onclick = function() {
+        if (comboInstance && comboInstance.clear) {
+          comboInstance.clear();
+          log('API: clear()');
+        }
+      };
+    }
+
+    // Toggle
+    var btnToggle = document.getElementById('btn-toggle');
+    if (btnToggle) {
+      btnToggle.onclick = function() {
+        if (comboInstance && comboInstance.toggle) {
+          comboInstance.toggle();
+          log('API: toggle()');
+        }
+      };
+    }
+
+    // Focus
+    var btnFocus = document.getElementById('btn-focus');
+    if (btnFocus) {
+      btnFocus.onclick = function() {
+        if (comboInstance && comboInstance.focus) {
+          comboInstance.focus();
+          log('API: focus()');
+        }
+      };
+    }
+
+    // Set Value
+    var btnSetValue = document.getElementById('btn-set-value');
+    if (btnSetValue) {
+      btnSetValue.onclick = function() {
+        if (comboInstance && comboInstance.setValue) {
+          var props = getProps();
+          // Use appropriate values based on current item set
+          if (currentItemSet === 'fruits') {
+            if (props.mode === 'multi') {
+              comboInstance.setValue(['apple', 'banana']);
+              log('API: setValue([apple, banana])');
+            } else {
+              comboInstance.setValue('apple');
+              log('API: setValue(apple)');
+            }
+          } else {
+            // vegetables
+            if (props.mode === 'multi') {
+              comboInstance.setValue(['artichoke', 'broccoli']);
+              log('API: setValue([artichoke, broccoli])');
+            } else {
+              comboInstance.setValue('artichoke');
+              log('API: setValue(artichoke)');
+            }
+          }
+        }
+      };
+    }
+
+    // Get Value
+    var btnGetValue = document.getElementById('btn-get-value');
+    if (btnGetValue) {
+      btnGetValue.onclick = function() {
+        if (comboInstance && comboInstance.getValue) {
+          var value = comboInstance.getValue();
+          var items = comboInstance.getSelectedItems();
+          log('API: getValue()', { value: value, items: items });
+          updateSelection(value, items);
+        }
+      };
+    }
+
+    // Set Items (toggle between fruits and vegetables)
+    var btnSetItems = document.getElementById('btn-set-items');
+    if (btnSetItems) {
+      btnSetItems.onclick = function() {
+        if (comboInstance && comboInstance.setItems) {
+          currentItemSet = currentItemSet === 'fruits' ? 'vegetables' : 'fruits';
+          var newItems = currentItemSet === 'fruits' ? fruits : vegetables;
+          comboInstance.setItems(newItems);
+          log('API: setItems(' + currentItemSet + ') - ' + newItems.length + ' items');
+        }
+      };
+    }
+
+    // Clear Log
+    var btnClearLog = document.getElementById('btn-clear-log');
+    if (btnClearLog) {
+      btnClearLog.onclick = function() {
+        logs = [];
+        var logEl = document.getElementById('combo-log');
+        if (logEl) logEl.textContent = 'Log cleared...';
+      };
+    }
+  }
+
+  Funky.Pages.register('component-combo-box', {
+    init: function(state) {
+      var props = getProps();
+
+      // Update state display
+      updateStateDisplay(props);
+
+      // Create combobox with current props
+      createComboBox(props);
+
+      // Setup control buttons
+      setupControls();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          updateStateDisplay(currentProps);
+          // Recreate combobox with new props
+          createComboBox(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      return {};
+    },
+
+    destroy: function() {
+      // Unsubscribe from prop changes
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy combobox instance
+      if (comboInstance && comboInstance.destroy) {
+        comboInstance.destroy();
+        comboInstance = null;
+      }
+
+      // Reset state
+      logs = [];
+      currentItemSet = 'fruits';
+
+      return {};
+    }
+  });
+})();
+</script>
