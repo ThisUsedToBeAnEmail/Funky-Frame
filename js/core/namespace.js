@@ -82,7 +82,7 @@
 	/**
 	 * Version info
 	 */
-	Funky.version = '1.0.0';
+	Funky.version = '1.0.2';
 
 	// Lock the register, has, list, and version properties
 	Object.defineProperty(Funky, 'register', {

@@ -9,7 +9,7 @@
  * - Pagination and infinite scroll
  * 
  * @namespace Funky.CardGrid
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
     'use strict';
@@ -2741,21 +2741,23 @@
                     self._scrollTracker.destroy();
                 }
             });
-        } else if ('IntersectionObserver' in window) {
-            // Fallback: Intersection Observer
-            this._scrollObserver = new IntersectionObserver(function(entries) {
-                if (entries[0].isIntersecting && !self.isLoading && self.hasMorePages) {
-                    self.loadMore();
-                }
-            }, {
+        } else if (Funky.VisibilityObserver) {
+            // Fallback: VisibilityObserver
+            this._scrollObserver = Funky.VisibilityObserver.init({
                 rootMargin: '100px'
             });
-            
-            this._scrollObserver.observe(this.els.scrollTrigger.el);
-            
+
+            this._scrollObserver.observe(this.els.scrollTrigger.el, {
+                onVisible: function() {
+                    if (!self.isLoading && self.hasMorePages) {
+                        self.loadMore();
+                    }
+                }
+            });
+
             this._cleanupFns.push(function() {
                 if (self._scrollObserver) {
-                    self._scrollObserver.disconnect();
+                    self._scrollObserver.destroy();
                 }
             });
         } else {

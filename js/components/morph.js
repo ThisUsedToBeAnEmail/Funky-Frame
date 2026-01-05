@@ -23,7 +23,7 @@
  * // Reverse morph
  * Funky.Morph.reverse('#modal');
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(global) {
 	'use strict';

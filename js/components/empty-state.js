@@ -2,7 +2,7 @@
  * Funky.EmptyState - Empty State Placeholder Component
  * Theme-aware, density-aware empty state placeholders with presets
  * @module Funky.EmptyState
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
   'use strict';

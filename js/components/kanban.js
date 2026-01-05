@@ -17,7 +17,7 @@
  *     onCardMove: function(card, from, to, position) { }
  *   });
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

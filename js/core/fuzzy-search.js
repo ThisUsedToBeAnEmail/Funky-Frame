@@ -8,7 +8,7 @@
  * - Case-insensitive by default
  * 
  * @module Funky.FuzzySearch
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

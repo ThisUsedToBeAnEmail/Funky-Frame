@@ -2,7 +2,7 @@
  * CSRF Protection Utilities
  * Handles CSRF token management for API requests
  * @module Funky.CSRF
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

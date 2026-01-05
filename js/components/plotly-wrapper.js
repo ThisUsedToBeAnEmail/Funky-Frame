@@ -7,7 +7,7 @@
  *   Funky.Plotly.bar('#chart', [{ x: 'Jan', y: 100 }, { x: 'Feb', y: 200 }]);
  *   Funky.Plotly.line('#chart', data, { title: 'Trend' });
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
     'use strict';

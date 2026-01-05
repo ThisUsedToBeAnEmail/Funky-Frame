@@ -644,3 +644,44 @@
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   MOBILE ANIMATION OPTIMIZATIONS
+   Disable scroll-triggered animations on mobile to prevent flickering
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  /* Completely disable all in-view/scroll-triggered animations on mobile
+     Mobile devices don't handle IntersectionObserver animations well - they flicker */
+  [data-animate-trigger="in-view"],
+  [data-animate-trigger="in-view"][data-animate],
+  [data-animate-children] p,
+  [data-animate-children] h1,
+  [data-animate-children] h2,
+  [data-animate-children] h3,
+  [data-animate-children] h4,
+  [data-animate-children] h5,
+  [data-animate-children] h6,
+  [data-animate-children] li,
+  [data-animate-children] blockquote {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    animation-delay: 0s !important;
+  }
+
+  /* Also disable stagger animations in containers with auto-animate children */
+  [data-animate-stagger] > [data-animate] {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    animation-delay: 0s !important;
+  }
+
+  /* Keep explicit page-level animations working (enter/exit transitions)
+     These are controlled directly, not via IntersectionObserver */
+  .page-transition-enter,
+  .page-transition-exit {
+    animation: unset;
+  }
+}

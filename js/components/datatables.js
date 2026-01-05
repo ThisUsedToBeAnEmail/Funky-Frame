@@ -35,7 +35,7 @@
  *   Funky.DataTables.disableFunkyTable()   // Use jQuery DataTables (default)
  *   Funky.DataTables.isFunkyTableEnabled() // Check current mode
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
   'use strict';

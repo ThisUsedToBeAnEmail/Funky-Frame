@@ -1,0 +1,376 @@
+<div data-page="component-visibility-observer" class="component-demo">
+  <h2>VisibilityObserver</h2>
+  <p class="text-muted">Track element visibility using IntersectionObserver. Perfect for scroll animations, lazy loading, and viewport-based triggers.</p>
+
+  <section class="demo-section" aria-labelledby="basic-heading">
+    <h3 id="basic-heading">Interactive Demo</h3>
+    <p class="text-muted small">Scroll the box below to see visibility tracking in action. Elements change color when they enter/exit the viewport.</p>
+    <div class="demo-area">
+      <div class="d-flex gap-3 mb-3" role="group" aria-label="Observer controls">
+        <button class="btn btn-primary" id="btn-start">
+          <i class="fas fa-play me-1" aria-hidden="true"></i> Start Observing
+        </button>
+        <button class="btn btn-outline-secondary" id="btn-stop" disabled>
+          <i class="fas fa-stop me-1" aria-hidden="true"></i> Stop
+        </button>
+        <button class="btn btn-outline-secondary" id="btn-reset">
+          <i class="fas fa-redo me-1" aria-hidden="true"></i> Reset
+        </button>
+      </div>
+      
+      <div id="scroll-container" style="height: 300px; overflow-y: auto; border: 2px solid var(--pro-border); border-radius: var(--pro-border-radius); padding: 1rem; background: var(--pro-bg-subtle);">
+        <div style="padding-top: 150px; padding-bottom: 150px;">
+          <div class="visibility-box" id="box-1" style="margin-bottom: 100px;">
+            <span class="box-label">Box 1</span>
+            <span class="box-status">Not observed</span>
+          </div>
+          <div class="visibility-box" id="box-2" style="margin-bottom: 100px;">
+            <span class="box-label">Box 2</span>
+            <span class="box-status">Not observed</span>
+          </div>
+          <div class="visibility-box" id="box-3" style="margin-bottom: 100px;">
+            <span class="box-label">Box 3</span>
+            <span class="box-status">Not observed</span>
+          </div>
+          <div class="visibility-box" id="box-4" style="margin-bottom: 100px;">
+            <span class="box-label">Box 4</span>
+            <span class="box-status">Not observed</span>
+          </div>
+          <div class="visibility-box" id="box-5">
+            <span class="box-label">Box 5</span>
+            <span class="box-status">Not observed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="once-heading">
+    <h3 id="once-heading">Observe Once (Animation Trigger)</h3>
+    <p class="text-muted small">Elements animate once when they first become visible, then stop being observed.</p>
+    <div class="demo-area">
+      <button class="btn btn-primary mb-3" id="btn-observe-once">
+        <i class="fas fa-magic me-1" aria-hidden="true"></i> Start Animation Observer
+      </button>
+      <div id="animation-container" style="height: 200px; overflow-y: auto; border: 2px solid var(--pro-border); border-radius: var(--pro-border-radius); padding: 1rem; background: var(--pro-bg-subtle);">
+        <div style="padding-top: 100px; padding-bottom: 100px;">
+          <div class="animate-box" id="anim-1">Scroll to reveal</div>
+          <div class="animate-box" id="anim-2" style="margin-top: 80px;">Scroll to reveal</div>
+          <div class="animate-box" id="anim-3" style="margin-top: 80px;">Scroll to reveal</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Observer State</h3>
+    <div class="demo-area">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="demo-state">
+            <span class="demo-state__label">Observed Elements:</span>
+            <span class="demo-state__value" id="observed-count">0</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="demo-state">
+            <span class="demo-state__label">Currently Visible:</span>
+            <span class="demo-state__value" id="visible-count">0</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="demo-state">
+            <span class="demo-state__label">Observer Status:</span>
+            <span class="demo-state__value" id="observer-status">Inactive</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" aria-labelledby="events-heading">
+    <h3 id="events-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="event-log" class="demo-log" aria-live="polite" style="height: 150px; overflow-y: auto;">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<style>
+.visibility-box {
+  padding: 1.5rem;
+  background: var(--pro-bg-elevated);
+  border: 2px solid var(--pro-border);
+  border-radius: var(--pro-border-radius);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.visibility-box.is-visible {
+  background: var(--pro-success-subtle);
+  border-color: var(--pro-success);
+  transform: scale(1.02);
+}
+
+.visibility-box .box-label {
+  display: block;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--pro-text);
+}
+
+.visibility-box .box-status {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--pro-text-muted);
+  margin-top: 0.25rem;
+}
+
+.visibility-box.is-visible .box-status {
+  color: var(--pro-success);
+}
+
+.animate-box {
+  padding: 2rem;
+  background: var(--pro-bg-elevated);
+  border: 2px dashed var(--pro-border);
+  border-radius: var(--pro-border-radius);
+  text-align: center;
+  opacity: 0.3;
+  transform: translateX(-30px);
+  transition: all 0.5s ease;
+}
+
+.animate-box.animated {
+  opacity: 1;
+  transform: translateX(0);
+  border-style: solid;
+  border-color: var(--pro-primary);
+  background: var(--pro-primary-subtle);
+}
+
+.demo-state {
+  padding: 0.75rem;
+  background: var(--pro-bg-subtle);
+  border-radius: var(--pro-border-radius);
+  text-align: center;
+}
+
+.demo-state__label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--pro-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.demo-state__value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--pro-text);
+}
+</style>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  
+  var observer = null;
+  var animObserver = null;
+  var logs = [];
+  
+  function log(message) {
+    var time = new Date().toLocaleTimeString();
+    logs.unshift(time + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('event-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+  
+  function updateStats() {
+    var observedEl = document.getElementById('observed-count');
+    var visibleEl = document.getElementById('visible-count');
+    var statusEl = document.getElementById('observer-status');
+    
+    if (observer) {
+      if (observedEl) observedEl.textContent = observer.count();
+      if (visibleEl) visibleEl.textContent = observer.getVisible().length;
+      if (statusEl) {
+        statusEl.textContent = 'Active';
+        statusEl.style.color = 'var(--pro-success)';
+      }
+    } else {
+      if (observedEl) observedEl.textContent = '0';
+      if (visibleEl) visibleEl.textContent = '0';
+      if (statusEl) {
+        statusEl.textContent = 'Inactive';
+        statusEl.style.color = 'var(--pro-text-muted)';
+      }
+    }
+  }
+  
+  function updateBoxStatus(el, isVisible) {
+    var statusEl = el.querySelector('.box-status');
+    if (statusEl) {
+      statusEl.textContent = isVisible ? 'Visible' : 'Hidden';
+    }
+    if (isVisible) {
+      el.classList.add('is-visible');
+    } else {
+      el.classList.remove('is-visible');
+    }
+  }
+  
+  function resetBoxes() {
+    var boxes = document.querySelectorAll('.visibility-box');
+    boxes.forEach(function(box) {
+      box.classList.remove('is-visible');
+      var status = box.querySelector('.box-status');
+      if (status) status.textContent = 'Not observed';
+    });
+    
+    var animBoxes = document.querySelectorAll('.animate-box');
+    animBoxes.forEach(function(box) {
+      box.classList.remove('animated');
+      box.textContent = 'Scroll to reveal';
+    });
+  }
+
+  Funky.Pages.register('component-visibility-observer', {
+    init: function(state) {
+      var props = getProps();
+      log('Page initialized');
+      emit('event', { event: 'visibility:init', payload: props });
+      
+      var btnStart = document.getElementById('btn-start');
+      var btnStop = document.getElementById('btn-stop');
+      var btnReset = document.getElementById('btn-reset');
+      var btnObserveOnce = document.getElementById('btn-observe-once');
+      var scrollContainer = document.getElementById('scroll-container');
+      
+      // Start observing
+      btnStart.onclick = function() {
+        var currentProps = getProps();
+        var threshold = parseFloat(currentProps.threshold) || 0.1;
+        var rootMargin = currentProps.rootMargin || '0px';
+        
+        if (observer) {
+          observer.destroy();
+        }
+        
+        observer = Funky.VisibilityObserver.init({
+          root: scrollContainer,
+          threshold: threshold,
+          rootMargin: rootMargin,
+          onVisible: function(el, entry) {
+            log('VISIBLE: ' + el.id);
+            updateBoxStatus(el, true);
+            updateStats();
+            emit('event', { event: 'visibility:visible', payload: { id: el.id } });
+          },
+          onHidden: function(el, entry) {
+            log('HIDDEN: ' + el.id);
+            updateBoxStatus(el, false);
+            updateStats();
+            emit('event', { event: 'visibility:hidden', payload: { id: el.id } });
+          }
+        });
+        
+        // Observe all boxes
+        observer.observeAll('.visibility-box');
+        
+        log('Observer started (threshold: ' + threshold + ', margin: ' + rootMargin + ')');
+        btnStart.disabled = true;
+        btnStop.disabled = false;
+        updateStats();
+      };
+      
+      // Stop observing
+      btnStop.onclick = function() {
+        if (observer) {
+          observer.destroy();
+          observer = null;
+          log('Observer stopped');
+        }
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+        resetBoxes();
+        updateStats();
+      };
+      
+      // Reset
+      btnReset.onclick = function() {
+        if (observer) {
+          observer.destroy();
+          observer = null;
+        }
+        if (animObserver) {
+          animObserver.destroy();
+          animObserver = null;
+        }
+        resetBoxes();
+        logs = [];
+        document.getElementById('event-log').textContent = 'Events will appear here...';
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+        scrollContainer.scrollTop = 0;
+        document.getElementById('animation-container').scrollTop = 0;
+        updateStats();
+        log('Reset complete');
+      };
+      
+      // Observe once demo
+      btnObserveOnce.onclick = function() {
+        var currentProps = getProps();
+        var animContainer = document.getElementById('animation-container');
+        
+        if (animObserver) {
+          animObserver.destroy();
+        }
+        
+        // Reset animation boxes first
+        var animBoxes = document.querySelectorAll('.animate-box');
+        animBoxes.forEach(function(box) {
+          box.classList.remove('animated');
+          box.textContent = 'Scroll to reveal';
+        });
+        animContainer.scrollTop = 0;
+        
+        animObserver = Funky.VisibilityObserver.init({
+          root: animContainer,
+          threshold: parseFloat(currentProps.threshold) || 0.1,
+          rootMargin: currentProps.rootMargin || '0px'
+        });
+        
+        // Observe each animation box once
+        animBoxes.forEach(function(box) {
+          animObserver.observeOnce(box, function(el) {
+            el.classList.add('animated');
+            el.textContent = 'Animated! ✨';
+            log('ANIMATED: ' + el.id + ' (auto-unobserved)');
+            emit('event', { event: 'visibility:animated', payload: { id: el.id } });
+          });
+        });
+        
+        log('Animation observer started - scroll to trigger animations');
+      };
+      
+      updateStats();
+    },
+    
+    destroy: function() {
+      if (observer) {
+        observer.destroy();
+        observer = null;
+      }
+      if (animObserver) {
+        animObserver.destroy();
+        animObserver = null;
+      }
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

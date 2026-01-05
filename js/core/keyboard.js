@@ -11,7 +11,7 @@
  * No jQuery - Pure vanilla JavaScript
  * 
  * @module Funky.Keyboard
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
   'use strict';

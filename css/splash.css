@@ -482,6 +482,16 @@ html {
     flex-direction: column;
     width: 100%;
   }
+
+  /* Add bottom padding for MobileCore nav bar */
+  .about-content {
+    padding-bottom: calc(var(--mobile-core-height, 56px) + var(--pro-spacing-lg, 24px));
+  }
+
+  /* Ensure footer has extra spacing above MobileCore */
+  .splash-footer {
+    margin-bottom: var(--pro-spacing-md);
+  }
 }
 
 /* ========================================

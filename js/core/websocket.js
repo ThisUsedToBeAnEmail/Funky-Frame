@@ -8,7 +8,7 @@
  * - Network status awareness (pause when offline)
  * - Session expiry handling
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

@@ -43,6 +43,7 @@
   <link href="../css/morph.css" rel="stylesheet">
   <link href="../css/tour.css" rel="stylesheet">
   <link href="../css/spa.css" rel="stylesheet">
+  <link href="../css/mobile-core.css" rel="stylesheet">
   <!-- themes.css MUST load last -->
   <link href="../css/themes.css" rel="stylesheet">
 </head>
@@ -145,7 +146,7 @@
         <div class="docs-overlay" id="docsOverlay"></div>
 
         <!-- Right: Markdown Content -->
-        <div class="docs-content" id="docsContent">
+        <div class="docs-content" id="docsContent" data-scroll-container>
           <div id="markdownContainer" class="funky-markdown">
             <div class="docs-empty-state">
               <i class="fas fa-book-open"></i>
@@ -366,6 +367,15 @@
               onChange: function(item) {
                 if (item && item.url) {
                   loadDoc(item.url, item.id, item.label);
+                  // On mobile, collapse sidebar after selecting a doc
+                  if (window.innerWidth <= 767) {
+                    var sidebar = document.getElementById('docsSidebar');
+                    var container = document.querySelector('.docs-container');
+                    if (sidebar) {
+                      sidebar.classList.add('collapsed');
+                      container.classList.add('sidebar-collapsed');
+                    }
+                  }
                 }
               }
             });
@@ -375,6 +385,28 @@
             var sidebar = document.getElementById('docsSidebar');
             var container = document.querySelector('.docs-container');
             var overlay = document.getElementById('docsOverlay');
+            var isMobile = window.innerWidth <= 767;
+
+            // On mobile, check if we have a stored document - if so, start collapsed
+            // Otherwise, show sidebar so user can select a doc
+            if (isMobile && sidebar) {
+              var hasStoredDoc = false;
+              try {
+                var savedNavState = localStorage.getItem('funky_docs_nav_state');
+                if (savedNavState) {
+                  var navState = JSON.parse(savedNavState);
+                  hasStoredDoc = !!(navState.selected);
+                }
+              } catch (e) {}
+
+              // Also check URL hash and SPA state
+              hasStoredDoc = hasStoredDoc || !!window.location.hash.slice(1) || !!(state && state.docId);
+
+              if (hasStoredDoc) {
+                sidebar.classList.add('collapsed');
+                container.classList.add('sidebar-collapsed');
+              }
+            }
 
             if (toggleBtn) {
               toggleBtn.addEventListener('click', function() {
@@ -404,6 +436,46 @@
                   toggleBtn.click();
                 }
               });
+            }
+
+            // Register docs actions with MobileCore
+            function registerMobileCoreActions() {
+              if (!Funky.MobileCore) return;
+
+              Funky.MobileCore.registerAction({
+                id: 'docs-sidebar',
+                icon: 'fas fa-book',
+                label: 'Docs',
+                order: 5,
+                onClick: function() {
+                  sidebar.classList.toggle('collapsed');
+                  container.classList.toggle('sidebar-collapsed');
+                }
+              });
+
+              Funky.MobileCore.registerAction({
+                id: 'docs-toc',
+                icon: 'fas fa-list-ul',
+                label: 'TOC',
+                order: 6,
+                onClick: function() {
+                  var markdownContainer = document.getElementById('markdownContainer');
+                  if (markdownContainer && markdownContainer._tocPanel) {
+                    markdownContainer._tocPanel.open();
+                  }
+                }
+              });
+            }
+
+            // Register now if MobileCore is ready, otherwise wait for init event
+            if (Funky.MobileCore && Funky.MobileCore.isInitialized && Funky.MobileCore.isInitialized()) {
+              registerMobileCoreActions();
+            } else if (Funky.PubSub) {
+              var unsubMobile = Funky.PubSub.on('funky:mobile:initialized', function() {
+                registerMobileCoreActions();
+                if (unsubMobile) unsubMobile();
+              });
+              _pubsubUnsubscribes.push(unsubMobile);
             }
 
             // Load doc from: 1) SPA state, 2) URL hash, 3) localStorage
@@ -546,6 +618,9 @@
 
             // Load and render markdown
             Funky.Markdown.renderFile(url, container, {
+              // Disable Markdown's loading indicator - docs has its own CSS spinner
+              loadingIndicator: false,
+
               // Syntax highlighting
               highlightCode: true,
               copyButton: true,
@@ -593,6 +668,12 @@
               if (typeof unsub === 'function') unsub();
             });
             _pubsubUnsubscribes = [];
+
+            // Unregister MobileCore actions
+            if (Funky.MobileCore) {
+              Funky.MobileCore.unregisterAction('docs-sidebar');
+              Funky.MobileCore.unregisterAction('docs-toc');
+            }
 
             // Capture state before destroying
             var savedDocUrl = _currentDoc;
@@ -643,6 +724,8 @@
   <script src="../js/core/dom.js"></script>
   <script src="../js/core/events.js"></script>
   <script src="../js/core/pubsub.js"></script>
+  <script src="../js/core/media-query.js"></script>
+  <script src="../js/core/visibility-observer.js"></script>
   <script src="../js/core/storage.js"></script>
   <script src="../js/core/vdom.js"></script>
   <script src="../js/core/keyboard.js"></script>
@@ -673,6 +756,7 @@
   <script src="../js/components/skeleton.js"></script>
   <script src="../js/components/tree-view.js"></script>
   <script src="../js/components/scroll-tracker.js"></script>
+  <script src="../js/components/mobile-core.js"></script>
   <script src="../js/components/table.js"></script>
   <script src="../js/components/markdown.js"></script>
   <script src="../js/components/iframe.js"></script>

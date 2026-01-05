@@ -6,7 +6,7 @@
  * Import via: importScripts('/assets/js/sw/messaging.js');
  *
  * @namespace FunkySW.Messaging
- * @version 1.0.1
+ * @version 1.0.2
  *
  * Message Format:
  *   { type: 'FUNKY_SW_*', data: { ... } }
@@ -392,7 +392,7 @@
     // VERSION
     // =========================================================================
 
-    FunkySW.Messaging.version = '1.0.0';
+    FunkySW.Messaging.version = '1.0.2';
 
     console.log('[FunkySW.Messaging] v' + FunkySW.Messaging.version + ' loaded');
 

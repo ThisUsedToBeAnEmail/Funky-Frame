@@ -13,7 +13,7 @@
  * 
  * tracker.destroy();
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(global) {
   'use strict';

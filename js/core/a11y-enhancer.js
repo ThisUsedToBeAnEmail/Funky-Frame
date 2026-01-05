@@ -21,7 +21,7 @@
  *   // Skip specific elements
  *   <table data-a11y-skip>...</table>
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

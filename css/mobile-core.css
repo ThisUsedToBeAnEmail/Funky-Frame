@@ -1,0 +1,334 @@
+/**
+ * Funky.MobileCore Styles
+ *
+ * Fixed bottom navigation bar for mobile/tablet devices.
+ * Provides touch-accessible access to keyboard-only features.
+ * Theme-aware using --pro-* CSS custom properties.
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+
+:root {
+  /* Layout */
+  --mobile-core-height: 56px;
+  --mobile-core-z-index: 1050;
+
+  /* Colors - uses theme surface/text colors */
+  --mobile-core-bg: var(--pro-bg-elevated);
+  --mobile-core-border: var(--pro-border-color);
+  --mobile-core-shadow: var(--pro-shadow-lg);
+
+  /* Action buttons */
+  --mobile-core-action-color: var(--pro-text-secondary);
+  --mobile-core-action-color-active: var(--pro-accent-primary);
+  --mobile-core-action-min-width: 64px;
+  --mobile-core-action-max-width: 96px;
+
+  /* Icon and label */
+  --mobile-core-icon-size: 20px;
+  --mobile-core-label-size: 10px;
+
+  /* Badge */
+  --mobile-core-badge-bg: var(--pro-danger);
+  --mobile-core-badge-color: var(--pro-text-on-accent);
+  --mobile-core-badge-size: 16px;
+
+  /* Overflow panel */
+  --mobile-core-overflow-bg: var(--pro-bg-elevated);
+  --mobile-core-overflow-shadow: var(--pro-shadow-xl);
+  --mobile-core-overflow-radius: 16px;
+  --mobile-core-backdrop-bg: var(--pro-bg-overlay);
+
+  /* Animation */
+  --mobile-core-transition: 0.3s ease;
+}
+
+/* ==========================================================================
+   Base Container
+   ========================================================================== */
+
+.mobile-core {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--mobile-core-z-index);
+  background: var(--mobile-core-bg);
+  border-top: 1px solid var(--mobile-core-border);
+  box-shadow: var(--mobile-core-shadow);
+  display: none;
+  transform: translateY(0);
+  transition: transform var(--mobile-core-transition);
+  /* iOS safe area */
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Active state - shown on mobile breakpoint */
+.mobile-core--active {
+  display: block;
+}
+
+/* Hidden state - scrolled out of view */
+.mobile-core--hidden {
+  transform: translateY(100%);
+}
+
+/* ==========================================================================
+   Actions Container
+   ========================================================================== */
+
+.mobile-core__actions {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: var(--mobile-core-height);
+  padding: 0 8px;
+}
+
+/* ==========================================================================
+   Action Button
+   ========================================================================== */
+
+.mobile-core__action {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--mobile-core-action-min-width);
+  max-width: var(--mobile-core-action-max-width);
+  height: 100%;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: var(--mobile-core-action-color);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  /* Minimum touch target */
+  min-height: 48px;
+}
+
+.mobile-core__action:hover {
+  color: var(--mobile-core-action-color-active);
+}
+
+.mobile-core__action:active,
+.mobile-core__action--active {
+  color: var(--mobile-core-action-color-active);
+}
+
+/* Focus visible for keyboard navigation */
+.mobile-core__action:focus-visible {
+  outline: 2px solid var(--pro-focus-ring);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+/* Disabled state */
+.mobile-core__action[disabled],
+.mobile-core__action--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Action Icon
+   ========================================================================== */
+
+.mobile-core__action-icon {
+  font-size: var(--mobile-core-icon-size);
+  line-height: 1;
+  margin-bottom: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   Action Label
+   ========================================================================== */
+
+.mobile-core__action-label {
+  font-size: var(--mobile-core-label-size);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.2;
+}
+
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+
+.mobile-core__action-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: var(--mobile-core-badge-size);
+  height: var(--mobile-core-badge-size);
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: var(--mobile-core-badge-size);
+  text-align: center;
+  color: var(--mobile-core-badge-color);
+  background: var(--mobile-core-badge-bg);
+  border-radius: calc(var(--mobile-core-badge-size) / 2);
+}
+
+/* ==========================================================================
+   Overflow Menu
+   ========================================================================== */
+
+.mobile-core__overflow {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: calc(var(--mobile-core-z-index) + 1);
+  display: none;
+  pointer-events: none;
+}
+
+/* Open state */
+.mobile-core--overflow-open .mobile-core__overflow {
+  display: block;
+  pointer-events: auto;
+}
+
+/* Backdrop */
+.mobile-core__overflow-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--mobile-core-backdrop-bg);
+  opacity: 0;
+  transition: opacity var(--mobile-core-transition);
+}
+
+.mobile-core--overflow-open .mobile-core__overflow-backdrop {
+  opacity: 1;
+}
+
+/* Panel */
+.mobile-core__overflow-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--mobile-core-overflow-bg);
+  border-radius: var(--mobile-core-overflow-radius) var(--mobile-core-overflow-radius) 0 0;
+  box-shadow: var(--mobile-core-overflow-shadow);
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  transform: translateY(100%);
+  transition: transform var(--mobile-core-transition);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.mobile-core--overflow-open .mobile-core__overflow-panel {
+  transform: translateY(0);
+}
+
+/* Panel handle indicator */
+.mobile-core__overflow-panel::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 4px;
+  background: var(--pro-border-color);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+/* Overflow item */
+.mobile-core__overflow-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--pro-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.mobile-core__overflow-item:hover {
+  background: var(--pro-bg-tertiary);
+}
+
+.mobile-core__overflow-item:active {
+  background: var(--pro-bg-secondary);
+}
+
+.mobile-core__overflow-item:focus-visible {
+  outline: 2px solid var(--pro-focus-ring);
+  outline-offset: -2px;
+}
+
+/* Overflow item icon - horizontal layout */
+.mobile-core__overflow-item .mobile-core__action-icon {
+  font-size: 18px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* Overflow item label - horizontal layout */
+.mobile-core__overflow-item .mobile-core__action-label {
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-core,
+  .mobile-core__action,
+  .mobile-core__overflow-backdrop,
+  .mobile-core__overflow-panel {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Print - Hide on Print
+   ========================================================================== */
+
+@media print {
+  .mobile-core {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Hide duplicate controls when MobileCore is active
+   These controls are now accessible via the mobile nav bar
+   ========================================================================== */
+
+/* Hide TOC toggle button when mobile nav is visible (it's in the nav bar) */
+.mobile-core--active ~ .main-wrapper .funky-markdown__toc-toggle,
+.mobile-core--active ~ * .funky-markdown__toc-toggle,
+body:has(.mobile-core--active) .funky-markdown__toc-toggle {
+  display: none !important;
+}

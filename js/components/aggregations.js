@@ -13,7 +13,7 @@
  *     { column: 5, type: 'count', format: 'number' }
  *   ]);
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

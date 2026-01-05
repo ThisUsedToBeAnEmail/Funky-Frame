@@ -8,7 +8,7 @@
  * - formatFileSize: Human-readable bytes
  * - toDom: Convert any content type to DOM nodes
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

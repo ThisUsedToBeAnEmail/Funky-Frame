@@ -5,7 +5,7 @@
  * Import via: importScripts('/assets/js/sw/strategies.js');
  *
  * @namespace FunkySW.strategies
- * @version 1.0.1
+ * @version 1.0.2
  *
  * Strategies:
  *   cacheFirst           - Cache first, network fallback (static assets)
@@ -437,7 +437,7 @@
     // VERSION
     // =========================================================================
 
-    FunkySW.strategies.version = '1.0.0';
+    FunkySW.strategies.version = '1.0.2';
 
     console.log('[FunkySW.strategies] v' + FunkySW.strategies.version + ' loaded');
 

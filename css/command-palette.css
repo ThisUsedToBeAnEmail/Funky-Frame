@@ -625,31 +625,46 @@
 
 @media (max-width: 640px) {
   .command-palette {
-    top: auto;
-    bottom: 0;
+    /* Position from top to avoid virtual keyboard issues */
+    top: 0;
+    bottom: auto;
     left: 0;
     right: 0;
-    transform: translateY(100%);
+    transform: translateY(-100%);
     width: 100%;
     max-width: 100%;
-    max-height: 80vh;
-    border-radius: var(--palette-border-radius) var(--palette-border-radius) 0 0;
+    /* Use svh (small viewport height) which doesn't change with keyboard */
+    /* Fallback to vh for older browsers */
+    max-height: 70vh;
+    max-height: 70svh;
+    border-radius: 0 0 var(--palette-border-radius) var(--palette-border-radius);
+    /* Account for safe area at top (notch) */
+    padding-top: env(safe-area-inset-top, 0);
   }
-  
+
   .command-palette.is-open {
     transform: translateY(0);
   }
-  
+
   .command-palette__input {
     font-size: 16px; /* Prevent iOS zoom */
   }
-  
+
   .command-palette__footer {
-    padding-bottom: max(var(--pro-space-2, 8px), env(safe-area-inset-bottom));
+    padding-bottom: var(--pro-space-2, 8px);
   }
-  
+
   .command-palette__item {
     height: 52px;
+  }
+
+  /* Hide footer hints on mobile - more space for results */
+  .command-palette__footer .command-palette__kbd {
+    display: none;
+  }
+
+  .command-palette__search-hint {
+    display: none;
   }
 }
 

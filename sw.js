@@ -9,7 +9,7 @@
  * - Client-SW messaging
  * - Cache versioning and cleanup
  *
- * @version 1.0.0
+ * @version 1.0.2
  */
 
 // Import FunkySW utilities
@@ -22,7 +22,7 @@ importScripts('./js/sw/messaging.js');
 // CONFIGURATION
 // =============================================================================
 
-var CACHE_VERSION = '1.0.0';
+var CACHE_VERSION = '1.0.2.2';
 var CACHE_NAME = 'funky-frame-' + CACHE_VERSION;
 
 /**

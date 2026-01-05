@@ -5,7 +5,7 @@
  * Import via: importScripts('/assets/js/sw/notifications.js');
  *
  * @namespace FunkySW.Notifications
- * @version 1.0.1
+ * @version 1.0.2
  *
  * Methods:
  *   show        - Show a notification with defaults
@@ -394,7 +394,7 @@
     // VERSION
     // =========================================================================
 
-    FunkySW.Notifications.version = '1.0.0';
+    FunkySW.Notifications.version = '1.0.2';
 
     console.log('[FunkySW.Notifications] v' + FunkySW.Notifications.version + ' loaded');
 

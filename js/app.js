@@ -542,6 +542,31 @@
   }
 
   // ============================================
+  // MOBILE CORE
+  // ============================================
+
+  /**
+   * Initialize mobile/tablet bottom navigation
+   * Provides touch-accessible access to keyboard-only features on mobile and tablet
+   */
+  function initMobileCore() {
+    if (typeof Funky === 'undefined' || !Funky.MobileCore) return;
+
+    Funky.MobileCore.init({
+      breakpoint: 'tablet',  // Show on both mobile (<768px) and tablet (<1024px)
+      maxVisibleActions: 5,
+      hideOnScroll: true,
+      autoRegister: true,
+      defaultActions: {
+        sidenavToggle: false,  // Header already has hamburger menu
+        commandPalette: true,
+        keyboardHelp: true,
+        skipLinks: true
+      }
+    });
+  }
+
+  // ============================================
   // SERVICE WORKER
   // ============================================
 
@@ -590,6 +615,7 @@
     initTooltips();
     initAccessibility();
     initPreferences();
+    initMobileCore();
 
     // System features
     initServiceWorker();

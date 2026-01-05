@@ -8,11 +8,13 @@
 | Document | Purpose |
 |----------|---------|
 | [STANDARDS.md](STANDARDS.md) | ES5 requirements, module patterns, DOM patterns |
-| [CORE.md](CORE.md) | 49 core modules reference with docs links |
-| [COMPONENTS.md](COMPONENTS.md) | 86+ UI components reference with docs links |
+| [CORE.md](CORE.md) | 49 core modules reference with dependencies |
+| [COMPONENTS.md](COMPONENTS.md) | 86+ UI components reference with dependencies |
+| [DEPENDENCIES.md](DEPENDENCIES.md) | Loading order, dependency graph, patterns |
 | [THEMING.md](THEMING.md) | CSS variables, themes, density modes |
 | [TESTING.md](TESTING.md) | FunkyTests framework, running tests |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | SPA, PWA, service workers |
+| [PLAYGROUND.md](PLAYGROUND.md) | Creating playground component demos |
 
 ---
 

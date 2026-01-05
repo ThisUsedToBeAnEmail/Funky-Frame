@@ -3,7 +3,7 @@
  * Supports flat or grouped items with selection, filtering, and keyboard navigation
  * Uses Funky.SelectableList for keyboard navigation and focus management
  * @module Funky.SideNav
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

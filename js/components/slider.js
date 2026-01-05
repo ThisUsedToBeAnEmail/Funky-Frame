@@ -13,7 +13,7 @@
  *     onUpdate: function(values) { console.log(values.min, values.max); }
  *   });
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

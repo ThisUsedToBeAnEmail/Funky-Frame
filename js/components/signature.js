@@ -5,7 +5,7 @@
  * touch support, and export capabilities.
  * 
  * @module Funky.Signature
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(global) {
   'use strict';

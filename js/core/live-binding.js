@@ -2,7 +2,7 @@
  * Funky.LiveBinding - Reactive Data Binding Component
  * Automatically updates DOM elements when data changes
  * @module Funky.LiveBinding
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
   'use strict';

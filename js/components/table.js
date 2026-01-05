@@ -11,7 +11,7 @@
  *     ajax: { url: '/api/data' }
  *   });
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window, document) {
 	'use strict';
@@ -986,21 +986,20 @@
 		});
 
 		// Visibility observer for responsive - recalculate when table becomes visible
-		if (this.config.responsive && typeof IntersectionObserver !== 'undefined') {
-			this._visibilityObserver = new IntersectionObserver(function(entries) {
-				entries.forEach(function(entry) {
-					if (entry.isIntersecting) {
-						// Table just became visible - force recalculate responsive
-						self._determineBreakpoint(true);
-					}
-				});
-			}, { threshold: 0.01 });
-
+		if (this.config.responsive && Funky.VisibilityObserver) {
 			var observeTarget = this.wrapper && this.wrapper.el ? this.wrapper.el : this.container;
-			this._visibilityObserver.observe(observeTarget);
+
+			this._visibilityObserver = Funky.VisibilityObserver.init({ threshold: 0.01 });
+			this._visibilityObserver.observe(observeTarget, {
+				onVisible: function() {
+					// Table just became visible - force recalculate responsive
+					self._determineBreakpoint(true);
+				}
+			});
+
 			this._cleanups.push(function() {
 				if (self._visibilityObserver) {
-					self._visibilityObserver.disconnect();
+					self._visibilityObserver.destroy();
 					self._visibilityObserver = null;
 				}
 			});

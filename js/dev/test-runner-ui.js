@@ -5,7 +5,7 @@
  * Uses Funky.Iframe to run tests in an isolated sandbox, preventing
  * test side effects from affecting the UI.
  *
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
     'use strict';

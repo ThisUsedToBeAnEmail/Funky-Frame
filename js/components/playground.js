@@ -2,7 +2,7 @@
  * Funky.Playground - Component Testing Environment
  * Provides isolated rendering, props editing, and event logging for components
  * @module Funky.Playground
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';
@@ -8483,6 +8483,72 @@
 				code += "// Funky.SkipLink.skipTo('#main-content');\n\n";
 				code += "// Refresh after DOM changes:\n";
 				code += "// Funky.SkipLink.refresh();";
+				return code;
+			}
+		},
+		VisibilityObserver: {
+			name: 'VisibilityObserver',
+			icon: 'fa-eye',
+			description: 'Track element visibility using IntersectionObserver for scroll animations and lazy loading',
+			defaultProps: {
+				threshold: 0.1,
+				rootMargin: '0px',
+				once: false
+			},
+			propsSchema: {
+				threshold: { type: 'select', label: 'Threshold', options: [
+					{ value: 0, label: '0% (Any pixel)' },
+					{ value: 0.1, label: '10%' },
+					{ value: 0.25, label: '25%' },
+					{ value: 0.5, label: '50%' },
+					{ value: 0.75, label: '75%' },
+					{ value: 1, label: '100% (Fully visible)' }
+				]},
+				rootMargin: { type: 'select', label: 'Root Margin', options: [
+					{ value: '0px', label: '0px (viewport edge)' },
+					{ value: '50px', label: '50px (trigger early)' },
+					{ value: '100px', label: '100px (lazy load)' },
+					{ value: '-50px', label: '-50px (trigger late)' }
+				]},
+				once: { type: 'boolean', label: 'Observe Once (auto-unobserve)' }
+			},
+			initCode: function(props) {
+				var threshold = props.threshold !== undefined ? props.threshold : 0.1;
+				var rootMargin = props.rootMargin || '0px';
+				var once = props.once || false;
+
+				var code = "// Create a visibility observer\n";
+				code += "var observer = Funky.VisibilityObserver.init({\n";
+				code += "  threshold: " + threshold + ",\n";
+				code += "  rootMargin: '" + rootMargin + "',\n";
+				code += "  onVisible: function(el, entry) {\n";
+				code += "    console.log('Element visible:', el);\n";
+				code += "    el.classList.add('is-visible');\n";
+				code += "  },\n";
+				code += "  onHidden: function(el, entry) {\n";
+				code += "    console.log('Element hidden:', el);\n";
+				code += "    el.classList.remove('is-visible');\n";
+				code += "  }\n";
+				code += "});\n\n";
+
+				if (once) {
+					code += "// Observe once (auto-unobserve after first visibility)\n";
+					code += "observer.observeOnce('.animate-on-scroll', function(el) {\n";
+					code += "  el.classList.add('animated');\n";
+					code += "});\n\n";
+				} else {
+					code += "// Observe elements\n";
+					code += "observer.observe('#my-element');\n";
+					code += "observer.observeAll('.track-visibility');\n\n";
+				}
+
+				code += "// Check visibility state\n";
+				code += "// observer.isVisible(element);  // boolean\n";
+				code += "// observer.getVisible();        // array of visible elements\n";
+				code += "// observer.count();             // number of observed elements\n\n";
+				code += "// Cleanup\n";
+				code += "// observer.unobserve('#my-element');\n";
+				code += "// observer.destroy();";
 				return code;
 			}
 		}

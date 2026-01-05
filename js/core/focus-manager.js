@@ -12,7 +12,7 @@
  * - Mobile virtual keyboard dismissal
  *
  * @module Funky.FocusManager
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';
@@ -583,16 +583,16 @@
 		discoverRegions();
 
 		// Re-discover on SPA navigation
-		if (Funky.PubSub) {
-			var unsubscribe = Funky.PubSub.on('funky:spa:pageload', function() {
-				discoverRegions();
-				// Clean history of stale elements on page change
-				cleanHistory();
-			});
-			if (typeof unsubscribe === 'function') {
-				_cleanups.push(unsubscribe);
-			}
-		}
+		// SPA uses DOM events (funky.spa.pageload), not PubSub
+		var handlePageload = function() {
+			discoverRegions();
+			// Clean history of stale elements on page change
+			cleanHistory();
+		};
+		document.addEventListener('funky.spa.pageload', handlePageload);
+		_cleanups.push(function() {
+			document.removeEventListener('funky.spa.pageload', handlePageload);
+		});
 	}
 
 	/**

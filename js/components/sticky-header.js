@@ -23,7 +23,7 @@
  *   Funky.StickyHeader.destroy(headerElement);
  *   Funky.StickyHeader.destroyAll();
  *
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';
@@ -181,7 +181,7 @@
 		},
 
 		/**
-		 * Set up IntersectionObserver for a header
+		 * Set up visibility observer for a header
 		 */
 		observeHeader: function(instance) {
 			var header = instance.element;
@@ -198,34 +198,43 @@
 
 			instance.sentinel = sentinel;
 
-			// Create observer
-			var observer = new IntersectionObserver(
-				function(entries) {
-					entries.forEach(function(entry) {
-						var wasSticky = instance.isSticky;
-						instance.isSticky = !entry.isIntersecting;
+			// Use VisibilityObserver
+			var VisibilityObserver = Funky.VisibilityObserver;
+			var observer = VisibilityObserver.init({
+				threshold: 0,
+				rootMargin: '0px 0px 0px 0px',
+				onVisible: function(el) {
+					if (el !== sentinel) return;
 
-						if (instance.isSticky) {
-							header.classList.add('is-sticky');
-						} else {
-							header.classList.remove('is-sticky');
-							// Also remove hidden state when not sticky
-							if (instance.isHidden) {
-								instance.isHidden = false;
-								header.classList.remove('is-hidden');
-							}
-						}
+					var wasSticky = instance.isSticky;
+					instance.isSticky = false;
 
-						// Fire callback if state changed
-						if (wasSticky !== instance.isSticky && config.onStick) {
-							config.onStick(header, instance.isSticky);
-						}
-					});
-				}, {
-					threshold: 0,
-					rootMargin: '0px 0px 0px 0px'
+					header.classList.remove('is-sticky');
+					// Also remove hidden state when not sticky
+					if (instance.isHidden) {
+						instance.isHidden = false;
+						header.classList.remove('is-hidden');
+					}
+
+					// Fire callback if state changed
+					if (wasSticky !== instance.isSticky && config.onStick) {
+						config.onStick(header, instance.isSticky);
+					}
+				},
+				onHidden: function(el) {
+					if (el !== sentinel) return;
+
+					var wasSticky = instance.isSticky;
+					instance.isSticky = true;
+
+					header.classList.add('is-sticky');
+
+					// Fire callback if state changed
+					if (wasSticky !== instance.isSticky && config.onStick) {
+						config.onStick(header, instance.isSticky);
+					}
 				}
-			);
+			});
 
 			observer.observe(sentinel);
 			instance.observer = observer;
@@ -383,7 +392,7 @@
 
 			// Cleanup observer
 			if (instance.observer) {
-				instance.observer.disconnect();
+				instance.observer.destroy();
 			}
 
 			// Cleanup sentinel

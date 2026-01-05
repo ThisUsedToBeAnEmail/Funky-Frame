@@ -23,7 +23,7 @@
  *   // Attribute-based
  *   <div data-page-animate="dashboard" data-page="dashboard">...</div>
  *
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';
@@ -113,7 +113,7 @@
 		/**
 		 * Initialize scroll animations
 		 * @param {string|HTMLElement} container - Container to search in
-		 * @returns {IntersectionObserver} Observer instance
+		 * @returns {VisibilityObserverInstance} Observer instance
 		 */
 		initScrollAnimations: function(container) {
 			var containerEl = container ? D.one(container) : document;
@@ -123,78 +123,54 @@
 
 			var elements = el.querySelectorAll('[data-animate-trigger="in-view"]');
 
-			if (!elements.length) return;
+			if (!elements.length) return null;
 
-			var observer = new IntersectionObserver(function(entries) {
-				entries.forEach(function(entry) {
-					if (entry.isIntersecting) {
-						var el = entry.target;
+			// Helper to animate an element
+			function animateElement(target) {
+				// Skip if already animated
+				if (target.classList.contains('animated')) {
+					return;
+				}
 
-						// Skip if already animated
-						if (el.classList.contains('animated')) {
-							return;
-						}
+				var animClass = target.getAttribute('data-animate') || 'fade-in-up';
+				var duration = target.getAttribute('data-animate-duration');
 
-						var animClass = el.getAttribute('data-animate') || 'fade-in-up';
-						var duration = el.getAttribute('data-animate-duration');
+				// Mark as animating
+				target.classList.add('animating');
 
-						// Mark as animating
-						el.classList.add('animating');
-
-						Animate.animate(el, {
-							class: animClass,
-							duration: duration ? parseInt(duration, 10) : null,
-							onEnd: function() {
-								// Mark as animated, remove animating
-								el.classList.remove('animating');
-								el.classList.add('animated');
-
-								if (el.getAttribute('data-animate-once') === 'true') {
-									observer.unobserve(el);
-								}
-							}
-						});
+				Animate.animate(target, {
+					class: animClass,
+					duration: duration ? parseInt(duration, 10) : null,
+					onEnd: function() {
+						// Mark as animated, remove animating
+						target.classList.remove('animating');
+						target.classList.add('animated');
 					}
 				});
-			}, {
+			}
+
+			// Create visibility observer
+			var VisibilityObserver = Funky.VisibilityObserver;
+			var observer = VisibilityObserver.init({
 				threshold: 0.1,
 				rootMargin: '0px 0px -50px 0px'
 			});
 
-			elements.forEach(function(el) {
-				observer.observe(el);
+			elements.forEach(function(element) {
+				var isOnce = element.getAttribute('data-animate-once') === 'true';
 
-				// Check if element is already in viewport on init
-				// This handles elements visible on page load
-				var rect = el.getBoundingClientRect();
-				var isInView = (
-					rect.top >= 0 &&
-					rect.left >= 0 &&
-					rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-					rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-				);
-
-				if (isInView && !el.classList.contains('animated')) {
-					// Trigger animation immediately for elements already in view
-					var animClass = el.getAttribute('data-animate') || 'fade-in-up';
-					var duration = el.getAttribute('data-animate-duration');
-
-					setTimeout(function() {
-						el.classList.add('animating');
-
-						Animate.animate(el, {
-							class: animClass,
-							duration: duration ? parseInt(duration, 10) : null,
-							onEnd: function() {
-								el.classList.remove('animating');
-								el.classList.add('animated');
-
-								if (el.getAttribute('data-animate-once') === 'true') {
-									observer.unobserve(el);
-								}
-							}
-						});
-					}, 50); // Small delay to allow page to settle
+				if (isOnce) {
+					// One-shot animation - unobserve after visible
+					observer.observeOnce(element, function(target) {
+						animateElement(target);
+					});
+				} else {
+					// Continuous observation
+					observer.observe(element, {
+						onVisible: function(target) {
+							animateElement(target);
+						}
+					});
 				}
 			});
 
@@ -224,16 +200,14 @@
 				// Get raw DOM element from wrapper
 				var list = listWrapper.el || listWrapper;
 
-				var observer = new IntersectionObserver(function(entries) {
-					entries.forEach(function(entry) {
-						if (entry.isIntersecting) {
-							Animate.stagger(selector + ' > *', opts);
-							observer.unobserve(entry.target);
-						}
-					});
-				}, { threshold: 0.1 });
+				// Use VisibilityObserver for in-view stagger
+				var VisibilityObserver = Funky.VisibilityObserver;
+				var observer = VisibilityObserver.init({ threshold: 0.1 });
 
-				observer.observe(list);
+				observer.observeOnce(list, function() {
+					Animate.stagger(selector + ' > *', opts);
+				});
+
 				return observer;
 			}
 		},

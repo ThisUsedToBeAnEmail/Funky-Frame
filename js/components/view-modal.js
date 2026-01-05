@@ -18,7 +18,7 @@
  *   
  *   Funky.ViewModal.show('viewClientModal', 123);
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

@@ -6,7 +6,7 @@
  *   Funky.Navigation.saveScrollPosition();
  *   Funky.Navigation.restoreScrollPosition();
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';

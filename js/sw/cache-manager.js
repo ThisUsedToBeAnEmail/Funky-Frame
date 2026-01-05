@@ -5,7 +5,7 @@
  * Import via: importScripts('/assets/js/sw/cache-manager.js');
  *
  * @namespace FunkySW.CacheManager
- * @version 1.0.1
+ * @version 1.0.2
  *
  * Methods:
  *   precache     - Cache a list of URLs during install
@@ -388,7 +388,7 @@
     // VERSION
     // =========================================================================
 
-    FunkySW.CacheManager.version = '1.0.0';
+    FunkySW.CacheManager.version = '1.0.2';
 
     console.log('[FunkySW.CacheManager] v' + FunkySW.CacheManager.version + ' loaded');
 

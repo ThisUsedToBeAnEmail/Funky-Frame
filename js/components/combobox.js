@@ -7,7 +7,7 @@
  * Reuses: Funky.SelectableList, Funky.FuzzySearch
  * 
  * @module Funky.ComboBox
- * @version 1.0.1
+ * @version 1.0.2
  * @requires Funky.Dom
  */
 (function(global) {
@@ -3119,10 +3119,9 @@
 	}
 
 	// Auto-init on SPA navigation
-	if (PubSub) {
-		PubSub.on('funky:spa:pageload', function() {
-			ComboBox.initAll();
-		});
-	}
+	// SPA uses DOM events (funky.spa.pageload), not PubSub
+	document.addEventListener('funky.spa.pageload', function() {
+		ComboBox.initAll();
+	});
 
 })(window);

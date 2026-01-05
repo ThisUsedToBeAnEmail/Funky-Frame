@@ -15,7 +15,7 @@
  *   
  *   Funky.StatsBar.update('myStats', { total: 150, active: 142 });
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 (function(window) {
 	'use strict';
