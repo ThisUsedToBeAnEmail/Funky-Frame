@@ -7,7 +7,7 @@
  * Reuses: Funky.SelectableList, Funky.FuzzySearch
  * 
  * @module Funky.ComboBox
- * @version 1.0.2
+ * @version 1.0.3
  * @requires Funky.Dom
  */
 (function(global) {
@@ -1246,64 +1246,86 @@
 			document.removeEventListener('click', outsideHandler);
 		});
 		
-		// Escape to close
-		var escapeHandler = function(e) {
-			if (e.key === 'Escape' && self._isOpen) {
-				self.close();
-				self._trigger.el.focus();
-			}
-		};
-		document.addEventListener('keydown', escapeHandler);
-		this._cleanups.push(function() {
-			document.removeEventListener('keydown', escapeHandler);
-		});
-		
+		// Escape to close - use Funky.Keyboard with scoped handler
+		if (Funky.Keyboard) {
+			var escapeUnregister = Funky.Keyboard.register({
+				key: 'escape',
+				scope: 'combobox',
+				handler: function() {
+					self.close();
+					self._trigger.el.focus();
+				},
+				description: 'Close dropdown',
+				group: 'ComboBox'
+			});
+			this._cleanups.push(escapeUnregister);
+		} else {
+			// Fallback for environments without Funky.Keyboard
+			var escapeHandler = function(e) {
+				if (e.key === 'Escape' && self._isOpen) {
+					self.close();
+					self._trigger.el.focus();
+				}
+			};
+			document.addEventListener('keydown', escapeHandler);
+			this._cleanups.push(function() {
+				document.removeEventListener('keydown', escapeHandler);
+			});
+		}
+
 		// Focus trap within dropdown
 		this._bindFocusTrap();
 	};
 
 	/**
 	 * Bind focus trap to keep Tab navigation within dropdown when open
+	 * Uses Funky.FocusManager.trapFocus() if available
 	 */
 	ComboBoxInstance.prototype._bindFocusTrap = function() {
 		var self = this;
-		
-		var trapHandler = function(e) {
-			if (e.key !== 'Tab') return;
-			if (!self._isOpen) return;
-			
-			// Get all focusable elements within dropdown
-			var focusableSelectors = [
-				'input:not([disabled])',
-				'button:not([disabled])',
-				'[tabindex]:not([tabindex="-1"])'
-			].join(', ');
-			
-			var focusable = self._dropdown.el.querySelectorAll(focusableSelectors);
-			if (focusable.length === 0) return;
-			
-			var first = focusable[0];
-			var last = focusable[focusable.length - 1];
-			
-			if (e.shiftKey) {
-				// Shift+Tab: if on first element, wrap to last
-				if (document.activeElement === first) {
-					e.preventDefault();
-					last.focus();
+
+		// Note: Focus trap is activated/deactivated in open/close methods
+		// We set up the handler here but the actual trap uses FocusManager when available
+
+		// For environments without FocusManager, use manual trap
+		if (!Funky.FocusManager || !Funky.FocusManager.trapFocus) {
+			var trapHandler = function(e) {
+				if (e.key !== 'Tab') return;
+				if (!self._isOpen) return;
+
+				// Get all focusable elements within dropdown
+				var focusableSelectors = [
+					'input:not([disabled])',
+					'button:not([disabled])',
+					'[tabindex]:not([tabindex="-1"])'
+				].join(', ');
+
+				var focusable = self._dropdown.el.querySelectorAll(focusableSelectors);
+				if (focusable.length === 0) return;
+
+				var first = focusable[0];
+				var last = focusable[focusable.length - 1];
+
+				if (e.shiftKey) {
+					// Shift+Tab: if on first element, wrap to last
+					if (document.activeElement === first) {
+						e.preventDefault();
+						last.focus();
+					}
+				} else {
+					// Tab: if on last element, wrap to first
+					if (document.activeElement === last) {
+						e.preventDefault();
+						first.focus();
+					}
 				}
-			} else {
-				// Tab: if on last element, wrap to first
-				if (document.activeElement === last) {
-					e.preventDefault();
-					first.focus();
-				}
-			}
-		};
-		
-		document.addEventListener('keydown', trapHandler);
-		this._cleanups.push(function() {
-			document.removeEventListener('keydown', trapHandler);
-		});
+			};
+
+			document.addEventListener('keydown', trapHandler);
+			this._cleanups.push(function() {
+				document.removeEventListener('keydown', trapHandler);
+			});
+		}
 	};
 
 	ComboBoxInstance.prototype._handleTriggerKeydown = function(e) {
@@ -2182,6 +2204,18 @@
 			this.options.onOpen.call(this);
 		}
 		
+		// Activate focus trap using FocusManager if available
+		if (Funky.FocusManager && Funky.FocusManager.trapFocus) {
+			this._focusTrapCleanup = Funky.FocusManager.trapFocus(this._dropdown.el, {
+				autoFocus: false // We handle focus ourselves above
+			});
+		}
+
+		// Push keyboard scope for Escape handling
+		if (Funky.Keyboard && Funky.Keyboard.pushScope) {
+			Funky.Keyboard.pushScope('combobox');
+		}
+
 		// Emit events
 		this._emitEvent('open');
 		return this;
@@ -2189,6 +2223,12 @@
 
 	ComboBoxInstance.prototype.close = function() {
 		if (!this._isOpen) return this;
+
+		// Release focus trap
+		if (this._focusTrapCleanup) {
+			this._focusTrapCleanup();
+			this._focusTrapCleanup = null;
+		}
 
 		this._isOpen = false;
 		this._dropdown.attr('hidden', '');
@@ -2214,6 +2254,11 @@
 			this._searchInput.attr('aria-activedescendant', null);
 		}
 		this._trigger.attr('aria-activedescendant', null);
+
+		// Pop keyboard scope
+		if (Funky.Keyboard && Funky.Keyboard.popScope) {
+			Funky.Keyboard.popScope();
+		}
 
 		// Restore focus via FocusManager or fallback
 		if (Funky.FocusManager && Funky.FocusManager.popFocus) {

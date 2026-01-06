@@ -2,7 +2,7 @@
  * Funky.Diff - Visual Diff Viewer Component
  * Compare text, JSON, or audit trail changes
  * @module Funky.Diff
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
   'use strict';

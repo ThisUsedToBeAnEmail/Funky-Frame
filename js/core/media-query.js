@@ -17,7 +17,7 @@
  *   Funky.MediaQuery.matches('mobile');  // true/false
  *   Funky.MediaQuery.unsubscribe('my-component');
  *
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

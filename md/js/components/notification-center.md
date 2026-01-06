@@ -65,8 +65,9 @@ Initialize the notification center.
 |--------|------|---------|-------------|
 | `container` | string/element | null | Container selector or element |
 | `api` | string | null | API endpoint for notifications |
-| `websocket` | object | null | WebSocket instance |
-| `channel` | string | null | WebSocket channel |
+| `useWebSocket` | boolean | false | Use shared `Funky.WebSocket` |
+| `websocket` | object | null | Custom WebSocket instance (deprecated) |
+| `channel` | string | null | WebSocket channel to subscribe to |
 | `maxVisible` | number | 10 | Max notifications in dropdown |
 | `instanceId` | string | null | Instance ID for LiveBinding |
 | `loadOnInit` | boolean | true | Load notifications on init |
@@ -125,10 +126,11 @@ Initialize the notification center.
 
 **Example:**
 ```javascript
+// Using shared Funky.WebSocket (recommended)
 Funky.NotificationCenter.init({
     container: '#notification-bell',
     api: '/api/notifications',
-    websocket: Funky.WebSocket,
+    useWebSocket: true,  // Use shared Funky.WebSocket
     channel: 'user:123:notifications',
     sound: true,
     desktop: true,

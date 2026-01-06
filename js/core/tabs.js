@@ -26,7 +26,7 @@
  *   P.on('funky:tabs:show', function(data) { console.log('Tab showing:', data.tabId); });
  *   P.on('funky:tabs:shown', function(data) { console.log('Tab shown:', data.tabId); });
  *
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -109,6 +109,7 @@
 		this.activeTab = null;
 		this.activePanel = null;
 		this.isTransitioning = false;
+		this._keyboardUnregisters = [];
 
 		// Store instance
 		instances[this.id] = this;
@@ -201,41 +202,80 @@
 		_setupKeyboardNav: function() {
 			var self = this;
 
-			this.tabButtons.forEach(function(button) {
-				button.addEventListener('keydown', function(e) {
-					var index = self.tabButtons.indexOf(button);
-					var nextIndex = -1;
+			// Ensure element has ID for scoping
+			if (!this.el.id) {
+				this.el.id = 'tabs-' + Date.now();
+			}
 
-					// Arrow keys
-					if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-						e.preventDefault();
-						nextIndex = (index + 1) % self.tabButtons.length;
-					} else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-						e.preventDefault();
-						nextIndex = (index - 1 + self.tabButtons.length) % self.tabButtons.length;
-					} else if (e.key === 'Home') {
-						e.preventDefault();
-						nextIndex = 0;
-					} else if (e.key === 'End') {
-						e.preventDefault();
-						nextIndex = self.tabButtons.length - 1;
-					} else if (e.key === 'Enter' || e.key === ' ') {
-						// Enter/Space activates the focused tab
-						e.preventDefault();
-						self.isTransitioning = false;
-						self.show(button);
-						return;
-					}
+			// Keyboard handler function
+			function handleKeydown(e) {
+				// Find focused button
+				var focusedButton = document.activeElement;
+				var index = self.tabButtons.indexOf(focusedButton);
+				if (index === -1) return;
 
-					// Switch to tab and focus
-					// Force immediate transition for keyboard navigation
-					if (nextIndex !== -1) {
-						self.isTransitioning = false; // Allow keyboard to override pending transition
-						self.show(self.tabButtons[nextIndex]);
-						self.tabButtons[nextIndex].focus();
-					}
+				var nextIndex = -1;
+
+				// Arrow keys
+				if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+					nextIndex = (index + 1) % self.tabButtons.length;
+				} else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+					nextIndex = (index - 1 + self.tabButtons.length) % self.tabButtons.length;
+				} else if (e.key === 'Home') {
+					nextIndex = 0;
+				} else if (e.key === 'End') {
+					nextIndex = self.tabButtons.length - 1;
+				} else if (e.key === 'Enter' || e.key === ' ') {
+					// Enter/Space activates the focused tab
+					self.isTransitioning = false;
+					self.show(focusedButton);
+					return;
+				}
+
+				// Switch to tab and focus
+				if (nextIndex !== -1) {
+					self.isTransitioning = false; // Allow keyboard to override pending transition
+					self.show(self.tabButtons[nextIndex]);
+					self.tabButtons[nextIndex].focus();
+				}
+			}
+
+			// Use Funky.Keyboard for F1 help integration
+			if (Funky.Keyboard) {
+				var navKeys = [
+					{ key: 'arrowright', description: 'Next tab' },
+					{ key: 'arrowdown', description: 'Next tab' },
+					{ key: 'arrowleft', description: 'Previous tab' },
+					{ key: 'arrowup', description: 'Previous tab' },
+					{ key: 'home', description: 'First tab' },
+					{ key: 'end', description: 'Last tab' },
+					{ key: 'enter', description: 'Activate tab' },
+					{ key: 'space', description: 'Activate tab' }
+				];
+
+				navKeys.forEach(function(keyDef) {
+					self._keyboardUnregisters.push(Funky.Keyboard.register({
+						key: keyDef.key,
+						scope: '#' + self.el.id,
+						handler: function(e) {
+							handleKeydown(e);
+						},
+						description: keyDef.description,
+						group: 'Tabs',
+						preventDefault: true
+					}));
 				});
-			});
+			} else {
+				// Fallback for environments without Funky.Keyboard
+				this._keydownHandler = function(e) {
+					var keys = ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End', 'Enter', ' '];
+					if (keys.indexOf(e.key) !== -1) {
+						e.preventDefault();
+						handleKeydown(e);
+					}
+				};
+				this.el.addEventListener('keydown', this._keydownHandler);
+			}
 		},
 
 		/**
@@ -561,6 +601,20 @@
 		 */
 		dispose: function() {
 			var self = this;
+
+			// Remove keyboard handlers
+			if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+				this._keyboardUnregisters.forEach(function(unregister) {
+					if (typeof unregister === 'function') {
+						unregister();
+					}
+				});
+				this._keyboardUnregisters = [];
+			}
+			if (this._keydownHandler) {
+				this.el.removeEventListener('keydown', this._keydownHandler);
+				this._keydownHandler = null;
+			}
 
 			// Remove event listeners
 			this.tabButtons.forEach(function(button) {

@@ -13,7 +13,7 @@
  *     onUpdate: function(values) { console.log(values.min, values.max); }
  *   });
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -43,10 +43,13 @@
 
 		this.minValue = this.options.minValue !== null ? this.options.minValue : this.options.min;
 		this.maxValue = this.options.maxValue !== null ? this.options.maxValue : this.options.max;
-		
+
 		// GestureTracker instances for touch
 		this._minGesture = null;
 		this._maxGesture = null;
+
+		// Keyboard handler cleanup
+		this._keyboardUnregisters = [];
 
 		this.init();
 	}
@@ -174,14 +177,71 @@
 			}
 		});
 
-		// Keyboard navigation for handles
-		this.minHandle.addEventListener('keydown', function(e) {
-			self.handleKeydown(e, 'min');
-		});
+		// Keyboard navigation for handles - use Funky.Keyboard for F1 help integration
+		this._setupKeyboardShortcuts();
+	};
 
-		this.maxHandle.addEventListener('keydown', function(e) {
-			self.handleKeydown(e, 'max');
-		});
+	FunkySlider.prototype._setupKeyboardShortcuts = function() {
+		var self = this;
+
+		// Ensure handles have IDs for scoping
+		if (!this.minHandle.id) {
+			this.minHandle.id = 'slider-min-' + Date.now();
+		}
+		if (!this.maxHandle.id) {
+			this.maxHandle.id = 'slider-max-' + Date.now();
+		}
+
+		if (Funky.Keyboard) {
+			var navKeys = [
+				{ key: 'arrowright', description: 'Increase value' },
+				{ key: 'arrowup', description: 'Increase value' },
+				{ key: 'arrowleft', description: 'Decrease value' },
+				{ key: 'arrowdown', description: 'Decrease value' },
+				{ key: 'pageup', description: 'Large increase' },
+				{ key: 'pagedown', description: 'Large decrease' },
+				{ key: 'home', description: 'Set to minimum' },
+				{ key: 'end', description: 'Set to maximum' }
+			];
+
+			// Register for min handle
+			navKeys.forEach(function(keyDef) {
+				self._keyboardUnregisters.push(Funky.Keyboard.register({
+					key: keyDef.key,
+					scope: '#' + self.minHandle.id,
+					handler: function(e) {
+						self.handleKeydown(e, 'min');
+					},
+					description: keyDef.description,
+					group: 'Slider',
+					preventDefault: true
+				}));
+			});
+
+			// Register for max handle
+			navKeys.forEach(function(keyDef) {
+				self._keyboardUnregisters.push(Funky.Keyboard.register({
+					key: keyDef.key,
+					scope: '#' + self.maxHandle.id,
+					handler: function(e) {
+						self.handleKeydown(e, 'max');
+					},
+					description: keyDef.description,
+					group: 'Slider',
+					preventDefault: true
+				}));
+			});
+		} else {
+			// Fallback for environments without Funky.Keyboard
+			this._minKeydownHandler = function(e) {
+				self.handleKeydown(e, 'min');
+			};
+			this._maxKeydownHandler = function(e) {
+				self.handleKeydown(e, 'max');
+			};
+			this.minHandle.addEventListener('keydown', this._minKeydownHandler);
+			this.maxHandle.addEventListener('keydown', this._maxKeydownHandler);
+		}
 	};
 
 	FunkySlider.prototype.handleKeydown = function(e, handle) {
@@ -394,7 +454,23 @@
 			this._maxGesture.destroy();
 			this._maxGesture = null;
 		}
-		
+
+		// Remove keyboard handlers
+		if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+			this._keyboardUnregisters.forEach(function(unregister) {
+				if (typeof unregister === 'function') {
+					unregister();
+				}
+			});
+			this._keyboardUnregisters = [];
+		}
+		if (this._minKeydownHandler && this.minHandle) {
+			this.minHandle.removeEventListener('keydown', this._minKeydownHandler);
+		}
+		if (this._maxKeydownHandler && this.maxHandle) {
+			this.maxHandle.removeEventListener('keydown', this._maxKeydownHandler);
+		}
+
 		// Remove from instance registry
 		if (this.container && this.container.id) {
 			_instances.unregister(this.container.id);

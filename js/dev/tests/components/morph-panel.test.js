@@ -11,6 +11,10 @@ describe('Funky.Component.MorphPanel', function() {
     var MorphPanel = Funky.MorphPanel;
 
     beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture = FunkyTests.fixture('<button id="trigger">Open</button>');
 
         // Register a test panel
@@ -255,7 +259,8 @@ describe('Funky.Component.MorphPanel', function() {
     describe('Keyboard', function() {
         beforeEach(function(done) {
             Funky.MorphPanel.show('#trigger', panelId);
-            setTimeout(done, 100);
+            // Wait for animation to complete (300ms) + keyboard setup
+            setTimeout(done, 400);
         });
 
         it('closes on Escape', function(done) {

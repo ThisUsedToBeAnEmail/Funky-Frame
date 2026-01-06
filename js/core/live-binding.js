@@ -2,7 +2,7 @@
  * Funky.LiveBinding - Reactive Data Binding Component
  * Automatically updates DOM elements when data changes
  * @module Funky.LiveBinding
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
   'use strict';
@@ -1433,6 +1433,7 @@
     'Sidenav',
     'SidenavPanel',
     'SlidePanel',
+    'Stepper',
     'Tabbed',
     'Breadcrumb',
     'Wizard',

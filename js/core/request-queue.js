@@ -15,7 +15,7 @@
  *   // Now API calls auto-queue when offline
  *   Funky.Api.post('/api/trades', { symbol: 'AAPL' });
  *
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(global) {
   'use strict';

@@ -229,9 +229,48 @@
 
 	/**
 	 * Set up keyboard shortcuts for funky actions
+	 * Uses Funky.Keyboard for centralized shortcut management
 	 */
+	var _funkyKeyboardUnregisters = [];
+
 	function setupKeyboardEffects() {
-		document.addEventListener('keydown', handleFunkyKeyboard);
+		if (Funky.Keyboard) {
+			// Define all funky shortcuts
+			var shortcuts = [
+				{ key: 'h', ctrl: true, description: 'Show keyboard help', handler: showKeyboardHelp },
+				{ key: 'd', ctrl: true, description: 'Disco ball', handler: triggerDiscoBall },
+				{ key: 'f', ctrl: true, description: 'Confetti explosion', handler: createFullScreenConfetti },
+				{ key: 's', ctrl: true, description: 'Spin out effect', handler: triggerSpinOut },
+				{ key: 'l', ctrl: true, description: 'Slide out effect', handler: triggerSlideOut },
+				{ key: 'z', ctrl: true, description: 'Zoom blast', handler: triggerZoomBlast },
+				{ key: 'x', ctrl: true, description: 'Flip out effect', handler: triggerFlipOut },
+				{ key: 'c', ctrl: true, description: 'Strobe lights', handler: triggerStrobeLights },
+				{ key: 'b', ctrl: true, description: 'Funky balloons', handler: createFunkyBalloons },
+				{ key: 'p', ctrl: true, description: 'Toggle particles', handler: function() {
+					if (FunkyParticles.canvas) {
+						FunkyParticles.destroy();
+					} else {
+						FunkyParticles.init(1);
+					}
+				}},
+				{ key: 'm', ctrl: true, description: 'Next track', handler: skipToNextTrack }
+			];
+
+			shortcuts.forEach(function(shortcut) {
+				_funkyKeyboardUnregisters.push(Funky.Keyboard.register({
+					key: shortcut.key,
+					ctrl: shortcut.ctrl,
+					scope: 'global',
+					description: shortcut.description,
+					group: 'Even Funkier',
+					handler: shortcut.handler,
+					preventDefault: true
+				}));
+			});
+		} else {
+			// Fallback for environments without Funky.Keyboard
+			document.addEventListener('keydown', handleFunkyKeyboard);
+		}
 	}
 
 	function handleFunkyKeyboard(e) {
@@ -304,6 +343,16 @@
 			e.preventDefault();
 			skipToNextTrack();
 		}
+	}
+
+	function cleanupKeyboardEffects() {
+		_funkyKeyboardUnregisters.forEach(function(unregister) {
+			if (typeof unregister === 'function') {
+				unregister();
+			}
+		});
+		_funkyKeyboardUnregisters = [];
+		document.removeEventListener('keydown', handleFunkyKeyboard);
 	}
 
 	/**

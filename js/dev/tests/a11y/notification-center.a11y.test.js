@@ -22,6 +22,10 @@ FunkyTests.describe('Funky.A11y.NotificationCenter', function() {
     }
 
     FunkyTests.beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture = FunkyTests.fixture(
             '<div id="notification-container"></div>'
         );
@@ -382,9 +386,10 @@ FunkyTests.describe('Funky.A11y.NotificationCenter', function() {
         });
 
         FunkyTests.it('Escape closes dropdown', function() {
-            return FunkyTests.delay(50).then(function() {
+            // Wait for notification center to fully open before pressing Escape
+            return FunkyTests.delay(100).then(function() {
                 FunkyTests.simulate.keydown(document, { key: 'Escape' });
-                return FunkyTests.delay(50);
+                return FunkyTests.delay(100);
             }).then(function() {
                 expect(NotificationCenter.isOpen()).toBe(false);
             });

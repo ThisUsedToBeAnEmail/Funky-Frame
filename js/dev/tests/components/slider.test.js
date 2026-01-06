@@ -440,7 +440,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var minHandle = container.querySelector('.funky-slider-handle-min');
-            var event = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+            minHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true });
             minHandle.dispatchEvent(event);
 
             expect(slider.getValues().min).toBe(51);
@@ -456,7 +457,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var minHandle = container.querySelector('.funky-slider-handle-min');
-            var event = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
+            minHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true });
             minHandle.dispatchEvent(event);
 
             expect(slider.getValues().min).toBe(49);
@@ -472,7 +474,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var maxHandle = container.querySelector('.funky-slider-handle-max');
-            var event = new KeyboardEvent('keydown', { key: 'ArrowUp' });
+            maxHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true });
             maxHandle.dispatchEvent(event);
 
             expect(slider.getValues().max).toBe(51);
@@ -488,7 +491,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var maxHandle = container.querySelector('.funky-slider-handle-max');
-            var event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+            maxHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true });
             maxHandle.dispatchEvent(event);
 
             expect(slider.getValues().max).toBe(49);
@@ -503,7 +507,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var minHandle = container.querySelector('.funky-slider-handle-min');
-            var event = new KeyboardEvent('keydown', { key: 'Home' });
+            minHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'Home', bubbles: true });
             minHandle.dispatchEvent(event);
 
             expect(slider.getValues().min).toBe(0);
@@ -518,7 +523,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var maxHandle = container.querySelector('.funky-slider-handle-max');
-            var event = new KeyboardEvent('keydown', { key: 'End' });
+            maxHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'End', bubbles: true });
             maxHandle.dispatchEvent(event);
 
             expect(slider.getValues().max).toBe(100);
@@ -533,7 +539,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var maxHandle = container.querySelector('.funky-slider-handle-max');
-            var event = new KeyboardEvent('keydown', { key: 'PageUp' });
+            maxHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'PageUp', bubbles: true });
             maxHandle.dispatchEvent(event);
 
             // Large step is (max - min) / 10 = 10
@@ -549,7 +556,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var minHandle = container.querySelector('.funky-slider-handle-min');
-            var event = new KeyboardEvent('keydown', { key: 'PageDown' });
+            minHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'PageDown', bubbles: true });
             minHandle.dispatchEvent(event);
 
             // Large step is (max - min) / 10 = 10
@@ -566,7 +574,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var minHandle = container.querySelector('.funky-slider-handle-min');
-            var event = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+            minHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true });
             minHandle.dispatchEvent(event);
             minHandle.dispatchEvent(event);
 
@@ -584,7 +593,8 @@ describe('Funky.Component.Slider', function() {
             });
 
             var maxHandle = container.querySelector('.funky-slider-handle-max');
-            var event = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
+            maxHandle.focus();
+            var event = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true });
             maxHandle.dispatchEvent(event);
             maxHandle.dispatchEvent(event);
 

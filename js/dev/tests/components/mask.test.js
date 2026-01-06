@@ -669,10 +669,10 @@
 
   T.describe('Funky.Mask - Events', function() {
 
-    T.it('should emit funky:mask:input on change', function(done) {
+    T.it('should emit funky.mask.input on change', function(done) {
       var test = createMaskedInput('(999) 999-9999');
 
-      test.input.addEventListener('funky:mask:input', function(e) {
+      test.input.addEventListener('funky.mask.input', function(e) {
         T.assert(e.detail.raw !== undefined, 'Has raw value');
         T.assert(e.detail.formatted !== undefined, 'Has formatted value');
         test.destroy();
@@ -682,10 +682,10 @@
       test.mask.setValue('555');
     });
 
-    T.it('should emit funky:mask:complete when filled', function(done) {
+    T.it('should emit funky.mask.complete when filled', function(done) {
       var test = createMaskedInput('(999) 999-9999');
 
-      test.input.addEventListener('funky:mask:complete', function(e) {
+      test.input.addEventListener('funky.mask.complete', function(e) {
         T.assertEqual(e.detail.complete, true, 'Is complete');
         test.destroy();
         done();
@@ -694,10 +694,10 @@
       test.mask.setValue('5551234567');
     });
 
-    T.it('should emit funky:mask:reveal on redact reveal', function(done) {
+    T.it('should emit funky.mask.reveal on redact reveal', function(done) {
       var test = createRedactElement('secret', { reveal: 'click' });
 
-      test.element.addEventListener('funky:mask:reveal', function(e) {
+      test.element.addEventListener('funky.mask.reveal', function(e) {
         T.assertEqual(e.detail.value, 'secret', 'Has value');
         test.destroy();
         done();
@@ -706,12 +706,12 @@
       test.redact.reveal();
     });
 
-    T.it('should emit funky:mask:hide on redact hide', function(done) {
+    T.it('should emit funky.mask.hide on redact hide', function(done) {
       var test = createRedactElement('secret', { reveal: 'click' });
 
       test.redact.reveal();
 
-      test.element.addEventListener('funky:mask:hide', function() {
+      test.element.addEventListener('funky.mask.hide', function() {
         T.assert(true, 'Hide event emitted');
         test.destroy();
         done();

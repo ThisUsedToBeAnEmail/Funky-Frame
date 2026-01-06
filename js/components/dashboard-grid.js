@@ -19,7 +19,7 @@
  *       ]
  *   });
  * 
- * @version 1.0.2
+ * @version 1.0.3
  * @requires Funky.Dom (D)
  * @requires Funky.Events (E)
  */
@@ -1056,6 +1056,7 @@
         this._dragState = null;
         this._resizeState = null;
         this._boundHandlers = {};
+        this._keyboardUnregisters = [];
         this._destroyed = false;
 
         // Parent widget (for nested grids)
@@ -1188,9 +1189,8 @@
         this._boundHandlers.touchstart = function(e) { self._onTouchStart(e); };
         this.container.addEventListener('touchstart', this._boundHandlers.touchstart, { passive: false });
 
-        // Keyboard support
-        this._boundHandlers.keydown = function(e) { self._onKeyDown(e); };
-        this.container.addEventListener('keydown', this._boundHandlers.keydown);
+        // Keyboard support - use Funky.Keyboard for F1 help integration
+        this._setupKeyboardShortcuts();
 
         // ResizeObserver for container
         if (typeof ResizeObserver !== 'undefined') {
@@ -1769,6 +1769,47 @@
     // KEYBOARD
     // =========================================================================
 
+    /**
+     * Setup keyboard shortcuts with Funky.Keyboard
+     */
+    DashboardGrid.prototype._setupKeyboardShortcuts = function() {
+        var self = this;
+
+        // Ensure container has ID for scoping
+        if (!this.container.id) {
+            this.container.id = this.id;
+        }
+
+        // Use Funky.Keyboard for F1 help integration
+        if (Funky.Keyboard) {
+            var navKeys = [
+                { key: 'arrowright', description: 'Move widget right / Resize wider' },
+                { key: 'arrowleft', description: 'Move widget left / Resize narrower' },
+                { key: 'arrowdown', description: 'Move widget down / Resize taller' },
+                { key: 'arrowup', description: 'Move widget up / Resize shorter' }
+            ];
+
+            navKeys.forEach(function(keyDef) {
+                self._keyboardUnregisters.push(Funky.Keyboard.register({
+                    key: keyDef.key,
+                    scope: '#' + self.container.id,
+                    handler: function(e) {
+                        self._onKeyDown(e);
+                    },
+                    description: keyDef.description,
+                    group: 'Dashboard Grid',
+                    preventDefault: true
+                }));
+            });
+        } else {
+            // Fallback for environments without Funky.Keyboard
+            this._boundHandlers.keydown = function(e) {
+                self._onKeyDown(e);
+            };
+            this.container.addEventListener('keydown', this._boundHandlers.keydown);
+        }
+    };
+
     DashboardGrid.prototype._onKeyDown = function(e) {
         if (!this._editMode) return;
 
@@ -2282,6 +2323,19 @@
         this.widgets = {};
         this._widgetCount = 0;
 
+        // Remove keyboard handlers
+        if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+            this._keyboardUnregisters.forEach(function(unregister) {
+                if (typeof unregister === 'function') {
+                    unregister();
+                }
+            });
+            this._keyboardUnregisters = [];
+        }
+        if (this._boundHandlers.keydown) {
+            this.container.removeEventListener('keydown', this._boundHandlers.keydown);
+        }
+
         // Remove event listeners
         this.container.removeEventListener('dragstart', this._boundHandlers.dragstart);
         this.container.removeEventListener('dragover', this._boundHandlers.dragover);
@@ -2289,7 +2343,6 @@
         this.container.removeEventListener('drop', this._boundHandlers.drop);
         this.container.removeEventListener('mousedown', this._boundHandlers.mousedown);
         this.container.removeEventListener('touchstart', this._boundHandlers.touchstart);
-        this.container.removeEventListener('keydown', this._boundHandlers.keydown);
 
         // Disconnect resize observer
         if (this._resizeObserver) {

@@ -5,7 +5,7 @@
  * service workers. Integrates with PubSub for lifecycle events.
  *
  * @module Funky.ServiceWorker
- * @version 1.0.2
+ * @version 1.0.3
  * @requires Funky (namespace.js must load first)
  * @requires Funky.PubSub (for lifecycle events)
  *
@@ -549,6 +549,66 @@
          */
         getWaiting: function() {
             return _registration ? _registration.waiting : null;
+        },
+
+        /**
+         * Force a full cache reset and reload
+         * Useful for iOS where skipWaiting doesn't work as expected
+         * @param {Object} [options] - Options
+         * @param {boolean} [options.showMessage=true] - Show user message for standalone apps
+         * @returns {Promise<void>}
+         */
+        forceUpdate: function(options) {
+            options = options || {};
+            var showMessage = options.showMessage !== false;
+            
+            // Detect iOS and standalone mode
+            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            var isStandalone = window.navigator.standalone === true ||
+                window.matchMedia('(display-mode: standalone)').matches;
+            
+            console.log('[Funky.ServiceWorker] Force update initiated (iOS:', isIOS, ', Standalone:', isStandalone, ')');
+            
+            // Step 1: Clear all caches
+            return caches.keys().then(function(names) {
+                console.log('[Funky.ServiceWorker] Clearing', names.length, 'caches');
+                return Promise.all(names.map(function(name) {
+                    return caches.delete(name);
+                }));
+            }).then(function() {
+                // Step 2: Unregister all service workers
+                return navigator.serviceWorker.getRegistrations();
+            }).then(function(registrations) {
+                console.log('[Funky.ServiceWorker] Unregistering', registrations.length, 'service workers');
+                return Promise.all(registrations.map(function(reg) {
+                    return reg.unregister();
+                }));
+            }).then(function() {
+                // Step 3: Handle reload based on environment
+                if (isIOS && isStandalone && showMessage) {
+                    // iOS standalone mode: user must close and reopen the app
+                    _emit('funky:sw:force-update-complete', { needsReopen: true });
+                    
+                    if (typeof Funky !== 'undefined' && Funky.Toast) {
+                        Funky.Toast.info('Update complete! Please close and reopen the app.', {
+                            duration: 10000,
+                            icon: 'fa-sync-alt'
+                        });
+                    } else {
+                        alert('Update complete! Please close this app completely and reopen it.');
+                    }
+                } else {
+                    // Browser or non-iOS: reload with cache-busting
+                    _emit('funky:sw:force-update-complete', { needsReopen: false });
+                    
+                    var url = window.location.href.split('?')[0];
+                    window.location.href = url + '?v=' + Date.now();
+                }
+            }).catch(function(error) {
+                console.error('[Funky.ServiceWorker] Force update failed:', error);
+                _emit('funky:sw:error', { error: error });
+                throw error;
+            });
         },
 
         /**

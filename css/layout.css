@@ -226,8 +226,7 @@ body.sidebar-is-collapsed .main-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
+  /* Sticky/fixed positioning applied only on mobile via media query */
   z-index: 999;
   backdrop-filter: blur(10px);
 }

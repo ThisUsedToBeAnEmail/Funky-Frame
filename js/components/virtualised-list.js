@@ -3290,35 +3290,28 @@
 	 */
 	VirtualisedListInstance.prototype._bindWebSocket = function() {
 		if (!this.config.wsEntity) return;
-		
+
 		var self = this;
 		var entity = this.config.wsEntity;
-		
-		// Create bound handler
+
+		// Create bound handler for channel messages
 		this._wsHandler = function(data) {
 			self._handleEntityChange(data);
 		};
-		
-		// Listen for entity_change events via EventBus
-		if (typeof Funky !== 'undefined' && Funky.PubSub) {
-			Funky.PubSub.on('funky:ws:entity-change', this._wsHandler);
-		}
-		
-		// Also listen via DOM event
-		document.addEventListener('funky.ws.entity-change', function(e) {
-			if (e.detail && e.detail.entity === entity) {
-				self._handleEntityChange(e.detail);
-			}
-		});
-		
-		// Subscribe to WebSocket channel if available
-		if (typeof Funky !== 'undefined' && Funky.WebSocket && Funky.WebSocket.subscribe) {
+
+		// Subscribe to WebSocket channel with handler
+		if (typeof Funky !== 'undefined' && Funky.WebSocket) {
 			var channel = this.config.wsChannel || ('entity:' + entity);
-			Funky.WebSocket.subscribe(channel);
-			
+			this._wsUnsubscribe = Funky.WebSocket.subscribe(channel, this._wsHandler);
+
 			if (this.config.debug) {
 				console.log('[VirtualisedList] Subscribed to WebSocket channel:', channel);
 			}
+		}
+
+		// Also listen for global entity_change events (for backward compatibility)
+		if (typeof Funky !== 'undefined' && Funky.WebSocket) {
+			Funky.WebSocket.on('entity_change', this._wsHandler);
 		}
 	};
 
@@ -3379,9 +3372,17 @@
 	 * @private
 	 */
 	VirtualisedListInstance.prototype._unbindWebSocket = function() {
-		if (this._wsHandler && typeof Funky !== 'undefined' && Funky.PubSub) {
-			Funky.PubSub.off('funky:ws:entity-change', this._wsHandler);
+		// Unsubscribe from channel
+		if (this._wsUnsubscribe) {
+			this._wsUnsubscribe();
+			this._wsUnsubscribe = null;
 		}
+
+		// Remove global entity_change handler
+		if (this._wsHandler && typeof Funky !== 'undefined' && Funky.WebSocket) {
+			Funky.WebSocket.off('entity_change', this._wsHandler);
+		}
+
 		this._wsHandler = null;
 	};
 

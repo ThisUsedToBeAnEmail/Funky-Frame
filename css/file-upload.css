@@ -1,0 +1,803 @@
+/**
+ * Funky.FileUpload - CSS Styles
+ * @version 1.0.3
+ */
+
+/* ============================================
+   CSS Variables (defined at :root for global access)
+   ============================================ */
+:root {
+    --upload-border-color: var(--pro-border-color, #dee2e6);
+    --upload-border-color-active: var(--pro-primary, #0d6efd);
+    --upload-bg: var(--pro-bg-secondary, #f8f9fa);
+    --upload-bg-active: var(--pro-bg-tertiary, #e9ecef);
+    --upload-progress-bg: var(--pro-primary, #0d6efd);
+    --upload-error-color: var(--pro-danger, #dc3545);
+    --upload-success-color: var(--pro-success, #198754);
+    --upload-icon-size: 48px;
+    --upload-radius: var(--pro-radius, 8px);
+    --upload-radius-sm: var(--pro-radius-sm, 4px);
+}
+
+/* ============================================
+   Dropzone
+   ============================================ */
+.funky-upload__dropzone {
+    border: 2px dashed var(--upload-border-color);
+    border-radius: var(--upload-radius);
+    background: var(--upload-bg);
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.funky-upload__dropzone:hover {
+    border-color: var(--upload-border-color-active);
+}
+
+.funky-upload__dropzone:focus-within {
+    outline: 2px solid var(--pro-focus-ring, var(--upload-border-color-active));
+    outline-offset: 2px;
+}
+
+/* Drag Over State */
+.funky-upload--dragover .funky-upload__dropzone {
+    border-color: var(--upload-border-color-active);
+    background: var(--upload-bg-active);
+    border-style: solid;
+}
+
+/* Icon */
+.funky-upload__icon {
+    font-size: var(--upload-icon-size);
+    color: var(--pro-text-muted);
+    margin-bottom: 16px;
+    display: block;
+}
+
+.funky-upload--dragover .funky-upload__icon {
+    color: var(--upload-border-color-active);
+    animation: funky-upload-bounce 0.5s ease;
+}
+
+@keyframes funky-upload-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Text */
+.funky-upload__text {
+    color: var(--pro-text-secondary);
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.funky-upload__browse {
+    background: none;
+    border: none;
+    color: var(--pro-primary);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: inherit;
+    padding: 0;
+}
+
+.funky-upload__browse:hover {
+    color: var(--pro-primary-hover, var(--pro-primary));
+}
+
+.funky-upload__browse:focus {
+    outline: 2px solid var(--pro-focus-ring, var(--pro-primary));
+    outline-offset: 2px;
+}
+
+.funky-upload__hint {
+    font-size: 12px;
+    color: var(--pro-text-muted);
+    margin: 0;
+}
+
+/* ============================================
+   File List
+   ============================================ */
+.funky-upload__list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+}
+
+.funky-upload__list:empty {
+    display: none;
+}
+
+.funky-upload__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--pro-bg-secondary);
+    border: 1px solid var(--pro-border-color);
+    border-radius: var(--upload-radius);
+    margin-bottom: 8px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.funky-upload__item:last-child {
+    margin-bottom: 0;
+}
+
+/* File Preview */
+.funky-upload__preview {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pro-bg-tertiary);
+    border-radius: var(--upload-radius-sm);
+    color: var(--pro-text-muted);
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+.funky-upload__preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--upload-radius-sm);
+}
+
+/* File Info */
+.funky-upload__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.funky-upload__name {
+    display: block;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--pro-text-primary);
+    font-size: 14px;
+}
+
+.funky-upload__size {
+    font-size: 12px;
+    color: var(--pro-text-muted);
+}
+
+/* ============================================
+   Progress Bar
+   ============================================ */
+.funky-upload__progress {
+    width: 100px;
+    height: 4px;
+    background: var(--pro-bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.funky-upload__progress-bar {
+    height: 100%;
+    width: 0;
+    background: var(--upload-progress-bg);
+    transition: width 0.2s ease;
+    border-radius: 2px;
+}
+
+/* Uploading animation */
+.funky-upload__item--uploading .funky-upload__progress-bar {
+    background: linear-gradient(
+        90deg,
+        var(--upload-progress-bg) 0%,
+        var(--pro-primary-hover, var(--upload-progress-bg)) 50%,
+        var(--upload-progress-bg) 100%
+    );
+    background-size: 200% 100%;
+    animation: funky-upload-progress 1.5s linear infinite;
+}
+
+@keyframes funky-upload-progress {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Complete state */
+.funky-upload__item--complete .funky-upload__progress-bar {
+    background: var(--upload-success-color);
+    width: 100%;
+}
+
+.funky-upload__item--complete .funky-upload__preview {
+    color: var(--upload-success-color);
+}
+
+/* Error state */
+.funky-upload__item--error .funky-upload__progress-bar {
+    background: var(--upload-error-color);
+}
+
+.funky-upload__item--error {
+    border-color: var(--upload-error-color);
+}
+
+.funky-upload__item--error .funky-upload__preview {
+    color: var(--upload-error-color);
+}
+
+/* ============================================
+   Actions
+   ============================================ */
+.funky-upload__actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.funky-upload__cancel,
+.funky-upload__retry {
+    background: none;
+    border: none;
+    color: var(--pro-text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--upload-radius-sm);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    font-size: 14px;
+}
+
+.funky-upload__cancel:hover {
+    color: var(--upload-error-color);
+    background: rgba(var(--pro-danger-rgb, 220, 53, 69), 0.1);
+}
+
+.funky-upload__retry:hover {
+    color: var(--pro-primary);
+    background: rgba(var(--pro-primary-rgb, 0, 123, 255), 0.1);
+}
+
+.funky-upload__cancel:focus,
+.funky-upload__retry:focus {
+    outline: 2px solid var(--pro-focus-ring, var(--pro-primary));
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+.funky-upload__footer {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.funky-upload__footer:empty {
+    display: none;
+}
+
+/* ============================================
+   States
+   ============================================ */
+
+/* Idle - no special styles needed */
+.funky-upload--idle .funky-upload__footer {
+    display: none;
+}
+
+/* Uploading */
+.funky-upload--uploading .funky-upload__upload-all {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Complete */
+.funky-upload--complete .funky-upload__upload-all {
+    display: none;
+}
+
+/* ============================================
+   Phase 2: Thumbnail Previews
+   ============================================ */
+.funky-upload__preview {
+    position: relative;
+}
+
+.funky-upload__preview--loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--pro-border-color);
+    border-top-color: var(--pro-primary);
+    border-radius: 50%;
+    animation: funky-upload-spin 0.8s linear infinite;
+}
+
+@keyframes funky-upload-spin {
+    to { transform: rotate(360deg); }
+}
+
+.funky-upload__thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--upload-radius-sm);
+}
+
+.funky-upload__preview--image {
+    cursor: zoom-in;
+}
+
+.funky-upload__preview--video {
+    position: relative;
+}
+
+.funky-upload__video-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 20px;
+    border-radius: var(--upload-radius-sm);
+    pointer-events: none;
+}
+
+/* ============================================
+   Phase 2: Drag Reorder
+   ============================================ */
+.funky-upload__item[draggable="true"] {
+    cursor: grab;
+}
+
+.funky-upload__item--dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.funky-upload__placeholder {
+    border: 2px dashed var(--pro-primary);
+    border-radius: var(--upload-radius);
+    background: var(--pro-bg-tertiary);
+    margin-bottom: 8px;
+    list-style: none;
+}
+
+/* ============================================
+   Phase 2: Rename Input
+   ============================================ */
+.funky-upload__name-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.funky-upload__edit {
+    background: none;
+    border: none;
+    color: var(--pro-text-muted);
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 11px;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+    border-radius: var(--upload-radius-sm);
+}
+
+.funky-upload__item:hover .funky-upload__edit {
+    opacity: 1;
+}
+
+.funky-upload__edit:hover {
+    color: var(--pro-primary);
+}
+
+.funky-upload__edit:focus {
+    opacity: 1;
+    outline: 2px solid var(--pro-focus-ring, var(--pro-primary));
+    outline-offset: 2px;
+}
+
+.funky-upload__rename-input {
+    font-size: inherit;
+    font-family: inherit;
+    padding: 2px 6px;
+    border: 1px solid var(--pro-primary);
+    border-radius: var(--upload-radius-sm);
+    background: var(--pro-bg);
+    color: var(--pro-text);
+    width: 150px;
+    max-width: 100%;
+}
+
+.funky-upload__rename-input:focus {
+    outline: 2px solid var(--pro-focus-ring, var(--pro-primary));
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Phase 2: Animated Transitions
+   ============================================ */
+.funky-upload__item {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.funky-upload__item--visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* ============================================
+   Phase 2: Lightbox
+   ============================================ */
+.funky-upload__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: funky-upload-fadeIn 0.2s ease;
+}
+
+@keyframes funky-upload-fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.funky-upload__lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.funky-upload__lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.funky-upload__lightbox-close:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+.funky-upload__lightbox-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.funky-upload__lightbox-img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--upload-radius);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   Phase 3: Paused State
+   ============================================ */
+.funky-upload__item--paused {
+    opacity: 0.7;
+}
+
+.funky-upload__item--paused .funky-upload__progress-bar {
+    background: var(--pro-warning, #ffc107);
+}
+
+/* ============================================
+   Phase 3: Retrying State
+   ============================================ */
+.funky-upload__item--retrying .funky-upload__progress-bar {
+    animation: funky-upload-pulse 1s ease infinite;
+}
+
+@keyframes funky-upload-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   Phase 3: Speed Display
+   ============================================ */
+.funky-upload__speed {
+    display: block;
+    font-size: 11px;
+    color: var(--pro-text-muted);
+    margin-top: 2px;
+}
+
+/* ============================================
+   Phase 3: Status Messages
+   ============================================ */
+.funky-upload__status {
+    display: block;
+    font-size: 11px;
+    color: var(--pro-warning, #ffc107);
+    margin-top: 2px;
+}
+
+/* ============================================
+   Phase 3: Pause/Resume Button
+   ============================================ */
+.funky-upload__pause {
+    background: none;
+    border: none;
+    color: var(--pro-text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--upload-radius-sm);
+    transition: color 0.2s, background-color 0.2s;
+    font-size: 14px;
+}
+
+.funky-upload__pause:hover {
+    color: var(--pro-primary);
+    background: rgba(var(--pro-primary-rgb, 0, 123, 255), 0.1);
+}
+
+.funky-upload__pause:focus {
+    outline: 2px solid var(--pro-focus-ring, var(--pro-primary));
+    outline-offset: 2px;
+}
+
+.funky-upload__item--paused .funky-upload__pause {
+    color: var(--pro-success, #28a745);
+}
+
+.funky-upload__item--paused .funky-upload__pause:hover {
+    background: rgba(var(--pro-success-rgb, 40, 167, 69), 0.1);
+}
+
+/* ============================================
+   Phase 3: Chunk Progress
+   ============================================ */
+.funky-upload__chunks {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--pro-text-muted);
+    margin-left: 8px;
+    padding: 2px 6px;
+    background: var(--pro-bg-tertiary);
+    border-radius: var(--upload-radius-sm);
+}
+
+/* ============================================
+   Phase 3: Offline Queued State
+   ============================================ */
+.funky-upload__item--offline {
+    border-style: dashed;
+}
+
+.funky-upload__item--offline .funky-upload__progress-bar {
+    background: var(--pro-text-muted);
+}
+
+.funky-upload__item--offline::after {
+    content: 'Queued offline';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--pro-text-muted);
+    background: var(--pro-bg-tertiary);
+    padding: 2px 6px;
+    border-radius: var(--upload-radius-sm);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 576px) {
+    .funky-upload__dropzone {
+        padding: 24px 16px;
+    }
+    
+    .funky-upload__icon {
+        font-size: 36px;
+    }
+    
+    .funky-upload__item {
+        flex-wrap: wrap;
+    }
+    
+    .funky-upload__progress {
+        width: 100%;
+        order: 10;
+        margin-top: 8px;
+    }
+    
+    .funky-upload__actions {
+        margin-left: auto;
+    }
+    
+    .funky-upload__footer {
+        flex-direction: column;
+    }
+    
+    .funky-upload__footer .btn {
+        width: 100%;
+    }
+    
+    /* Phase 2: Mobile lightbox */
+    .funky-upload__lightbox-close {
+        top: 8px;
+        right: 8px;
+    }
+    
+    /* Always show edit button on mobile */
+    .funky-upload__edit {
+        opacity: 1;
+    }
+    
+    /* Phase 3: Mobile speed display */
+    .funky-upload__speed {
+        font-size: 10px;
+    }
+    
+    .funky-upload__chunks {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+    }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .funky-upload__dropzone,
+    .funky-upload__item,
+    .funky-upload__item--visible,
+    .funky-upload__progress-bar,
+    .funky-upload__cancel,
+    .funky-upload__retry,
+    .funky-upload__edit,
+    .funky-upload__pause,
+    .funky-upload__lightbox,
+    .funky-upload__lightbox-close {
+        transition: none;
+        animation: none;
+    }
+    
+    .funky-upload--dragover .funky-upload__icon,
+    .funky-upload__item--uploading .funky-upload__progress-bar,
+    .funky-upload__item--retrying .funky-upload__progress-bar,
+    .funky-upload__preview--loading::after {
+        animation: none;
+    }
+    
+    .funky-upload__item {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+@media (forced-colors: active) {
+    .funky-upload__dropzone {
+        border-color: CanvasText;
+    }
+    
+    .funky-upload--dragover .funky-upload__dropzone {
+        border-color: Highlight;
+    }
+    
+    .funky-upload__item--error {
+        border-color: Mark;
+    }
+    
+    .funky-upload__item--paused {
+        border-color: Highlight;
+    }
+    
+    .funky-upload__progress-bar {
+        background: Highlight;
+    }
+    
+    .funky-upload__item--error .funky-upload__progress-bar {
+        background: Mark;
+    }
+    
+    .funky-upload__item--paused .funky-upload__progress-bar {
+        background: LinkText;
+    }
+    
+    .funky-upload__placeholder {
+        border-color: Highlight;
+    }
+    
+    .funky-upload__lightbox {
+        background: Canvas;
+    }
+    
+    .funky-upload__lightbox-close {
+        background: ButtonFace;
+        color: ButtonText;
+        border: 1px solid ButtonText;
+    }
+}
+
+/* ============================================
+   Phase 7: Form Integration
+   ============================================ */
+
+/* Form field wrapper */
+.form-field--file-upload {
+    margin-bottom: var(--pro-spacing-md, 16px);
+}
+
+.form-field--file-upload .form-label {
+    display: block;
+    margin-bottom: var(--pro-spacing-xs, 8px);
+    font-weight: 500;
+    color: var(--pro-text-primary);
+}
+
+.form-field--file-upload .form-field__upload {
+    margin-bottom: var(--pro-spacing-xs, 8px);
+}
+
+/* Error state in form context */
+.form-field--file-upload.has-error .funky-upload__dropzone {
+    border-color: var(--upload-error-color);
+}
+
+.form-field--file-upload .form-error {
+    color: var(--upload-error-color);
+    font-size: 12px;
+    margin-top: var(--pro-spacing-xs, 4px);
+}
+
+/* Preloaded file styling */
+.funky-upload__item--preloaded {
+    background: var(--pro-bg-secondary);
+}
+
+.funky-upload__item--preloaded .funky-upload__status--uploaded {
+    color: var(--upload-success-color);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Required field indicator */
+.form-field--file-upload.is-required .form-label::after {
+    content: ' *';
+    color: var(--upload-error-color);
+}
+
+/* Validation pending state */
+.form-field--file-upload.is-validating .funky-upload__dropzone {
+    opacity: 0.7;
+    pointer-events: none;
+}
+

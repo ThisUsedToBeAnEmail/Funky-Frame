@@ -81,6 +81,7 @@ instance.destroy();
 
 | Component | Purpose | Requires | Docs |
 |-----------|---------|----------|------|
+| Toggle Group | Segmented control | Dom, Events, Registry, (PubSub, Announce, Tooltip) | [toggle-group.md](/md/js/components/toggle-group.md) |
 | Combobox | Autocomplete dropdown | Dom, Events, PubSub, Registry, *SelectableList*, FuzzySearch | [combobox.md](/md/js/components/combobox.md) |
 | Date Picker | Date/time selection | Dom, PubSub, Date, Registry, (Keyboard, Animate) | [date-picker.md](/md/js/components/date-picker.md) |
 | Slider | Range slider | Dom, Registry, *GestureTracker* | [slider.md](/md/js/components/slider.md) |

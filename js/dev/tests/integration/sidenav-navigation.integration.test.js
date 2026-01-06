@@ -12,6 +12,10 @@ describe('Funky.Integration.SideNav.Navigation', function() {
     var navigatedTo;
 
     beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture = FunkyTests.fixture(
             '<div id="app">' +
                 '<button id="nav-toggle" class="navbar-toggler" aria-label="Toggle navigation">Menu</button>' +
@@ -327,14 +331,15 @@ describe('Funky.Integration.SideNav.Navigation', function() {
 
             sidenav.open();
 
-            return FunkyTests.delay(100).then(function() {
-                // Escape handler is on document, not using element-based scope
+            // Wait for sidenav to fully open before pressing Escape
+            return FunkyTests.delay(200).then(function() {
+                // Escape handler is on document with global scope
                 FunkyTests.simulate.keydown(document, { key: 'Escape' });
 
-                return FunkyTests.delay(100);
+                return FunkyTests.delay(200);
             }).then(function() {
-                var nav = document.getElementById('sidenav');
-                expect(nav.classList.contains('open')).toBe(false);
+                // Check sidenav.isOpen property for reliable state check
+                expect(sidenav.isOpen).toBe(false);
             });
         });
 

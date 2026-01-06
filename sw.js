@@ -22,7 +22,7 @@ importScripts('./js/sw/messaging.js');
 // CONFIGURATION
 // =============================================================================
 
-var CACHE_VERSION = '1.0.2.2';
+var CACHE_VERSION = '1.0.3.2';
 var CACHE_NAME = 'funky-frame-' + CACHE_VERSION;
 
 /**

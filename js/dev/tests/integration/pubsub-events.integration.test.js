@@ -8,6 +8,13 @@ describe('Funky.Integration.PubSub.Events', function() {
 
     var PubSub = Funky.PubSub;
 
+    beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
+    });
+
     afterEach(function() {
         PubSub.clear();
     });
@@ -179,9 +186,12 @@ describe('Funky.Integration.PubSub.Events', function() {
             var unregister;
 
             // Register keyboard shortcut that emits PubSub
+            // Use high priority to ensure it runs before other global Ctrl+S handlers
             unregister = Funky.Keyboard.register({
                 key: 's',
                 ctrl: true,
+                scope: 'global',
+                priority: 100,
                 handler: function() {
                     PubSub.emit('save:requested');
                 }
@@ -191,10 +201,11 @@ describe('Funky.Integration.PubSub.Events', function() {
                 eventReceived = true;
             });
 
-            // Simulate keyboard
-            FunkyTests.simulate.keydown(document.body, {
+            // Simulate keyboard - dispatch on document for global keyboard handler
+            FunkyTests.simulate.keydown(document, {
                 key: 's',
-                ctrlKey: true
+                ctrlKey: true,
+                bubbles: true
             });
 
             expect(eventReceived).toBe(true);

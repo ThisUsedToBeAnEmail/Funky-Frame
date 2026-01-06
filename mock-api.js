@@ -367,6 +367,21 @@
         return global._mockUrlShortcuts[params.hash];
       }
       return { success: false, message: 'Shortcut not found' };
+    },
+
+    // File upload mock endpoint
+    '/api/upload': function(params, method) {
+      if (method === 'POST') {
+        // Simulate successful file upload
+        var fileId = 'file-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        return {
+          success: true,
+          id: fileId,
+          url: '/uploads/' + fileId,
+          message: 'File uploaded successfully'
+        };
+      }
+      return { success: false, message: 'Method not allowed' };
     }
   };
 
@@ -459,6 +474,244 @@
     // Pass through to original fetch for non-API requests
     return originalFetch.apply(global, arguments);
   };
+
+  // =========================================================================
+  // XHR Interceptor for file uploads (with progress simulation)
+  // =========================================================================
+  
+  var OriginalXHR = global.XMLHttpRequest;
+  
+  function MockXHR() {
+    var realXHR = new OriginalXHR();
+    var self = this;
+    
+    // Properties
+    this.readyState = 0;
+    this.status = 0;
+    this.statusText = '';
+    this.responseText = '';
+    this.response = '';
+    this.responseType = '';
+    this.timeout = 0;
+    this.withCredentials = false;
+    
+    // Event handlers
+    this.onreadystatechange = null;
+    this.onload = null;
+    this.onerror = null;
+    this.onprogress = null;
+    this.ontimeout = null;
+    this.onabort = null;
+    
+    // Upload object with progress events
+    this.upload = {
+      onprogress: null,
+      onload: null,
+      onerror: null,
+      onabort: null,
+      addEventListener: function(type, handler) {
+        this['on' + type] = handler;
+      },
+      removeEventListener: function(type, handler) {
+        if (this['on' + type] === handler) {
+          this['on' + type] = null;
+        }
+      }
+    };
+    
+    // Event listener storage
+    this._listeners = {};
+    
+    // Store request info
+    this._method = '';
+    this._url = '';
+    this._headers = {};
+    this._isMocked = false;
+    this._realXHR = realXHR;
+  }
+  
+  MockXHR.prototype.addEventListener = function(type, handler) {
+    if (!this._listeners[type]) {
+      this._listeners[type] = [];
+    }
+    this._listeners[type].push(handler);
+  };
+  
+  MockXHR.prototype.removeEventListener = function(type, handler) {
+    if (this._listeners[type]) {
+      this._listeners[type] = this._listeners[type].filter(function(h) {
+        return h !== handler;
+      });
+    }
+  };
+  
+  MockXHR.prototype._dispatch = function(type, event) {
+    var handler = this['on' + type];
+    if (handler) handler.call(this, event);
+    
+    var listeners = this._listeners[type] || [];
+    for (var i = 0; i < listeners.length; i++) {
+      listeners[i].call(this, event);
+    }
+  };
+  
+  MockXHR.prototype.open = function(method, url, async, user, password) {
+    this._method = method;
+    this._url = url;
+    
+    // Check if this is a mockable endpoint
+    var pathname;
+    try {
+      pathname = new URL(url, location.origin).pathname;
+    } catch (e) {
+      pathname = url;
+    }
+    
+    this._isMocked = pathname.indexOf('/api/') === 0 && MockAPI.hasOwnProperty(pathname);
+    
+    if (!this._isMocked) {
+      // Use real XHR
+      this._realXHR.open(method, url, async !== false, user, password);
+    }
+    
+    this.readyState = 1;
+  };
+  
+  MockXHR.prototype.setRequestHeader = function(name, value) {
+    this._headers[name] = value;
+    if (!this._isMocked) {
+      this._realXHR.setRequestHeader(name, value);
+    }
+  };
+  
+  MockXHR.prototype.send = function(data) {
+    var self = this;
+    
+    if (!this._isMocked) {
+      // Proxy to real XHR
+      var realXHR = this._realXHR;
+      
+      // Copy upload handlers
+      if (this.upload.onprogress) {
+        realXHR.upload.onprogress = this.upload.onprogress;
+      }
+      
+      realXHR.onreadystatechange = function() {
+        self.readyState = realXHR.readyState;
+        self.status = realXHR.status;
+        self.statusText = realXHR.statusText;
+        self.responseText = realXHR.responseText;
+        self.response = realXHR.response;
+        self._dispatch('readystatechange', {});
+      };
+      
+      realXHR.onload = function(e) { self._dispatch('load', e); };
+      realXHR.onerror = function(e) { self._dispatch('error', e); };
+      realXHR.send(data);
+      return;
+    }
+    
+    // Mock the upload with progress simulation
+    var pathname;
+    try {
+      pathname = new URL(this._url, location.origin).pathname;
+    } catch (e) {
+      pathname = this._url;
+    }
+    
+    var mock = MockAPI[pathname];
+    
+    // Simulate file size for progress (use actual FormData size if available)
+    var totalSize = 1024 * 1024; // Default 1MB
+    if (data instanceof FormData) {
+      // Try to get actual file size
+      var entries = data.entries ? data.entries() : [];
+      var entry = entries.next ? entries.next() : null;
+      if (entry && entry.value && entry.value[1] && entry.value[1].size) {
+        totalSize = entry.value[1].size;
+      }
+    }
+    
+    // Simulate upload progress
+    var loaded = 0;
+    var chunkSize = Math.ceil(totalSize / 10); // 10 progress updates
+    var progressInterval = setInterval(function() {
+      loaded += chunkSize;
+      if (loaded > totalSize) loaded = totalSize;
+      
+      var progressEvent = {
+        lengthComputable: true,
+        loaded: loaded,
+        total: totalSize
+      };
+      
+      // Fire upload progress
+      if (self.upload.onprogress) {
+        self.upload.onprogress(progressEvent);
+      }
+      
+      if (loaded >= totalSize) {
+        clearInterval(progressInterval);
+        
+        // Complete the request after a small delay
+        setTimeout(function() {
+          var response = typeof mock === 'function' ? mock({}, self._method) : mock;
+          
+          self.readyState = 4;
+          self.status = 200;
+          self.statusText = 'OK';
+          self.responseText = JSON.stringify(response);
+          self.response = self.responseText;
+          
+          self._dispatch('readystatechange', {});
+          self._dispatch('load', {});
+          
+          if (self.upload.onload) {
+            self.upload.onload({});
+          }
+        }, 50);
+      }
+    }, 100); // Progress update every 100ms
+  };
+  
+  MockXHR.prototype.abort = function() {
+    if (!this._isMocked) {
+      this._realXHR.abort();
+    }
+    this._dispatch('abort', {});
+    if (this.upload.onabort) {
+      this.upload.onabort({});
+    }
+  };
+  
+  MockXHR.prototype.getResponseHeader = function(name) {
+    if (!this._isMocked) {
+      return this._realXHR.getResponseHeader(name);
+    }
+    if (name.toLowerCase() === 'content-type') {
+      return 'application/json';
+    }
+    return null;
+  };
+  
+  MockXHR.prototype.getAllResponseHeaders = function() {
+    if (!this._isMocked) {
+      return this._realXHR.getAllResponseHeaders();
+    }
+    return 'content-type: application/json\r\n';
+  };
+  
+  MockXHR.prototype.overrideMimeType = function(mime) {
+    if (!this._isMocked) {
+      this._realXHR.overrideMimeType(mime);
+    }
+  };
+  
+  // Replace global XMLHttpRequest
+  global.XMLHttpRequest = MockXHR;
+  
+  // Expose original for debugging
+  global.OriginalXMLHttpRequest = OriginalXHR;
 
   // Expose for debugging
   global.MockAPI = MockAPI;

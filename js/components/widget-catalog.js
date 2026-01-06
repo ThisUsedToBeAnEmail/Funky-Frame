@@ -414,7 +414,8 @@
             }
         });
         
-        // Escape key handler
+        // Escape key handler - prepared for use in open/close
+        // Uses Funky.Keyboard if available
         this._escHandler = function(e) {
             if (e.key === 'Escape') {
                 self.close();
@@ -802,7 +803,27 @@
         this._modal.classAdd(CLASSES.modal + '--open');
         this.isOpen = true;
 
-        document.addEventListener('keydown', this._escHandler);
+        // Setup Escape key handler with proper scope
+        if (Funky.Keyboard) {
+            // Push widget-catalog scope so Escape handler becomes active
+            Funky.Keyboard.pushScope('widget-catalog');
+            this._keyboardUnregister = Funky.Keyboard.register({
+                key: 'escape',
+                scope: 'widget-catalog',
+                priority: 10, // Higher than Morph.to() internal handler (0)
+                handler: function() {
+                    if (self.isOpen) {
+                        self.close();
+                    }
+                },
+                description: 'Close widget catalog',
+                group: 'Widget Catalog',
+                preventDefault: true,
+                allowInInput: true
+            });
+        } else {
+            document.addEventListener('keydown', this._escHandler);
+        }
 
         // Focus search input
         setTimeout(function() {
@@ -827,7 +848,17 @@
 
         this._modal.classRemove(CLASSES.modal + '--open');
 
-        document.removeEventListener('keydown', this._escHandler);
+        // Cleanup Escape key handler and pop scope
+        if (this._keyboardUnregister) {
+            this._keyboardUnregister();
+            this._keyboardUnregister = null;
+            // Pop the widget-catalog scope we pushed in open()
+            if (Funky.Keyboard && Funky.Keyboard.popScope) {
+                Funky.Keyboard.popScope();
+            }
+        } else {
+            document.removeEventListener('keydown', this._escHandler);
+        }
 
         // Remove from DOM after transition
         setTimeout(function() {
@@ -862,6 +893,10 @@
      */
     WidgetCatalog.prototype.destroy = function() {
         // Remove event listeners
+        if (this._keyboardUnregister) {
+            this._keyboardUnregister();
+            this._keyboardUnregister = null;
+        }
         document.removeEventListener('keydown', this._escHandler);
 
         // Unregister cross-list navigation keys

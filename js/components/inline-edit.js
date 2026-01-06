@@ -1143,25 +1143,26 @@
          */
         subscribeWebSocket: function(channel) {
             var self = this;
-            
+
             if (!Funky.WebSocket) {
                 console.warn('[InlineEdit] WebSocket not available');
                 return this;
             }
-            
+
             this._wsChannel = channel;
-            
-            Funky.WebSocket.subscribe(channel, function(data) {
+
+            // Subscribe returns an unsubscribe function
+            this._wsUnsubscribe = Funky.WebSocket.subscribe(channel, function(data) {
                 // Check if this update affects our field
                 if (data.field === self.field || data[self.field] !== undefined) {
                     var newValue = data.field === self.field ? data.value : data[self.field];
-                    
+
                     if (String(newValue) !== self._lastKnownValue) {
                         self._handleRemoteUpdate(String(newValue));
                     }
                 }
             });
-            
+
             return this;
         },
 
@@ -1169,10 +1170,11 @@
          * Unsubscribe from WebSocket updates
          */
         unsubscribeWebSocket: function() {
-            if (this._wsChannel && Funky.WebSocket) {
-                Funky.WebSocket.unsubscribe(this._wsChannel);
-                this._wsChannel = null;
+            if (this._wsUnsubscribe) {
+                this._wsUnsubscribe();
+                this._wsUnsubscribe = null;
             }
+            this._wsChannel = null;
         },
 
         /**

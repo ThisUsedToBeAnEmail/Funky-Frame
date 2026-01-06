@@ -1,0 +1,276 @@
+<div data-page="component-file-upload" class="component-demo">
+  <h2>File Upload</h2>
+  <p class="text-muted">Drag-and-drop file upload with validation, previews, progress tracking, and event emission.</p>
+
+  <!-- Basic Upload -->
+  <section class="demo-section" aria-labelledby="basic-heading">
+    <h3 id="basic-heading">Basic Upload</h3>
+    <p class="text-muted small">Drag files or click to browse. Watch events in the log below.</p>
+    <div class="demo-area">
+      <div id="basic-upload"></div>
+    </div>
+  </section>
+
+  <!-- Configurable Upload -->
+  <section class="demo-section" aria-labelledby="config-heading">
+    <h3 id="config-heading">Configurable Options</h3>
+    <p class="text-muted small">Adjust settings via the props panel to see changes.</p>
+    <div class="demo-area">
+      <div id="config-upload"></div>
+    </div>
+  </section>
+
+  <!-- Image Gallery -->
+  <section class="demo-section" aria-labelledby="gallery-heading">
+    <h3 id="gallery-heading">Image Gallery</h3>
+    <p class="text-muted small">Images only with thumbnails and lightbox. Click preview to enlarge.</p>
+    <div class="demo-area">
+      <div id="gallery-upload"></div>
+    </div>
+  </section>
+
+  <!-- Document Upload -->
+  <section class="demo-section" aria-labelledby="doc-heading">
+    <h3 id="doc-heading">Document Upload</h3>
+    <p class="text-muted small">Restricted to PDF, Word, Excel, and PowerPoint files.</p>
+    <div class="demo-area">
+      <div id="doc-upload"></div>
+    </div>
+  </section>
+
+  <!-- API Methods -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test instance methods programmatically.</p>
+    <div class="demo-area">
+      <div id="api-upload"></div>
+      <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;" role="group" aria-label="API method buttons">
+        <button class="btn btn-primary" id="api-upload-all" type="button">
+          <i class="fas fa-upload me-1" aria-hidden="true"></i> uploadAll()
+        </button>
+        <button class="btn btn-secondary" id="api-clear" type="button">
+          <i class="fas fa-trash me-1" aria-hidden="true"></i> clear()
+        </button>
+        <button class="btn btn-info" id="api-get-urls" type="button">
+          <i class="fas fa-link me-1" aria-hidden="true"></i> getUploadedUrls()
+        </button>
+        <button class="btn btn-danger" id="api-destroy" type="button">
+          <i class="fas fa-times me-1" aria-hidden="true"></i> destroy()
+        </button>
+        <button class="btn btn-success" id="api-reinit" type="button">
+          <i class="fas fa-plus me-1" aria-hidden="true"></i> Re-init
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Log -->
+  <section class="demo-section" aria-labelledby="log-heading">
+    <h3 id="log-heading">Event Log</h3>
+    <div class="demo-area">
+      <pre id="file-upload-log" class="demo-log" aria-live="polite" aria-label="File upload event log">Events will appear here...</pre>
+    </div>
+  </section>
+</div>
+
+<style>
+.file-upload-demo .demo-log {
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 12px;
+}
+</style>
+
+<script>
+(function() {
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var logs = [];
+  var instances = {};
+
+  function log(message) {
+    logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+    if (logs.length > 20) logs.pop();
+    var logEl = document.getElementById('file-upload-log');
+    if (logEl) logEl.textContent = logs.join('\n');
+  }
+
+  // Mock upload to simulate server
+  function createMockConfig(extraConfig) {
+    return Object.assign({
+      url: '/api/upload',
+      onAdd: function(file) {
+        log('ADD: ' + file.name + ' (' + formatSize(file.size) + ')');
+        emit('event', { event: 'file-upload:add', payload: { name: file.name } });
+      },
+      onRemove: function(file) {
+        log('REMOVE: ' + file.name);
+        emit('event', { event: 'file-upload:remove', payload: { name: file.name } });
+      },
+      onProgress: function(file, percent) {
+        if (percent % 25 === 0 || percent === 100) {
+          log('PROGRESS: ' + file.name + ' - ' + percent + '%');
+        }
+      },
+      onComplete: function(file, response) {
+        log('COMPLETE: ' + file.name + ' → ' + (response && response.url ? response.url : 'uploaded'));
+        emit('event', { event: 'file-upload:complete', payload: { name: file.name } });
+      },
+      onError: function(file, error) {
+        log('ERROR: ' + file.name + ' - ' + error);
+        emit('event', { event: 'file-upload:error', payload: { name: file.name, error: error } });
+      },
+      onAllComplete: function(files, successful, failed) {
+        log('ALL COMPLETE: ' + successful.length + ' succeeded, ' + failed.length + ' failed');
+        emit('event', { event: 'file-upload:all-complete', payload: { successful: successful.length, failed: failed.length } });
+      }
+    }, extraConfig || {});
+  }
+
+  function formatSize(bytes) {
+    if (bytes === 0) return '0 B';
+    var k = 1024;
+    var sizes = ['B', 'KB', 'MB', 'GB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
+  function destroyAll() {
+    Object.keys(instances).forEach(function(key) {
+      if (instances[key] && instances[key].destroy) {
+        instances[key].destroy();
+      }
+    });
+    instances = {};
+  }
+
+  function initUploaders() {
+    var FileUpload = Funky.FileUpload;
+    if (!FileUpload) {
+      log('ERROR: Funky.FileUpload not available');
+      return;
+    }
+
+    var props = getProps();
+
+    // 1. Basic Upload
+    instances.basic = FileUpload.init('#basic-upload', createMockConfig({
+      maxFiles: 5
+    }));
+
+    // 2. Configurable Upload (uses props)
+    var accept = props.accept ? props.accept.split(',').map(function(s) { return s.trim(); }) : null;
+    instances.config = FileUpload.init('#config-upload', createMockConfig({
+      accept: accept,
+      maxSize: parseInt(props.maxSize, 10) || 10 * 1024 * 1024,
+      maxFiles: parseInt(props.maxFiles, 10) || 10,
+      showPreviews: props.showPreviews !== false,
+      allowRename: props.allowRename !== false,
+      allowReorder: props.allowReorder !== false,
+      multiple: props.multiple !== false
+    }));
+
+    // 3. Image Gallery
+    instances.gallery = FileUpload.init('#gallery-upload', createMockConfig({
+      accept: ['image/*'],
+      maxFiles: 20,
+      showPreviews: true,
+      showLightbox: true,
+      allowReorder: true
+    }));
+
+    // 4. Document Upload
+    instances.doc = FileUpload.init('#doc-upload', createMockConfig({
+      accept: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'],
+      maxSize: 25 * 1024 * 1024,
+      showPreviews: false
+    }));
+
+    // 5. API Methods Demo
+    initApiUpload();
+
+    log('Uploaders initialized');
+  }
+
+  function initApiUpload() {
+    var FileUpload = Funky.FileUpload;
+    if (!FileUpload) return;
+
+    var container = document.getElementById('api-upload');
+    if (container) {
+      container.innerHTML = '';
+    }
+    instances.api = FileUpload.init('#api-upload', createMockConfig({
+      maxFiles: 5
+    }));
+  }
+
+  // API button handlers
+  function setupApiButtons() {
+    var uploadAllBtn = document.getElementById('api-upload-all');
+    var clearBtn = document.getElementById('api-clear');
+    var getUrlsBtn = document.getElementById('api-get-urls');
+    var destroyBtn = document.getElementById('api-destroy');
+    var reinitBtn = document.getElementById('api-reinit');
+
+    if (uploadAllBtn) {
+      uploadAllBtn.onclick = function() {
+        if (instances.api) {
+          instances.api.uploadAll();
+          log('Called uploadAll() - ' + instances.api.files.length + ' files');
+        }
+      };
+    }
+
+    if (clearBtn) {
+      clearBtn.onclick = function() {
+        if (instances.api) {
+          instances.api.clear();
+          log('Called clear()');
+        }
+      };
+    }
+
+    if (getUrlsBtn) {
+      getUrlsBtn.onclick = function() {
+        if (instances.api) {
+          var urls = instances.api.getUploadedUrls();
+          log('getUploadedUrls(): ' + JSON.stringify(urls));
+        }
+      };
+    }
+
+    if (destroyBtn) {
+      destroyBtn.onclick = function() {
+        if (instances.api) {
+          instances.api.destroy();
+          instances.api = null;
+          log('Called destroy()');
+        }
+      };
+    }
+
+    if (reinitBtn) {
+      reinitBtn.onclick = function() {
+        initApiUpload();
+        log('Re-initialized API instance');
+      };
+    }
+  }
+
+  Funky.Pages.register('component-file-upload', {
+    init: function(state) {
+      log('Page initialized');
+      initUploaders();
+      setupApiButtons();
+      emit('event', { event: 'file-upload:page-init', payload: getProps() });
+    },
+
+    destroy: function() {
+      destroyAll();
+      logs = [];
+      return {};
+    }
+  });
+})();
+</script>

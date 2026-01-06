@@ -148,6 +148,10 @@ FunkyTests.describe('Funky.Component.WidgetCatalog', function() {
     }
 
     FunkyTests.beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture = FunkyTests.fixture('<div id="test-container"></div>');
         setupMocks();
     });
@@ -1369,15 +1373,18 @@ FunkyTests.describe('Funky.Component.WidgetCatalog', function() {
             var catalog = WidgetCatalog.init();
             catalog.open();
 
-            var event = new KeyboardEvent('keydown', { key: 'Escape' });
-            document.dispatchEvent(event);
-
+            // Wait for catalog to fully open before pressing Escape
             setTimeout(function() {
-                var overlay = document.querySelector('.widget-catalog__overlay');
-                expect(overlay).toBeNull();
-                catalog.destroy();
-                done();
-            }, 400);
+                var event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+                document.dispatchEvent(event);
+
+                setTimeout(function() {
+                    var overlay = document.querySelector('.widget-catalog__overlay');
+                    expect(overlay).toBeNull();
+                    catalog.destroy();
+                    done();
+                }, 400);
+            }, 150);
         });
     });
 });

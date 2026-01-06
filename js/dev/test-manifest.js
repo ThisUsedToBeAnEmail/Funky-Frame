@@ -160,6 +160,8 @@
     { file: '/js/dev/tests/components/accordion.test.js', tags: ['new'] },
     { file: '/js/dev/tests/components/markdown.test.js', tags: ['new', 'documentation'] },
     { file: '/js/dev/tests/components/push-notification.test.js', tags: ['new', 'pwa'] },
+    { file: '/js/dev/tests/components/file-upload.test.js', tags: ['new', 'forms'] },
+    { file: '/js/dev/tests/components/stepper.test.js', tags: ['new'] },
 
     // Integration tests
     { file: '/js/dev/tests/integration/form-modal.integration.test.js', tags: ['new', 'forms'] },

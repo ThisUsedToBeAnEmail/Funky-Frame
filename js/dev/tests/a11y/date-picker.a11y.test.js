@@ -35,6 +35,10 @@ FunkyTests.describe('Funky.A11y.DatePicker', function() {
     var fixture;
 
     FunkyTests.beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture = FunkyTests.fixture(
             '<input type="text" id="test-date" aria-label="Select date">'
         );
@@ -421,11 +425,12 @@ FunkyTests.describe('Funky.A11y.DatePicker', function() {
             return FunkyTests.delay(100).then(function() {
                 var pickerEl = document.querySelector('.funky-datepicker');
                 if (!pickerEl) { expect(true).toBe(true); return; }
-                FunkyTests.simulate.keydown(pickerEl, { key: 'Escape' });
+                // Dispatch on document where the global keyboard handler listens
+                FunkyTests.simulate.keydown(document, { key: 'Escape' });
                 return FunkyTests.delay(200);
             }).then(function() {
-                // isOpen property may not exist
-                expect(picker.isOpen === false || picker.isOpen === undefined).toBe(true);
+                // isOpen property should be false after pressing Escape
+                expect(picker.isOpen).toBe(false);
             });
         });
 

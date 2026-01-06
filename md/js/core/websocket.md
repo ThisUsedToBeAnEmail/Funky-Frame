@@ -4,25 +4,29 @@ Real-time WebSocket client with automatic reconnection, channel subscriptions, a
 
 ## Overview
 
-`Funky.WebSocket` provides a robust WebSocket connection to the server for real-time updates. It handles connection management, automatic reconnection with exponential backoff, channel subscriptions, and session expiry detection.
+`Funky.WebSocket` provides a shared WebSocket connection for real-time updates. Multiple components can subscribe to the same connection via channels. It handles connection management, automatic reconnection with exponential backoff, channel subscriptions, and session expiry detection.
 
 ## Registration
 
 Registered as `Funky.WebSocket` via the component registry.
 
-**File:** `public/assets/js/core/websocket.js`
+**File:** `js/core/websocket.js`
+
+**Version:** 2.0.0 (requires explicit initialization)
 
 ## Features
 
-- **Auto-connect** - Connects automatically when user is authenticated
+- **Shared Connection** - Single WebSocket connection shared by all components
+- **Explicit Initialization** - Must call `init()` then `connect()` (no auto-connect)
+- **Channel Handlers** - Subscribe to channels with per-channel message handlers
 - **Exponential Backoff** - Reconnects with increasing delays (1s → 30s max)
-- **Page Visibility** - Disconnects when tab is hidden, reconnects when visible
+- **Page Visibility** - Pauses heartbeat when tab is hidden, reconnects when visible
 - **Network Awareness** - Pauses reconnection when offline
-- **Channel Subscriptions** - Subscribe to specific update channels
 - **Session Management** - Detects session expiry and redirects to login
 - **Event System** - Listen for specific message types
 - **Presence System** - Real-time user presence tracking with typing, cursor, and status
 - **Latency Tracking** - Monitor connection quality and average latency
+- **PubSub Integration** - All channel messages broadcast via PubSub for loose coupling
 
 ## Properties
 
@@ -35,7 +39,69 @@ Registered as `Funky.WebSocket` via the component registry.
 | `subscriptions` | Set | Active channel subscriptions |
 | `debug` | boolean | Enable console logging (default: false) |
 
+## Quick Start
+
+```javascript
+// 1. Initialize (once per app, typically in app.js)
+Funky.WebSocket.init({ debug: false });
+
+// 2. Connect when user is authenticated
+if (document.body.dataset.userId) {
+  Funky.WebSocket.connect();
+}
+
+// 3. Subscribe to channels with handlers
+var unsubscribe = Funky.WebSocket.subscribe('trades', function(message) {
+  console.log('Trade update:', message);
+});
+
+// 4. Later, unsubscribe
+unsubscribe();
+```
+
 ## Methods
+
+### init(options)
+
+Initialize the WebSocket module. **Must be called before `connect()`.**
+
+```javascript
+Funky.WebSocket.init({
+  debug: false,
+  reconnectMin: 1000,
+  reconnectMax: 30000,
+  maxRetries: 10
+});
+```
+
+**Parameters:**
+- `options` (object) - Optional configuration options
+  - `url` (string) - WebSocket URL (auto-detected if null)
+  - `reconnectMin` (number) - Min reconnect delay in ms (default: 1000)
+  - `reconnectMax` (number) - Max reconnect delay in ms (default: 30000)
+  - `maxRetries` (number) - Max reconnection attempts (default: 10)
+  - `debug` (boolean) - Enable debug logging (default: false)
+
+**Behavior:**
+- Sets up network and visibility event listeners
+- Does NOT auto-connect (must call `connect()` separately)
+- Safe to call multiple times (only initializes once)
+
+---
+
+### isInitialized()
+
+Check if the WebSocket module has been initialized.
+
+```javascript
+if (!Funky.WebSocket.isInitialized()) {
+  Funky.WebSocket.init();
+}
+```
+
+**Returns:** `boolean`
+
+---
 
 ### connect()
 
@@ -48,8 +114,8 @@ Funky.WebSocket.connect();
 **Behavior:**
 - Uses session cookie for authentication
 - Connects to `ws://` or `wss://` based on protocol
-- Automatically subscribes to user-specific channel
-- Shows toast notification on connection
+- Resubscribes to all registered channels on connect
+- Shows reconnecting banner if connection was lost
 
 ### disconnect()
 
@@ -64,39 +130,59 @@ Funky.WebSocket.disconnect();
 - Clears all reconnection attempts
 - Does not auto-reconnect after manual disconnect
 
-### subscribe(channel)
+### subscribe(channel, handler)
 
-Subscribe to a channel for updates.
+Subscribe to a channel with an optional message handler.
 
 ```javascript
-// Subscribe to trade updates
-Funky.WebSocket.subscribe('trades');
+// Subscribe with a handler (recommended)
+var unsubscribe = Funky.WebSocket.subscribe('trades', function(message) {
+  console.log('Trade update:', message);
+});
 
-// Subscribe to user notifications
+// Later, unsubscribe using the returned function
+unsubscribe();
+
+// Or subscribe without a handler (for PubSub listeners)
 Funky.WebSocket.subscribe('user:123');
 ```
 
 **Parameters:**
 - `channel` (string) - Channel name to subscribe to
+- `handler` (function) - Optional callback for messages on this channel
 
-**Built-in Channels:**
+**Returns:** `function|undefined` - Unsubscribe function if handler was provided
+
+**Channel Message Routing:**
+When a message arrives with a `channel` field:
+1. All handlers registered for that channel are called
+2. PubSub events are emitted: `funky:ws:{channel}` and `funky:ws:{channel}:{type}`
+
+**Example Channels:**
 - `trades` - Trade entity changes
-- `allocations` - Allocation changes
-- `clients` - Client record changes
-- `templates` - Template updates
-- `fx_rates` - FX rate updates
+- `notifications` - User notifications
+- `kanban:board123` - Kanban board updates
 - `user:{id}` - User-specific notifications
 
-### unsubscribe(channel)
+### unsubscribe(channel, handler)
 
-Unsubscribe from a channel.
+Unsubscribe from a channel or remove a specific handler.
 
 ```javascript
+// Remove a specific handler
+Funky.WebSocket.unsubscribe('trades', myHandler);
+
+// Remove all handlers and unsubscribe from channel
 Funky.WebSocket.unsubscribe('trades');
 ```
 
 **Parameters:**
 - `channel` (string) - Channel name to unsubscribe from
+- `handler` (function) - Optional specific handler to remove
+
+**Behavior:**
+- If handler provided: removes only that handler, keeps subscription if other handlers exist
+- If handler omitted: removes all handlers and unsubscribes from channel entirely
 
 ### on(event, callback)
 
@@ -493,21 +579,101 @@ Enable verbose logging:
 Funky.WebSocket.debug = true;
 ```
 
-## Usage Examples
+## Component Integration
 
-### Basic Connection
+Components should use the shared `Funky.WebSocket` instead of creating their own connections.
+
+### Funky.Table
+
+Tables use the shared WebSocket for live binding:
 
 ```javascript
-// Connect and subscribe
-Funky.WebSocket.connect();
-Funky.WebSocket.subscribe('trades');
-
-// Listen for updates
-Funky.WebSocket.on('entity_change', function(data) {
-    if (data.entity === 'trade') {
-        console.log('Trade', data.id, 'was', data.action);
-        refreshTradeTable();
+Funky.Table.create('#myTable', {
+  liveBinding: {
+    enabled: true,
+    source: 'websocket',
+    websocket: {
+      channel: 'trades'  // Subscribe to this channel
     }
+  }
+});
+```
+
+### Funky.NotificationCenter
+
+Notification center can use the shared WebSocket:
+
+```javascript
+Funky.NotificationCenter.init({
+  useWebSocket: true,  // Use shared Funky.WebSocket
+  channel: 'notifications'
+});
+```
+
+### Funky.InlineEdit
+
+Inline edit uses the shared WebSocket for real-time sync:
+
+```javascript
+var edit = Funky.InlineEdit.create(element, options);
+edit.subscribeWebSocket('client:123');
+```
+
+### Funky.Kanban
+
+Kanban uses PubSub events from WebSocket:
+
+```javascript
+// Kanban listens on PubSub channel: funky:ws:kanban:{boardId}
+// Messages routed automatically when channel matches
+```
+
+## Usage Examples
+
+### App Initialization
+
+```javascript
+// In your app.js or main entry point
+function initWebSocket() {
+  if (!Funky.WebSocket) return;
+
+  // Initialize the module
+  Funky.WebSocket.init({ debug: false });
+
+  // Connect if user is authenticated
+  var userId = document.body.dataset.userId;
+  if (userId) {
+    Funky.WebSocket.connect();
+  }
+}
+```
+
+### Basic Channel Subscription
+
+```javascript
+// Subscribe with handler
+var unsubscribe = Funky.WebSocket.subscribe('trades', function(message) {
+  console.log('Trade update:', message);
+  if (message.action === 'created') {
+    refreshTradeTable();
+  }
+});
+
+// Cleanup when done
+unsubscribe();
+```
+
+### Using PubSub for Loose Coupling
+
+```javascript
+// Components can listen via PubSub without direct WebSocket reference
+Funky.PubSub.on('funky:ws:trades', function(data) {
+  console.log('Trade update via PubSub:', data);
+});
+
+// Or listen for specific message types
+Funky.PubSub.on('funky:ws:trades:entity_change', function(data) {
+  console.log('Trade entity changed:', data);
 });
 ```
 

@@ -1394,19 +1394,37 @@
                 document.removeEventListener('click', closeHandler);
             }
         };
-        
+
         setTimeout(function() {
             document.addEventListener('click', closeHandler);
         }, 0);
-        
-        // Close on escape
-        var escHandler = function(e) {
-            if (e.key === 'Escape') {
-                self._hideDayPopover();
+
+        // Close on escape - use Funky.Keyboard for centralized handling
+        if (Funky.Keyboard) {
+            Funky.Keyboard.pushScope('calendar-popover');
+            this._popoverKeyboardUnregister = Funky.Keyboard.register({
+                key: 'escape',
+                scope: 'calendar-popover',
+                handler: function() {
+                    self._hideDayPopover();
+                },
+                description: 'Close popover',
+                group: 'Calendar',
+                preventDefault: true
+            });
+        } else {
+            // Fallback for environments without Funky.Keyboard
+            var escHandler = function(e) {
+                if (e.key === 'Escape') {
+                    self._hideDayPopover();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+            this._popoverKeyboardUnregister = function() {
                 document.removeEventListener('keydown', escHandler);
-            }
-        };
-        document.addEventListener('keydown', escHandler);
+            };
+        }
     };
 
     /**
@@ -1416,6 +1434,14 @@
         if (this._currentPopover) {
             this._currentPopover.el.remove();
             this._currentPopover = null;
+        }
+        // Cleanup keyboard handler
+        if (this._popoverKeyboardUnregister) {
+            this._popoverKeyboardUnregister();
+            this._popoverKeyboardUnregister = null;
+            if (Funky.Keyboard) {
+                Funky.Keyboard.popScope();
+            }
         }
     };
 

@@ -3,7 +3,7 @@
  * 
  * Throttle and debounce functions for performance optimization.
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

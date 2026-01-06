@@ -5,7 +5,7 @@
  * Import via: importScripts('/assets/js/sw/notifications.js');
  *
  * @namespace FunkySW.Notifications
- * @version 1.0.2
+ * @version 1.0.3
  *
  * Methods:
  *   show        - Show a notification with defaults

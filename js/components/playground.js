@@ -2,7 +2,7 @@
  * Funky.Playground - Component Testing Environment
  * Provides isolated rendering, props editing, and event logging for components
  * @module Funky.Playground
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -2731,6 +2731,53 @@
 					"var selected = fm.getSelectedFiles();\n\n" +
 					'// Clear selection\n' +
 					"fm.clearSelection();";
+			}
+		},
+		FileUpload: {
+			name: 'FileUpload',
+			icon: 'fa-cloud-upload-alt',
+			description: 'Drag-and-drop file upload with validation, previews, and progress tracking',
+			defaultProps: {
+				accept: '',
+				maxSize: 10485760,
+				maxFiles: 10,
+				multiple: true,
+				showPreviews: true,
+				allowRename: true,
+				allowReorder: true
+			},
+			propsSchema: {
+				accept: { type: 'string', label: 'Accept Types (comma-sep)', placeholder: 'image/*,.pdf' },
+				maxSize: { type: 'select', label: 'Max Size', options: [
+					{ value: '1048576', label: '1 MB' },
+					{ value: '5242880', label: '5 MB' },
+					{ value: '10485760', label: '10 MB' },
+					{ value: '52428800', label: '50 MB' }
+				] },
+				maxFiles: { type: 'select', label: 'Max Files', options: ['1', '5', '10', '20'] },
+				multiple: { type: 'boolean', label: 'Allow Multiple' },
+				showPreviews: { type: 'boolean', label: 'Show Previews' },
+				allowRename: { type: 'boolean', label: 'Allow Rename' },
+				allowReorder: { type: 'boolean', label: 'Allow Reorder' }
+			},
+			initCode: function(props) {
+				var code = '// Initialize file upload\n';
+				code += "var upload = Funky.FileUpload.init('#my-upload', {\n";
+				code += "  url: '/api/upload',\n";
+				if (props.accept) {
+					code += "  accept: ['" + props.accept.split(',').join("', '") + "'],\n";
+				}
+				code += '  maxSize: ' + (parseInt(props.maxSize, 10) || 10485760) + ',\n';
+				code += '  maxFiles: ' + (parseInt(props.maxFiles, 10) || 10) + ',\n';
+				code += '  multiple: ' + (props.multiple !== false) + ',\n';
+				code += '  showPreviews: ' + (props.showPreviews !== false) + ',\n';
+				code += '  allowRename: ' + (props.allowRename !== false) + ',\n';
+				code += '  allowReorder: ' + (props.allowReorder !== false) + ',\n';
+				code += "  onComplete: function(file, response) {\n";
+				code += "    console.log('Uploaded:', response.url);\n";
+				code += '  }\n';
+				code += '});';
+				return code;
 			}
 		},
 		Truncate: {
@@ -8486,6 +8533,90 @@
 				return code;
 			}
 		},
+		Stepper: {
+			name: 'Stepper',
+			icon: 'fa-list-ol',
+			description: 'Visual step progress indicator',
+			category: 'Navigation',
+			defaultProps: {
+				steps: JSON.stringify([
+					{ id: 'step1', label: 'Step 1' },
+					{ id: 'step2', label: 'Step 2' },
+					{ id: 'step3', label: 'Step 3' },
+					{ id: 'step4', label: 'Step 4' }
+				]),
+				current: 0,
+				orientation: 'horizontal',
+				size: 'md',
+				showLabels: true,
+				showNumbers: true,
+				clickable: true,
+				linear: true
+			},
+			propsSchema: {
+				steps: {
+					type: 'json',
+					label: 'Steps (JSON array)'
+				},
+				current: {
+					type: 'number',
+					label: 'Current Step',
+					min: 0,
+					max: 10
+				},
+				orientation: {
+					type: 'select',
+					label: 'Orientation',
+					options: ['horizontal', 'vertical']
+				},
+				size: {
+					type: 'select',
+					label: 'Size',
+					options: ['sm', 'md', 'lg']
+				},
+				showLabels: { type: 'boolean', label: 'Show Labels' },
+				showNumbers: { type: 'boolean', label: 'Show Numbers' },
+				clickable: { type: 'boolean', label: 'Clickable' },
+				linear: {
+					type: 'boolean',
+					label: 'Linear Mode',
+					visibleWhen: { clickable: [true] }
+				}
+			},
+			initCode: function(props) {
+				var steps = props.steps;
+				if (typeof steps === 'string') {
+					try { steps = JSON.parse(steps); } catch(e) { steps = []; }
+				}
+
+				var stepsStr = JSON.stringify(steps, null, 4)
+					.split('\n')
+					.map(function(line, i) { return i === 0 ? line : '    ' + line; })
+					.join('\n');
+
+				return "// Initialize Stepper\n" +
+					"var stepper = Funky.Stepper.init('#my-stepper', {\n" +
+					"    steps: " + stepsStr + ",\n" +
+					"    current: " + props.current + ",\n" +
+					"    orientation: '" + props.orientation + "',\n" +
+					"    size: '" + props.size + "',\n" +
+					"    showLabels: " + props.showLabels + ",\n" +
+					"    showNumbers: " + props.showNumbers + ",\n" +
+					"    clickable: " + props.clickable + ",\n" +
+					"    linear: " + props.linear + ",\n" +
+					"    onChange: function(step, index) {\n" +
+					"        console.log('Changed to:', step.label);\n" +
+					"    }\n" +
+					"});\n\n" +
+					"// Methods:\n" +
+					"// stepper.next();\n" +
+					"// stepper.prev();\n" +
+					"// stepper.setCurrent(2);\n" +
+					"// stepper.complete(0);\n" +
+					"// stepper.setError(1, 'Validation failed');\n" +
+					"// stepper.getProgress();";
+			}
+		},
 		VisibilityObserver: {
 			name: 'VisibilityObserver',
 			icon: 'fa-eye',
@@ -8549,6 +8680,81 @@
 				code += "// Cleanup\n";
 				code += "// observer.unobserve('#my-element');\n";
 				code += "// observer.destroy();";
+				return code;
+			}
+		},
+
+		ToggleGroup: {
+			name: 'ToggleGroup',
+			icon: 'fa-toggle-on',
+			description: 'Segmented control / button group for single or multi-select',
+			category: 'Form Controls',
+			defaultProps: {
+				options: JSON.stringify([
+					{ value: 'list', label: 'List', icon: 'fa-list' },
+					{ value: 'grid', label: 'Grid', icon: 'fa-th' },
+					{ value: 'table', label: 'Table', icon: 'fa-table' }
+				]),
+				value: 'list',
+				mode: 'single',
+				size: 'md',
+				variant: 'default',
+				orientation: 'horizontal',
+				iconOnly: false,
+				equalWidth: false,
+				disabled: false,
+				allowEmpty: false
+			},
+			propsSchema: {
+				options: { type: 'json', label: 'Options (JSON array)' },
+				value: { type: 'text', label: 'Value', placeholder: 'list or ["list","grid"]' },
+				mode: { type: 'select', label: 'Mode', options: ['single', 'multiple'] },
+				size: { type: 'select', label: 'Size', options: ['sm', 'md', 'lg'] },
+				variant: { type: 'select', label: 'Variant', options: ['default', 'outline', 'pills'] },
+				orientation: { type: 'select', label: 'Orientation', options: ['horizontal', 'vertical'] },
+				iconOnly: { type: 'boolean', label: 'Icon Only' },
+				equalWidth: { type: 'boolean', label: 'Equal Width' },
+				disabled: { type: 'boolean', label: 'Disabled' },
+				allowEmpty: { type: 'boolean', label: 'Allow Empty', visibleWhen: { mode: ['single'] } }
+			},
+			initCode: function(props) {
+				var options = props.options;
+				if (typeof options === 'string') {
+					try { options = JSON.parse(options); } catch(e) { options = []; }
+				}
+
+				var optionsStr = JSON.stringify(options, null, 4)
+					.split('\n')
+					.map(function(line, i) { return i === 0 ? line : '    ' + line; })
+					.join('\n');
+
+				var valueStr = props.mode === 'multiple'
+					? JSON.stringify(props.value && props.value.split ? props.value.split(',') : props.value)
+					: "'" + props.value + "'";
+
+				var code = "// Initialize ToggleGroup\n";
+				code += "var toggle = Funky.ToggleGroup.init('#my-toggle', {\n";
+				code += "    mode: '" + props.mode + "',\n";
+				code += "    options: " + optionsStr + ",\n";
+				code += "    value: " + valueStr + ",\n";
+				code += "    size: '" + props.size + "',\n";
+				code += "    variant: '" + props.variant + "',\n";
+				code += "    orientation: '" + props.orientation + "',\n";
+				code += "    iconOnly: " + props.iconOnly + ",\n";
+				code += "    equalWidth: " + props.equalWidth + ",\n";
+				code += "    disabled: " + props.disabled + ",\n";
+				code += "    onChange: function(value, option) {\n";
+				code += "        console.log('Selected:', value);\n";
+				code += "    }\n";
+				code += "});\n\n";
+				code += "// Methods:\n";
+				code += "// toggle.getValue();\n";
+				code += "// toggle.setValue('grid');\n";
+				code += "// toggle.disable();\n";
+				code += "// toggle.enable();\n";
+				code += "// toggle.disableOption('table');\n";
+				code += "// toggle.enableOption('table');\n";
+				code += "// toggle.updateBadge('list', 5);";
 				return code;
 			}
 		}

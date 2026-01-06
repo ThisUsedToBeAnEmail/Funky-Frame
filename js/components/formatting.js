@@ -19,7 +19,7 @@
  *   <span data-format="number" data-value="1234567">Loading...</span>
  *   <span data-format="currency" data-value="1234.56" data-currency="GBP">Loading...</span>
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

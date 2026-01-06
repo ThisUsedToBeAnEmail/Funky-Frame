@@ -2,7 +2,7 @@
  * Funky.CodePreview - Source Code Display Component
  * Syntax highlighting, line numbers, copy, collapse
  * @module Funky.CodePreview
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
     'use strict';
@@ -282,6 +282,7 @@
         this.codeElement = null;
         this.binding = null;
         this._autoRunTimer = null;
+        this._keyboardUnregisters = [];
 
         if (!this.element) {
             console.error('[CodePreview] Element not found');
@@ -468,13 +469,46 @@
 
         this.codeElement.addEventListener('input', this._editHandler);
 
-        // Handle Tab key for indentation
-        this.codeElement.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                document.execCommand('insertText', false, '  ');
-            }
-        });
+        // Handle Tab key for indentation - use Funky.Keyboard for F1 help integration
+        this._setupEditorKeyboard();
+    };
+
+    /**
+     * Setup keyboard shortcuts for editor
+     */
+    CodePreviewInstance.prototype._setupEditorKeyboard = function() {
+        var self = this;
+
+        // Ensure code element has ID for scoping
+        if (!this.codeElement.id) {
+            this.codeElement.id = 'code-preview-editor-' + Date.now();
+        }
+
+        // Tab handler for indentation
+        var handleTab = function(e) {
+            e.preventDefault();
+            document.execCommand('insertText', false, '  ');
+        };
+
+        if (Funky.Keyboard) {
+            this._keyboardUnregisters.push(Funky.Keyboard.register({
+                key: 'tab',
+                scope: '#' + this.codeElement.id,
+                handler: handleTab,
+                description: 'Insert indent',
+                group: 'Code Editor',
+                allowInInput: true,
+                preventDefault: true
+            }));
+        } else {
+            // Fallback for environments without Funky.Keyboard
+            this._tabKeyHandler = function(e) {
+                if (e.key === 'Tab') {
+                    handleTab(e);
+                }
+            };
+            this.codeElement.addEventListener('keydown', this._tabKeyHandler);
+        }
     };
 
     /**
@@ -868,6 +902,19 @@
         if (this._autoRunTimer) {
             clearTimeout(this._autoRunTimer);
             this._autoRunTimer = null;
+        }
+
+        // Clean up keyboard handlers
+        if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+            this._keyboardUnregisters.forEach(function(unregister) {
+                if (typeof unregister === 'function') {
+                    unregister();
+                }
+            });
+            this._keyboardUnregisters = [];
+        }
+        if (this._tabKeyHandler && this.codeElement) {
+            this.codeElement.removeEventListener('keydown', this._tabKeyHandler);
         }
 
         // Remove DOM

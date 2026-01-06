@@ -1,0 +1,428 @@
+/* ============================================
+   FUNKY STEPPER - Visual Step Progress
+   ============================================ */
+
+/* CSS Variables */
+:root {
+    /* Indicator (circle) */
+    --stepper-indicator-size: 32px;
+    --stepper-indicator-size-sm: 24px;
+    --stepper-indicator-size-lg: 40px;
+    --stepper-indicator-bg: var(--pro-bg-tertiary);
+    --stepper-indicator-bg-completed: var(--pro-accent-success);
+    --stepper-indicator-bg-current: var(--pro-accent-primary);
+    --stepper-indicator-bg-error: var(--pro-accent-danger);
+    --stepper-indicator-color: var(--pro-text-secondary);
+    --stepper-indicator-color-active: #ffffff;
+
+    /* Connector (line) */
+    --stepper-connector-width: 2px;
+    --stepper-connector-color: var(--pro-border-color);
+    --stepper-connector-color-completed: var(--pro-accent-success);
+
+    /* Label */
+    --stepper-label-color: var(--pro-text-secondary);
+    --stepper-label-color-current: var(--pro-text-primary);
+    --stepper-label-size: var(--pro-font-size-sm);
+
+    /* Spacing */
+    --stepper-gap: 16px;
+}
+
+/* Base */
+.funky-stepper {
+    width: 100%;
+}
+
+.funky-stepper__list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   HORIZONTAL ORIENTATION
+   ============================================ */
+.funky-stepper--horizontal .funky-stepper__list {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.funky-stepper--horizontal .funky-stepper__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.funky-stepper--horizontal .funky-stepper__button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: default;
+    font-family: inherit;
+}
+
+.funky-stepper--horizontal .funky-stepper__connector {
+    position: absolute;
+    top: calc(var(--stepper-indicator-size) / 2);
+    left: calc(50% + var(--stepper-indicator-size) / 2 + 8px);
+    right: calc(-50% + var(--stepper-indicator-size) / 2 + 8px);
+    height: var(--stepper-connector-width);
+    background: var(--stepper-connector-color);
+}
+
+.funky-stepper--horizontal .funky-stepper__connector--completed {
+    background: var(--stepper-connector-color-completed);
+}
+
+/* ============================================
+   INDICATOR (Circle)
+   ============================================ */
+.funky-stepper__indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--stepper-indicator-size);
+    height: var(--stepper-indicator-size);
+    border-radius: 50%;
+    background: var(--stepper-indicator-bg);
+    color: var(--stepper-indicator-color);
+    font-weight: var(--pro-font-weight-semibold);
+    font-size: var(--pro-font-size-sm);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+/* Current step */
+.funky-stepper__step--current .funky-stepper__indicator {
+    background: var(--stepper-indicator-bg-current);
+    color: var(--stepper-indicator-color-active);
+    transform: scale(1.1);
+}
+
+/* Completed step */
+.funky-stepper__step--completed .funky-stepper__indicator {
+    background: var(--stepper-indicator-bg-completed);
+    color: var(--stepper-indicator-color-active);
+}
+
+/* Error step */
+.funky-stepper__step--error .funky-stepper__indicator {
+    background: var(--stepper-indicator-bg-error);
+    color: var(--stepper-indicator-color-active);
+}
+
+/* Disabled step */
+.funky-stepper__step--disabled .funky-stepper__indicator {
+    opacity: 0.5;
+}
+
+/* ============================================
+   LABEL
+   ============================================ */
+.funky-stepper__label {
+    font-size: var(--stepper-label-size);
+    color: var(--stepper-label-color);
+    text-align: center;
+    max-width: 120px;
+    transition: color 0.2s ease;
+}
+
+.funky-stepper__step--current .funky-stepper__label {
+    color: var(--stepper-label-color-current);
+    font-weight: var(--pro-font-weight-medium);
+}
+
+.funky-stepper__step--completed .funky-stepper__label {
+    color: var(--stepper-label-color-current);
+}
+
+/* ============================================
+   ERROR MESSAGE
+   ============================================ */
+.funky-stepper__error {
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-accent-danger);
+    margin-top: 4px;
+}
+
+/* ============================================
+   SIZE VARIANTS
+   ============================================ */
+.funky-stepper--sm .funky-stepper__indicator {
+    width: var(--stepper-indicator-size-sm);
+    height: var(--stepper-indicator-size-sm);
+    font-size: var(--pro-font-size-xs);
+}
+
+.funky-stepper--sm .funky-stepper__connector {
+    top: calc(var(--stepper-indicator-size-sm) / 2);
+}
+
+.funky-stepper--lg .funky-stepper__indicator {
+    width: var(--stepper-indicator-size-lg);
+    height: var(--stepper-indicator-size-lg);
+    font-size: var(--pro-font-size-base);
+}
+
+.funky-stepper--lg .funky-stepper__connector {
+    top: calc(var(--stepper-indicator-size-lg) / 2);
+}
+
+/* ============================================
+   VERTICAL ORIENTATION
+   ============================================ */
+.funky-stepper--vertical .funky-stepper__list {
+    flex-direction: column;
+}
+
+.funky-stepper--vertical .funky-stepper__step {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: var(--stepper-gap);
+}
+
+.funky-stepper--vertical .funky-stepper__button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: default;
+    font-family: inherit;
+}
+
+.funky-stepper--vertical .funky-stepper__connector {
+    position: absolute;
+    left: calc(var(--stepper-indicator-size) / 2);
+    top: calc(var(--stepper-indicator-size) + 8px);
+    bottom: 0;
+    width: var(--stepper-connector-width);
+    height: auto;
+    background: var(--stepper-connector-color);
+}
+
+.funky-stepper--vertical .funky-stepper__connector--completed {
+    background: var(--stepper-connector-color-completed);
+}
+
+.funky-stepper--vertical .funky-stepper__label {
+    max-width: none;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* ============================================
+   DESCRIPTION
+   ============================================ */
+.funky-stepper__description {
+    display: block;
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-muted);
+    margin-top: 2px;
+}
+
+.funky-stepper--horizontal .funky-stepper__description {
+    max-width: 120px;
+    text-align: center;
+}
+
+.funky-stepper--vertical .funky-stepper__description {
+    text-align: left;
+}
+
+/* ============================================
+   SUB-STEPS
+   ============================================ */
+.funky-stepper__substep-list {
+    list-style: none;
+    margin: 8px 0 0 calc(var(--stepper-indicator-size) / 2 + 8px);
+    padding: 0;
+    border-left: 1px dashed var(--pro-border-color);
+}
+
+.funky-stepper__substep {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0 4px 16px;
+    position: relative;
+}
+
+.funky-stepper__substep-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--pro-bg-secondary);
+    font-size: 10px;
+}
+
+.funky-stepper__substep--completed .funky-stepper__substep-indicator {
+    background: var(--pro-accent-success);
+    color: white;
+}
+
+.funky-stepper__substep-label {
+    font-size: var(--pro-font-size-xs);
+    color: var(--pro-text-secondary);
+}
+
+.funky-stepper__substep--completed .funky-stepper__substep-label {
+    color: var(--pro-text-primary);
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+.funky-stepper__progress {
+    margin-top: 16px;
+    height: 4px;
+    background: var(--pro-bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.funky-stepper__progress-bar {
+    height: 100%;
+    background: var(--pro-accent-success);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* ============================================
+   CLICKABLE STATES
+   ============================================ */
+.funky-stepper__button[tabindex="0"] {
+    cursor: pointer;
+}
+
+.funky-stepper__button[tabindex="0"]:hover .funky-stepper__indicator {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.funky-stepper__button[tabindex="0"]:focus {
+    outline: none;
+}
+
+.funky-stepper__button[tabindex="0"]:focus-visible .funky-stepper__indicator {
+    outline: 2px solid var(--pro-accent-primary);
+    outline-offset: 2px;
+}
+
+/* Disabled state */
+.funky-stepper__button[disabled] {
+    cursor: not-allowed;
+}
+
+.funky-stepper__button[disabled] .funky-stepper__indicator {
+    opacity: 0.5;
+}
+
+.funky-stepper__button[disabled] .funky-stepper__label {
+    opacity: 0.5;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.funky-stepper--animated .funky-stepper__indicator {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+.funky-stepper--animated .funky-stepper__connector {
+    transition: background-color 0.3s ease;
+}
+
+.funky-stepper--animated .funky-stepper__label {
+    transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.funky-stepper--animated .funky-stepper__progress-bar {
+    transition: width 0.5s ease;
+}
+
+/* Step entrance animation */
+@keyframes stepperFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.funky-stepper--animated .funky-stepper__step {
+    animation: stepperFadeIn 0.3s ease forwards;
+}
+
+.funky-stepper--animated .funky-stepper__step:nth-child(1) { animation-delay: 0s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(2) { animation-delay: 0.05s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(3) { animation-delay: 0.1s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(4) { animation-delay: 0.15s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(5) { animation-delay: 0.2s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(6) { animation-delay: 0.25s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(7) { animation-delay: 0.3s; }
+.funky-stepper--animated .funky-stepper__step:nth-child(8) { animation-delay: 0.35s; }
+
+/* ============================================
+   RESPONSIVE (Mobile)
+   ============================================ */
+@media (max-width: 767px) {
+    .funky-stepper--horizontal .funky-stepper__label {
+        display: none;
+    }
+
+    .funky-stepper--horizontal .funky-stepper__step--current .funky-stepper__label {
+        display: block;
+        position: absolute;
+        top: calc(var(--stepper-indicator-size) + 8px);
+        white-space: nowrap;
+    }
+
+    .funky-stepper--horizontal .funky-stepper__indicator {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+
+    .funky-stepper--horizontal .funky-stepper__connector {
+        top: 12px;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .funky-stepper__indicator,
+    .funky-stepper__label,
+    .funky-stepper__connector,
+    .funky-stepper__progress-bar {
+        transition: none;
+    }
+
+    .funky-stepper--animated .funky-stepper__step {
+        animation: none;
+    }
+}

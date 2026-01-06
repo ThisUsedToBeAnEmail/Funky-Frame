@@ -1,0 +1,671 @@
+<div data-page="component-toggle-group" class="component-demo">
+  <h2>Toggle Group</h2>
+  <p class="text-muted">Segmented control / button group that acts as a single form control. Supports single or multiple selection with full keyboard navigation.</p>
+
+  <!-- Interactive Demo Section -->
+  <section class="demo-section" aria-labelledby="interactive-heading">
+    <h3 id="interactive-heading">Interactive Demo</h3>
+    <p class="text-muted small">Use the props panel to customize this toggle group.</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__interactive">
+        <div id="main-toggle-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mode Comparison Section -->
+  <section class="demo-section" aria-labelledby="modes-heading">
+    <h3 id="modes-heading">Selection Modes</h3>
+    <p class="text-muted small">Single mode (radio behavior) vs Multiple mode (checkbox behavior).</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__mode-grid">
+        <div class="toggle-group-demo__mode-item">
+          <span class="toggle-group-demo__mode-label">Single (one selection)</span>
+          <div id="mode-single-container"></div>
+        </div>
+        <div class="toggle-group-demo__mode-item">
+          <span class="toggle-group-demo__mode-label">Multiple (many selections)</span>
+          <div id="mode-multiple-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Style Variants Section -->
+  <section class="demo-section" aria-labelledby="variants-heading">
+    <h3 id="variants-heading">Style Variants</h3>
+    <p class="text-muted small">Three visual styles: default (connected), outline (separated), and pills (rounded).</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__variant-grid">
+        <div class="toggle-group-demo__variant-item">
+          <span class="toggle-group-demo__variant-label">Default</span>
+          <div id="variant-default-container"></div>
+        </div>
+        <div class="toggle-group-demo__variant-item">
+          <span class="toggle-group-demo__variant-label">Outline</span>
+          <div id="variant-outline-container"></div>
+        </div>
+        <div class="toggle-group-demo__variant-item">
+          <span class="toggle-group-demo__variant-label">Pills</span>
+          <div id="variant-pills-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Size Variants Section -->
+  <section class="demo-section" aria-labelledby="sizes-heading">
+    <h3 id="sizes-heading">Size Variants</h3>
+    <p class="text-muted small">Small, medium, and large button sizes.</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__size-grid">
+        <div class="toggle-group-demo__size-item">
+          <span class="toggle-group-demo__size-label">Small</span>
+          <div id="size-sm-container"></div>
+        </div>
+        <div class="toggle-group-demo__size-item">
+          <span class="toggle-group-demo__size-label">Medium</span>
+          <div id="size-md-container"></div>
+        </div>
+        <div class="toggle-group-demo__size-item">
+          <span class="toggle-group-demo__size-label">Large</span>
+          <div id="size-lg-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Icon-Only Section -->
+  <section class="demo-section" aria-labelledby="icon-heading">
+    <h3 id="icon-heading">Icon-Only Mode</h3>
+    <p class="text-muted small">Compact buttons showing only icons. Labels are available via tooltips.</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__icon-grid">
+        <div class="toggle-group-demo__icon-item">
+          <span class="toggle-group-demo__icon-label">View Modes</span>
+          <div id="icon-view-container"></div>
+        </div>
+        <div class="toggle-group-demo__icon-item">
+          <span class="toggle-group-demo__icon-label">Text Alignment</span>
+          <div id="icon-align-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Orientation Section -->
+  <section class="demo-section" aria-labelledby="orientation-heading">
+    <h3 id="orientation-heading">Orientation</h3>
+    <p class="text-muted small">Horizontal (default) or vertical layout.</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__orientation-grid">
+        <div class="toggle-group-demo__orientation-item">
+          <span class="toggle-group-demo__orientation-label">Horizontal</span>
+          <div id="orientation-horizontal-container"></div>
+        </div>
+        <div class="toggle-group-demo__orientation-item">
+          <span class="toggle-group-demo__orientation-label">Vertical</span>
+          <div id="orientation-vertical-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Methods Section -->
+  <section class="demo-section" aria-labelledby="api-heading">
+    <h3 id="api-heading">API Methods</h3>
+    <p class="text-muted small">Test the Funky.ToggleGroup API methods.</p>
+    <div class="demo-area">
+      <div class="toggle-group-demo__api-grid">
+        <button type="button" class="btn btn-outline-primary" id="btn-get-value">
+          <i class="fas fa-eye me-1" aria-hidden="true"></i>Get Value
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-set-grid">
+          <i class="fas fa-th me-1" aria-hidden="true"></i>Set "grid"
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-disable">
+          <i class="fas fa-ban me-1" aria-hidden="true"></i>Disable
+        </button>
+        <button type="button" class="btn btn-outline-success" id="btn-enable">
+          <i class="fas fa-check me-1" aria-hidden="true"></i>Enable
+        </button>
+        <button type="button" class="btn btn-outline-info" id="btn-toggle-loading">
+          <i class="fas fa-spinner me-1" aria-hidden="true"></i>Toggle Loading
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keyboard Shortcuts Section -->
+  <section class="demo-section" aria-labelledby="keyboard-heading">
+    <h3 id="keyboard-heading">Keyboard Navigation</h3>
+    <div class="demo-area">
+      <div class="toggle-group-demo__shortcuts">
+        <div class="toggle-group-demo__shortcut">
+          <kbd>Tab</kbd>
+          <span>Focus group</span>
+        </div>
+        <div class="toggle-group-demo__shortcut">
+          <kbd>&larr;</kbd> <kbd>&rarr;</kbd>
+          <span>Navigate options</span>
+        </div>
+        <div class="toggle-group-demo__shortcut">
+          <kbd>&uarr;</kbd> <kbd>&darr;</kbd>
+          <span>Navigate (vertical)</span>
+        </div>
+        <div class="toggle-group-demo__shortcut">
+          <kbd>Home</kbd> <kbd>End</kbd>
+          <span>First / Last</span>
+        </div>
+        <div class="toggle-group-demo__shortcut">
+          <kbd>Space</kbd> <kbd>Enter</kbd>
+          <span>Select option</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Display -->
+  <section class="demo-section" aria-labelledby="state-heading">
+    <h3 id="state-heading">Current State</h3>
+    <div class="demo-area">
+      <div class="toggle-group-demo__state">
+        <div class="toggle-group-demo__state-item">
+          <span class="toggle-group-demo__state-label">Value:</span>
+          <span class="toggle-group-demo__state-value" id="state-value">list</span>
+        </div>
+        <div class="toggle-group-demo__state-item">
+          <span class="toggle-group-demo__state-label">Mode:</span>
+          <span class="toggle-group-demo__state-value" id="state-mode">single</span>
+        </div>
+        <div class="toggle-group-demo__state-item">
+          <span class="toggle-group-demo__state-label">Size:</span>
+          <span class="toggle-group-demo__state-value" id="state-size">md</span>
+        </div>
+        <div class="toggle-group-demo__state-item">
+          <span class="toggle-group-demo__state-label">Variant:</span>
+          <span class="toggle-group-demo__state-value" id="state-variant">default</span>
+        </div>
+        <div class="toggle-group-demo__state-item">
+          <span class="toggle-group-demo__state-label">Disabled:</span>
+          <span class="toggle-group-demo__state-value" id="state-disabled">false</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+.toggle-group-demo__interactive {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.toggle-group-demo__mode-grid,
+.toggle-group-demo__variant-grid,
+.toggle-group-demo__size-grid,
+.toggle-group-demo__icon-grid,
+.toggle-group-demo__orientation-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.toggle-group-demo__mode-item,
+.toggle-group-demo__variant-item,
+.toggle-group-demo__size-item,
+.toggle-group-demo__icon-item,
+.toggle-group-demo__orientation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.toggle-group-demo__mode-label,
+.toggle-group-demo__variant-label,
+.toggle-group-demo__size-label,
+.toggle-group-demo__icon-label,
+.toggle-group-demo__orientation-label {
+  font-size: 0.875rem;
+  color: var(--pro-text-secondary, #666);
+  font-weight: 500;
+}
+
+.toggle-group-demo__api-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.toggle-group-demo__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.toggle-group-demo__shortcut {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.toggle-group-demo__shortcut kbd {
+  background: var(--pro-bg-secondary, #f5f5f5);
+  border: 1px solid var(--pro-border-color, #ddd);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.toggle-group-demo__state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.toggle-group-demo__state-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--pro-bg-secondary, #f5f5f5);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.toggle-group-demo__state-label {
+  font-size: 0.75rem;
+  color: var(--pro-text-secondary, #666);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.toggle-group-demo__state-value {
+  font-weight: 600;
+  color: var(--pro-primary, #007bff);
+}
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+  var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+
+  var propsChangedHandler = null;
+  var mainInstance = null;
+  var demoInstances = [];
+  var isLoading = false;
+
+  var viewOptions = [
+    { value: 'list', label: 'List', icon: 'fa-list' },
+    { value: 'grid', label: 'Grid', icon: 'fa-th' },
+    { value: 'table', label: 'Table', icon: 'fa-table' }
+  ];
+
+  var alignOptions = [
+    { value: 'left', label: 'Left', icon: 'fa-align-left' },
+    { value: 'center', label: 'Center', icon: 'fa-align-center' },
+    { value: 'right', label: 'Right', icon: 'fa-align-right' },
+    { value: 'justify', label: 'Justify', icon: 'fa-align-justify' }
+  ];
+
+  var statusOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'active', label: 'Active' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'archived', label: 'Archived' }
+  ];
+
+  /**
+   * Update state display from props and current value
+   */
+  function updateStateDisplay(props, value) {
+    var valueEl = document.getElementById('state-value');
+    var modeEl = document.getElementById('state-mode');
+    var sizeEl = document.getElementById('state-size');
+    var variantEl = document.getElementById('state-variant');
+    var disabledEl = document.getElementById('state-disabled');
+
+    if (valueEl) {
+      valueEl.textContent = Array.isArray(value) ? value.join(', ') : (value || 'none');
+    }
+    if (modeEl) modeEl.textContent = props.mode || 'single';
+    if (sizeEl) sizeEl.textContent = props.size || 'md';
+    if (variantEl) variantEl.textContent = props.variant || 'default';
+    if (disabledEl) disabledEl.textContent = props.disabled ? 'true' : 'false';
+  }
+
+  /**
+   * Create the main interactive toggle
+   */
+  function createMainToggle(props) {
+    var container = document.getElementById('main-toggle-container');
+    if (!container || !Funky.ToggleGroup) return;
+
+    // Destroy existing
+    if (mainInstance && mainInstance.destroy) {
+      mainInstance.destroy();
+      mainInstance = null;
+    }
+
+    container.innerHTML = '';
+
+    var initialValue = props.value || 'list';
+    if (props.mode === 'multiple' && !Array.isArray(initialValue)) {
+      initialValue = [initialValue];
+    }
+
+    mainInstance = Funky.ToggleGroup.init(container, {
+      options: viewOptions,
+      value: initialValue,
+      mode: props.mode || 'single',
+      size: props.size || 'md',
+      variant: props.variant || 'default',
+      orientation: props.orientation || 'horizontal',
+      disabled: props.disabled || false,
+      allowEmpty: props.allowEmpty || false,
+      iconOnly: props.iconOnly || false,
+      equalWidth: props.equalWidth || false,
+      name: 'view_mode',
+      onChange: function(value, option) {
+        updateStateDisplay(props, value);
+        emit('event', {
+          event: 'togglegroup:change',
+          payload: { value: value, option: option }
+        });
+      }
+    });
+
+    updateStateDisplay(props, initialValue);
+  }
+
+  /**
+   * Create demo instances for modes, variants, sizes, etc.
+   */
+  function createDemoInstances() {
+    if (!Funky.ToggleGroup) return;
+
+    // Destroy existing demo instances
+    for (var i = 0; i < demoInstances.length; i++) {
+      if (demoInstances[i] && demoInstances[i].destroy) {
+        demoInstances[i].destroy();
+      }
+    }
+    demoInstances = [];
+
+    // Mode: Single
+    var singleContainer = document.getElementById('mode-single-container');
+    if (singleContainer) {
+      singleContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(singleContainer, {
+        options: statusOptions,
+        value: 'active',
+        mode: 'single'
+      }));
+    }
+
+    // Mode: Multiple
+    var multipleContainer = document.getElementById('mode-multiple-container');
+    if (multipleContainer) {
+      multipleContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(multipleContainer, {
+        options: statusOptions,
+        value: ['active', 'pending'],
+        mode: 'multiple'
+      }));
+    }
+
+    // Variant: Default
+    var defaultContainer = document.getElementById('variant-default-container');
+    if (defaultContainer) {
+      defaultContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(defaultContainer, {
+        options: viewOptions,
+        value: 'list',
+        variant: 'default'
+      }));
+    }
+
+    // Variant: Outline
+    var outlineContainer = document.getElementById('variant-outline-container');
+    if (outlineContainer) {
+      outlineContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(outlineContainer, {
+        options: viewOptions,
+        value: 'list',
+        variant: 'outline'
+      }));
+    }
+
+    // Variant: Pills
+    var pillsContainer = document.getElementById('variant-pills-container');
+    if (pillsContainer) {
+      pillsContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(pillsContainer, {
+        options: viewOptions,
+        value: 'list',
+        variant: 'pills'
+      }));
+    }
+
+    // Size: Small
+    var smContainer = document.getElementById('size-sm-container');
+    if (smContainer) {
+      smContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(smContainer, {
+        options: viewOptions,
+        value: 'list',
+        size: 'sm'
+      }));
+    }
+
+    // Size: Medium
+    var mdContainer = document.getElementById('size-md-container');
+    if (mdContainer) {
+      mdContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(mdContainer, {
+        options: viewOptions,
+        value: 'list',
+        size: 'md'
+      }));
+    }
+
+    // Size: Large
+    var lgContainer = document.getElementById('size-lg-container');
+    if (lgContainer) {
+      lgContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(lgContainer, {
+        options: viewOptions,
+        value: 'list',
+        size: 'lg'
+      }));
+    }
+
+    // Icon-Only: View modes
+    var iconViewContainer = document.getElementById('icon-view-container');
+    if (iconViewContainer) {
+      iconViewContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(iconViewContainer, {
+        options: viewOptions,
+        value: 'list',
+        iconOnly: true
+      }));
+    }
+
+    // Icon-Only: Alignment
+    var iconAlignContainer = document.getElementById('icon-align-container');
+    if (iconAlignContainer) {
+      iconAlignContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(iconAlignContainer, {
+        options: alignOptions,
+        value: 'left',
+        iconOnly: true
+      }));
+    }
+
+    // Orientation: Horizontal
+    var horizontalContainer = document.getElementById('orientation-horizontal-container');
+    if (horizontalContainer) {
+      horizontalContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(horizontalContainer, {
+        options: viewOptions,
+        value: 'list',
+        orientation: 'horizontal'
+      }));
+    }
+
+    // Orientation: Vertical
+    var verticalContainer = document.getElementById('orientation-vertical-container');
+    if (verticalContainer) {
+      verticalContainer.innerHTML = '';
+      demoInstances.push(Funky.ToggleGroup.init(verticalContainer, {
+        options: viewOptions,
+        value: 'list',
+        orientation: 'vertical'
+      }));
+    }
+  }
+
+  /**
+   * Set up button handlers
+   */
+  function setupHandlers() {
+    var btnGetValue = document.getElementById('btn-get-value');
+    var btnSetGrid = document.getElementById('btn-set-grid');
+    var btnDisable = document.getElementById('btn-disable');
+    var btnEnable = document.getElementById('btn-enable');
+    var btnToggleLoading = document.getElementById('btn-toggle-loading');
+
+    if (btnGetValue) {
+      btnGetValue.onclick = function() {
+        if (mainInstance) {
+          var value = mainInstance.getValue();
+          emit('event', {
+            event: 'api:getValue',
+            payload: { value: value }
+          });
+          alert('Current value: ' + (Array.isArray(value) ? value.join(', ') : value));
+        }
+      };
+    }
+
+    if (btnSetGrid) {
+      btnSetGrid.onclick = function() {
+        if (mainInstance) {
+          mainInstance.setValue('grid');
+          var props = getProps();
+          updateStateDisplay(props, 'grid');
+          emit('event', {
+            event: 'api:setValue',
+            payload: { value: 'grid' }
+          });
+        }
+      };
+    }
+
+    if (btnDisable) {
+      btnDisable.onclick = function() {
+        if (mainInstance) {
+          mainInstance.disable();
+          var valueEl = document.getElementById('state-disabled');
+          if (valueEl) valueEl.textContent = 'true';
+          emit('event', {
+            event: 'api:disable',
+            payload: {}
+          });
+        }
+      };
+    }
+
+    if (btnEnable) {
+      btnEnable.onclick = function() {
+        if (mainInstance) {
+          mainInstance.enable();
+          var valueEl = document.getElementById('state-disabled');
+          if (valueEl) valueEl.textContent = 'false';
+          emit('event', {
+            event: 'api:enable',
+            payload: {}
+          });
+        }
+      };
+    }
+
+    if (btnToggleLoading) {
+      btnToggleLoading.onclick = function() {
+        if (mainInstance) {
+          isLoading = !isLoading;
+          mainInstance.setLoading(isLoading);
+          emit('event', {
+            event: 'api:setLoading',
+            payload: { loading: isLoading }
+          });
+        }
+      };
+    }
+  }
+
+  Funky.Pages.register('component-toggle-group', {
+    init: function(state) {
+      var props = getProps();
+
+      // Create main toggle from props
+      createMainToggle(props);
+
+      // Create demo instances
+      createDemoInstances();
+
+      // Set up button handlers
+      setupHandlers();
+
+      // Subscribe to prop changes
+      if (Funky.PubSub && Funky.PubSub.on) {
+        propsChangedHandler = function(newProps) {
+          var currentProps = getProps();
+          createMainToggle(currentProps);
+        };
+        Funky.PubSub.on('playground:propsChanged', propsChangedHandler);
+      }
+
+      emit('event', {
+        event: 'togglegroup:init',
+        payload: props
+      });
+
+      return state;
+    },
+
+    destroy: function() {
+      // Unsubscribe from playground props
+      if (Funky.PubSub && propsChangedHandler) {
+        Funky.PubSub.off('playground:propsChanged', propsChangedHandler);
+        propsChangedHandler = null;
+      }
+
+      // Destroy main instance
+      if (mainInstance && mainInstance.destroy) {
+        mainInstance.destroy();
+        mainInstance = null;
+      }
+
+      // Destroy demo instances
+      for (var i = 0; i < demoInstances.length; i++) {
+        if (demoInstances[i] && demoInstances[i].destroy) {
+          demoInstances[i].destroy();
+        }
+      }
+      demoInstances = [];
+
+      isLoading = false;
+
+      return {};
+    }
+  });
+})();
+</script>

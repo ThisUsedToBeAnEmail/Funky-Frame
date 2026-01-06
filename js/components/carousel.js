@@ -14,7 +14,7 @@
  *   // Or from existing markup
  *   Funky.Carousel.create('.carousel-container');
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -1045,61 +1045,141 @@
 
 		if (!config.keyboard) return;
 
-		this._keydownHandler = function(e) {
-			// Don't handle if user is typing in an input
-			if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+		// Store unregister functions for cleanup
+		this._keyboardUnregisters = [];
 
-			// For scoped mode, check if carousel contains focus
-			if (config.keyboardScope === 'focused') {
-				if (!self.container.el.contains(document.activeElement) &&
-					document.activeElement !== self.container.el) {
-					return;
-				}
-			}
+		// Determine scope based on config
+		var scope = config.keyboardScope === 'always' ? 'global' : '#' + (this.container.el.id || 'carousel-' + this.id);
 
-			switch (e.key) {
-				case 'ArrowLeft':
-					e.preventDefault();
+		// Ensure container has ID for element scoping
+		if (config.keyboardScope !== 'always' && !this.container.el.id) {
+			this.container.el.id = 'carousel-' + this.id;
+		}
+
+		// For focused mode, add tabindex
+		if (config.keyboardScope !== 'always') {
+			this.container.attr('tabindex', '0');
+		}
+
+		// Use Funky.Keyboard if available
+		if (Funky.Keyboard) {
+			// Left arrow - previous
+			this._keyboardUnregisters.push(Funky.Keyboard.register({
+				key: 'arrowleft',
+				scope: scope,
+				handler: function() {
 					self.prev();
 					if (P) {
 						P.emit('funky:carousel:keyboard', { key: 'left', carousel: self });
 					}
-					break;
+				},
+				description: 'Previous slide',
+				group: 'Carousel',
+				preventDefault: true
+			}));
 
-				case 'ArrowRight':
-					e.preventDefault();
+			// Right arrow - next
+			this._keyboardUnregisters.push(Funky.Keyboard.register({
+				key: 'arrowright',
+				scope: scope,
+				handler: function() {
 					self.next();
 					if (P) {
 						P.emit('funky:carousel:keyboard', { key: 'right', carousel: self });
 					}
-					break;
+				},
+				description: 'Next slide',
+				group: 'Carousel',
+				preventDefault: true
+			}));
 
-				case 'Home':
-					e.preventDefault();
+			// Home - first slide
+			this._keyboardUnregisters.push(Funky.Keyboard.register({
+				key: 'home',
+				scope: scope,
+				handler: function() {
 					self.goTo(0, true);
 					if (P) {
 						P.emit('funky:carousel:keyboard', { key: 'home', carousel: self });
 					}
-					break;
+				},
+				description: 'First slide',
+				group: 'Carousel',
+				preventDefault: true
+			}));
 
-				case 'End':
-					e.preventDefault();
+			// End - last slide
+			this._keyboardUnregisters.push(Funky.Keyboard.register({
+				key: 'end',
+				scope: scope,
+				handler: function() {
 					var lastIndex = state.slideCount - config.slidesToShow;
 					if (lastIndex < 0) lastIndex = 0;
 					self.goTo(lastIndex, true);
 					if (P) {
 						P.emit('funky:carousel:keyboard', { key: 'end', carousel: self });
 					}
-					break;
-			}
-		};
-
-		if (config.keyboardScope === 'always') {
-			document.addEventListener('keydown', this._keydownHandler);
+				},
+				description: 'Last slide',
+				group: 'Carousel',
+				preventDefault: true
+			}));
 		} else {
-			// Only when carousel or its children are focused
-			this.container.attr('tabindex', '0');
-			this.container.on('keydown', this._keydownHandler);
+			// Fallback for environments without Funky.Keyboard
+			this._keydownHandler = function(e) {
+				// Don't handle if user is typing in an input
+				if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+				// For scoped mode, check if carousel contains focus
+				if (config.keyboardScope === 'focused') {
+					if (!self.container.el.contains(document.activeElement) &&
+						document.activeElement !== self.container.el) {
+						return;
+					}
+				}
+
+				switch (e.key) {
+					case 'ArrowLeft':
+						e.preventDefault();
+						self.prev();
+						if (P) {
+							P.emit('funky:carousel:keyboard', { key: 'left', carousel: self });
+						}
+						break;
+
+					case 'ArrowRight':
+						e.preventDefault();
+						self.next();
+						if (P) {
+							P.emit('funky:carousel:keyboard', { key: 'right', carousel: self });
+						}
+						break;
+
+					case 'Home':
+						e.preventDefault();
+						self.goTo(0, true);
+						if (P) {
+							P.emit('funky:carousel:keyboard', { key: 'home', carousel: self });
+						}
+						break;
+
+					case 'End':
+						e.preventDefault();
+						var lastIndex = state.slideCount - config.slidesToShow;
+						if (lastIndex < 0) lastIndex = 0;
+						self.goTo(lastIndex, true);
+						if (P) {
+							P.emit('funky:carousel:keyboard', { key: 'end', carousel: self });
+						}
+						break;
+				}
+			};
+
+			if (config.keyboardScope === 'always') {
+				document.addEventListener('keydown', this._keydownHandler);
+			} else {
+				this.container.on('keydown', this._keydownHandler);
+			}
 		}
 	};
 
@@ -1108,12 +1188,22 @@
 	 * @private
 	 */
 	FunkyCarousel.prototype._destroyKeyboard = function() {
-		if (!this._keydownHandler) return;
+		// Cleanup Funky.Keyboard registrations
+		if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+			this._keyboardUnregisters.forEach(function(unregister) {
+				if (unregister) unregister();
+			});
+			this._keyboardUnregisters = [];
+		}
 
-		if (this.config.keyboardScope === 'always') {
-			document.removeEventListener('keydown', this._keydownHandler);
-		} else {
-			this.container.off('keydown', this._keydownHandler);
+		// Cleanup fallback handler
+		if (this._keydownHandler) {
+			if (this.config.keyboardScope === 'always') {
+				document.removeEventListener('keydown', this._keydownHandler);
+			} else {
+				this.container.off('keydown', this._keydownHandler);
+			}
+			this._keydownHandler = null;
 		}
 	};
 

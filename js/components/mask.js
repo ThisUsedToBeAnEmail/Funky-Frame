@@ -12,7 +12,7 @@
  * - Other characters are literals
  * 
  * @module Funky.Mask
- * @version 1.0.2
+ * @version 1.0.3
  * @requires Funky.Dom
  * @requires Funky.PubSub
  * 
@@ -1072,12 +1072,10 @@
             P.emit('funky:mask:' + eventName, detail);
         }
 
-        // Dispatch DOM CustomEvent
-        var event = new CustomEvent('funky:mask:' + eventName, {
-            bubbles: true,
-            detail: detail
-        });
-        this._element.dispatchEvent(event);
+        // Dispatch DOM CustomEvent (uses dot notation)
+        if (Funky.Events && Funky.Events.emit) {
+            Funky.Events.emit(this._element, 'funky.mask.' + eventName, detail);
+        }
     };
 
     // =========================================================================
@@ -1903,12 +1901,10 @@
             P.emit('funky:mask:' + eventName, detail);
         }
 
-        // Dispatch DOM CustomEvent
-        var event = new CustomEvent('funky:mask:' + eventName, {
-            bubbles: true,
-            detail: detail
-        });
-        this._element.dispatchEvent(event);
+        // Dispatch DOM CustomEvent (uses dot notation)
+        if (Funky.Events && Funky.Events.emit) {
+            Funky.Events.emit(this._element, 'funky.mask.' + eventName, detail);
+        }
     };
 
     // =========================================================================

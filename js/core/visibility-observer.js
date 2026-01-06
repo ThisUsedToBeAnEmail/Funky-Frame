@@ -18,7 +18,7 @@
  *
  * observer.destroy();
  *
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(global) {
 	'use strict';

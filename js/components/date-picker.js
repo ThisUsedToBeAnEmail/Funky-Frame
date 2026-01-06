@@ -51,7 +51,7 @@
  *   data-max-date-bind="cache:booking.maxDate"     - Bind max date constraint
  *   data-disabled-dates-bind="api:/unavailable"    - Bind disabled dates
  *
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -3529,6 +3529,8 @@
 
 			switch (key) {
 				case 'Escape':
+					// Skip if Funky.Keyboard is handling Escape
+					if (Funky.Keyboard && this._keyboardUnregister) break;
 					if (!this.isInline) {
 						this._onCancelClick();
 						handled = true;
@@ -3810,7 +3812,26 @@
 				document.addEventListener('click', self._boundOnOutsideClick);
 			}, 0);
 
-			// Bind keyboard
+			// Bind keyboard - use Funky.Keyboard with proper scope
+			if (Funky.Keyboard) {
+				// Push date-picker scope so Escape handler becomes active
+				Funky.Keyboard.pushScope('date-picker');
+				this._keyboardUnregister = Funky.Keyboard.register({
+					key: 'escape',
+					scope: 'date-picker',
+					priority: 10, // Higher than Morph.to() internal handler (0)
+					handler: function() {
+						if (self.isOpen && !self.isInline) {
+							self._onCancelClick();
+						}
+					},
+					description: 'Close date picker',
+					group: 'Date Picker',
+					preventDefault: true,
+					allowInInput: true
+				});
+			}
+			// Always bind native for complex navigation (arrows, page up/down, etc.)
 			document.addEventListener('keydown', this._boundOnKeydown);
 
 			// Set up focus management with FocusManager if available
@@ -3867,8 +3888,19 @@
 			// Unbind outside click
 			document.removeEventListener('click', this._boundOnOutsideClick);
 
-			// Unbind keyboard
+			// Unbind keyboard and pop scope
+			if (this._keyboardUnregister) {
+				this._keyboardUnregister();
+				this._keyboardUnregister = null;
+				// Pop the date-picker scope we pushed in open()
+				if (Funky.Keyboard && Funky.Keyboard.popScope) {
+					Funky.Keyboard.popScope();
+				}
+			}
 			document.removeEventListener('keydown', this._boundOnKeydown);
+
+			// Mark as closed immediately for reliable state checking
+			this.isOpen = false;
 
 			// Remove from DOM after transition
 			var duration = Animate ? Animate.getDuration(this.pickerEl, 150) : 150;
@@ -3876,7 +3908,6 @@
 				if (self.pickerEl && self.pickerEl.parentNode) {
 					self.pickerEl.parentNode.removeChild(self.pickerEl);
 				}
-				self.isOpen = false;
 			}, duration);
 
 			// Restore focus using FocusManager or fallback to trigger element

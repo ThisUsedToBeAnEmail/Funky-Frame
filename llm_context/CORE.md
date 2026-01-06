@@ -64,7 +64,7 @@
 |--------|---------|----------|----------|------|
 | Api | HTTP client | — | — | [api.md](/md/js/core/api.md) |
 | CSRF | CSRF token handling | — | — | [csrf.md](/md/js/core/csrf.md) |
-| WebSocket | WebSocket client | — | WebSocket API | [websocket.md](/md/js/core/websocket.md) |
+| WebSocket | Shared WebSocket (init→connect→subscribe) | PubSub | WebSocket API | [websocket.md](/md/js/core/websocket.md) |
 | Request Queue | Offline request queueing | Events, PubSub, JobQueue | — | [request-queue.md](/md/js/core/request-queue.md) |
 | Cache | In-memory caching | — | — | [cache.md](/md/js/core/cache.md) |
 | Cache Sync | Cross-tab cache sync | Cache | — | [cache-sync.md](/md/js/core/cache-sync.md) |

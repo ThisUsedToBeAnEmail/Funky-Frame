@@ -1,6 +1,7 @@
 /**
  * Tests for Funky.WebSocket
  * Real-time WebSocket Connection Manager
+ * @version 2.0.0
  */
 FunkyTests.describe('Funky.Core.WebSocket', function() {
   var expect = FunkyTests.expect;
@@ -10,8 +11,20 @@ FunkyTests.describe('Funky.Core.WebSocket', function() {
       expect(Funky.WebSocket !== undefined).toBe(true);
     });
 
+    FunkyTests.it('has init method', function() {
+      expect(typeof Funky.WebSocket.init).toBe('function');
+    });
+
+    FunkyTests.it('has isInitialized method', function() {
+      expect(typeof Funky.WebSocket.isInitialized).toBe('function');
+    });
+
     FunkyTests.it('has configure method', function() {
       expect(typeof Funky.WebSocket.configure).toBe('function');
+    });
+
+    FunkyTests.it('has destroy method', function() {
+      expect(typeof Funky.WebSocket.destroy).toBe('function');
     });
 
     FunkyTests.it('has connect method', function() {
@@ -60,6 +73,50 @@ FunkyTests.describe('Funky.Core.WebSocket', function() {
 
     FunkyTests.it('has getDebugState method', function() {
       expect(typeof Funky.WebSocket.getDebugState).toBe('function');
+    });
+  });
+
+  FunkyTests.describe('Initialization (v2.0.0)', function() {
+    FunkyTests.it('isInitialized returns boolean', function() {
+      var initialized = Funky.WebSocket.isInitialized();
+      expect(typeof initialized).toBe('boolean');
+    });
+
+    FunkyTests.it('init can be called without options', function() {
+      expect(function() {
+        Funky.WebSocket.init();
+      }).not.toThrow();
+    });
+
+    FunkyTests.it('init can be called with options', function() {
+      expect(function() {
+        Funky.WebSocket.init({ debug: false });
+      }).not.toThrow();
+    });
+
+    FunkyTests.it('init is idempotent (safe to call multiple times)', function() {
+      expect(function() {
+        Funky.WebSocket.init();
+        Funky.WebSocket.init();
+        Funky.WebSocket.init({ debug: false });
+      }).not.toThrow();
+    });
+
+    FunkyTests.it('isInitialized returns true after init', function() {
+      Funky.WebSocket.init();
+      expect(Funky.WebSocket.isInitialized()).toBe(true);
+    });
+
+    FunkyTests.it('destroy resets initialized state', function() {
+      Funky.WebSocket.init();
+      Funky.WebSocket.destroy();
+      expect(Funky.WebSocket.isInitialized()).toBe(false);
+    });
+
+    FunkyTests.it('can re-initialize after destroy', function() {
+      Funky.WebSocket.destroy();
+      Funky.WebSocket.init();
+      expect(Funky.WebSocket.isInitialized()).toBe(true);
     });
   });
 
@@ -140,12 +197,57 @@ FunkyTests.describe('Funky.Core.WebSocket', function() {
       expect(subs.indexOf(testChannel) !== -1).toBe(true);
     });
 
+    FunkyTests.it('subscribe with handler returns unsubscribe function', function() {
+      var handler = function() {};
+      var unsubscribe = Funky.WebSocket.subscribe(testChannel, handler);
+
+      expect(typeof unsubscribe).toBe('function');
+
+      // Cleanup
+      unsubscribe();
+    });
+
+    FunkyTests.it('subscribe without handler returns undefined', function() {
+      var result = Funky.WebSocket.subscribe(testChannel);
+
+      expect(result).toBe(undefined);
+    });
+
+    FunkyTests.it('unsubscribe function removes handler', function() {
+      var handler = function() {};
+      var unsubscribe = Funky.WebSocket.subscribe(testChannel, handler);
+
+      // Unsubscribe using returned function
+      unsubscribe();
+
+      var subs = Funky.WebSocket.getSubscriptions();
+      expect(subs.indexOf(testChannel) === -1).toBe(true);
+    });
+
     FunkyTests.it('unsubscribe removes from queue', function() {
       Funky.WebSocket.subscribe(testChannel);
       Funky.WebSocket.unsubscribe(testChannel);
 
       var subs = Funky.WebSocket.getSubscriptions();
       expect(subs.indexOf(testChannel) === -1).toBe(true);
+    });
+
+    FunkyTests.it('unsubscribe with specific handler keeps channel if other handlers exist', function() {
+      var handler1 = function() {};
+      var handler2 = function() {};
+      var channel = 'multi-handler-' + Date.now();
+
+      Funky.WebSocket.subscribe(channel, handler1);
+      Funky.WebSocket.subscribe(channel, handler2);
+
+      // Remove only handler1
+      Funky.WebSocket.unsubscribe(channel, handler1);
+
+      var subs = Funky.WebSocket.getSubscriptions();
+      expect(subs.indexOf(channel) !== -1).toBe(true);
+
+      // Cleanup
+      Funky.WebSocket.unsubscribe(channel);
     });
 
     FunkyTests.it('subscribe handles empty channel gracefully', function() {

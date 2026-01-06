@@ -38,6 +38,10 @@ describe('Funky.A11y.Sidenav', function() {
     ];
 
     beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture = FunkyTests.fixture('<nav id="test-sidenav" aria-label="Main navigation"></nav>');
     });
 

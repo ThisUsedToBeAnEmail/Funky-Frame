@@ -143,8 +143,10 @@ All Funky modules follow a consistent registration pattern:
 | `Funky.Preferences` | User preferences | [preferences.md](components/preferences.md) |
 | `Funky.Slider` | Sliding panel component | [slider.md](components/slider.md) |
 | `Funky.SliderInput` | Slider input control | [slider-input.md](components/slider-input.md) |
+| `Funky.Stepper` | Visual step progress indicator | [stepper.md](components/stepper.md) |
 | `Funky.StickyHeader` | Sticky header behavior | [sticky-header.md](components/sticky-header.md) |
 | `Funky.Toast` | Toast notifications | [toast.md](components/toast.md) |
+| `Funky.ToggleGroup` | Segmented control / button group | [toggle-group.md](components/toggle-group.md) |
 | `Funky.TradeWizard` | Trade creation wizard | [trade-wizard.md](components/trade-wizard.md) |
 | `Funky.WipOverlay` | Work-in-progress overlay | [wip-overlay.md](components/wip-overlay.md) |
 | `Funky.Wizard` | Generic wizard component | [wizard.md](components/wizard.md) |

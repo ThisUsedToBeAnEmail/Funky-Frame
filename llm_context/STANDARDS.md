@@ -145,11 +145,145 @@ D.one('#el').style({ color: 'red' }).text('Hi');
 
 ---
 
+## Component Patterns
+
+Four distinct patterns exist across the 84+ components. Choose based on use case:
+
+| Pattern | Count | When to Use | Examples |
+|---------|-------|-------------|----------|
+| **A: Singleton** | ~35-40 | Utilities, no instances needed | Badge, Toast, Skeleton, Spinner |
+| **B: Registry** | ~15-20 | Multiple instances, lifecycle management | SideNavPanel, FormModal, Accordion |
+| **C: DOM-Attached** | ~12-15 | Instance per DOM element | ActionBar, Clock |
+| **D: Event-Based** | ~2-3 | Trigger/handler registration | ZeroClick |
+
+---
+
+### Pattern A: Singleton (Utilities)
+
+For stateless utilities with no instance management:
+
+```javascript
+(function(window) {
+    'use strict';
+
+    var Badge = {
+        add: function(el, text, type) {
+            // Static method - no instance created
+        },
+        remove: function(el) {
+            // Static method
+        }
+    };
+
+    Funky.register('Badge', Badge);
+})(window);
+```
+
+**Use when:** Component provides utility methods, no state tracking needed.
+
+---
+
+### Pattern B: Registry (Multiple Instances)
+
+For components needing multiple instances with lifecycle management. **Use `Funky.Registry.createInstanceRegistry()`**:
+
+```javascript
+(function(window) {
+    'use strict';
+
+    var _instanceCounter = 0;
+    var _instances = Funky.Registry.createInstanceRegistry('SideNavPanel');
+
+    function SideNavPanel(config) {
+        this.config = Object.assign({}, config);
+        this._init();
+    }
+
+    SideNavPanel.prototype._init = function() {
+        // Initialization
+    };
+
+    SideNavPanel.prototype.destroy = function() {
+        // Cleanup
+        _instances.unregister(this.id);
+    };
+
+    // Static factory method
+    SideNavPanel.init = function(config) {
+        var instance = new SideNavPanel(config);
+        instance.id = 'sidenav-panel-' + (++_instanceCounter);
+        _instances.register(instance.id, instance);
+        return instance;
+    };
+
+    SideNavPanel.getInstance = function(id) {
+        return _instances.get(id);
+    };
+
+    SideNavPanel.destroyAll = function() {
+        _instances.destroyAll();
+    };
+
+    Funky.register('SideNavPanel', SideNavPanel);
+})(window);
+```
+
+**Use when:** Need multiple independent instances, SPA cleanup, instance lookup by ID.
+
+---
+
+### Pattern C: DOM-Attached (Per-Element)
+
+For components that attach to specific DOM elements:
+
+```javascript
+(function(window) {
+    'use strict';
+
+    var instances = [];
+
+    function ActionBar(el) {
+        this.el = el;
+        this._init();
+    }
+
+    ActionBar.prototype._init = function() {
+        // Initialization
+    };
+
+    ActionBar.prototype.destroy = function() {
+        var idx = instances.indexOf(this);
+        if (idx > -1) instances.splice(idx, 1);
+    };
+
+    ActionBar.init = function(selector) {
+        var els = document.querySelectorAll(selector);
+        els.forEach(function(el) {
+            if (!el._actionBar) {
+                var instance = new ActionBar(el);
+                el._actionBar = instance;
+                instances.push(instance);
+            }
+        });
+    };
+
+    ActionBar.destroyAll = function() {
+        instances.slice().forEach(function(i) { i.destroy(); });
+    };
+
+    Funky.register('ActionBar', ActionBar);
+})(window);
+```
+
+**Use when:** One instance per DOM element, auto-init from selectors.
+
+---
+
 ## Component API Standards
 
 Docs: [/md/js/core/component-interface.md](/md/js/core/component-interface.md)
 
-### Required Static Methods
+### Required Static Methods (Pattern B & C)
 
 | Method | Purpose |
 |--------|---------|
@@ -177,24 +311,47 @@ Docs: [/md/js/core/component-interface.md](/md/js/core/component-interface.md)
 
 ## Event Patterns
 
-### Funky.Events (Global Event Bus)
+Two event systems exist - use the right one:
+
+| System | Purpose | Naming Convention |
+|--------|---------|-------------------|
+| **Funky.Events** | DOM event utilities | Dot notation: `'funky.modal.opened'` |
+| **Funky.PubSub** | App-level messaging | Colon notation: `'funky:trade:created'` |
+
+---
+
+### Funky.Events (DOM Events)
 Docs: [/md/js/core/events.md](/md/js/core/events.md)
 
 ```javascript
-// Subscribe
-E.on('user:login', function(userData) {
-    console.log('User logged in:', userData);
+var E = Funky.Events;
+
+// Add listener
+E.on(element, 'click', handler);
+
+// Remove listener (with or without handler reference)
+E.off(element, 'click', handler);  // Specific handler
+E.off(element, 'click');           // All handlers for event
+
+// One-time listener
+E.once(element, 'click', handler);
+
+// Dispatch custom event
+E.emit(element, 'funky.modal.opened', { data: 123 });
+
+// Event delegation (returns cleanup function)
+var cleanup = E.delegate(parent, '.child-selector', 'click', function(e) {
+    // 'this' is the matched child element
 });
+cleanup();  // Remove delegated listener
 
-// Publish
-E.emit('user:login', { id: 1, name: 'John' });
-
-// Unsubscribe
-var unsub = E.on('event', handler);
-unsub();  // Cleanup
+// DOM ready
+E.ready(function() {
+    // DOM is loaded
+});
 ```
 
-### Funky.PubSub (Namespaced Channels)
+### Funky.PubSub (App Messaging)
 Docs: [/md/js/core/pubsub.md](/md/js/core/pubsub.md)
 
 ```javascript

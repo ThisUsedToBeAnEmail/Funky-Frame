@@ -8,7 +8,7 @@
  * - Event emission on changes
  * 
  * @module Funky.History
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

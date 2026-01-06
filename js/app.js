@@ -567,8 +567,11 @@
   }
 
   // ============================================
-  // SERVICE WORKER
+  // SERVICE WORKER & PWA UPDATE
   // ============================================
+
+  var _updatePanel = null;
+  var _versionBadge = null;
 
   /**
    * Initialize Service Worker for PWA features
@@ -576,13 +579,176 @@
   function initServiceWorker() {
     if (typeof Funky !== 'undefined' && Funky.ServiceWorker && Funky.ServiceWorker.isSupported()) {
       Funky.ServiceWorker.register('/sw.js', {
-        scope: '/'
+        scope: '/',
+        onUpdate: function() {
+          showUpdatePanel();
+        }
       }).then(function(registration) {
         console.log('[Funky Frame] Service Worker registered:', registration.scope);
+        
+        // Check if there's already a waiting SW (update available)
+        if (registration.waiting) {
+          showUpdatePanel();
+        }
+        
+        // Also check for updates when page becomes visible (user returns to tab)
+        document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState === 'visible') {
+            // Trigger SW update check
+            Funky.ServiceWorker.update().catch(function() {});
+          }
+        });
       }).catch(function(error) {
         console.warn('[Funky Frame] Service Worker registration failed:', error);
       });
+      
+      // Listen for update events
+      if (Funky.PubSub) {
+        Funky.PubSub.on('funky:sw:updated', function() {
+          showUpdatePanel();
+        });
+      }
     }
+  }
+
+  /**
+   * Show the update available panel
+   */
+  function showUpdatePanel(version) {
+    // Don't show if already visible
+    if (_updatePanel && _updatePanel.classList.contains('pwa-update-panel--visible')) {
+      return;
+    }
+    
+    // Don't show if user dismissed this version already this session
+    try {
+      var dismissed = sessionStorage.getItem('funky-update-dismissed');
+      if (dismissed && (!version || dismissed === version)) {
+        return;
+      }
+    } catch (e) {}
+    
+    // Store the version being offered for dismissal tracking
+    var offeredVersion = version || 'unknown';
+    
+    // Create panel if not exists
+    if (!_updatePanel) {
+      _updatePanel = document.createElement('div');
+      _updatePanel.className = 'pwa-update-panel';
+      _updatePanel.setAttribute('role', 'alert');
+      _updatePanel.innerHTML = 
+        '<div class="pwa-update-panel__text">' +
+          '<strong>Update Available!</strong><br>' +
+          '<span class="pwa-update-panel__version">A new version is ready.</span>' +
+        '</div>' +
+        '<div class="pwa-update-panel__actions">' +
+          '<button class="pwa-update-panel__btn pwa-update-panel__btn--primary" data-action="update">' +
+            '<i class="fas fa-sync-alt"></i> Update Now' +
+          '</button>' +
+          '<button class="pwa-update-panel__btn pwa-update-panel__btn--secondary" data-action="dismiss">' +
+            'Later' +
+          '</button>' +
+        '</div>' +
+        '<button class="pwa-update-panel__close" aria-label="Dismiss" data-action="dismiss">' +
+          '<i class="fas fa-times"></i>' +
+        '</button>';
+      
+      document.body.appendChild(_updatePanel);
+      
+      // Event handlers
+      _updatePanel.addEventListener('click', function(e) {
+        var action = e.target.closest('[data-action]');
+        if (!action) return;
+        
+        var actionType = action.dataset.action;
+        if (actionType === 'update') {
+          forceUpdate();
+        } else if (actionType === 'dismiss') {
+          hideUpdatePanel(offeredVersion);
+        }
+      });
+    }
+    
+    // Update version text if provided
+    if (version) {
+      var versionSpan = _updatePanel.querySelector('.pwa-update-panel__version');
+      if (versionSpan) {
+        versionSpan.textContent = 'Version ' + version + ' is ready.';
+      }
+    }
+    
+    // Show panel with animation
+    requestAnimationFrame(function() {
+      _updatePanel.classList.add('pwa-update-panel--visible');
+    });
+  }
+
+  /**
+   * Hide the update panel
+   */
+  function hideUpdatePanel() {
+    if (_updatePanel) {
+      _updatePanel.classList.remove('pwa-update-panel--visible');
+    }
+  }
+
+  /**
+   * Force update - clear caches and reload
+   */
+  function forceUpdate() {
+    // Update button state
+    var updateBtn = _updatePanel && _updatePanel.querySelector('[data-action="update"]');
+    if (updateBtn) {
+      updateBtn.classList.add('pwa-update-btn--loading');
+      updateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Updating...';
+      updateBtn.disabled = true;
+    }
+    
+    if (typeof Funky !== 'undefined' && Funky.ServiceWorker && Funky.ServiceWorker.forceUpdate) {
+      Funky.ServiceWorker.forceUpdate()
+        .catch(function(error) {
+          console.error('[Funky Frame] Force update failed:', error);
+          if (updateBtn) {
+            updateBtn.classList.remove('pwa-update-btn--loading');
+            updateBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+          }
+          
+          if (typeof Funky !== 'undefined' && Funky.Toast) {
+            Funky.Toast.error('Update failed. Please try again.');
+          }
+        });
+    } else {
+      // Fallback: just reload
+      window.location.reload(true);
+    }
+  }
+
+  /**
+   * Create version badge for sidebar footer
+   */
+  function createVersionBadge() {
+    var footer = document.querySelector('.sidebar-footer');
+    if (!footer || _versionBadge) return;
+    
+    var version = '1.0.2'; // Could be fetched from version.json
+    
+    _versionBadge = document.createElement('div');
+    _versionBadge.className = 'pwa-version-badge';
+    _versionBadge.setAttribute('title', 'App version');
+    _versionBadge.innerHTML = 
+      '<i class="fas fa-code-branch pwa-version-badge__icon"></i>' +
+      '<span class="pwa-version-badge__version">v' + version + '</span>';
+    
+    footer.appendChild(_versionBadge);
+    
+    // Click to check for updates
+    _versionBadge.addEventListener('click', function() {
+      checkForUpdates();
+      
+      if (typeof Funky !== 'undefined' && Funky.Toast) {
+        Funky.Toast.info('Checking for updates...', { duration: 2000 });
+      }
+    });
   }
 
   // ============================================
@@ -620,6 +786,9 @@
     // System features
     initServiceWorker();
     initSPA();
+    
+    // PWA version badge (after sidebar is ready)
+    createVersionBadge();
 
     console.log('[Funky Frame] App initialized');
   }
@@ -644,7 +813,10 @@
     // Density
     toggleDensity: toggleDensity,
     setDensity: setDensity,
-    getDensity: getDensity
+    getDensity: getDensity,
+    // PWA Updates
+    forceUpdate: forceUpdate,
+    showUpdatePanel: showUpdatePanel
   };
 
 })();

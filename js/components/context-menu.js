@@ -2,7 +2,7 @@
  * Funky.ContextMenu - Right-Click Context Menu Component
  * Native-feeling context menus with submenus and keyboard navigation
  * @module Funky.ContextMenu
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
   'use strict';
@@ -577,6 +577,7 @@
       Funky.Keyboard.register({
         key: 'escape',
         scope: 'context-menu',
+        priority: 10, // Higher than Morph.to() internal handler (0)
         handler: function() {
           ContextMenu.hide();
         },

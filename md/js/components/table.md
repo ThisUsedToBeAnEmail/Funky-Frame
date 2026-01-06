@@ -1590,7 +1590,14 @@ Funky.Table.init('#responsive', {
 
 ### Real-Time WebSocket Updates
 
+Tables use the shared `Funky.WebSocket` for live binding. The WebSocket must be initialized and connected before the table is created.
+
 ```javascript
+// Ensure WebSocket is initialized (typically done in app.js)
+Funky.WebSocket.init();
+Funky.WebSocket.connect();
+
+// Create table with WebSocket live binding
 Funky.Table.init('#live-trades', {
   columns: [
     { data: 'id', title: 'ID' },
@@ -1599,21 +1606,24 @@ Funky.Table.init('#live-trades', {
     { data: 'volume', title: 'Volume' }
   ],
   ajaxUrl: '/api/trades',
-  websocket: {
+  liveBinding: {
     enabled: true,
-    entity: 'trades',
-    events: {
-      create: 'trade_created',
-      update: 'trade_updated',
-      delete: 'trade_deleted'
+    source: 'websocket',
+    websocket: {
+      channel: 'trades',  // Subscribe to this channel on shared WebSocket
+      // channels: ['trades', 'fx_rates']  // Or multiple channels
     },
-    filterCheck: function(rowData, filters) {
-      // Only add row if it matches current filters
-      return !filters.symbol || rowData.symbol === filters.symbol;
+    onConnect: function() {
+      console.log('Live updates connected');
+    },
+    onDisconnect: function(reason) {
+      console.log('Live updates disconnected:', reason);
     }
   }
 });
 ```
+
+**Note:** The table no longer creates its own WebSocket connection. It uses the shared `Funky.WebSocket` and subscribes to the specified channel(s).
 
 ### Server-Sent Events (SSE)
 

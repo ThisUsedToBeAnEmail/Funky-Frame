@@ -11,7 +11,7 @@
  *     ajax: { url: '/api/data' }
  *   });
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window, document) {
 	'use strict';
@@ -227,9 +227,11 @@
 		this._onSort = this._handleSort.bind(this);
 		this._onClick = this._handleClick.bind(this);
 		this._onKeyDown = this._handleKeyDown.bind(this);
+		this._onHeaderKeyDown = this._handleHeaderKeydown.bind(this);
 
 		// Cleanup functions for proper memory management
 		this._cleanups = [];
+		this._keyboardUnregisters = [];
 
 		// Initialize
 		this._init();
@@ -1014,13 +1016,8 @@
 				}
 			});
 
-			var headerKeydownHandler = this._handleHeaderKeydown.bind(this);
-			this.thead.el.addEventListener('keydown', headerKeydownHandler);
-			this._cleanups.push(function() {
-				if (self.thead && self.thead.el) {
-					self.thead.el.removeEventListener('keydown', headerKeydownHandler);
-				}
-			});
+			// Header keyboard navigation - use Funky.Keyboard for F1 help integration
+			this._setupHeaderKeyboardShortcuts();
 
 			// Bind select-all handler
 			var selectAllCheckbox = this.thead.el.querySelector('.funky-table-select-all');
@@ -1044,12 +1041,8 @@
 				}
 			});
 
-			this.tbody.el.addEventListener('keydown', this._onKeyDown);
-			this._cleanups.push(function() {
-				if (self.tbody && self.tbody.el) {
-					self.tbody.el.removeEventListener('keydown', self._onKeyDown);
-				}
-			});
+			// Body keyboard navigation - use Funky.Keyboard for F1 help integration
+			this._setupBodyKeyboardShortcuts();
 
 			// Control button click for responsive expand
 			var controlClickHandler = function(e) {
@@ -2600,6 +2593,110 @@
 		// Announce sort change for screen readers
 		var dir = newDir === 'asc' ? 'asc' : newDir === 'desc' ? 'desc' : 'asc';
 		this._announceSortChange(column.title, dir);
+	};
+
+	/**
+	 * Setup header keyboard shortcuts with Funky.Keyboard
+	 */
+	TableInstance.prototype._setupHeaderKeyboardShortcuts = function() {
+		var self = this;
+
+		if (!this.thead || !this.thead.el) return;
+
+		// Ensure thead has ID for scoping
+		if (!this.thead.el.id) {
+			this.thead.el.id = 'funky-table-thead-' + this.instanceId;
+		}
+
+		if (Funky.Keyboard) {
+			var headerKeys = [
+				{ key: 'enter', description: 'Sort column' },
+				{ key: 'space', description: 'Sort column' },
+				{ key: 'arrowright', description: 'Next header' },
+				{ key: 'arrowdown', description: 'Next header' },
+				{ key: 'arrowleft', description: 'Previous header' },
+				{ key: 'arrowup', description: 'Previous header' }
+			];
+
+			headerKeys.forEach(function(keyDef) {
+				self._keyboardUnregisters.push(Funky.Keyboard.register({
+					key: keyDef.key,
+					scope: '#' + self.thead.el.id,
+					handler: function(e) {
+						self._handleHeaderKeydown(e);
+					},
+					description: keyDef.description,
+					group: 'Table Header',
+					preventDefault: true
+				}));
+			});
+		} else {
+			// Fallback for environments without Funky.Keyboard
+			this.thead.el.addEventListener('keydown', this._onHeaderKeyDown);
+			this._cleanups.push(function() {
+				if (self.thead && self.thead.el) {
+					self.thead.el.removeEventListener('keydown', self._onHeaderKeyDown);
+				}
+			});
+		}
+	};
+
+	/**
+	 * Setup body keyboard shortcuts with Funky.Keyboard
+	 */
+	TableInstance.prototype._setupBodyKeyboardShortcuts = function() {
+		var self = this;
+
+		if (!this.tbody || !this.tbody.el) return;
+
+		// Ensure tbody has ID for scoping
+		if (!this.tbody.el.id) {
+			this.tbody.el.id = 'funky-table-tbody-' + this.instanceId;
+		}
+
+		if (Funky.Keyboard) {
+			var bodyKeys = [
+				{ key: 'space', description: 'Toggle row selection' },
+				{ key: 'arrowdown', description: 'Focus next row' },
+				{ key: 'arrowup', description: 'Focus previous row' }
+			];
+
+			bodyKeys.forEach(function(keyDef) {
+				self._keyboardUnregisters.push(Funky.Keyboard.register({
+					key: keyDef.key,
+					scope: '#' + self.tbody.el.id,
+					handler: function(e) {
+						self._handleKeyDown(e);
+					},
+					description: keyDef.description,
+					group: 'Table Body',
+					preventDefault: true
+				}));
+			});
+
+			// Ctrl+A for select all (multi-select only)
+			if (this.config.selectable === 'multi') {
+				this._keyboardUnregisters.push(Funky.Keyboard.register({
+					key: 'a',
+					mod: true,
+					scope: '#' + this.tbody.el.id,
+					handler: function(e) {
+						self._handleKeyDown(e);
+					},
+					description: 'Select all rows',
+					group: 'Table Body',
+					preventDefault: true
+				}));
+			}
+		} else {
+			// Fallback for environments without Funky.Keyboard
+			this.tbody.el.addEventListener('keydown', this._onKeyDown);
+			this._cleanups.push(function() {
+				if (self.tbody && self.tbody.el) {
+					self.tbody.el.removeEventListener('keydown', self._onKeyDown);
+				}
+			});
+		}
 	};
 
 	/**
@@ -5692,93 +5789,81 @@
 	};
 
 	/**
-	 * Initialize WebSocket live binding
+	 * Initialize WebSocket live binding using shared Funky.WebSocket
 	 */
 	TableInstance.prototype._initWebSocketBinding = function(config) {
 		var self = this;
-		var url = config.url;
 		var liveConfig = this.config.liveBinding;
 
-		if (!url) {
-			console.warn('[Funky.Table] WebSocket URL required');
+		// Require Funky.WebSocket
+		if (!Funky.WebSocket) {
+			console.warn('[Funky.Table] Funky.WebSocket required for websocket binding');
 			return;
 		}
 
-		var connect = function() {
-			if (self._liveBinding.destroyed) return;
+		// Get channels from config
+		var channels = config.channels || config.channel;
+		if (!channels) {
+			console.warn('[Funky.Table] WebSocket channel(s) required');
+			return;
+		}
 
-			var ws = new WebSocket(url);
+		// Normalize to array
+		if (!Array.isArray(channels)) {
+			channels = [channels];
+		}
 
-			ws.onopen = function() {
+		// Store unsubscribe functions for cleanup
+		this._liveBinding.wsUnsubscribes = [];
+		this._liveBinding.wsChannels = channels;
+
+		// Handler for WebSocket messages
+		var messageHandler = function(message) {
+			if (self._liveBinding.paused) return;
+			self._handleWebSocketMessage(message);
+		};
+
+		// Subscribe to each channel
+		channels.forEach(function(channel) {
+			var unsubscribe = Funky.WebSocket.subscribe(channel, messageHandler);
+			if (unsubscribe) {
+				self._liveBinding.wsUnsubscribes.push(unsubscribe);
+			}
+		});
+
+		// Handler for connection status changes
+		var statusHandler = function(data) {
+			if (data.status === 'connected') {
 				self._setLiveConnected(true);
-
-				// Authenticate if handler provided
-				if (typeof config.authenticate === 'function') {
-					config.authenticate(ws);
-				}
-
-				// Subscribe to channels
-				if (config.channels && config.channels.length) {
-					config.channels.forEach(function(channel) {
-						ws.send(JSON.stringify({ type: 'subscribe', channel: channel }));
-					});
-				}
-
-				// Set up heartbeat
-				if (config.heartbeat) {
-					self._liveBinding.heartbeatInterval = setInterval(function() {
-						if (ws.readyState === WebSocket.OPEN) {
-							ws.send(JSON.stringify({ type: 'ping' }));
-						}
-					}, config.heartbeat);
-				}
-
 				if (typeof liveConfig.onConnect === 'function') {
 					liveConfig.onConnect();
 				}
-			};
-
-			ws.onmessage = function(event) {
-				if (self._liveBinding.paused) return;
-
-				try {
-					var message = JSON.parse(event.data);
-					self._handleWebSocketMessage(message);
-				} catch (e) {
-					console.warn('[Funky.Table] Failed to parse WebSocket message:', e);
-				}
-			};
-
-			ws.onclose = function(event) {
+			} else if (data.status === 'disconnected' || data.status === 'reconnecting') {
 				self._setLiveConnected(false);
-
-				if (self._liveBinding.heartbeatInterval) {
-					clearInterval(self._liveBinding.heartbeatInterval);
-					self._liveBinding.heartbeatInterval = null;
+				if (data.status === 'disconnected' && typeof liveConfig.onDisconnect === 'function') {
+					liveConfig.onDisconnect('Connection closed');
 				}
-
-				if (typeof liveConfig.onDisconnect === 'function') {
-					liveConfig.onDisconnect(event.reason || 'Connection closed');
-				}
-
-				// Reconnect if enabled
-				if (config.reconnect && !self._liveBinding.destroyed && !self._liveBinding.paused) {
-					setTimeout(connect, config.reconnectInterval || 5000);
-				}
-			};
-
-			ws.onerror = function(error) {
-				if (typeof liveConfig.onError === 'function') {
-					liveConfig.onError(error);
-				}
-			};
-
-			self._liveBinding.ws = ws;
+			}
 		};
 
-		connect();
+		// Listen for connection status changes
+		Funky.WebSocket.on('status_changed', statusHandler);
+		this._liveBinding.wsStatusHandler = statusHandler;
+
+		// Set initial connection state based on current WebSocket status
+		this._setLiveConnected(Funky.WebSocket.isConnected());
+
 		this._liveBinding.source = 'websocket';
-		this._liveBinding.reconnect = connect;
+
+		// Reconnect function now just checks if WebSocket is initialized
+		this._liveBinding.reconnect = function() {
+			if (!Funky.WebSocket.isInitialized()) {
+				Funky.WebSocket.init();
+			}
+			if (!Funky.WebSocket.isConnected()) {
+				Funky.WebSocket.connect();
+			}
+		};
 	};
 
 	/**
@@ -9840,8 +9925,20 @@
 			this._liveBinding.pollInterval = null;
 		}
 
-		if (this._liveBinding.ws && this._liveBinding.ws.readyState === WebSocket.OPEN) {
-			this._liveBinding.ws.close();
+		// Unsubscribe from shared WebSocket channels (don't close the shared connection)
+		if (this._liveBinding.wsUnsubscribes) {
+			this._liveBinding.wsUnsubscribes.forEach(function(unsubscribe) {
+				if (typeof unsubscribe === 'function') {
+					unsubscribe();
+				}
+			});
+			this._liveBinding.wsUnsubscribes = [];
+		}
+
+		// Remove status handler
+		if (this._liveBinding.wsStatusHandler && Funky.WebSocket) {
+			Funky.WebSocket.off('status_changed', this._liveBinding.wsStatusHandler);
+			this._liveBinding.wsStatusHandler = null;
 		}
 
 		if (this._liveBinding.eventSource) {
@@ -9945,8 +10042,18 @@
 			clearInterval(this._liveBinding.heartbeatInterval);
 		}
 
-		if (this._liveBinding.ws) {
-			this._liveBinding.ws.close();
+		// Unsubscribe from shared WebSocket channels
+		if (this._liveBinding.wsUnsubscribes) {
+			this._liveBinding.wsUnsubscribes.forEach(function(unsubscribe) {
+				if (typeof unsubscribe === 'function') {
+					unsubscribe();
+				}
+			});
+		}
+
+		// Remove status handler
+		if (this._liveBinding.wsStatusHandler && Funky.WebSocket) {
+			Funky.WebSocket.off('status_changed', this._liveBinding.wsStatusHandler);
 		}
 
 		if (this._liveBinding.eventSource) {
@@ -10334,6 +10441,16 @@
 	 */
 	TableInstance.prototype.destroy = function() {
 		this._unbindEvents();
+
+		// Clear keyboard handlers
+		if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+			this._keyboardUnregisters.forEach(function(unregister) {
+				if (typeof unregister === 'function') {
+					unregister();
+				}
+			});
+			this._keyboardUnregisters = [];
+		}
 
 		// Clear timeouts
 		if (this.searchTimeout) {

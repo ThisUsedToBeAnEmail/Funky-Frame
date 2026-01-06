@@ -43,7 +43,7 @@
  *   - 'form': Settings form with JSONEditor
  *   - 'custom': Full control with lifecycle hooks
  * 
- * @version 1.0.2
+ * @version 1.0.3
  * @see Funky.CRUD for CRUD tab configuration
  * @see Funky.DataTables for DataTable tab configuration
  */

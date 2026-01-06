@@ -15,6 +15,10 @@ describe('Funky.Core.Modal', function() {
         modalId = 'testModal_' + Date.now();
 
         // Ensure clean state before each test
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         // Force-hide any open modals and clear the openModals array
         Modal.hideAll();
         Modal.cleanupBackdrops();
@@ -46,6 +50,10 @@ describe('Funky.Core.Modal', function() {
         // Clean up any open modals
         Modal.hideAll();
         Modal.cleanupBackdrops();
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         fixture.cleanup();
 
         // Remove dynamically created modals

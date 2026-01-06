@@ -149,6 +149,14 @@
   /* Optional box-shadow for double-ring effect only */
   --focus-ring-shadow: none;
   --focus-ring-shadow-inset: none;
+
+  /* Border Radius Scale */
+  --pro-radius-xs: 2px;
+  --pro-radius-sm: 4px;
+  --pro-radius-md: 6px;
+  --pro-radius-lg: 8px;
+  --pro-radius-xl: 12px;
+  --pro-radius-full: 9999px;
 }
 
 /* ============================================

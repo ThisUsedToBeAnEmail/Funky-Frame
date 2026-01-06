@@ -23,7 +23,7 @@
  *   // Events (via DOM CustomEvent - uses dots)
  *   D.one('#myModal').on('funky.modal.hidden', function() { ... });
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -322,9 +322,9 @@
 		this.isShown = false;
 		this.isTransitioning = false;
 		this.triggerElement = null;
-		this.boundKeyHandler = this._handleKeydown.bind(this);
 		this.boundClickHandler = this._handleBackdropClick.bind(this);
 		this._focusTrapCleanup = null; // Cleanup function for FocusManager.trapFocus
+		this._keyboardUnregister = null; // Cleanup function for Funky.Keyboard
 
 		// Store instance
 		instances[this.id] = this;
@@ -421,15 +421,58 @@
 			// Join presence channel
 			joinModalPresence(this);
 
-			// Bind events
-			document.addEventListener('keydown', this.boundKeyHandler);
+			// Bind click events
 			this.el.addEventListener('click', this.boundClickHandler);
 
-			// Set up focus trap using FocusManager if available
+			// Set up focus trap using FocusManager if available, otherwise use fallback
 			if (Funky.FocusManager && Funky.FocusManager.trapFocus) {
 				this._focusTrapCleanup = Funky.FocusManager.trapFocus(this.el, {
 					autoFocus: false // We handle initial focus ourselves
 				});
+			} else {
+				// Fallback focus trap for Tab key when FocusManager not available
+				var modalInstance = this;
+				this._boundTrapFocus = function(e) {
+					if (e.key === 'Tab') {
+						modalInstance._trapFocus(e);
+					}
+				};
+				this.el.addEventListener('keydown', this._boundTrapFocus);
+			}
+
+			// Register keyboard shortcuts via Funky.Keyboard
+			if (Funky.Keyboard && this.options.keyboard) {
+				var modalInstance = this;
+				// Push modal scope so Escape handler becomes active
+				Funky.Keyboard.pushScope('modal');
+				this._keyboardUnregister = Funky.Keyboard.register({
+					key: 'escape',
+					scope: 'modal',
+					allowInInput: true,
+					priority: 10, // Higher than Morph.to() internal handler (0)
+					handler: function() {
+						// Only close if this modal is the topmost open modal
+						if (modalInstance.isShown && !modalInstance.isTransitioning) {
+							var topModal = openModals[openModals.length - 1];
+							if (topModal === modalInstance) {
+								modalInstance.hide();
+							}
+						}
+					},
+					description: 'Close modal',
+					group: 'Modal',
+					preventDefault: true
+				});
+			} else if (this.options.keyboard) {
+				// Fallback escape handler when Funky.Keyboard is not available
+				var modalInstance = this;
+				this._escapeHandler = function(e) {
+					if (e.key === 'Escape' && modalInstance.isShown) {
+						e.preventDefault();
+						modalInstance.hide();
+					}
+				};
+				document.addEventListener('keydown', this._escapeHandler);
 			}
 
 			// Get transition duration (respects animations preference)
@@ -477,14 +520,31 @@
 			// Remove show class
 			D.wrap(this.el).classRemove('show');
 
-			// Unbind events
-			document.removeEventListener('keydown', this.boundKeyHandler);
+			// Unbind click events
 			this.el.removeEventListener('click', this.boundClickHandler);
 
 			// Clean up focus trap
 			if (this._focusTrapCleanup) {
 				this._focusTrapCleanup();
 				this._focusTrapCleanup = null;
+			} else if (this._boundTrapFocus) {
+				this.el.removeEventListener('keydown', this._boundTrapFocus);
+				this._boundTrapFocus = null;
+			}
+
+			// Clean up keyboard shortcuts and pop scope
+			if (this._keyboardUnregister) {
+				this._keyboardUnregister();
+				this._keyboardUnregister = null;
+				// Pop the modal scope we pushed in show()
+				if (Funky.Keyboard && Funky.Keyboard.popScope) {
+					Funky.Keyboard.popScope();
+				}
+			}
+			// Clean up fallback escape handler
+			if (this._escapeHandler) {
+				document.removeEventListener('keydown', this._escapeHandler);
+				this._escapeHandler = null;
 			}
 
 			// Get transition duration (respects animations preference)
@@ -559,8 +619,24 @@
 				this.hide();
 			}
 
-			document.removeEventListener('keydown', this.boundKeyHandler);
 			this.el.removeEventListener('click', this.boundClickHandler);
+
+			// Clean up fallback focus trap if still active
+			if (this._boundTrapFocus) {
+				this.el.removeEventListener('keydown', this._boundTrapFocus);
+				this._boundTrapFocus = null;
+			}
+
+			// Clean up keyboard shortcuts if still active
+			if (this._keyboardUnregister) {
+				this._keyboardUnregister();
+				this._keyboardUnregister = null;
+			}
+			// Clean up fallback escape handler
+			if (this._escapeHandler) {
+				document.removeEventListener('keydown', this._escapeHandler);
+				this._escapeHandler = null;
+			}
 
 			delete instances[this.id];
 		},
@@ -607,24 +683,6 @@
 			}, duration);
 
 			this.backdrop = null;
-		},
-
-		/**
-		 * Handle keydown events
-		 * @private
-		 */
-		_handleKeydown: function(e) {
-			// ESC to close
-			if (e.key === 'Escape' && this.options.keyboard) {
-				e.preventDefault();
-				this.hide();
-				return;
-			}
-
-			// Tab for focus trap - only use fallback if FocusManager trap not available
-			if (e.key === 'Tab' && !this._focusTrapCleanup) {
-				this._trapFocus(e);
-			}
 		},
 
 		/**

@@ -234,6 +234,7 @@ Modules must be loaded in dependency order. Here's the recommended sequence:
 ### Standard Dependencies
 | Component | Core | Components | External |
 |-----------|------|------------|----------|
+| Toggle Group | Dom, Events, Registry | - | PubSub, Announce, Tooltip (opt) |
 | Action Bar | Dom, Events | - | - |
 | Action Registry | Registry | - | - |
 | Audio | Registry, Storage | - | - |

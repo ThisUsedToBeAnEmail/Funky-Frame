@@ -4,7 +4,7 @@
  * Namespaced storage with automatic JSON serialization.
  * All keys are prefixed with 'funky_' to avoid collisions.
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

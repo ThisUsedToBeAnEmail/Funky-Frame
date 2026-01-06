@@ -20,6 +20,14 @@ describe('Funky.A11y.Modal', function() {
     var fixture;
 
     beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
+        // Dispose any existing modal instances to ensure clean state
+        if (Modal.hideAll) {
+            Modal.hideAll();
+        }
         fixture = FunkyTests.fixture(
             '<div>' +
                 '<button id="trigger-btn" type="button">Open Modal</button>' +
@@ -217,13 +225,15 @@ describe('Funky.A11y.Modal', function() {
     describe('Keyboard Navigation', function() {
 
         it('Escape key closes modal', function() {
-            Modal.show('#test-modal');
+            // Show modal with explicit keyboard option
+            Modal.show('#test-modal', { keyboard: true });
 
-            return FunkyTests.delay(100).then(function() {
-                var modal = document.querySelector('#test-modal');
-                FunkyTests.simulate.keydown(modal, { key: 'Escape' });
+            // Wait for show transition to complete before pressing Escape
+            return FunkyTests.delay(350).then(function() {
+                // Dispatch on document where the global keyboard handler listens
+                FunkyTests.simulate.keydown(document, { key: 'Escape' });
 
-                return FunkyTests.delay(100);
+                return FunkyTests.delay(500);
             }).then(function() {
                 var modal = document.querySelector('#test-modal');
                 expect(modal.classList.contains('show')).toBe(false);

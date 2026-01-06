@@ -2,7 +2,7 @@
  * FunkyColumnProfiles - Column visibility profile management
  * Save/load column visibility configurations for Funky.Table
  * @module Funky.ColumnProfiles
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

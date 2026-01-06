@@ -1,0 +1,356 @@
+<div data-page="component-stepper" class="component-demo">
+    <h2>Stepper</h2>
+    <p class="text-muted">Visual step progress indicator showing progress through a multi-step process.</p>
+
+    <!-- Basic Usage -->
+    <section class="demo-section" aria-labelledby="basic-heading">
+        <h3 id="basic-heading">Basic Usage</h3>
+        <p class="text-muted small">A horizontal stepper with default settings. Use the props panel to customize.</p>
+        <div class="demo-area">
+            <div id="stepper-basic"></div>
+        </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="demo-section" aria-labelledby="controls-heading">
+        <h3 id="controls-heading">Navigation Controls</h3>
+        <p class="text-muted small">Control the stepper programmatically.</p>
+        <div class="demo-area" role="group" aria-label="Stepper controls">
+            <button class="btn btn-secondary" id="btn-prev">
+                <i class="fas fa-arrow-left me-1" aria-hidden="true"></i> Previous
+            </button>
+            <button class="btn btn-primary" id="btn-next">
+                Next <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success" id="btn-complete">
+                <i class="fas fa-check me-1" aria-hidden="true"></i> Complete Current
+            </button>
+            <button class="btn btn-danger" id="btn-error">
+                <i class="fas fa-exclamation me-1" aria-hidden="true"></i> Set Error
+            </button>
+            <button class="btn btn-outline-secondary" id="btn-reset">
+                <i class="fas fa-redo me-1" aria-hidden="true"></i> Reset
+            </button>
+        </div>
+    </section>
+
+    <!-- State Display -->
+    <section class="demo-section" aria-labelledby="state-heading">
+        <h3 id="state-heading">Current State</h3>
+        <div class="demo-area">
+            <div class="demo-state">
+                <span class="demo-state__label">Current Step:</span>
+                <span class="demo-state__value" id="state-current">0</span>
+            </div>
+            <div class="demo-state">
+                <span class="demo-state__label">Progress:</span>
+                <span class="demo-state__value" id="state-progress">0%</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Step States Demo -->
+    <section class="demo-section" aria-labelledby="states-heading">
+        <h3 id="states-heading">Step States</h3>
+        <p class="text-muted small">Demonstration of all available step states.</p>
+        <div class="demo-area">
+            <div id="stepper-states"></div>
+        </div>
+    </section>
+
+    <!-- Vertical Orientation -->
+    <section class="demo-section" aria-labelledby="vertical-heading">
+        <h3 id="vertical-heading">Vertical Orientation</h3>
+        <p class="text-muted small">Stepper can be displayed vertically for sidebar navigation or mobile layouts.</p>
+        <div class="demo-area">
+            <div id="stepper-vertical"></div>
+        </div>
+    </section>
+
+    <!-- Size Variants -->
+    <section class="demo-section" aria-labelledby="sizes-heading">
+        <h3 id="sizes-heading">Size Variants</h3>
+        <p class="text-muted small">Available in small, medium, and large sizes.</p>
+        <div class="demo-area">
+            <div class="mb-4">
+                <p class="text-muted small mb-2">Small:</p>
+                <div id="stepper-sm"></div>
+            </div>
+            <div class="mb-4">
+                <p class="text-muted small mb-2">Medium (default):</p>
+                <div id="stepper-md"></div>
+            </div>
+            <div>
+                <p class="text-muted small mb-2">Large:</p>
+                <div id="stepper-lg"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Log -->
+    <section class="demo-section" aria-labelledby="events-heading">
+        <h3 id="events-heading">Event Log</h3>
+        <div class="demo-area">
+            <pre id="event-log" class="demo-log" aria-live="polite">Events will appear here...</pre>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Demo-specific spacing */
+.component-demo .demo-area > div[id^="stepper-"] {
+    margin-bottom: 1rem;
+}
+
+.component-demo .demo-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 1.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--pro-bg-tertiary);
+    border-radius: var(--pro-radius-md, 6px);
+}
+
+.component-demo .demo-state__label {
+    color: var(--pro-text-secondary);
+    font-size: var(--pro-font-size-sm);
+}
+
+.component-demo .demo-state__value {
+    font-weight: var(--pro-font-weight-semibold);
+    color: var(--pro-accent-primary);
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+
+    // Playground communication helpers
+    var emit = window.PlaygroundCanvas ? window.PlaygroundCanvas.emit : function() {};
+    var getProps = window.PlaygroundCanvas ? window.PlaygroundCanvas.getProps : function() { return {}; };
+
+    var logs = [];
+    var mainStepper = null;
+    var allSteppers = [];
+
+    function log(message) {
+        logs.unshift(new Date().toLocaleTimeString() + ' - ' + message);
+        if (logs.length > 15) logs.pop();
+        var logEl = document.getElementById('event-log');
+        if (logEl) logEl.textContent = logs.join('\n');
+    }
+
+    function updateStateDisplay() {
+        if (!mainStepper) return;
+        document.getElementById('state-current').textContent = mainStepper.getCurrent();
+        document.getElementById('state-progress').textContent = mainStepper.getProgress() + '%';
+    }
+
+    function parseSteps(stepsValue) {
+        if (Array.isArray(stepsValue)) return stepsValue;
+        if (typeof stepsValue === 'string') {
+            try {
+                return JSON.parse(stepsValue);
+            } catch(e) {
+                return [
+                    { id: 'step1', label: 'Step 1' },
+                    { id: 'step2', label: 'Step 2' },
+                    { id: 'step3', label: 'Step 3' }
+                ];
+            }
+        }
+        return [];
+    }
+
+    function destroyAllSteppers() {
+        allSteppers.forEach(function(s) {
+            if (s && s.destroy) s.destroy();
+        });
+        allSteppers = [];
+        mainStepper = null;
+    }
+
+    function initSteppers() {
+        destroyAllSteppers();
+
+        var props = getProps();
+        var steps = parseSteps(props.steps);
+
+        // Main interactive stepper
+        mainStepper = Funky.Stepper.init('#stepper-basic', {
+            steps: steps,
+            current: parseInt(props.current, 10) || 0,
+            orientation: props.orientation || 'horizontal',
+            size: props.size || 'md',
+            showLabels: props.showLabels !== false,
+            showNumbers: props.showNumbers !== false,
+            clickable: props.clickable !== false,
+            linear: props.linear !== false,
+            onChange: function(step, index) {
+                log('onChange: Step ' + index + ' (' + step.label + ')');
+                updateStateDisplay();
+                emit('event', {
+                    event: 'funky.stepper.change',
+                    payload: { step: step, index: index }
+                });
+            },
+            onBeforeChange: function(from, to) {
+                log('onBeforeChange: ' + from + ' -> ' + to);
+                return true;
+            }
+        });
+        allSteppers.push(mainStepper);
+
+        // States demo stepper
+        var statesStepper = Funky.Stepper.init('#stepper-states', {
+            steps: [
+                { id: 'completed', label: 'Completed' },
+                { id: 'current', label: 'Current' },
+                { id: 'error', label: 'With Error' },
+                { id: 'upcoming', label: 'Upcoming' }
+            ],
+            current: 1,
+            completed: [0],
+            clickable: false
+        });
+        statesStepper.setError('error', 'Validation failed');
+        allSteppers.push(statesStepper);
+
+        // Vertical stepper
+        var verticalStepper = Funky.Stepper.init('#stepper-vertical', {
+            steps: [
+                { id: 'v1', label: 'Account Setup' },
+                { id: 'v2', label: 'Personal Info' },
+                { id: 'v3', label: 'Preferences' },
+                { id: 'v4', label: 'Confirmation' }
+            ],
+            current: 1,
+            completed: [0],
+            orientation: 'vertical',
+            clickable: true,
+            linear: false
+        });
+        allSteppers.push(verticalStepper);
+
+        // Size variants
+        var sizeDemoSteps = [
+            { id: 's1', label: 'Start' },
+            { id: 's2', label: 'Middle' },
+            { id: 's3', label: 'End' }
+        ];
+
+        var smStepper = Funky.Stepper.init('#stepper-sm', {
+            steps: sizeDemoSteps,
+            current: 1,
+            completed: [0],
+            size: 'sm',
+            clickable: false
+        });
+        allSteppers.push(smStepper);
+
+        var mdStepper = Funky.Stepper.init('#stepper-md', {
+            steps: sizeDemoSteps,
+            current: 1,
+            completed: [0],
+            size: 'md',
+            clickable: false
+        });
+        allSteppers.push(mdStepper);
+
+        var lgStepper = Funky.Stepper.init('#stepper-lg', {
+            steps: sizeDemoSteps,
+            current: 1,
+            completed: [0],
+            size: 'lg',
+            clickable: false
+        });
+        allSteppers.push(lgStepper);
+
+        updateStateDisplay();
+        log('Steppers initialized');
+    }
+
+    Funky.Pages.register('component-stepper', {
+        init: function(state) {
+            var props = getProps();
+            log('Page init with props');
+            emit('event', {
+                event: 'funky.stepper.init',
+                payload: props
+            });
+
+            initSteppers();
+
+            // Bind control buttons
+            document.getElementById('btn-prev').onclick = function() {
+                if (mainStepper) {
+                    mainStepper.prev();
+                    log('prev() called');
+                    updateStateDisplay();
+                }
+            };
+
+            document.getElementById('btn-next').onclick = function() {
+                if (mainStepper) {
+                    mainStepper.next();
+                    log('next() called');
+                    updateStateDisplay();
+                }
+            };
+
+            document.getElementById('btn-complete').onclick = function() {
+                if (mainStepper) {
+                    var current = mainStepper.getCurrent();
+                    mainStepper.complete(current);
+                    log('complete(' + current + ') called');
+                    updateStateDisplay();
+                    emit('event', {
+                        event: 'funky.stepper.complete',
+                        payload: { index: current }
+                    });
+                }
+            };
+
+            document.getElementById('btn-error').onclick = function() {
+                if (mainStepper) {
+                    var current = mainStepper.getCurrent();
+                    mainStepper.setError(current, 'Validation failed');
+                    log('setError(' + current + ') called');
+                    emit('event', {
+                        event: 'funky.stepper.error',
+                        payload: { index: current, error: 'Validation failed' }
+                    });
+                }
+            };
+
+            document.getElementById('btn-reset').onclick = function() {
+                if (mainStepper) {
+                    mainStepper.reset();
+                    log('reset() called');
+                    updateStateDisplay();
+                    emit('event', {
+                        event: 'funky.stepper.reset',
+                        payload: {}
+                    });
+                }
+            };
+
+            // Listen for props changes from playground panel
+            window.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'props') {
+                    log('Props updated from panel');
+                    initSteppers();
+                }
+            });
+        },
+
+        destroy: function() {
+            destroyAllSteppers();
+            logs = [];
+            return {};
+        }
+    });
+})();
+</script>

@@ -2,7 +2,7 @@
  * WIP Overlay - Work In Progress Page Overlay
  * A simple overlay to indicate pages that are still under development
  * @module Funky.WIPOverlay
- * @version 1.0.2
+ * @version 1.0.3
  *
  * Usage (Instance-based - recommended for SPAs):
  *   Funky.WIPOverlay.init({
@@ -798,12 +798,27 @@
 				}
 
 				// Add keyboard listener for Escape
-				self._keyHandler = function(e) {
-					if (e.key === 'Escape' && self.config.allowClose) {
-						self.hide();
-					}
-				};
-				document.addEventListener('keydown', self._keyHandler);
+				if (Funky.Keyboard && self.config.allowClose) {
+					Funky.Keyboard.pushScope('wip-overlay');
+					self._keyboardUnregister = Funky.Keyboard.register({
+						key: 'escape',
+						scope: 'wip-overlay',
+						handler: function() {
+							self.hide();
+						},
+						description: 'Close overlay',
+						group: 'WIP Overlay',
+						preventDefault: true
+					});
+				} else if (self.config.allowClose) {
+					// Fallback for environments without Funky.Keyboard
+					self._keyHandler = function(e) {
+						if (e.key === 'Escape') {
+							self.hide();
+						}
+					};
+					document.addEventListener('keydown', self._keyHandler);
+				}
 
 				// Announce to screen readers
 				if (Funky.Announce) {
@@ -849,6 +864,13 @@
 			this.overlay.classList.remove('visible');
 
 			// Remove keyboard listener
+			if (this._keyboardUnregister) {
+				this._keyboardUnregister();
+				this._keyboardUnregister = null;
+				if (Funky.Keyboard) {
+					Funky.Keyboard.popScope();
+				}
+			}
 			if (this._keyHandler) {
 				document.removeEventListener('keydown', this._keyHandler);
 				this._keyHandler = null;

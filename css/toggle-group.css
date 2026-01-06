@@ -1,0 +1,516 @@
+/**
+ * Funky.ToggleGroup Styles
+ * Segmented control / button group component
+ */
+
+/* =========================================================================
+   CSS Variables
+   ========================================================================= */
+
+:root {
+    --toggle-group-bg: var(--pro-bg-secondary, #f5f5f5);
+    --toggle-group-border: var(--pro-border-color, #ddd);
+    --toggle-group-radius: var(--pro-radius, 4px);
+    --toggle-group-gap: 0;
+
+    --toggle-btn-bg: transparent;
+    --toggle-btn-bg-hover: var(--pro-bg-tertiary, #e8e8e8);
+    --toggle-btn-bg-active: var(--pro-primary, #007bff);
+    --toggle-btn-color: var(--pro-text-secondary, #666);
+    --toggle-btn-color-hover: var(--pro-text-primary, #333);
+    --toggle-btn-color-active: white;
+
+    --toggle-btn-padding-sm: 6px 12px;
+    --toggle-btn-padding-md: 8px 16px;
+    --toggle-btn-padding-lg: 12px 20px;
+
+    --toggle-btn-font-size-sm: var(--pro-font-size-xs, 0.75rem);
+    --toggle-btn-font-size-md: var(--pro-font-size-sm, 0.875rem);
+    --toggle-btn-font-size-lg: var(--pro-font-size-base, 1rem);
+}
+
+/* =========================================================================
+   Container
+   ========================================================================= */
+
+.funky-toggle-group {
+    display: inline-flex;
+    background: var(--toggle-group-bg);
+    border: 1px solid var(--toggle-group-border);
+    border-radius: var(--toggle-group-radius);
+    overflow: hidden;
+}
+
+.funky-toggle-group--vertical {
+    flex-direction: column;
+}
+
+.funky-toggle-group--equal {
+    display: flex;
+}
+
+.funky-toggle-group--equal .funky-toggle-group__btn {
+    flex: 1;
+}
+
+/* =========================================================================
+   Buttons
+   ========================================================================= */
+
+.funky-toggle-group__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    background: var(--toggle-btn-bg);
+    color: var(--toggle-btn-color);
+    border: none;
+    padding: var(--toggle-btn-padding-md);
+    font-size: var(--toggle-btn-font-size-md);
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Border between buttons */
+.funky-toggle-group:not(.funky-toggle-group--vertical) .funky-toggle-group__btn + .funky-toggle-group__btn {
+    border-left: 1px solid var(--toggle-group-border);
+}
+
+.funky-toggle-group--vertical .funky-toggle-group__btn + .funky-toggle-group__btn {
+    border-top: 1px solid var(--toggle-group-border);
+}
+
+/* States */
+.funky-toggle-group__btn:hover:not(:disabled) {
+    background: var(--toggle-btn-bg-hover);
+    color: var(--toggle-btn-color-hover);
+}
+
+.funky-toggle-group__btn:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset-inset);
+    box-shadow: var(--focus-ring-shadow-inset);
+    z-index: 1;
+}
+
+.funky-toggle-group__btn--active {
+    background: var(--toggle-btn-bg-active);
+    color: var(--toggle-btn-color-active);
+}
+
+.funky-toggle-group__btn--active:hover:not(:disabled) {
+    background: var(--toggle-btn-bg-active);
+    color: var(--toggle-btn-color-active);
+    filter: brightness(1.1);
+}
+
+.funky-toggle-group__btn--disabled,
+.funky-toggle-group__btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =========================================================================
+   Size Variants
+   ========================================================================= */
+
+.funky-toggle-group--sm .funky-toggle-group__btn {
+    padding: var(--toggle-btn-padding-sm);
+    font-size: var(--toggle-btn-font-size-sm);
+}
+
+.funky-toggle-group--lg .funky-toggle-group__btn {
+    padding: var(--toggle-btn-padding-lg);
+    font-size: var(--toggle-btn-font-size-lg);
+}
+
+/* =========================================================================
+   Icons
+   ========================================================================= */
+
+.funky-toggle-group__btn i {
+    font-size: 1em;
+}
+
+/* Icon only - square buttons */
+.funky-toggle-group--icon-only .funky-toggle-group__btn {
+    padding: 8px;
+    aspect-ratio: 1;
+}
+
+.funky-toggle-group--icon-only.funky-toggle-group--sm .funky-toggle-group__btn {
+    padding: 6px;
+}
+
+.funky-toggle-group--icon-only.funky-toggle-group--lg .funky-toggle-group__btn {
+    padding: 12px;
+}
+
+/* =========================================================================
+   Variant: Outline
+   ========================================================================= */
+
+.funky-toggle-group--outline {
+    background: transparent;
+    border: none;
+    gap: 8px;
+}
+
+.funky-toggle-group--outline .funky-toggle-group__btn {
+    background: transparent;
+    border: 1px solid var(--toggle-group-border);
+    border-radius: var(--toggle-group-radius);
+}
+
+.funky-toggle-group--outline .funky-toggle-group__btn + .funky-toggle-group__btn {
+    border-left: 1px solid var(--toggle-group-border);
+}
+
+.funky-toggle-group--outline .funky-toggle-group__btn:hover:not(:disabled) {
+    border-color: var(--pro-primary, #007bff);
+    color: var(--pro-primary, #007bff);
+}
+
+.funky-toggle-group--outline .funky-toggle-group__btn--active {
+    background: var(--toggle-btn-bg-active);
+    border-color: var(--toggle-btn-bg-active);
+    color: var(--toggle-btn-color-active);
+}
+
+/* =========================================================================
+   Variant: Pills
+   ========================================================================= */
+
+.funky-toggle-group--pills {
+    background: transparent;
+    border: none;
+    gap: 4px;
+}
+
+.funky-toggle-group--pills .funky-toggle-group__btn {
+    border-radius: 9999px;
+    padding: 6px 16px;
+    background: var(--toggle-group-bg);
+}
+
+.funky-toggle-group--pills .funky-toggle-group__btn + .funky-toggle-group__btn {
+    border-left: none;
+}
+
+.funky-toggle-group--pills.funky-toggle-group--sm .funky-toggle-group__btn {
+    padding: 4px 12px;
+}
+
+.funky-toggle-group--pills.funky-toggle-group--lg .funky-toggle-group__btn {
+    padding: 8px 20px;
+}
+
+/* =========================================================================
+   Icon-Only Mode (enhanced)
+   ========================================================================= */
+
+.funky-toggle-group--icon-only .funky-toggle-group__btn {
+    min-width: 36px;
+    min-height: 36px;
+}
+
+.funky-toggle-group--icon-only.funky-toggle-group--sm .funky-toggle-group__btn {
+    min-width: 28px;
+    min-height: 28px;
+}
+
+.funky-toggle-group--icon-only.funky-toggle-group--lg .funky-toggle-group__btn {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* Hide text in icon-only mode */
+.funky-toggle-group--icon-only .funky-toggle-group__btn span {
+    display: none;
+}
+
+/* =========================================================================
+   Vertical Orientation (enhanced)
+   ========================================================================= */
+
+.funky-toggle-group--vertical {
+    width: fit-content;
+}
+
+.funky-toggle-group--vertical .funky-toggle-group__btn {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+/* Outline variant vertical */
+.funky-toggle-group--vertical.funky-toggle-group--outline .funky-toggle-group__btn + .funky-toggle-group__btn {
+    border-top: 1px solid var(--toggle-group-border);
+    margin-top: 8px;
+}
+
+/* Pills variant vertical */
+.funky-toggle-group--vertical.funky-toggle-group--pills .funky-toggle-group__btn + .funky-toggle-group__btn {
+    border-top: none;
+}
+
+/* =========================================================================
+   Equal Width (enhanced)
+   ========================================================================= */
+
+.funky-toggle-group--equal {
+    width: 100%;
+}
+
+.funky-toggle-group--equal .funky-toggle-group__btn {
+    text-align: center;
+    justify-content: center;
+}
+
+.funky-toggle-group--vertical.funky-toggle-group--equal {
+    width: auto;
+}
+
+.funky-toggle-group--vertical.funky-toggle-group--equal .funky-toggle-group__btn {
+    flex: none;
+    width: 100%;
+}
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+
+.funky-toggle-group--responsive {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    /* Stack on mobile if responsive mode enabled */
+    .funky-toggle-group--responsive {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .funky-toggle-group--responsive .funky-toggle-group__btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .funky-toggle-group--responsive .funky-toggle-group__btn + .funky-toggle-group__btn {
+        border-left: none;
+        border-top: 1px solid var(--toggle-group-border);
+    }
+}
+
+/* =========================================================================
+   Animation & Transitions
+   ========================================================================= */
+
+.funky-toggle-group__btn {
+    transition:
+        background-color var(--toggle-transition-duration, 150ms) var(--toggle-transition-easing, ease),
+        color var(--toggle-transition-duration, 150ms) var(--toggle-transition-easing, ease),
+        border-color var(--toggle-transition-duration, 150ms) var(--toggle-transition-easing, ease),
+        transform var(--toggle-transition-duration, 150ms) var(--toggle-transition-easing, ease);
+}
+
+/* Active state with subtle scale */
+.funky-toggle-group__btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .funky-toggle-group__btn {
+        transition: none;
+    }
+
+    .funky-toggle-group__btn:active:not(:disabled) {
+        transform: none;
+    }
+}
+
+/* Loading state pulse */
+@keyframes toggle-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.funky-toggle-group--loading .funky-toggle-group__btn {
+    animation: toggle-pulse 1.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .funky-toggle-group--loading .funky-toggle-group__btn {
+        animation: none;
+        opacity: 0.6;
+    }
+}
+
+/* =========================================================================
+   Phase 3: Badges
+   ========================================================================= */
+
+.funky-toggle-group__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--pro-text-secondary, #666);
+    background: var(--pro-bg-tertiary, #e8e8e8);
+    border-radius: 9px;
+}
+
+/* Badge in active button */
+.funky-toggle-group__btn--active .funky-toggle-group__badge {
+    color: var(--toggle-btn-color-active);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Badge variants */
+.funky-toggle-group__badge--success {
+    color: white;
+    background: var(--pro-success, #28a745);
+}
+
+.funky-toggle-group__badge--warning {
+    color: var(--pro-text-primary, #333);
+    background: var(--pro-warning, #ffc107);
+}
+
+.funky-toggle-group__badge--danger {
+    color: white;
+    background: var(--pro-danger, #dc3545);
+}
+
+.funky-toggle-group__badge--info {
+    color: white;
+    background: var(--pro-info, #17a2b8);
+}
+
+/* Icon-only with badge - position as overlay */
+.funky-toggle-group--icon-only .funky-toggle-group__btn {
+    position: relative;
+}
+
+.funky-toggle-group--icon-only .funky-toggle-group__badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    margin-left: 0;
+    min-width: 16px;
+    height: 16px;
+    font-size: 10px;
+}
+
+/* =========================================================================
+   Phase 3: Separators
+   ========================================================================= */
+
+.funky-toggle-group__separator {
+    display: inline-block;
+    width: 1px;
+    height: 20px;
+    margin: 0 4px;
+    background: var(--toggle-group-border);
+    vertical-align: middle;
+    align-self: center;
+}
+
+/* Vertical separator */
+.funky-toggle-group--vertical .funky-toggle-group__separator {
+    width: 100%;
+    height: 1px;
+    margin: 4px 0;
+}
+
+/* Separator in outline variant */
+.funky-toggle-group--outline .funky-toggle-group__separator {
+    background: transparent;
+    margin: 0 2px;
+}
+
+/* Separator in pills variant */
+.funky-toggle-group--pills .funky-toggle-group__separator {
+    background: transparent;
+    margin: 0;
+}
+
+/* =========================================================================
+   Phase 3: Loading Skeletons
+   ========================================================================= */
+
+.funky-toggle-group__skeleton {
+    display: inline-block;
+    min-width: 60px;
+    height: 36px;
+    background: linear-gradient(
+        90deg,
+        var(--toggle-btn-bg, transparent) 25%,
+        var(--toggle-btn-bg-hover, #e8e8e8) 50%,
+        var(--toggle-btn-bg, transparent) 75%
+    );
+    background-size: 200% 100%;
+    animation: toggle-skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: var(--toggle-group-radius);
+}
+
+.funky-toggle-group__skeleton + .funky-toggle-group__skeleton {
+    margin-left: 2px;
+}
+
+@keyframes toggle-skeleton-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Size variants for skeletons */
+.funky-toggle-group--sm .funky-toggle-group__skeleton {
+    min-width: 50px;
+    height: 28px;
+}
+
+.funky-toggle-group--lg .funky-toggle-group__skeleton {
+    min-width: 80px;
+    height: 44px;
+}
+
+/* Icon-only skeletons */
+.funky-toggle-group--icon-only .funky-toggle-group__skeleton {
+    min-width: 36px;
+    aspect-ratio: 1;
+}
+
+.funky-toggle-group--icon-only.funky-toggle-group--sm .funky-toggle-group__skeleton {
+    min-width: 28px;
+}
+
+.funky-toggle-group--icon-only.funky-toggle-group--lg .funky-toggle-group__skeleton {
+    min-width: 44px;
+}
+
+/* Vertical skeleton layout */
+.funky-toggle-group--vertical .funky-toggle-group__skeleton + .funky-toggle-group__skeleton {
+    margin-left: 0;
+    margin-top: 2px;
+}
+
+/* Reduced motion for skeletons */
+@media (prefers-reduced-motion: reduce) {
+    .funky-toggle-group__skeleton {
+        animation: none;
+        background: var(--toggle-btn-bg-hover, #e8e8e8);
+    }
+}
+

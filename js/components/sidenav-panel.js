@@ -2,7 +2,7 @@
  * Funky.SideNavPanel - SideNav + Content Panel Integration
  * Pairs a SideNav with content panels for a complete navigation solution
  * @module Funky.SideNavPanel
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

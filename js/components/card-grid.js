@@ -9,7 +9,7 @@
  * - Pagination and infinite scroll
  * 
  * @namespace Funky.CardGrid
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
     'use strict';
@@ -1621,9 +1621,9 @@
         var keyHandler = function(e) {
             // Only handle if focus is within grid
             if (!self.els.grid || !self.els.grid.el || !self.els.grid.el.contains(document.activeElement)) return;
-            
+
             var handled = false;
-            
+
             switch (e.key) {
                 case 'ArrowRight':
                     self._moveFocus(1, 0);
@@ -1668,16 +1668,67 @@
                     }
                     break;
             }
-            
+
             if (handled) {
                 e.preventDefault();
             }
         };
-        
-        this.els.grid.on('keydown', keyHandler);
-        this._cleanupFns.push(function() {
-            self.els.grid.off('keydown', keyHandler);
-        });
+
+        // Use Funky.Keyboard for F1 help integration
+        var gridEl = this.els.grid.el;
+        if (!gridEl.id) {
+            gridEl.id = this.id + '-grid';
+        }
+
+        if (Funky.Keyboard) {
+            var navKeys = [
+                { key: 'arrowright', description: 'Focus next card' },
+                { key: 'arrowleft', description: 'Focus previous card' },
+                { key: 'arrowdown', description: 'Focus card below' },
+                { key: 'arrowup', description: 'Focus card above' },
+                { key: 'home', description: 'Focus first card' },
+                { key: 'end', description: 'Focus last card' },
+                { key: 'enter', description: 'Activate card' },
+                { key: 'space', description: 'Activate card' },
+                { key: 'escape', description: 'Clear selection' }
+            ];
+
+            navKeys.forEach(function(keyDef) {
+                var unregister = Funky.Keyboard.register({
+                    key: keyDef.key,
+                    scope: '#' + gridEl.id,
+                    handler: function(e) {
+                        keyHandler(e);
+                    },
+                    description: keyDef.description,
+                    group: 'Card Grid',
+                    preventDefault: true
+                });
+                self._cleanupFns.push(unregister);
+            });
+
+            // Ctrl+A for select all (multi-select only)
+            if (this.options.selectable === 'multi') {
+                var selectAllUnregister = Funky.Keyboard.register({
+                    key: 'a',
+                    mod: true,
+                    scope: '#' + gridEl.id,
+                    handler: function(e) {
+                        keyHandler(e);
+                    },
+                    description: 'Select all cards',
+                    group: 'Card Grid',
+                    preventDefault: true
+                });
+                self._cleanupFns.push(selectAllUnregister);
+            }
+        } else {
+            // Fallback for environments without Funky.Keyboard
+            this.els.grid.on('keydown', keyHandler);
+            this._cleanupFns.push(function() {
+                self.els.grid.off('keydown', keyHandler);
+            });
+        }
     };
 
     /**

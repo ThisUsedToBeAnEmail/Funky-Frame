@@ -3,7 +3,7 @@
  * Handles navigation position detection, dropdown/flyout behavior,
  * and modal slide direction awareness for all four positions.
  * @module Funky.NavPosition
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -137,11 +137,28 @@
 	 * @private
 	 */
 	FunkyNav.prototype._setupEventListeners = function() {
+		var self = this;
+
 		// Close dropdowns on outside click
 		document.addEventListener('click', this._handleOutsideClick);
 
-		// Close dropdowns on Escape key
-		document.addEventListener('keydown', this._handleEscapeKey);
+		// Close dropdowns on Escape key - use Funky.Keyboard if available
+		if (Funky.Keyboard) {
+			this._keyboardUnregister = Funky.Keyboard.register({
+				key: 'escape',
+				scope: 'global',
+				handler: function() {
+					if (self.openDropdowns.length > 0) {
+						self.closeAllDropdowns();
+					}
+				},
+				description: 'Close navigation menus',
+				group: 'Navigation',
+				priority: -10 // Lower priority so component escape handlers run first
+			});
+		} else {
+			document.addEventListener('keydown', this._handleEscapeKey);
+		}
 
 		// Handle resize for responsive behavior
 		window.addEventListener('resize', this._handleResize);
@@ -820,16 +837,30 @@
 			document.removeEventListener('click', outsideClickHandler);
 		});
 
-		// Close on Escape key
-		var escapeHandler = function(e) {
-			if (e.key === 'Escape') {
-				self.closeUserMenu();
-			}
-		};
-		document.addEventListener('keydown', escapeHandler);
-		this._userMenuCleanups.push(function() {
-			document.removeEventListener('keydown', escapeHandler);
-		});
+		// Close on Escape key - use Funky.Keyboard if available
+		if (Funky.Keyboard) {
+			var userMenuEscapeUnregister = Funky.Keyboard.register({
+				key: 'escape',
+				scope: 'global',
+				handler: function() {
+					self.closeUserMenu();
+				},
+				description: 'Close user menu',
+				group: 'Navigation',
+				priority: 5 // Higher priority than general nav escape
+			});
+			this._userMenuCleanups.push(userMenuEscapeUnregister);
+		} else {
+			var escapeHandler = function(e) {
+				if (e.key === 'Escape') {
+					self.closeUserMenu();
+				}
+			};
+			document.addEventListener('keydown', escapeHandler);
+			this._userMenuCleanups.push(function() {
+				document.removeEventListener('keydown', escapeHandler);
+			});
+		}
 
 		console.log('[FunkyNav] User menu initialized');
 	};
@@ -872,6 +903,11 @@
 	 */
 	FunkyNav.prototype.destroy = function() {
 		document.removeEventListener('click', this._handleOutsideClick);
+		// Cleanup keyboard handler
+		if (this._keyboardUnregister) {
+			this._keyboardUnregister();
+			this._keyboardUnregister = null;
+		}
 		document.removeEventListener('keydown', this._handleEscapeKey);
 		window.removeEventListener('resize', this._handleResize);
 

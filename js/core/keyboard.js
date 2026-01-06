@@ -11,7 +11,7 @@
  * No jQuery - Pure vanilla JavaScript
  * 
  * @module Funky.Keyboard
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
   'use strict';
@@ -176,6 +176,21 @@
   }
 
   /**
+   * Normalize arrow key names for consistent matching
+   * Handles both forms: 'arrowup'/'arrowdown'/etc and 'up'/'down'/etc
+   * @param {string} key
+   * @returns {string} Normalized key (without 'arrow' prefix)
+   */
+  function normalizeArrowKey(key) {
+    if (!key) return key;
+    // Remove 'arrow' prefix if present for consistent matching
+    if (key.indexOf('arrow') === 0) {
+      return key.substring(5); // 'arrowup' -> 'up'
+    }
+    return key;
+  }
+
+  /**
    * Check if event matches shortcut definition
    * @param {Object} shortcut - Shortcut definition
    * @param {KeyboardEvent} e
@@ -184,8 +199,13 @@
   function matchesEvent(shortcut, e) {
     var key = getKeyFromEvent(e);
 
-    // Key must match
-    if (!shortcut.key || key !== shortcut.key.toLowerCase()) {
+    // Key must match (normalize arrow keys to handle both 'up' and 'arrowup' forms)
+    if (!shortcut.key) {
+      return false;
+    }
+    var shortcutKey = normalizeArrowKey(shortcut.key.toLowerCase());
+    var eventKey = normalizeArrowKey(key);
+    if (eventKey !== shortcutKey) {
       return false;
     }
 
@@ -430,6 +450,8 @@
    * @param {KeyboardEvent} e
    */
   function handleKeydown(e) {
+    var key = getKeyFromEvent(e);
+
     // Skip if in input (unless shortcut allows it)
     var target = e.target;
     var isInput = target.tagName === 'INPUT' ||
@@ -467,7 +489,7 @@
 
       // Get context for `this` binding
       var context = shortcut.context || getScopeContext(shortcut.scope) || window;
-      
+
       try {
         shortcut.handler.call(context, e);
       } catch (error) {
@@ -507,9 +529,10 @@
       parts.push(isMac ? '⌘' : 'Win');
     }
 
-    // Format key
+    // Format key (normalize arrow keys to handle both 'up' and 'arrowup' forms)
+    var keyLower = normalizeArrowKey(shortcut.key.toLowerCase());
     var key = shortcut.key.toUpperCase();
-    switch(shortcut.key.toLowerCase()) {
+    switch(keyLower) {
       case 'escape': key = 'Esc'; break;
       case 'enter': key = '↵'; break;
       case 'space': key = 'Space'; break;
@@ -1024,17 +1047,10 @@
       key: 'escape',
       scope: 'global',
       handler: function handleGlobalEscape(e) {
-        // 1. Check if command palette wants to handle it (it has its own scope)
-        if (Funky.CommandPalette && Funky.CommandPalette.isOpen && Funky.CommandPalette.isOpen()) {
-          return; // Let command palette's escape handler handle it
-        }
+        // Components with higher-priority scoped Escape handlers run first.
+        // This global handler is a fallback for focus management.
 
-        // 2. Check for open modals (they have their own keydown handler)
-        if (Funky.Modal && Funky.Modal.hasOpenModals && Funky.Modal.hasOpenModals()) {
-          return; // Modal's own escape handler will close it
-        }
-
-        // 3. Check for open context menu (has its own escape handler in context-menu scope)
+        // 1. Check for open context menu
         if (Funky.ContextMenu && Funky.ContextMenu.isVisible && Funky.ContextMenu.isVisible()) {
           // Context menu's own escape handler will close it
           Funky.ContextMenu.hide();

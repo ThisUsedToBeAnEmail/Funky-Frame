@@ -19,7 +19,7 @@
  *   // Clear all announcements
  *   Funky.Announce.clear();
  *
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

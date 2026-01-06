@@ -9,7 +9,7 @@
  * @requires Funky.Morph
  * @optional Funky.FocusManager
  * @optional Funky.Announce
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(global) {
     'use strict';
@@ -699,14 +699,35 @@
             panelEl.focus();
         }
 
-        // Setup keyboard handler
+        // Setup keyboard handler for Escape
         if (config.keyboard) {
-            this._keydownHandler = function(e) {
-                if (e.key === 'Escape') {
-                    MorphPanel.hide(self.id);
-                }
-            };
-            document.addEventListener('keydown', this._keydownHandler);
+            if (Funky.Keyboard) {
+                // Push morph-panel scope so Escape handler becomes active
+                Funky.Keyboard.pushScope('morph-panel');
+                this._keyboardUnregister = Funky.Keyboard.register({
+                    key: 'escape',
+                    scope: 'morph-panel',
+                    allowInInput: true,
+                    priority: 10, // Higher than Morph.to() internal handler (0)
+                    handler: function() {
+                        // Only close if this panel is visible
+                        if (self.isVisible) {
+                            MorphPanel.hide(self.id);
+                        }
+                    },
+                    description: 'Close panel',
+                    group: 'Morph Panel',
+                    preventDefault: true
+                });
+            } else {
+                // Fallback for environments without Funky.Keyboard
+                this._keydownHandler = function(e) {
+                    if (e.key === 'Escape') {
+                        MorphPanel.hide(self.id);
+                    }
+                };
+                document.addEventListener('keydown', this._keydownHandler);
+            }
         }
 
         // Setup swipe-to-dismiss for touch devices
@@ -754,7 +775,15 @@
             this._focusTrapCleanup = null;
         }
 
-        // Cleanup keyboard handler
+        // Cleanup keyboard handler and pop scope
+        if (this._keyboardUnregister) {
+            this._keyboardUnregister();
+            this._keyboardUnregister = null;
+            // Pop the morph-panel scope we pushed in show()
+            if (Funky.Keyboard && Funky.Keyboard.popScope) {
+                Funky.Keyboard.popScope();
+            }
+        }
         if (this._keydownHandler) {
             document.removeEventListener('keydown', this._keydownHandler);
             this._keydownHandler = null;

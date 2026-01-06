@@ -1,14 +1,21 @@
 /**
  * Funky WebSocket - Real-time Connection Manager
- * 
- * Manages WebSocket connection for real-time updates:
+ *
+ * Manages a shared WebSocket connection for real-time updates:
+ * - Single connection, multiple subscribers (channel multiplexing)
+ * - Explicit initialization - must call init() then connect()
+ * - Channel subscriptions with per-channel handlers
  * - Automatic reconnection with exponential backoff
- * - Channel subscription/unsubscription
  * - Page Visibility API integration (pause when hidden)
  * - Network status awareness (pause when offline)
  * - Session expiry handling
- * 
- * @version 1.0.2
+ *
+ * Usage:
+ *   Funky.WebSocket.init({ debug: false });
+ *   Funky.WebSocket.connect();
+ *   Funky.WebSocket.subscribe('my-channel', function(message) { ... });
+ *
+ * @version 2.0.0
  */
 (function(window) {
 	'use strict';
@@ -64,10 +71,11 @@
 		reconnectAttempts: 0,
 		reconnectTimer: null,
 		heartbeatTimer: null,
-		channels: {},                 // { channelName: true }
+		channels: {},                 // { channelName: { subscribed: bool, handlers: [fn, ...] } }
 		handlers: {},                 // { messageType: [handler, ...] }
 		lastPong: null,
-		connectionId: null
+		connectionId: null,
+		initialized: false            // Whether init() has been called
 	};
 
 	// ============================================
@@ -397,9 +405,10 @@
 		// Start heartbeat
 		startHeartbeat();
 
-		// Resubscribe to channels
+		// Resubscribe to all channels
 		Object.keys(state.channels).forEach(function(channel) {
 			sendRaw({ type: 'subscribe', channel: channel });
+			state.channels[channel].subscribed = true;
 		});
 
 		// Restore presence channels on reconnect
@@ -459,6 +468,9 @@
 			dispatchEvent(type, data);
 			return;
 		}
+
+		// Route channel messages to channel handlers
+		routeChannelMessage(data);
 
 		// Handle built-in message types
 		switch (type) {
@@ -549,32 +561,116 @@
 	// Channel Subscriptions
 	// ============================================
 
-	function subscribe(channel) {
+	/**
+	 * Subscribe to a channel with an optional handler
+	 * @param {string} channel - Channel name to subscribe to
+	 * @param {Function} [handler] - Optional handler for messages on this channel
+	 * @returns {Function|undefined} Unsubscribe function if handler provided
+	 */
+	function subscribe(channel, handler) {
 		if (!channel) return;
 
-		state.channels[channel] = true;
-
-		if (state.status === 'connected') {
-			sendRaw({ type: 'subscribe', channel: channel });
+		// Initialize channel if not exists
+		if (!state.channels[channel]) {
+			state.channels[channel] = {
+				subscribed: false,
+				handlers: []
+			};
 		}
 
-		log('Queued subscription:', channel);
+		// Add handler if provided
+		if (typeof handler === 'function') {
+			state.channels[channel].handlers.push(handler);
+			log('Channel handler added:', channel);
+		}
+
+		// Send subscribe message if connected and not yet subscribed
+		if (state.status === 'connected' && !state.channels[channel].subscribed) {
+			sendRaw({ type: 'subscribe', channel: channel });
+			state.channels[channel].subscribed = true;
+		}
+
+		log('Subscribed to channel:', channel);
+
+		// Return unsubscribe function for convenience
+		if (handler) {
+			return function() {
+				unsubscribe(channel, handler);
+			};
+		}
 	}
 
-	function unsubscribe(channel) {
+	/**
+	 * Unsubscribe from a channel or remove a specific handler
+	 * @param {string} channel - Channel name
+	 * @param {Function} [handler] - Specific handler to remove. If omitted, removes all handlers and unsubscribes.
+	 */
+	function unsubscribe(channel, handler) {
 		if (!channel) return;
 
-		delete state.channels[channel];
+		var channelData = state.channels[channel];
+		if (!channelData) return;
 
-		if (state.status === 'connected') {
-			sendRaw({ type: 'unsubscribe', channel: channel });
+		if (handler) {
+			// Remove specific handler
+			channelData.handlers = channelData.handlers.filter(function(h) {
+				return h !== handler;
+			});
+			log('Channel handler removed:', channel, '(', channelData.handlers.length, 'remaining)');
+
+			// If no handlers left, unsubscribe from channel entirely
+			if (channelData.handlers.length === 0) {
+				unsubscribe(channel);
+			}
+		} else {
+			// Remove channel entirely
+			delete state.channels[channel];
+
+			if (state.status === 'connected') {
+				sendRaw({ type: 'unsubscribe', channel: channel });
+			}
+
+			log('Unsubscribed from channel:', channel);
 		}
-
-		log('Unsubscribed:', channel);
 	}
 
 	function getSubscriptions() {
 		return Object.keys(state.channels);
+	}
+
+	/**
+	 * Route message to channel handlers
+	 * @param {Object} data - Parsed message data
+	 * @private
+	 */
+	function routeChannelMessage(data) {
+		if (!data.channel) return false;
+
+		var channelData = state.channels[data.channel];
+
+		// Call channel-specific handlers if any
+		if (channelData && channelData.handlers.length > 0) {
+			channelData.handlers.forEach(function(handler) {
+				try {
+					handler(data);
+				} catch (err) {
+					warn('Channel handler error for', data.channel, ':', err);
+				}
+			});
+		}
+
+		// Emit channel-specific PubSub events for loose coupling
+		if (Funky.PubSub) {
+			// Emit to channel (for components like Kanban that listen to channel)
+			Funky.PubSub.emit('funky:ws:' + data.channel, data);
+
+			// Also emit with message type suffix (for more specific routing)
+			if (data.type) {
+				Funky.PubSub.emit('funky:ws:' + data.channel + ':' + data.type, data);
+			}
+		}
+
+		return channelData && channelData.handlers.length > 0;
 	}
 
 	// ============================================
@@ -781,42 +877,65 @@
 
 	var _listenersAdded = false;
 
-	function init() {
-		if (_listenersAdded) return;
+	/**
+	 * Initialize the WebSocket module
+	 * Must be called before connect(). Does NOT auto-connect.
+	 * @param {Object} [options] - Configuration options
+	 * @param {string} [options.url] - WebSocket URL (auto-detected if null)
+	 * @param {number} [options.reconnectMin] - Min reconnect delay ms
+	 * @param {number} [options.reconnectMax] - Max reconnect delay ms
+	 * @param {number} [options.maxRetries] - Max reconnection attempts
+	 * @param {boolean} [options.debug] - Enable debug logging
+	 */
+	function init(options) {
+		if (state.initialized) {
+			log('Already initialized');
+			return;
+		}
+
+		// Merge options with CONFIG
+		if (options) {
+			Object.assign(CONFIG, options);
+		}
 
 		// Listen for network status changes
-		window.addEventListener('online', handleOnline);
-		window.addEventListener('offline', handleOffline);
+		if (!_listenersAdded) {
+			window.addEventListener('online', handleOnline);
+			window.addEventListener('offline', handleOffline);
 
-		// Listen for page visibility changes
-		document.addEventListener('visibilitychange', handleVisibilityChange);
+			// Listen for page visibility changes
+			document.addEventListener('visibilitychange', handleVisibilityChange);
 
-		// Listen for page unload to leave presence gracefully
-		window.addEventListener('beforeunload', handleBeforeUnload);
+			// Listen for page unload to leave presence gracefully
+			window.addEventListener('beforeunload', handleBeforeUnload);
 
-		_listenersAdded = true;
+			_listenersAdded = true;
+		}
 
 		// Setup UI handlers
 		setupUIHandlers();
 
+		state.initialized = true;
 		log('Initialized');
 
-		// Auto-connect if user is authenticated
-		// Check for user-id data attribute on body (set by server for authenticated users)
-		var userId = document.body.dataset.userId;
-		if (userId) {
-			log('User authenticated, auto-connecting...');
-			// Small delay to ensure page is fully loaded
-			setTimeout(function() {
-				connect();
-			}, 100);
-		} else {
-			log('No authenticated user, skipping auto-connect');
-		}
+		// NOTE: Does NOT auto-connect
+		// The app must explicitly call connect() when ready
 	}
 
+	/**
+	 * Configure options (can be called before or after init)
+	 * @param {Object} options - Configuration options
+	 */
 	function configure(options) {
 		Object.assign(CONFIG, options);
+	}
+
+	/**
+	 * Check if WebSocket is initialized
+	 * @returns {boolean}
+	 */
+	function isInitialized() {
+		return state.initialized;
 	}
 
 	/**
@@ -835,8 +954,10 @@
 			_listenersAdded = false;
 		}
 
-		// Clear all handlers
+		// Clear all handlers and channels
 		state.handlers = {};
+		state.channels = {};
+		state.initialized = false;
 		_presenceHandlers = {};
 		_lastPresenceChannels = [];
 		log('Destroyed');
@@ -1027,7 +1148,9 @@
 	// ============================================
 
 	var FunkyWebSocket = {
-		// Configuration
+		// Initialization
+		init: init,
+		isInitialized: isInitialized,
 		configure: configure,
 
 		// Connection
@@ -1091,10 +1214,8 @@
 		}
 	};
 
-	// Initialize on load
-	init();
-
-	// Register with Funky namespace
+	// Register with Funky namespace (do NOT auto-init)
+	// Apps must explicitly call Funky.WebSocket.init() then connect()
 	Funky.register('WebSocket', FunkyWebSocket);
 
 })(window);

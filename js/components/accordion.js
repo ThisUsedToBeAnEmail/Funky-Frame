@@ -643,11 +643,43 @@
             self.toggle(itemId);
         });
 
-        // Keyboard navigation (delegated)
+        // Keyboard navigation (delegated) - use Funky.Keyboard for F1 help
         if (this.options.keyboard) {
-            this._containerEl.on('keydown', function(e) {
-                self._handleKeydown(e);
-            });
+            this._keyboardUnregisters = [];
+            var containerId = this._containerEl.el.id || ('accordion-' + this.id);
+            if (!this._containerEl.el.id) {
+                this._containerEl.el.id = containerId;
+            }
+
+            if (Funky.Keyboard) {
+                var navKeys = [
+                    { key: 'enter', description: 'Toggle panel' },
+                    { key: 'space', description: 'Toggle panel' },
+                    { key: 'arrowdown', description: 'Next panel' },
+                    { key: 'arrowup', description: 'Previous panel' },
+                    { key: 'home', description: 'First panel' },
+                    { key: 'end', description: 'Last panel' }
+                ];
+
+                navKeys.forEach(function(keyDef) {
+                    self._keyboardUnregisters.push(Funky.Keyboard.register({
+                        key: keyDef.key,
+                        scope: '#' + containerId,
+                        handler: function(e) {
+                            self._handleKeydown(e);
+                        },
+                        description: keyDef.description,
+                        group: 'Accordion',
+                        preventDefault: true
+                    }));
+                });
+            } else {
+                // Fallback for environments without Funky.Keyboard
+                this._keydownHandler = function(e) {
+                    self._handleKeydown(e);
+                };
+                this._containerEl.on('keydown', this._keydownHandler);
+            }
         }
     };
 
@@ -1967,6 +1999,17 @@
         if (this._destroyed) return;
 
         this._emit('destroy', { instance: this });
+
+        // Cleanup keyboard handlers
+        if (this._keyboardUnregisters && this._keyboardUnregisters.length) {
+            this._keyboardUnregisters.forEach(function(unregister) {
+                if (unregister) unregister();
+            });
+            this._keyboardUnregisters = [];
+        }
+        if (this._keydownHandler && this._containerEl) {
+            this._containerEl.off('keydown', this._keydownHandler);
+        }
 
         // Remove hash change listener
         if (this._hashChangeHandler) {

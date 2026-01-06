@@ -3,7 +3,7 @@
  * Supports flat or grouped items with selection, filtering, and keyboard navigation
  * Uses Funky.SelectableList for keyboard navigation and focus management
  * @module Funky.SideNav
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -635,18 +635,7 @@
 			});
 		}
 
-		// Close on Escape key
-		var escapeHandler = function(e) {
-			if (e.key === 'Escape' && self.isOpen) {
-				self.close();
-			}
-		};
-		document.addEventListener('keydown', escapeHandler);
-		this._cleanups.push(function() {
-			document.removeEventListener('keydown', escapeHandler);
-		});
-
-		// Keyboard navigation - use Funky.Keyboard if available, else fallback
+		// Keyboard navigation and shortcuts - use Funky.Keyboard if available
 		this._registerKeyboardShortcuts();
 
 		if (this._useFallbackKeyboard) {
@@ -690,6 +679,16 @@
 		if (typeof Funky === 'undefined' || !Funky.Keyboard) {
 			console.warn('[SideNav] Funky.Keyboard not available, using fallback');
 			this._useFallbackKeyboard = true;
+			// Fallback: add document-level Escape handler for closing sidenav
+			var escapeHandler = function(e) {
+				if (e.key === 'Escape' && self.isOpen) {
+					self.close();
+				}
+			};
+			document.addEventListener('keydown', escapeHandler);
+			this._cleanups.push(function() {
+				document.removeEventListener('keydown', escapeHandler);
+			});
 			return;
 		}
 
@@ -762,6 +761,21 @@
 					}
 				},
 				description: 'Focus search',
+				group: 'Navigation'
+			}),
+
+			// Close sidenav on Escape when open (uses sidenav scope pushed in open())
+			Funky.Keyboard.register({
+				key: 'escape',
+				scope: 'sidenav',
+				allowInInput: true,
+				priority: 10, // Higher than Morph.to() internal handler (0)
+				handler: function() {
+					if (self.isOpen) {
+						self.close();
+					}
+				},
+				description: 'Close sidebar',
 				group: 'Navigation'
 			})
 		);
@@ -1814,6 +1828,11 @@
 		this.container.classList.add('open', 'show');
 		this.isOpen = true;
 
+		// Push sidenav scope for Escape handler
+		if (Funky.Keyboard && Funky.Keyboard.pushScope) {
+			Funky.Keyboard.pushScope('sidenav');
+		}
+
 		// Update toggle button if exists
 		var toggle = this.config.toggleSelector ?
 			document.querySelector(this.config.toggleSelector) : null;
@@ -1835,6 +1854,11 @@
 	SideNav.prototype.close = function() {
 		this.container.classList.remove('open', 'show');
 		this.isOpen = false;
+
+		// Pop sidenav scope
+		if (Funky.Keyboard && Funky.Keyboard.popScope) {
+			Funky.Keyboard.popScope();
+		}
 
 		// Update toggle button if exists
 		var toggle = this.config.toggleSelector ?

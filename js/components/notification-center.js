@@ -39,6 +39,7 @@
 	var _focusedIndex = -1;
 	var _announcer = null;
 	var _keyboardBinding = null;
+	var _keyboardBindings = [];
 
 	// =========================================================================
 	// DEFAULT OPTIONS
@@ -47,7 +48,8 @@
 	var DEFAULTS = {
 		container: null,
 		api: null,
-		websocket: null,
+		websocket: null,      // Deprecated: use useWebSocket + channel instead
+		useWebSocket: false,  // Use shared Funky.WebSocket
 		channel: null,
 		maxVisible: 10,
 		sound: true,
@@ -753,13 +755,16 @@
 				}
 			}
 
+			// Determine if using WebSocket
+			var usingWebSocket = _config.websocket || (_config.useWebSocket && Funky.WebSocket);
+
 			// Start polling if configured (only if no WebSocket)
-			if (_config.pollInterval > 0 && !_config.websocket) {
+			if (_config.pollInterval > 0 && !usingWebSocket) {
 				this._startPolling();
 			}
 
 			// Initialize WebSocket if configured
-			if (_config.websocket) {
+			if (usingWebSocket) {
 				this._initWebSocket();
 			}
 
@@ -821,8 +826,11 @@
 			// Mark all read
 			_elements.dropdown.on('click', handleMarkAllRead);
 
-			// Escape to close
-			document.addEventListener('keydown', handleEscape);
+			// Escape to close - handled via Funky.Keyboard in _registerKeyboardShortcuts
+			// Fallback for environments without Funky.Keyboard
+			if (!Funky.Keyboard) {
+				document.addEventListener('keydown', handleEscape);
+			}
 
 			// List item events
 			_elements.list.on('click', handleItemClick);
@@ -839,6 +847,11 @@
 			_isOpen = true;
 			_elements.dropdown.attrRemove('hidden');
 			_elements.dropdown.classAdd('notification-center__dropdown--open');
+
+			// Push notification-center scope for Escape handler
+			if (Funky.Keyboard && Funky.Keyboard.pushScope) {
+				Funky.Keyboard.pushScope('notification-center');
+			}
 
 			// Update ARIA state
 			this._updateAriaState(true);
@@ -864,6 +877,11 @@
 			_isOpen = false;
 			_elements.dropdown.attr('hidden', '');
 			_elements.dropdown.classRemove('notification-center__dropdown--open');
+
+			// Pop notification-center scope
+			if (Funky.Keyboard && Funky.Keyboard.popScope) {
+				Funky.Keyboard.popScope();
+			}
 
 			// Update ARIA state
 			this._updateAriaState(false);
@@ -1766,62 +1784,88 @@
 		 * @private
 		 */
 		_initWebSocket: function() {
-			var ws = _config.websocket;
 			var channel = _config.channel;
-
-			if (!ws) return;
-
 			var self = this;
 			var events = _config.wsEvents;
 
-			// Subscribe to notification channel
-			if (channel && typeof ws.subscribe === 'function') {
-				ws.subscribe(channel);
+			// Determine which WebSocket to use
+			var ws = _config.websocket;
+
+			// If useWebSocket is true and no custom websocket provided, use shared Funky.WebSocket
+			if (_config.useWebSocket && !ws && Funky.WebSocket) {
+				ws = Funky.WebSocket;
 			}
 
-			// Listen for new notifications
+			if (!ws) return;
+
+			// Store reference for cleanup
+			_config._wsInstance = ws;
+
+			// Subscribe to notification channel with message handler
+			if (channel) {
+				// Use the new channel handler pattern if available
+				var channelHandler = function(data) {
+					// Route by message type
+					if (data.type === events.new) {
+						self._handleWsNew(data);
+					} else if (data.type === events.read) {
+						self._handleWsRead(data);
+					} else if (data.type === events.remove) {
+						self._handleWsRemove(data);
+					} else if (data.type === events.clear) {
+						self._handleWsClear(data);
+					} else if (data.type === events.count) {
+						self._handleWsCount(data);
+					}
+				};
+
+				if (typeof ws.subscribe === 'function') {
+					var unsubscribe = ws.subscribe(channel, channelHandler);
+					if (unsubscribe) {
+						_wsSubscriptions.push({ unsubscribe: unsubscribe });
+					}
+				}
+			}
+
+			// Also register global message type handlers for backward compatibility
 			var onNew = function(data) {
 				self._handleWsNew(data);
 			};
 			if (typeof ws.on === 'function') {
 				ws.on(events.new, onNew);
-				_wsSubscriptions.push({ event: events.new, handler: onNew });
+				_wsSubscriptions.push({ event: events.new, handler: onNew, ws: ws });
 			}
 
-			// Listen for read updates
 			var onRead = function(data) {
 				self._handleWsRead(data);
 			};
 			if (typeof ws.on === 'function') {
 				ws.on(events.read, onRead);
-				_wsSubscriptions.push({ event: events.read, handler: onRead });
+				_wsSubscriptions.push({ event: events.read, handler: onRead, ws: ws });
 			}
 
-			// Listen for remove updates
 			var onRemove = function(data) {
 				self._handleWsRemove(data);
 			};
 			if (typeof ws.on === 'function') {
 				ws.on(events.remove, onRemove);
-				_wsSubscriptions.push({ event: events.remove, handler: onRemove });
+				_wsSubscriptions.push({ event: events.remove, handler: onRemove, ws: ws });
 			}
 
-			// Listen for clear updates
 			var onClear = function(data) {
 				self._handleWsClear(data);
 			};
 			if (typeof ws.on === 'function') {
 				ws.on(events.clear, onClear);
-				_wsSubscriptions.push({ event: events.clear, handler: onClear });
+				_wsSubscriptions.push({ event: events.clear, handler: onClear, ws: ws });
 			}
 
-			// Listen for count updates (badge only)
 			var onCount = function(data) {
 				self._handleWsCount(data);
 			};
 			if (typeof ws.on === 'function') {
 				ws.on(events.count, onCount);
-				_wsSubscriptions.push({ event: events.count, handler: onCount });
+				_wsSubscriptions.push({ event: events.count, handler: onCount, ws: ws });
 			}
 		},
 
@@ -1830,20 +1874,26 @@
 		 * @private
 		 */
 		_destroyWebSocket: function() {
-			var ws = _config.websocket;
+			var ws = _config._wsInstance || _config.websocket;
 			if (!ws) return;
 
 			_wsSubscriptions.forEach(function(sub) {
-				if (typeof ws.off === 'function') {
-					ws.off(sub.event, sub.handler);
+				// New pattern: unsubscribe function
+				if (typeof sub.unsubscribe === 'function') {
+					sub.unsubscribe();
+				}
+				// Old pattern: event/handler pair
+				else if (sub.event && sub.handler) {
+					var subWs = sub.ws || ws;
+					if (typeof subWs.off === 'function') {
+						subWs.off(sub.event, sub.handler);
+					}
 				}
 			});
 			_wsSubscriptions = [];
 
-			// Unsubscribe from channel
-			if (_config.channel && typeof ws.unsubscribe === 'function') {
-				ws.unsubscribe(_config.channel);
-			}
+			// Clear stored reference
+			_config._wsInstance = null;
 		},
 
 		/**
@@ -1978,12 +2028,12 @@
 		 * @private
 		 */
 		_wsSendRead: function(id) {
-			var ws = _config.websocket;
+			var ws = _config._wsInstance || _config.websocket;
 			if (!ws || typeof ws.send !== 'function') return;
 
-			ws.send({
-				type: _config.wsEvents.read,
-				id: id
+			ws.send(_config.wsEvents.read, {
+				id: id,
+				channel: _config.channel
 			});
 		},
 
@@ -1993,12 +2043,12 @@
 		 * @private
 		 */
 		_wsSendReadAll: function(ids) {
-			var ws = _config.websocket;
+			var ws = _config._wsInstance || _config.websocket;
 			if (!ws || typeof ws.send !== 'function') return;
 
-			ws.send({
-				type: _config.wsEvents.read,
-				ids: ids
+			ws.send(_config.wsEvents.read, {
+				ids: ids,
+				channel: _config.channel
 			});
 		},
 
@@ -2008,12 +2058,12 @@
 		 * @private
 		 */
 		_wsSendRemove: function(id) {
-			var ws = _config.websocket;
+			var ws = _config._wsInstance || _config.websocket;
 			if (!ws || typeof ws.send !== 'function') return;
 
-			ws.send({
-				type: _config.wsEvents.remove,
-				id: id
+			ws.send(_config.wsEvents.remove, {
+				id: id,
+				channel: _config.channel
 			});
 		},
 
@@ -2940,10 +2990,11 @@
 		 */
 		_registerKeyboardShortcuts: function() {
 			var self = this;
+			_keyboardBindings = [];
 
-			// Global Alt+N to toggle notifications
 			if (Funky.Keyboard && typeof Funky.Keyboard.register === 'function') {
-				_keyboardBinding = Funky.Keyboard.register({
+				// Global Alt+N to toggle notifications
+				_keyboardBindings.push(Funky.Keyboard.register({
 					key: 'n',
 					alt: true,
 					scope: 'global',
@@ -2952,8 +3003,29 @@
 					handler: function() {
 						self.toggle();
 					}
-				});
+				}));
+
+				// Escape to close when open (uses notification-center scope pushed in open())
+				_keyboardBindings.push(Funky.Keyboard.register({
+					key: 'escape',
+					scope: 'notification-center',
+					description: 'Close notification center',
+					group: 'Notifications',
+					allowInInput: true,
+					priority: 10, // Higher than Morph.to() internal handler (0)
+					handler: function() {
+						if (_isOpen) {
+							self.close();
+							if (_elements.trigger && _elements.trigger.el) {
+								_elements.trigger.el.focus();
+							}
+						}
+					}
+				}));
 			}
+
+			// Legacy single binding reference (for backwards compatibility)
+			_keyboardBinding = _keyboardBindings.length > 0 ? _keyboardBindings[0] : null;
 		},
 
 		/**
@@ -2961,11 +3033,16 @@
 		 * @private
 		 */
 		_unregisterKeyboardShortcuts: function() {
-			// _keyboardBinding is the unregister function returned by Keyboard.register()
-			if (_keyboardBinding && typeof _keyboardBinding === 'function') {
-				_keyboardBinding();
-				_keyboardBinding = null;
+			// Unregister all keyboard bindings
+			if (_keyboardBindings && _keyboardBindings.length > 0) {
+				_keyboardBindings.forEach(function(unregister) {
+					if (typeof unregister === 'function') {
+						unregister();
+					}
+				});
+				_keyboardBindings = [];
 			}
+			_keyboardBinding = null;
 		},
 
 		// =====================================================================
@@ -3004,7 +3081,10 @@
 				_elements.trigger.off('click', handleTriggerClick);
 			}
 			document.removeEventListener('click', handleOutsideClick);
-			document.removeEventListener('keydown', handleEscape);
+			// Only remove direct keydown listener if we used fallback (no Funky.Keyboard)
+			if (!Funky.Keyboard) {
+				document.removeEventListener('keydown', handleEscape);
+			}
 
 			// Destroy scroll tracker
 			if (_scrollTracker && typeof _scrollTracker.destroy === 'function') {

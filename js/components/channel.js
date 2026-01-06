@@ -40,7 +40,8 @@
     // =========================================================================
 
     var DEFAULTS = {
-        websocket: null,
+        websocket: null,         // Deprecated: use useWebSocket instead
+        useWebSocket: true,      // Use shared Funky.WebSocket if no custom websocket provided
         userId: null,
         userName: 'Anonymous',
         userMetadata: {},
@@ -270,7 +271,8 @@
      * @returns {boolean} True if sent successfully
      */
     function sendMessage(type, payload) {
-        if (!_config.websocket) {
+        var ws = _config._wsInstance || _config.websocket;
+        if (!ws) {
             warn('WebSocket not configured');
             return false;
         }
@@ -283,8 +285,8 @@
         }
 
         try {
-            if (typeof _config.websocket.send === 'function') {
-                _config.websocket.send(type, payload);
+            if (typeof ws.send === 'function') {
+                ws.send(type, payload);
                 return true;
             } else {
                 warn('WebSocket.send is not a function');
@@ -718,16 +720,18 @@
                 metadata: _config.userMetadata || {}
             };
 
+            // Set up WebSocket - prefer shared Funky.WebSocket, fall back to custom
+            var ws = _config.websocket;
+            if (!ws && _config.useWebSocket && Funky.WebSocket) {
+                ws = Funky.WebSocket;
+            }
+            _config._wsInstance = ws;
+
             // Set up WebSocket message handler
-            if (_config.websocket) {
-                if (typeof _config.websocket.on === 'function') {
-                    _wsMessageHandler = handleWebSocketMessage;
-                    _config.websocket.on('message', _wsMessageHandler);
-                } else if (Funky.PubSub) {
-                    // Fallback to PubSub for WebSocket messages
-                    Funky.PubSub.on('funky:websocket:message', function(data) {
-                        handleWebSocketMessage(data.message || data);
-                    });
+            if (ws) {
+                _wsMessageHandler = handleWebSocketMessage;
+                if (typeof ws.on === 'function') {
+                    ws.on('message', _wsMessageHandler);
                 }
             }
 
@@ -1850,11 +1854,13 @@
             }
 
             // Remove WebSocket message handler
-            if (_config.websocket && _wsMessageHandler) {
-                if (typeof _config.websocket.off === 'function') {
-                    _config.websocket.off('message', _wsMessageHandler);
+            var ws = _config._wsInstance || _config.websocket;
+            if (ws && _wsMessageHandler) {
+                if (typeof ws.off === 'function') {
+                    ws.off('message', _wsMessageHandler);
                 }
             }
+            _config._wsInstance = null;
 
             // Clear pending requests
             for (var reqId in _pendingRequests) {

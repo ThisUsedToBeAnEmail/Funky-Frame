@@ -136,7 +136,7 @@
 		 * @returns {boolean}
 		 */
 		isReady: function() {
-			return _swReady && _swRegistration && _swRegistration.active;
+			return !!(_swReady && _swRegistration && _swRegistration.active);
 		},
 
 		/**

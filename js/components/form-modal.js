@@ -41,7 +41,7 @@
  *   Funky.FormModal.create('clientModal');
  *   Funky.FormModal.edit('clientModal', 123);
  *
- * @version 1.0.2
+ * @version 1.0.3
  * @see Funky.Schema for schema management
  * @see Funky.Form for form rendering
  * @see Funky.Cache for data caching

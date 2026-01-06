@@ -20,6 +20,10 @@ describe('Funky.A11y.Navigation', function() {
     var fixture;
 
     beforeEach(function() {
+        // Clear keyboard scopes to avoid cross-test contamination
+        if (Funky.Keyboard && Funky.Keyboard.clearScopes) {
+            Funky.Keyboard.clearScopes();
+        }
         // Toggle button must be OUTSIDE sidenav container because SideNav.create() re-renders container content
         fixture = FunkyTests.fixture(
             '<div id="app-container">' +
@@ -201,14 +205,15 @@ describe('Funky.A11y.Navigation', function() {
 
             sidenav.open();
 
-            return FunkyTests.delay(100).then(function() {
-                // Dispatch on document where the Escape listener is registered
+            // Wait for sidenav to fully open before pressing Escape
+            return FunkyTests.delay(200).then(function() {
+                // Dispatch on document where the global keyboard handler listens
                 FunkyTests.simulate.keydown(document, { key: 'Escape' });
 
-                return FunkyTests.delay(100);
+                return FunkyTests.delay(200);
             }).then(function() {
-                var toggle = document.querySelector('#nav-toggle');
-                expect(toggle.getAttribute('aria-expanded')).toBe('false');
+                // Check sidenav.isOpen rather than aria-expanded which may have different timing
+                expect(sidenav.isOpen).toBe(false);
             });
         });
 

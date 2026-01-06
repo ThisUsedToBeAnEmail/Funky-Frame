@@ -12,7 +12,7 @@
  *     { data: null, render: Funky.Renderers.actions({ view: true, edit: true }) }
  *   ]
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

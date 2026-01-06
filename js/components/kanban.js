@@ -17,7 +17,7 @@
  *     onCardMove: function(card, from, to, position) { }
  *   });
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';
@@ -3616,13 +3616,13 @@
 		var self = this;
 		var boardId = this.options.boardId || 'default';
 
-		// Check if Funky.PubSub exists
-		if (!window.Funky || !Funky.PubSub) {
-			console.warn('[Funky.Kanban] PubSub not available for WebSocket');
+		// Check if Funky.WebSocket exists
+		if (!window.Funky || !Funky.WebSocket) {
+			console.warn('[Funky.Kanban] Funky.WebSocket not available');
 			return;
 		}
 
-		this._wsChannel = 'funky:ws:kanban:' + boardId;
+		this._wsChannel = 'kanban:' + boardId;
 		this._wsSubscribed = true;
 
 		this._boundHandlers.wsMessage = function(data) {
@@ -3653,7 +3653,8 @@
 			}
 		};
 
-		Funky.PubSub.on(this._wsChannel, this._boundHandlers.wsMessage);
+		// Subscribe to WebSocket channel directly
+		this._wsUnsubscribe = Funky.WebSocket.subscribe(this._wsChannel, this._boundHandlers.wsMessage);
 
 		// Announce presence
 		if (this.options.userId) {
@@ -3672,8 +3673,10 @@
 			this._announcePresence('leave');
 		}
 
-		if (window.Funky && Funky.PubSub && this._boundHandlers.wsMessage) {
-			Funky.PubSub.off(this._wsChannel, this._boundHandlers.wsMessage);
+		// Unsubscribe from channel
+		if (this._wsUnsubscribe) {
+			this._wsUnsubscribe();
+			this._wsUnsubscribe = null;
 		}
 
 		this._wsSubscribed = false;
@@ -3684,11 +3687,11 @@
 	 * @param {string} action - 'join' or 'leave'
 	 */
 	KanbanInstance.prototype._announcePresence = function(action) {
-		if (!window.Funky || !Funky.PubSub) return;
+		if (!window.Funky || !Funky.WebSocket) return;
 
-		Funky.PubSub.emit('funky:ws:kanban:send', {
+		Funky.WebSocket.send('user:' + action, {
+			channel: this._wsChannel,
 			boardId: this.options.boardId || 'default',
-			action: 'user:' + action,
 			userId: this.options.userId,
 			userName: this.options.currentUser || 'Anonymous'
 		});

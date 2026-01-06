@@ -86,6 +86,9 @@
   <link rel="stylesheet" href="../../css/popover.css">
   <link rel="stylesheet" href="../../css/tooltip.css">
   <link rel="stylesheet" href="../../css/mobile-core.css">
+  <link rel="stylesheet" href="../../css/file-upload.css">
+  <link rel="stylesheet" href="../../css/stepper.css">
+  <link rel="stylesheet" href="../../css/toggle-group.css">
   <!-- Dev Tools -->
   <link rel="stylesheet" href="../../css/dev/debug.css">
   <!-- high-contrast.css provides shared high contrast styles -->
@@ -358,6 +361,9 @@
   <script src="../../js/components/card-grid.js"></script>
   <script src="../../js/components/push-notification.js"></script>
   <script src="../../js/components/mask.js"></script>
+  <script src="../../js/components/file-upload.js"></script>
+  <script src="../../js/components/stepper.js"></script>
+  <script src="../../js/components/toggle-group.js"></script>
 
   <!-- PWA Sub-modules -->
   <script src="../../js/core/pwa/badging.js"></script>
@@ -854,17 +860,21 @@
       Funky.Keyboard.register({
         key: 'escape',
         scope: 'global',
-        priority: 1,
+        priority: -200, // Very low priority - let component handlers run first
         preventDefault: false,
         handler: function(e) {
           if (e.defaultPrevented) {
             return;
           }
 
-          var hasOpenModal = document.querySelector('.modal.show, .modal[aria-hidden="false"]');
+          // Use Funky APIs if available, fallback to DOM queries
+          var hasOpenModal = (Funky.Modal && Funky.Modal.hasOpenModals && Funky.Modal.hasOpenModals()) ||
+                             document.querySelector('.modal.show, .modal[aria-hidden="false"]');
           var hasOpenPopover = document.querySelector('.popover.show, [data-popover-open="true"]');
-          var hasOpenDropdown = document.querySelector('.dropdown-menu.show');
-          var hasOpenCommandPalette = document.querySelector('.command-palette.show, .command-palette--open');
+          var hasOpenDropdown = Funky.Keyboard.hasScope('combobox') ||
+                                document.querySelector('.dropdown-menu.show, .combobox.is-open');
+          var hasOpenCommandPalette = (Funky.CommandPalette && Funky.CommandPalette.isOpen && Funky.CommandPalette.isOpen()) ||
+                                      document.querySelector('.command-palette.show, .command-palette--open');
 
           if (hasOpenModal || hasOpenPopover || hasOpenDropdown || hasOpenCommandPalette) {
             return;

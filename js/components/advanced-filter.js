@@ -14,7 +14,7 @@
  *   var filter = Funky.AdvancedFilter.create(config);
  *   Funky.AdvancedFilter.init('#filterBtn', { entityType: 'trade', dataTable: dt });
  * 
- * @version 1.0.2
+ * @version 1.0.3
  */
 (function(window) {
 	'use strict';

@@ -149,7 +149,7 @@
             var rowLine = lines[i];
 
             // Empty line or non-table line ends table
-            if (/^\s*$/.test(rowLine) || rowLine.charAt(0) !== '|') {
+            if (/^\s*$/.test(rowLine) || rowLine.trim().charAt(0) !== '|') {
                 break;
             }
 
@@ -182,11 +182,28 @@
      * @returns {Array|null}
      */
     function parseTableRow(line) {
-        // Remove leading/trailing pipes and split
-        var trimmed = line.replace(/^\||\|$/g, '');
-        var cells = trimmed.split('|').map(function(cell) {
-            return cell.trim();
-        });
+        // Trim whitespace and remove leading/trailing pipes
+        var trimmed = line.trim().replace(/^\||\|$/g, '');
+        
+        // Split on unescaped pipes only (handle \| as escaped pipe)
+        var cells = [];
+        var current = '';
+        for (var i = 0; i < trimmed.length; i++) {
+            if (trimmed[i] === '\\' && i + 1 < trimmed.length && trimmed[i + 1] === '|') {
+                // Escaped pipe - add the pipe character, skip the backslash
+                current += '|';
+                i++; // Skip next char (the pipe)
+            } else if (trimmed[i] === '|') {
+                // Unescaped pipe - end of cell
+                cells.push(current.trim());
+                current = '';
+            } else {
+                current += trimmed[i];
+            }
+        }
+        // Don't forget the last cell
+        cells.push(current.trim());
+        
         return cells.length > 0 ? cells : null;
     }
 
@@ -196,6 +213,8 @@
      * @returns {Array|null}
      */
     function parseTableSeparator(line) {
+        // Allow optional leading/trailing whitespace
+        line = line.trim();
         if (!/^\|[\s\-:|]+\|$/.test(line)) return null;
 
         var trimmed = line.replace(/^\||\|$/g, '');
@@ -312,10 +331,10 @@
             }
 
             // Table detection - must have header row and separator row
-            var tableMatch = line.match(/^\|(.+)\|$/);
+            var tableMatch = line.match(/^\s*\|(.+)\|\s*$/);
             if (tableMatch && i + 1 < lines.length) {
                 var separatorLine = lines[i + 1];
-                var sepMatch = separatorLine.match(/^\|([\s\-:|]+)\|$/);
+                var sepMatch = separatorLine.match(/^\s*\|([\s\-:|]+)\|\s*$/);
 
                 if (sepMatch) {
                     var table = parseTable(lines, i);
@@ -482,7 +501,8 @@
                     /^[-*+]\s/.test(lines[i]) ||
                     /^\d+\.\s/.test(lines[i]) ||
                     /^(\*{3,}|-{3,}|_{3,})\s*$/.test(lines[i]) ||
-                    /^(    |\t)/.test(lines[i])) {
+                    /^(    |\t)/.test(lines[i]) ||
+                    /^\s*\|.+\|\s*$/.test(lines[i])) {
                     break;
                 }
                 paraLines.push(lines[i]);
