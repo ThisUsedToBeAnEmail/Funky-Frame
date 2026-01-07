@@ -850,4 +850,519 @@ FunkyTests.describe('Funky.Core.NavPosition', function() {
             }).not.toThrow();
         });
     });
+
+    // =========================================================================
+    // DATA-DRIVEN NAVIGATION TESTS
+    // =========================================================================
+    FunkyTests.describe('Data-driven navigation', function() {
+        var testItems = [
+            { id: 'home', label: 'Home', icon: 'fa-home', href: '/' },
+            { id: 'docs', label: 'Documentation', icon: 'fa-book', children: [
+                { id: 'getting-started', label: 'Getting Started', href: '/docs/start' },
+                { id: 'api-ref', label: 'API Reference', href: '/docs/api' }
+            ]},
+            { id: 'settings', label: 'Settings', icon: 'fa-cog', href: '/settings' }
+        ];
+
+        FunkyTests.afterEach(function() {
+            // Clean up any generated navigation
+            var sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.remove();
+            }
+            // Reset NavPosition state
+            Funky.NavPosition.destroy();
+            Funky.NavPosition.init();
+        });
+
+        FunkyTests.describe('API methods exist', function() {
+            FunkyTests.it('has setActive method', function() {
+                expect(typeof Funky.NavPosition.setActive).toBe('function');
+            });
+
+            FunkyTests.it('has addItems method', function() {
+                expect(typeof Funky.NavPosition.addItems).toBe('function');
+            });
+
+            FunkyTests.it('has removeItem method', function() {
+                expect(typeof Funky.NavPosition.removeItem).toBe('function');
+            });
+
+            FunkyTests.it('has updateItem method', function() {
+                expect(typeof Funky.NavPosition.updateItem).toBe('function');
+            });
+
+            FunkyTests.it('has getItems method', function() {
+                expect(typeof Funky.NavPosition.getItems).toBe('function');
+            });
+
+            FunkyTests.it('has getItem method', function() {
+                expect(typeof Funky.NavPosition.getItem).toBe('function');
+            });
+        });
+
+        FunkyTests.describe('init() with config', function() {
+            FunkyTests.it('accepts items array in config', function() {
+                expect(function() {
+                    Funky.NavPosition.init({
+                        items: testItems
+                    });
+                }).not.toThrow();
+            });
+
+            FunkyTests.it('generates sidebar element', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var sidebar = document.getElementById('sidebar');
+                expect(sidebar).not.toBeNull();
+            });
+
+            FunkyTests.it('generates navigation container', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var nav = document.getElementById('sidebarNav');
+                expect(nav).not.toBeNull();
+            });
+
+            FunkyTests.it('generates nav items', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var navLinks = document.querySelectorAll('.nav-link');
+                expect(navLinks.length).toBeGreaterThan(0);
+            });
+
+            FunkyTests.it('generates nav groups', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var groups = document.querySelectorAll('.nav-group');
+                expect(groups.length).toBe(1); // 'docs' group
+            });
+
+            FunkyTests.it('renders logo when logoText provided', function() {
+                Funky.NavPosition.init({
+                    items: testItems,
+                    logoText: 'Test App'
+                });
+
+                var logo = document.querySelector('.sidebar-logo-text');
+                expect(logo).not.toBeNull();
+                expect(logo.textContent).toBe('Test App');
+            });
+
+            FunkyTests.it('uses custom container ID', function() {
+                Funky.NavPosition.init({
+                    items: testItems,
+                    container: '#my-sidebar'
+                });
+
+                var sidebar = document.getElementById('my-sidebar');
+                expect(sidebar).not.toBeNull();
+            });
+
+            FunkyTests.it('uses custom nav ID', function() {
+                Funky.NavPosition.init({
+                    items: testItems,
+                    navId: 'my-nav'
+                });
+
+                var nav = document.getElementById('my-nav');
+                expect(nav).not.toBeNull();
+            });
+
+            FunkyTests.it('sets position from config', function() {
+                Funky.NavPosition.init({
+                    items: testItems,
+                    position: 'right'
+                });
+
+                var position = document.body.getAttribute('data-nav-position');
+                expect(position).toBe('right');
+            });
+        });
+
+        FunkyTests.describe('getItems()', function() {
+            FunkyTests.it('returns null when no items provided', function() {
+                Funky.NavPosition.init();
+                var items = Funky.NavPosition.getItems();
+                expect(items).toBeNull();
+            });
+
+            FunkyTests.it('returns items array when data-driven', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var items = Funky.NavPosition.getItems();
+                expect(items).not.toBeNull();
+                expect(Array.isArray(items)).toBe(true);
+            });
+
+            FunkyTests.it('returns deep copy of items', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var items = Funky.NavPosition.getItems();
+                items[0].label = 'Modified';
+
+                var itemsAgain = Funky.NavPosition.getItems();
+                expect(itemsAgain[0].label).toBe('Home');
+            });
+        });
+
+        FunkyTests.describe('getItem()', function() {
+            FunkyTests.it('returns item by ID', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var item = Funky.NavPosition.getItem('home');
+                expect(item).not.toBeNull();
+                expect(item.label).toBe('Home');
+            });
+
+            FunkyTests.it('returns nested item by ID', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var item = Funky.NavPosition.getItem('getting-started');
+                expect(item).not.toBeNull();
+                expect(item.label).toBe('Getting Started');
+            });
+
+            FunkyTests.it('returns null for non-existent ID', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var item = Funky.NavPosition.getItem('non-existent');
+                expect(item).toBeNull();
+            });
+        });
+
+        FunkyTests.describe('setActive()', function() {
+            FunkyTests.it('adds active class to item', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.setActive('home');
+
+                var activeLink = document.querySelector('.nav-link.active');
+                expect(activeLink).not.toBeNull();
+                expect(activeLink.getAttribute('data-id')).toBe('home');
+            });
+
+            FunkyTests.it('removes active class from previous item', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.setActive('home');
+                Funky.NavPosition.setActive('settings');
+
+                var activeLinks = document.querySelectorAll('.nav-link.active');
+                expect(activeLinks.length).toBe(1);
+                expect(activeLinks[0].getAttribute('data-id')).toBe('settings');
+            });
+
+            FunkyTests.it('expands parent group for nested item', function() {
+                Funky.NavPosition.init({
+                    items: [
+                        { id: 'docs', label: 'Docs', expanded: false, children: [
+                            { id: 'api', label: 'API', href: '/api' }
+                        ]}
+                    ]
+                });
+
+                var group = document.querySelector('.nav-group');
+                expect(group.classList.contains('collapsed')).toBe(true);
+
+                Funky.NavPosition.setActive('api');
+
+                expect(group.classList.contains('collapsed')).toBe(false);
+            });
+
+            FunkyTests.it('sets aria-current on active item', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.setActive('home');
+
+                var activeLink = document.querySelector('.nav-link[aria-current="page"]');
+                expect(activeLink).not.toBeNull();
+            });
+
+            FunkyTests.it('returns this for chaining', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var result = Funky.NavPosition.setActive('home');
+                expect(result).toBe(Funky.NavPosition);
+            });
+        });
+
+        FunkyTests.describe('addItems()', function() {
+            FunkyTests.it('adds items to root', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.addItems([
+                    { id: 'new-item', label: 'New Item', href: '/new' }
+                ]);
+
+                var items = Funky.NavPosition.getItems();
+                expect(items.length).toBe(testItems.length + 1);
+            });
+
+            FunkyTests.it('adds items to specific parent', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.addItems([
+                    { id: 'new-child', label: 'New Child', href: '/docs/new' }
+                ], 'docs');
+
+                var parent = Funky.NavPosition.getItem('docs');
+                expect(parent.children.length).toBe(3);
+            });
+
+            FunkyTests.it('returns this for chaining', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var result = Funky.NavPosition.addItems([]);
+                expect(result).toBe(Funky.NavPosition);
+            });
+        });
+
+        FunkyTests.describe('removeItem()', function() {
+            FunkyTests.it('removes item by ID', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.removeItem('settings');
+
+                var items = Funky.NavPosition.getItems();
+                var found = items.find(function(i) { return i.id === 'settings'; });
+                expect(found).toBeUndefined();
+            });
+
+            FunkyTests.it('removes nested item', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.removeItem('getting-started');
+
+                var parent = Funky.NavPosition.getItem('docs');
+                expect(parent.children.length).toBe(1);
+            });
+
+            FunkyTests.it('returns this for chaining', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var result = Funky.NavPosition.removeItem('home');
+                expect(result).toBe(Funky.NavPosition);
+            });
+        });
+
+        FunkyTests.describe('updateItem()', function() {
+            FunkyTests.it('updates item properties', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.updateItem('home', { label: 'Updated Home' });
+
+                var item = Funky.NavPosition.getItem('home');
+                expect(item.label).toBe('Updated Home');
+            });
+
+            FunkyTests.it('updates badge', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                Funky.NavPosition.updateItem('settings', { badge: '5' });
+
+                var item = Funky.NavPosition.getItem('settings');
+                expect(item.badge).toBe('5');
+            });
+
+            FunkyTests.it('returns this for chaining', function() {
+                Funky.NavPosition.init({
+                    items: testItems
+                });
+
+                var result = Funky.NavPosition.updateItem('home', {});
+                expect(result).toBe(Funky.NavPosition);
+            });
+        });
+
+        FunkyTests.describe('Item rendering', function() {
+            FunkyTests.it('renders icons', function() {
+                Funky.NavPosition.init({
+                    items: [{ id: 'test', label: 'Test', icon: 'fa-star', href: '#' }]
+                });
+
+                var icon = document.querySelector('.nav-icon');
+                expect(icon).not.toBeNull();
+            });
+
+            FunkyTests.it('renders badges', function() {
+                Funky.NavPosition.init({
+                    items: [{ id: 'test', label: 'Test', badge: '99', href: '#' }]
+                });
+
+                var badge = document.querySelector('.nav-badge');
+                expect(badge).not.toBeNull();
+                expect(badge.textContent).toBe('99');
+            });
+
+            FunkyTests.it('renders disabled items', function() {
+                Funky.NavPosition.init({
+                    items: [{ id: 'test', label: 'Test', disabled: true, href: '#' }]
+                });
+
+                var link = document.querySelector('.nav-link.disabled');
+                expect(link).not.toBeNull();
+                expect(link.getAttribute('aria-disabled')).toBe('true');
+            });
+
+            FunkyTests.it('renders expanded groups by default', function() {
+                Funky.NavPosition.init({
+                    items: [
+                        { id: 'group', label: 'Group', children: [
+                            { id: 'child', label: 'Child', href: '#' }
+                        ]}
+                    ]
+                });
+
+                var group = document.querySelector('.nav-group');
+                expect(group.classList.contains('collapsed')).toBe(false);
+            });
+
+            FunkyTests.it('renders collapsed groups when expanded: false', function() {
+                Funky.NavPosition.init({
+                    items: [
+                        { id: 'group', label: 'Group', expanded: false, children: [
+                            { id: 'child', label: 'Child', href: '#' }
+                        ]}
+                    ]
+                });
+
+                var group = document.querySelector('.nav-group');
+                expect(group.classList.contains('collapsed')).toBe(true);
+            });
+        });
+
+        FunkyTests.describe('SPA mode', function() {
+            FunkyTests.it('spaMode is enabled by default when items provided', function() {
+                expect(function() {
+                    Funky.NavPosition.init({
+                        items: testItems
+                    });
+                }).not.toThrow();
+            });
+
+            FunkyTests.it('spaMode can be disabled', function() {
+                expect(function() {
+                    Funky.NavPosition.init({
+                        items: testItems,
+                        spaMode: false
+                    });
+                }).not.toThrow();
+            });
+        });
+
+        FunkyTests.describe('onSelect callback', function() {
+            FunkyTests.it('calls onSelect when item is clicked', function() {
+                var selectedItem = null;
+                Funky.NavPosition.init({
+                    items: testItems,
+                    onSelect: function(item) {
+                        selectedItem = item;
+                    }
+                });
+
+                var link = document.querySelector('.nav-link[data-id="home"]');
+                link.click();
+
+                expect(selectedItem).not.toBeNull();
+                expect(selectedItem.id).toBe('home');
+            });
+
+            FunkyTests.it('does not call onSelect for disabled items', function() {
+                var called = false;
+                Funky.NavPosition.init({
+                    items: [{ id: 'test', label: 'Test', disabled: true, href: '#' }],
+                    onSelect: function() {
+                        called = true;
+                    }
+                });
+
+                var link = document.querySelector('.nav-link');
+                link.click();
+
+                expect(called).toBe(false);
+            });
+        });
+
+        FunkyTests.describe('Backwards compatibility', function() {
+            FunkyTests.it('init() without config still works', function() {
+                expect(function() {
+                    Funky.NavPosition.init();
+                }).not.toThrow();
+            });
+
+            FunkyTests.it('getItems() returns null for non-data-driven nav', function() {
+                Funky.NavPosition.init();
+                var items = Funky.NavPosition.getItems();
+                expect(items).toBeNull();
+            });
+
+            FunkyTests.it('setActive() handles missing sidebar gracefully', function() {
+                Funky.NavPosition.init();
+                expect(function() {
+                    Funky.NavPosition.setActive('non-existent');
+                }).not.toThrow();
+            });
+
+            FunkyTests.it('addItems() returns this when no items present', function() {
+                Funky.NavPosition.init();
+                var result = Funky.NavPosition.addItems([]);
+                expect(result).toBe(Funky.NavPosition);
+            });
+
+            FunkyTests.it('removeItem() returns this when no items present', function() {
+                Funky.NavPosition.init();
+                var result = Funky.NavPosition.removeItem('test');
+                expect(result).toBe(Funky.NavPosition);
+            });
+
+            FunkyTests.it('updateItem() returns this when no items present', function() {
+                Funky.NavPosition.init();
+                var result = Funky.NavPosition.updateItem('test', {});
+                expect(result).toBe(Funky.NavPosition);
+            });
+        });
+    });
 });

@@ -2,7 +2,7 @@
  * Funky.ContextMenu - Right-Click Context Menu Component
  * Native-feeling context menus with submenus and keyboard navigation
  * @module Funky.ContextMenu
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
   'use strict';

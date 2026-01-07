@@ -2,7 +2,7 @@
  * Funky.Clipboard - Copy to Clipboard Component
  * Copy to clipboard with visual feedback
  * @module Funky.Clipboard
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
   'use strict';

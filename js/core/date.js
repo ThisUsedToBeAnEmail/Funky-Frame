@@ -5,7 +5,7 @@
  * Extracted from Calendar.js DateEngine for reuse across components.
  *
  * @module Funky.Date
- * @version 1.0.3
+ * @version 1.0.4
  *
  * @example
  * // Comparisons

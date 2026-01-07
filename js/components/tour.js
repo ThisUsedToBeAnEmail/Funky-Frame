@@ -6,7 +6,7 @@
  * automatic first-visit tour triggering.
  * 
  * @module Funky.Tour
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(global) {
   'use strict';

@@ -2,7 +2,7 @@
  * Funky File Manager
  * Professional file management UI with grid/list views, preview, and batch operations
  * @module Funky.FileManager
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

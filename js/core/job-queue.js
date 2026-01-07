@@ -19,7 +19,7 @@
  *     queue.add({ type: 'task', data: { foo: 'bar' } });
  *   });
  *
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(global) {
   'use strict';

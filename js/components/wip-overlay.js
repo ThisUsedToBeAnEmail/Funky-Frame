@@ -2,7 +2,7 @@
  * WIP Overlay - Work In Progress Page Overlay
  * A simple overlay to indicate pages that are still under development
  * @module Funky.WIPOverlay
- * @version 1.0.3
+ * @version 1.0.4
  *
  * Usage (Instance-based - recommended for SPAs):
  *   Funky.WIPOverlay.init({

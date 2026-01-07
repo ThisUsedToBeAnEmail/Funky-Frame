@@ -1,6 +1,6 @@
 {
   "name": "funky-frame",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Lightweight, no-build JavaScript UI framework with 86+ components, PWA support, and zero dependencies",
   "main": "js/core/namespace.js",
   "browser": "js/core/namespace.js",

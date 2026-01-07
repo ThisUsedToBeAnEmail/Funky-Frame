@@ -1,7 +1,7 @@
 /**
  * Funky.FileUpload - File Upload Component
  * Drag-drop file upload with validation, progress tracking, and event emission
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(global) {
     'use strict';

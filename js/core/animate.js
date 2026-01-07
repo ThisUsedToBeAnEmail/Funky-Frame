@@ -28,7 +28,7 @@
  *     hide: { class: 'fade-out', duration: 200 }
  *   });
  *
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

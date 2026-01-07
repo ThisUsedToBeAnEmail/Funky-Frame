@@ -15,7 +15,7 @@
  *   <span data-sparkline="line" data-values="1,2,3,4,5"></span>
  *   <span data-sparkline="bar" data-values="5,4,3,2,1" data-color="negative"></span>
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

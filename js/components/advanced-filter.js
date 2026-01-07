@@ -14,7 +14,7 @@
  *   var filter = Funky.AdvancedFilter.create(config);
  *   Funky.AdvancedFilter.init('#filterBtn', { entityType: 'trade', dataTable: dt });
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';
@@ -112,21 +112,30 @@
 
 		this.createFilterForm();
 		this.bindKeyboardShortcuts();
-		this.checkUrlHash();
+
+		// Skip URL-based features when running inside an iframe (e.g., playground canvas)
+		var isInIframe = window !== window.parent;
+		if (!isInIframe) {
+			this.checkUrlHash();
+		}
+
 		this.loadSavedFilters();
 		this.loadRecentFilters();
 
-		// Listen for hash changes (back/forward buttons, manual URL edits)
-		window.addEventListener('hashchange', function() {
-			self.handleHashChange();
-		});
+		// Skip URL-based event listeners when running inside an iframe
+		if (!isInIframe) {
+			// Listen for hash changes (back/forward buttons, manual URL edits)
+			window.addEventListener('hashchange', function() {
+				self.handleHashChange();
+			});
 
-		// Listen for browser back/forward with pushState
-		window.addEventListener('popstate', function(event) {
-			if (event.state && event.state.filterHash) {
-				self.loadFromHash(event.state.filterHash, false);
-			}
-		});
+			// Listen for browser back/forward with pushState
+			window.addEventListener('popstate', function(event) {
+				if (event.state && event.state.filterHash) {
+					self.loadFromHash(event.state.filterHash, false);
+				}
+			});
+		}
 	};
 
 	/**
@@ -1873,6 +1882,13 @@
 		if (hash) {
 			this.loadFromHash(hash, true);
 		}
+	};
+
+	/**
+	 * Handle hash change events (back/forward, manual URL edits)
+	 */
+	AdvancedFilter.prototype.handleHashChange = function() {
+		this.checkUrlHash();
 	};
 
 	/**

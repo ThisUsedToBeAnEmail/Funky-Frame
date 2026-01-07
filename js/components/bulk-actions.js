@@ -16,7 +16,7 @@
  *     onAction: function(actionId, selectedItems) { ... }
  *   });
  *
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

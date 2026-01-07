@@ -11,7 +11,7 @@
  *     ajax: { url: '/api/data' }
  *   });
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window, document) {
 	'use strict';

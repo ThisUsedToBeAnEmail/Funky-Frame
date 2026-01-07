@@ -47,7 +47,7 @@
  *     }
  *   });
  * 
- * @version 1.0.3
+ * @version 1.0.4
  * @see Funky.Schema for schema management
  * @see Funky.FormModal for form handling
  */

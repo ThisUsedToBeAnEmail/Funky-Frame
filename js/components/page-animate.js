@@ -23,7 +23,7 @@
  *   // Attribute-based
  *   <div data-page-animate="dashboard" data-page="dashboard">...</div>
  *
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

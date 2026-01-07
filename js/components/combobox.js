@@ -7,7 +7,7 @@
  * Reuses: Funky.SelectableList, Funky.FuzzySearch
  * 
  * @module Funky.ComboBox
- * @version 1.0.3
+ * @version 1.0.4
  * @requires Funky.Dom
  */
 (function(global) {

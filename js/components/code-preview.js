@@ -2,7 +2,7 @@
  * Funky.CodePreview - Source Code Display Component
  * Syntax highlighting, line numbers, copy, collapse
  * @module Funky.CodePreview
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
     'use strict';

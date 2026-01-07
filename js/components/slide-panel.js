@@ -7,7 +7,7 @@
  *   Funky.SlidePanel.lockScroll();
  *   Funky.SlidePanel.unlockScroll();
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

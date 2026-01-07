@@ -526,11 +526,14 @@
             } else {
                 wrapper.classAdd('d-none');
             }
-            
-            E.emit(this.el, 'funky.action-bar.bulk-update', {
-                entity: this.entity,
-                count: selectedCount
-            });
+
+            // Emit event (guard against null el)
+            if (this.el) {
+                E.emit(this.el, 'funky.action-bar.bulk-update', {
+                    entity: this.entity,
+                    count: selectedCount
+                });
+            }
         },
 
         /**
@@ -577,8 +580,9 @@
             document.addEventListener('funky.bulk.select', function(e) {
                 var data = e.detail || {};
 
-                // Match by entity or explicit actionBarId
-                if (data.entity === self.entity || data.actionBarId === self.el.id) {
+                // Match by entity or explicit actionBarId (guard against null el)
+                var elId = self.el ? self.el.id : null;
+                if (data.entity === self.entity || (elId && data.actionBarId === elId)) {
                     var selectedCount = data.count !== undefined ? data.count :
                                        (data.ids ? data.ids.length : 0);
                     self.setBulkSelection(selectedCount);

@@ -31,7 +31,7 @@
  *   Funky.Audio.listSounds();  // ['success', 'error', 'click']
  *   Funky.Audio.getSound('success');  // { file: 'success.mp3', volume: 0.6 }
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

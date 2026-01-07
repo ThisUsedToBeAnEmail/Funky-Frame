@@ -6,7 +6,7 @@
  * Import via: importScripts('/assets/js/sw/messaging.js');
  *
  * @namespace FunkySW.Messaging
- * @version 1.0.3
+ * @version 1.0.4
  *
  * Message Format:
  *   { type: 'FUNKY_SW_*', data: { ... } }

@@ -23,7 +23,7 @@
  *   // Events (via DOM CustomEvent - uses dots)
  *   D.one('#myModal').on('funky.modal.hidden', function() { ... });
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

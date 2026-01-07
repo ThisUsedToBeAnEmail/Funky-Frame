@@ -9,7 +9,7 @@
  * - Pagination and infinite scroll
  * 
  * @namespace Funky.CardGrid
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
     'use strict';

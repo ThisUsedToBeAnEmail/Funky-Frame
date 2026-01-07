@@ -324,6 +324,10 @@
 	 * @param {Function} module.init - Called when page becomes visible
 	 * @param {Function} module.destroy - Called before navigating away, returns state
 	 * @param {Function} [module.update] - Called for targeted WebSocket updates
+	 * @param {Object} [module.subRoutes] - Sub-route configuration (convenience wrapper for SPA.SubRouter)
+	 * @param {Function} module.subRoutes.activate - Called on sub-route navigation (context) => state
+	 * @param {Function} module.subRoutes.restore - Called on browser back/forward (state, context)
+	 * @param {Function} [module.subRoutes.deactivate] - Called before navigating away from sub-route
 	 */
 	function register(pageIdOrModule, module) {
 		var pageId, pageModule;
@@ -368,6 +372,23 @@
 					entityMap[entity].push(pageId);
 				}
 			});
+		}
+
+		// Register sub-routes with SPA.SubRouter if defined
+		if (pageModule.subRoutes && Funky.SPA && Funky.SPA.SubRouter) {
+			// Derive base path from pageId (e.g., 'docs' → '/docs')
+			var basePath = '/' + pageId.replace(/^\/+/, '');
+
+			var registered = Funky.SPA.SubRouter.register(basePath, {
+				activate: pageModule.subRoutes.activate,
+				restore: pageModule.subRoutes.restore,
+				deactivate: pageModule.subRoutes.deactivate,
+				queryOnly: pageModule.subRoutes.queryOnly || false
+			});
+
+			if (registered) {
+				log('Registered sub-routes for:', basePath);
+			}
 		}
 
 		log('Registered page:', pageId, pageModule.entities || []);
@@ -879,7 +900,5 @@
 
 	// Register with Funky namespace
 	Funky.register('Pages', Pages);
-
-	console.log('[Funky.Pages] Registered');
 
 })(window);

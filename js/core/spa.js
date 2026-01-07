@@ -50,7 +50,10 @@
 			onIdle: null,
 			onActive: null,
 			onAway: null,
-			onReturn: null
+			onReturn: null,
+
+			// History API options
+			disableHistory: false  // If true, skip pushState/replaceState/popstate (for iframes)
 		},
 
 		// Page-specific initialization functions registry
@@ -101,15 +104,17 @@
 		// Bind navigation handlers
 		SPA.bindNavigation();
 
-		// Handle browser back/forward
-		SPA.bindPopState();
+		// Handle browser back/forward (skip if history is disabled, e.g., in iframes)
+		if (!SPA.config.disableHistory) {
+			SPA.bindPopState();
 
-		// Store initial state
-		if (window.history && window.history.replaceState) {
-			window.history.replaceState({ url: window.location.href, title: document.title },
-				document.title,
-				window.location.href
-			);
+			// Store initial state (may be updated later if this is a sub-route)
+			if (window.history && window.history.replaceState) {
+				window.history.replaceState({ url: window.location.href, title: document.title },
+					document.title,
+					window.location.href
+				);
+			}
 		}
 
 		// Get current page from body or content
@@ -123,6 +128,9 @@
 
 		SPA.initialized = true;
 		console.log('[SPA] Initialized successfully');
+
+		// Note: SubRouter.handleInitialLoad() is called after page scripts register their handlers
+		// This happens in handlePageLoad() or can be called manually by pages
 	};
 
 	// ============================================
@@ -184,6 +192,13 @@
 
 			lastUrl = currentUrl;
 
+			// Check for sub-route navigation first
+			if (SPA.SubRouter && SPA.SubRouter.handlePopstate(event.state)) {
+				// SubRouter handled it - don't reload the page
+				return;
+			}
+
+			// Standard SPA navigation
 			if (event.state && event.state.url) {
 				// Restore title from state if available
 				if (event.state.title) {
@@ -284,14 +299,16 @@
 		try {
 			var currentUrl = new URL(window.location.href);
 			var targetUrl = new URL(url, window.location.origin);
-			
+
 			// Same path, just different hash - let browser handle natively
-			if (currentUrl.origin === targetUrl.origin && 
-				currentUrl.pathname === targetUrl.pathname && 
+			if (currentUrl.origin === targetUrl.origin &&
+				currentUrl.pathname === targetUrl.pathname &&
 				currentUrl.search === targetUrl.search &&
 				targetUrl.hash) {
-				// Update URL and scroll to element
-				window.history.pushState({ url: url }, '', url);
+				// Update URL and scroll to element (skip if history disabled)
+				if (!SPA.config.disableHistory) {
+					window.history.pushState({ url: url }, '', url);
+				}
 				var element = document.querySelector(targetUrl.hash);
 				if (element) {
 					element.scrollIntoView({ behavior: 'smooth' });
@@ -302,7 +319,9 @@
 			// URL parsing failed, proceed with normal navigation
 		}
 
-		SPA.loadPage(url, true);
+		// When history is disabled, never push state
+		var shouldPushState = !SPA.config.disableHistory;
+		SPA.loadPage(url, shouldPushState);
 	};
 
 	/**
@@ -429,8 +448,8 @@
 				}
 			}
 
-			// Update URL with correct title
-			if (pushState && window.history && window.history.pushState) {
+			// Update URL with correct title (skip if history disabled)
+			if (pushState && !SPA.config.disableHistory && window.history && window.history.pushState) {
 				window.history.pushState({ url: url, title: document.title },
 					document.title,
 					url
@@ -447,6 +466,13 @@
 			} else {
 				// Fallback: execute scripts in cached HTML
 				SPA.initializePage();
+			}
+
+			// Check for sub-route activation after page init
+			if (SPA.SubRouter) {
+				requestAnimationFrame(function() {
+					SPA.SubRouter.handleInitialLoad();
+				});
 			}
 
 			// Update presence channel for new page
@@ -653,8 +679,8 @@
 			});
 		}
 
-		// Update URL
-		if (pushState && window.history && window.history.pushState) {
+		// Update URL (skip if history disabled)
+		if (pushState && !SPA.config.disableHistory && window.history && window.history.pushState) {
 			window.history.pushState({ url: url, title: document.title },
 				document.title,
 				url
@@ -666,15 +692,19 @@
 
 		// Detect and store new page
 		SPA.currentPage = SPA.detectCurrentPage();
-		console.log('[SPA DEBUG] Detected pageId:', SPA.currentPage);
-		console.log('[SPA DEBUG] Pages.has:', Funky.Pages && Funky.Pages.has(SPA.currentPage));
-		console.log('[SPA DEBUG] Pages.isManaged:', Funky.Pages && Funky.Pages.isManaged(SPA.currentPage));
 
 		// Scroll to top
 		window.scrollTo(0, 0);
 
 		// Initialize new page
 		SPA.initializePage();
+
+		// Check for sub-route activation after page init
+		if (SPA.SubRouter) {
+			requestAnimationFrame(function() {
+				SPA.SubRouter.handleInitialLoad();
+			});
+		}
 
 		// Update presence channel for new page
 		if (SPA._presenceEnabled) {
@@ -703,12 +733,8 @@
 			document.dispatchEvent(cachedEvent);
 
 			// If the page registered itself but didn't mount, mount it now
-			console.log('[SPA DEBUG] After cache - pageId:', pageId, 'has:', Funky.Pages.has(pageId), 'isManaged:', Funky.Pages.isManaged(pageId));
 			if (Funky.Pages.has(pageId) && !Funky.Pages.isManaged(pageId)) {
-				console.log('[SPA DEBUG] Calling Pages.mount for:', pageId);
 				Funky.Pages.mount(pageId);
-			} else {
-				console.log('[SPA DEBUG] NOT mounting - has:', Funky.Pages.has(pageId), 'isManaged:', Funky.Pages.isManaged(pageId));
 			}
 		}
 
@@ -929,8 +955,7 @@
 		var scripts = content.querySelectorAll('script');
 		var scriptsArray = Array.from(scripts);
 
-		console.log('[SPA DEBUG] executeScripts found', scriptsArray.length, 'scripts in #spaContent');
-		scriptsArray.forEach(function(oldScript, index) {
+		scriptsArray.forEach(function(oldScript) {
 			// Skip external scripts - they should listen for spa:pageload event
 			if (oldScript.src) {
 				oldScript.parentNode.removeChild(oldScript);
@@ -1576,6 +1601,504 @@
 
 		console.log('[SPA] Destroyed successfully');
 	};
+
+	// ============================================
+	// SUBROUTER - Sub-path routing for components
+	// ============================================
+
+	/**
+	 * SubRouter enables components to manage URL sub-paths and query params
+	 * while maintaining full History API integration.
+	 *
+	 * @example
+	 * // Register a handler
+	 * SPA.SubRouter.register('/docs', {
+	 *     activate: function(context) {
+	 *         loadDoc(context.subPath);
+	 *         return { docId: context.subPath };
+	 *     },
+	 *     restore: function(state, context) {
+	 *         loadDoc(state.docId || context.subPath);
+	 *     }
+	 * });
+	 *
+	 * // Push a sub-route
+	 * SPA.SubRouter.push('/docs', 'architecture', { docId: 'architecture' });
+	 * // URL → /docs/architecture
+	 */
+	SPA.SubRouter = (function() {
+
+		// Use ConfigRegistry for handler storage with validation
+		var handlers = Funky.Registry ? Funky.Registry.create('SubRouterHandlers', {
+			validate: function(handler) {
+				if (!handler || typeof handler !== 'object') return false;
+				if (typeof handler.activate !== 'function') {
+					console.error('[SPA.SubRouter] Handler must have activate function');
+					return false;
+				}
+				if (typeof handler.restore !== 'function') {
+					console.error('[SPA.SubRouter] Handler must have restore function');
+					return false;
+				}
+				return true;
+			}
+		}) : null;
+
+		// Fallback if Registry not available
+		var _handlers = {};
+
+		/**
+		 * Parse URL to extract base path, sub-path, and query params
+		 * Only matches registered base paths
+		 * @private
+		 * @param {string} url - URL to parse
+		 * @returns {Object|null} Parsed info or null if no handler matches
+		 */
+		function parseUrl(url) {
+			try {
+				var parsed = new URL(url, window.location.origin);
+				var pathname = parsed.pathname;
+
+				// Get registered base paths
+				var basePaths = handlers ? handlers.list() : Object.keys(_handlers);
+
+				// Find matching base path (longest match wins)
+				var matchedBase = null;
+				var matchedLength = 0;
+
+				for (var i = 0; i < basePaths.length; i++) {
+					var base = basePaths[i];
+					var handler = handlers ? handlers.get(base) : _handlers[base];
+
+					// Check if handler uses queryOnly mode (no path-based sub-routes)
+					if (handler && handler.queryOnly) {
+						// Only match exact base path (with or without trailing slash)
+						if (pathname === base || pathname === base + '/') {
+							if (base.length > matchedLength) {
+								matchedBase = base;
+								matchedLength = base.length;
+							}
+						}
+					} else {
+						// Check if pathname starts with base path (exact or with trailing content)
+						if (pathname === base || pathname === base + '/' || pathname.indexOf(base + '/') === 0) {
+							if (base.length > matchedLength) {
+								matchedBase = base;
+								matchedLength = base.length;
+							}
+						}
+					}
+				}
+
+				if (!matchedBase) {
+					return null;
+				}
+
+				// Extract sub-path from URL path segment (e.g., /docs/architecture -> architecture)
+				var subPath = '';
+				if (pathname.length > matchedBase.length) {
+					subPath = pathname.substring(matchedBase.length + 1); // +1 to skip the /
+				}
+
+				// Parse query params
+				var params = {};
+				parsed.searchParams.forEach(function(value, key) {
+					params[key] = value;
+				});
+
+				return {
+					basePath: matchedBase,
+					subPath: subPath,
+					params: params,
+					fullPath: pathname,
+					search: parsed.search
+				};
+			} catch (e) {
+				console.error('[SPA.SubRouter] Error parsing URL:', e);
+				return null;
+			}
+		}
+
+		/**
+		 * Build URL from components
+		 * @private
+		 * @param {string} basePath - Base path
+		 * @param {string} subPath - Sub-path
+		 * @param {Object} [params] - Query parameters
+		 * @returns {string} Full URL path
+		 */
+		function buildUrl(basePath, subPath, params) {
+			var url = basePath;
+
+			// SubPath goes in path segment: /docs/architecture
+			if (subPath) {
+				url += '/' + subPath;
+			}
+
+			// Params go to query string
+			if (params && typeof params === 'object') {
+				var searchParams = new URLSearchParams();
+				for (var key in params) {
+					if (params.hasOwnProperty(key) && params[key] !== undefined && params[key] !== null) {
+						searchParams.set(key, params[key]);
+					}
+				}
+				var search = searchParams.toString();
+				if (search) {
+					url += '?' + search;
+				}
+			}
+
+			return url;
+		}
+
+		/**
+		 * Emit sub-route event
+		 * @private
+		 * @param {string} type - Event type (push, replace, popstate)
+		 * @param {Object} detail - Event detail
+		 */
+		function emitEvent(type, detail) {
+			detail.type = type;
+
+			// CustomEvent on document
+			var event = new CustomEvent('funky.spa.subroute', {
+				detail: detail
+			});
+			document.dispatchEvent(event);
+
+			// PubSub event
+			if (Funky.PubSub) {
+				Funky.PubSub.emit('funky:spa:subroute', detail);
+			}
+		}
+
+		return {
+			/**
+			 * Register a sub-route handler for a base path
+			 * @param {string} basePath - Base path (e.g., '/docs', '/playground')
+			 * @param {Object} handler - Handler object
+			 * @param {Function} handler.activate - Called on navigation (context) => state
+			 * @param {Function} handler.restore - Called on popstate (state, context)
+			 * @param {Function} [handler.deactivate] - Called before navigating away
+			 */
+			register: function(basePath, handler) {
+				if (!basePath || typeof basePath !== 'string') {
+					console.error('[SPA.SubRouter] Invalid basePath:', basePath);
+					return false;
+				}
+
+				// Normalize base path (ensure leading slash, no trailing slash)
+				if (basePath.charAt(0) !== '/') {
+					basePath = '/' + basePath;
+				}
+				if (basePath.length > 1 && basePath.charAt(basePath.length - 1) === '/') {
+					basePath = basePath.slice(0, -1);
+				}
+
+				if (handlers) {
+					return handlers.register(basePath, handler);
+				} else {
+					// Fallback validation
+					if (!handler || typeof handler.activate !== 'function' || typeof handler.restore !== 'function') {
+						console.error('[SPA.SubRouter] Handler must have activate and restore functions');
+						return false;
+					}
+					_handlers[basePath] = handler;
+					return true;
+				}
+			},
+
+			/**
+			 * Unregister a sub-route handler
+			 * @param {string} basePath - Base path to unregister
+			 */
+			unregister: function(basePath) {
+				if (handlers) {
+					return handlers.unregister(basePath);
+				} else {
+					if (_handlers.hasOwnProperty(basePath)) {
+						delete _handlers[basePath];
+						return true;
+					}
+					return false;
+				}
+			},
+
+			/**
+			 * Check if a handler is registered for a base path
+			 * @param {string} basePath - Base path to check
+			 * @returns {boolean}
+			 */
+			has: function(basePath) {
+				if (handlers) {
+					return handlers.has(basePath);
+				}
+				return _handlers.hasOwnProperty(basePath);
+			},
+
+			/**
+			 * Get handler for a base path
+			 * @param {string} basePath - Base path
+			 * @returns {Object|null} Handler or null
+			 */
+			getHandler: function(basePath) {
+				if (handlers) {
+					return handlers.get(basePath);
+				}
+				return _handlers.hasOwnProperty(basePath) ? _handlers[basePath] : null;
+			},
+
+			/**
+			 * Push a new sub-route state (creates history entry)
+			 * @param {string} basePath - Base path
+			 * @param {string} subPath - Sub-path to append
+			 * @param {Object} [state] - State to store in history
+			 * @param {Object} [params] - Query parameters
+			 */
+			push: function(basePath, subPath, state, params) {
+				var handler = this.getHandler(basePath);
+				if (!handler) {
+					console.warn('[SPA.SubRouter] No handler registered for:', basePath);
+					return;
+				}
+
+				var url = buildUrl(basePath, subPath, params);
+
+				var historyState = {
+					url: url,
+					title: document.title,
+					isSubRoute: true,
+					basePath: basePath,
+					subPath: subPath,
+					params: params || {},
+					subState: state || {}
+				};
+
+				// Skip history manipulation if disabled (e.g., in iframes)
+				if (!SPA.config.disableHistory && window.history && window.history.pushState) {
+					window.history.pushState(historyState, document.title, url);
+				}
+
+				emitEvent('push', {
+					basePath: basePath,
+					subPath: subPath,
+					params: params || {},
+					state: state || {}
+				});
+			},
+
+			/**
+			 * Replace current sub-route state (no new history entry)
+			 * @param {string} basePath - Base path
+			 * @param {string} subPath - Sub-path to append
+			 * @param {Object} [state] - State to store in history
+			 * @param {Object} [params] - Query parameters
+			 */
+			replace: function(basePath, subPath, state, params) {
+				var handler = this.getHandler(basePath);
+				if (!handler) {
+					console.warn('[SPA.SubRouter] No handler registered for:', basePath);
+					return;
+				}
+
+				var url = buildUrl(basePath, subPath, params);
+
+				var historyState = {
+					url: url,
+					title: document.title,
+					isSubRoute: true,
+					basePath: basePath,
+					subPath: subPath,
+					params: params || {},
+					subState: state || {}
+				};
+
+				// Skip history manipulation if disabled (e.g., in iframes)
+				if (!SPA.config.disableHistory && window.history && window.history.replaceState) {
+					window.history.replaceState(historyState, document.title, url);
+				}
+
+				emitEvent('replace', {
+					basePath: basePath,
+					subPath: subPath,
+					params: params || {},
+					state: state || {}
+				});
+			},
+
+			/**
+			 * Update query params only (replaces state, no new history entry)
+			 * @param {string} basePath - Base path
+			 * @param {Object} params - Query parameters to set
+			 */
+			setParams: function(basePath, params) {
+				var current = this.getCurrent(basePath);
+				if (!current) {
+					console.warn('[SPA.SubRouter] Cannot setParams - not on a sub-route for:', basePath);
+					return;
+				}
+
+				this.replace(basePath, current.subPath, current.state, params);
+			},
+
+			/**
+			 * Get current sub-route state for a base path
+			 * @param {string} basePath - Base path to check
+			 * @returns {Object|null} { subPath, params, state } or null
+			 */
+			getCurrent: function(basePath) {
+				var parsed = parseUrl(window.location.href);
+
+				if (!parsed || parsed.basePath !== basePath) {
+					return null;
+				}
+
+				// Try to get state from history.state
+				var historyState = window.history.state;
+				var state = {};
+				if (historyState && historyState.isSubRoute && historyState.basePath === basePath) {
+					state = historyState.subState || {};
+				}
+
+				return {
+					subPath: parsed.subPath,
+					params: parsed.params,
+					state: state
+				};
+			},
+
+			/**
+			 * Handle popstate for sub-routes
+			 * Called by SPA's popstate handler
+			 * @param {Object} historyState - The history.state object
+			 * @returns {boolean} True if handled, false if not a sub-route
+			 */
+			handlePopstate: function(historyState) {
+				if (!historyState || !historyState.isSubRoute) {
+					return false;
+				}
+
+				var handler = this.getHandler(historyState.basePath);
+				if (!handler) {
+					return false;
+				}
+
+				// Check if the CURRENTLY DISPLAYED page matches the target basePath
+				// We can't use window.location.pathname because it's already updated by popstate
+				// Instead, use SPA.currentPage which tracks what page content is actually showing
+				var currentPageId = SPA.currentPage;
+				var targetPageId = historyState.basePath.replace(/^\//, ''); // Remove leading slash
+
+				// If the currently displayed page content doesn't match the target, let SPA handle it
+				if (currentPageId !== targetPageId) {
+					// We're navigating to a different page - let SPA do a full page load
+					return false;
+				}
+
+				var context = {
+					subPath: historyState.subPath,
+					params: historyState.params || {},
+					fromPopstate: true
+				};
+
+				try {
+					handler.restore(historyState.subState || {}, context);
+				} catch (e) {
+					console.error('[SPA.SubRouter] Error in restore handler:', e);
+				}
+
+				emitEvent('popstate', {
+					basePath: historyState.basePath,
+					subPath: historyState.subPath,
+					params: historyState.params || {},
+					state: historyState.subState || {}
+				});
+
+				return true;
+			},
+
+			/**
+			 * Handle initial page load or direct URL access
+			 * Checks if current URL matches a registered sub-route and activates it
+			 * @returns {boolean} True if a sub-route was activated
+			 */
+			handleInitialLoad: function() {
+				var parsed = parseUrl(window.location.href);
+
+				if (!parsed) {
+					return false;
+				}
+
+				var handler = this.getHandler(parsed.basePath);
+				if (!handler) {
+					return false;
+				}
+
+				var context = {
+					subPath: parsed.subPath,
+					params: parsed.params,
+					fromPopstate: false
+				};
+
+				try {
+					var state = handler.activate(context);
+
+					// Store state in history for back/forward navigation (skip if history disabled)
+					if (!SPA.config.disableHistory) {
+						var historyState = {
+							url: window.location.href,
+							title: document.title,
+							isSubRoute: true,
+							basePath: parsed.basePath,
+							subPath: parsed.subPath,
+							params: parsed.params,
+							subState: state || {}
+						};
+
+						if (window.history && window.history.replaceState) {
+							window.history.replaceState(historyState, document.title, window.location.href);
+						}
+					}
+
+					return true;
+				} catch (e) {
+					console.error('[SPA.SubRouter] Error in activate handler:', e);
+					return false;
+				}
+			},
+
+			/**
+			 * Parse a URL (exposed for testing)
+			 * @private
+			 * @param {string} url - URL to parse
+			 * @returns {Object|null}
+			 */
+			_parseUrl: parseUrl,
+
+			/**
+			 * Check if handler exists (for testing)
+			 * @private
+			 * @param {string} basePath - Base path
+			 * @returns {boolean}
+			 */
+			_hasHandler: function(basePath) {
+				return this.has(basePath);
+			},
+
+			/**
+			 * Reset all handlers (for testing)
+			 * @private
+			 */
+			_reset: function() {
+				if (handlers) {
+					handlers.clear();
+				} else {
+					_handlers = {};
+				}
+			}
+		};
+	})();
 
 	// ============================================
 	// REGISTER WITH FUNKY

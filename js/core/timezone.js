@@ -14,7 +14,7 @@
  *   Funky.Timezone.setTimezone('America/New_York');
  *   Funky.Timezone.initializeSelector('#timezone-select');
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

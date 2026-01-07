@@ -2,7 +2,7 @@
  * Funky.Playground - Component Testing Environment
  * Provides isolated rendering, props editing, and event logging for components
  * @module Funky.Playground
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';
@@ -8776,6 +8776,9 @@
 
 		// Pending state for restoration from cache
 		this._pendingState = null;
+
+		// Pending SubRouter path for direct URL access
+		this._pendingSubRoute = null;
 	}
 
 	/**
@@ -8910,6 +8913,7 @@
 		this.currentComponent = null;
 		this.currentProps = {};
 		this._pendingState = null;
+		this._pendingSubRoute = null;
 
 		return state;  // Return state for Pages cache
 	};
@@ -8988,6 +8992,17 @@
 					// Keyboard users want to stay in sidenav to continue navigating
 					if (!item._keyboard) {
 						self._focusIframe();
+					}
+
+					// Push to URL via SubRouter using query params (works with server refresh)
+					if (Funky.SPA && Funky.SPA.SubRouter) {
+						// Determine which basePath we're on (play or playground)
+						var basePath = window.location.pathname.indexOf('/play') === 0 ? '/play' : '/playground';
+						if (window.location.pathname.indexOf('/playground') === 0) {
+							basePath = '/playground';
+						}
+						// Use query params: /playground?component=button
+						Funky.SPA.SubRouter.push(basePath, '', { componentId: item.id }, { component: item.id });
 					}
 				}
 			}
@@ -9291,6 +9306,20 @@
 		if (this.elements.themeSelector) {
 			var theme = this.elements.themeSelector.value;
 			this._setTheme(theme);
+		}
+
+		// Check for pending SubRouter path (from direct URL or SPA navigation with subPath)
+		if (this._pendingSubRoute) {
+			var componentId = this._pendingSubRoute;
+			this._pendingSubRoute = null;
+
+			if (COMPONENTS[componentId]) {
+				this._selectComponent(componentId);
+				if (this.sideNav) {
+					this.sideNav.select(componentId, true);
+				}
+				return;  // SubRoute takes precedence over other state restoration
+			}
 		}
 
 		// Restore state from cache if pending
@@ -9841,13 +9870,48 @@
 	// Register as page module for SPA state preservation
 	// Register for both public (/play) and authenticated (/playground) routes
 	var playgroundPageModule = {
-		init: function(state) { 
+		init: function(state) {
 			var canvas = document.getElementById('playgroundCanvas');
 			if (canvas && !instance.container) {
 				instance.init('#playgroundCanvas', state);
 			}
 		},
-		destroy: function() { return instance.destroy(); }
+		destroy: function() { return instance.destroy(); },
+
+		// Sub-route handling for query-param component URLs (/playground?component=button, etc.)
+		subRoutes: {
+			// queryOnly mode: don't match /playground/components/* (iframe URLs)
+			queryOnly: true,
+			activate: function(context) {
+				// Called on direct URL access or SPA navigation to /playground?component=something
+				var componentId = context.params && context.params.component;
+				if (componentId) {
+					var comp = COMPONENTS[componentId];
+					if (comp) {
+						// Wait for playground to be ready, then select component
+						if (instance.container && instance.sideNav) {
+							instance.sideNav.select(componentId, true);  // silent=true
+							instance._selectComponent(componentId);
+						} else {
+							// Playground not ready - store for pending state
+							instance._pendingSubRoute = componentId;
+						}
+					}
+				}
+				return { componentId: componentId };
+			},
+			restore: function(state, context) {
+				// Called on browser back/forward
+				var componentId = state.componentId || (context.params && context.params.component);
+				if (componentId) {
+					var comp = COMPONENTS[componentId];
+					if (comp && instance.container && instance.sideNav) {
+						instance.sideNav.select(componentId, true);
+						instance._selectComponent(componentId);
+					}
+				}
+			}
+		}
 	};
 
 	if (typeof Funky !== 'undefined' && Funky.Pages && Funky.Pages.register) {

@@ -19,7 +19,7 @@
  *     skipApi: true     // Skip API calls entirely, use defaults (for test sandbox)
  *   };
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';

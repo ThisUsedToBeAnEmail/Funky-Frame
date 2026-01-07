@@ -29,7 +29,7 @@
  *   - checkboxes: Multi-select checkbox list
  *   - custom: User-defined via onInit callback
  *
- * @version 1.0.3
+ * @version 1.0.4
  * @see Funky.Schema for schema management
  * @see Funky.Form for native form rendering
  */

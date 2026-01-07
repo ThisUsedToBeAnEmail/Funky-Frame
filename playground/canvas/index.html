@@ -1389,7 +1389,8 @@
       }
     });
 
-    // Initialize SPA
+    // Initialize SPA with history disabled (iframe should not manipulate browser history)
+    Funky.SPA.config.disableHistory = true;
     Funky.SPA.init();
 
     // Register Service Worker for desktop notifications

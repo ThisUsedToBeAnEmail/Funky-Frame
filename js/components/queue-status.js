@@ -8,7 +8,7 @@
  *   Funky.QueueStatus.init({ container: '#header' });
  *   Funky.QueueStatus.showModal();
  *
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(global) {
   'use strict';

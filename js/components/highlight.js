@@ -2,7 +2,7 @@
  * Funky.Highlight - Text Highlighting Component
  * Highlight search terms and keywords in content
  * @module Funky.Highlight
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
   'use strict';

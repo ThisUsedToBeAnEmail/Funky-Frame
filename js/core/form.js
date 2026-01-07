@@ -5,7 +5,7 @@
  * Supports native schema, OpenAPI adapters, and plain field arrays.
  *
  * @module Funky.Form
- * @version 1.0.3
+ * @version 1.0.4
  * @requires Funky.Dom
  */
 (function(global) {

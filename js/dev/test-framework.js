@@ -4,7 +4,7 @@
  * Minimal, dependency-free testing for Funky components.
  * Run with: FunkyTests.runAll() or ?test=1 in URL
  *
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
     'use strict';

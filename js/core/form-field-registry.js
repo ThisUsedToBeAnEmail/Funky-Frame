@@ -5,7 +5,7 @@
  * Includes BaseField class that all field types extend.
  *
  * @module Funky.Form.FieldRegistry
- * @version 1.0.3
+ * @version 1.0.4
  * @requires Funky.Dom
  */
 (function(global) {

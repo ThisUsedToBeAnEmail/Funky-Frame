@@ -2,7 +2,7 @@
  * Funky.Skeleton - Loading Placeholder Component
  * Animated skeleton placeholders for perceived performance
  * @module Funky.Skeleton
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
   'use strict';

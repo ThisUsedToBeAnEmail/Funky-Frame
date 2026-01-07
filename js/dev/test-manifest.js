@@ -36,6 +36,7 @@
     '/js/dev/tests/core/live-binding.test.js',
     '/js/dev/tests/core/navigation.test.js',
     '/js/dev/tests/core/spa.test.js',
+    '/js/dev/tests/core/spa-subrouter.test.js',
     '/js/dev/tests/core/timing.test.js',
     '/js/dev/tests/core/csrf.test.js',
     '/js/dev/tests/core/fuzzy-search.test.js',

@@ -6,7 +6,7 @@
  * element-relative coordinates and optional pressure/velocity data.
  * 
  * @namespace Funky.PointerTracker
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(global) {
   'use strict';

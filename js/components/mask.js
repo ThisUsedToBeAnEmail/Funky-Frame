@@ -12,7 +12,7 @@
  * - Other characters are literals
  * 
  * @module Funky.Mask
- * @version 1.0.3
+ * @version 1.0.4
  * @requires Funky.Dom
  * @requires Funky.PubSub
  * 

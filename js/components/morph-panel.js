@@ -9,7 +9,7 @@
  * @requires Funky.Morph
  * @optional Funky.FocusManager
  * @optional Funky.Announce
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(global) {
     'use strict';

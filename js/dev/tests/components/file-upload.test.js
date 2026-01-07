@@ -3,7 +3,7 @@
  *
  * Tests for the file upload component with drag-drop, validation,
  * progress tracking, and event emission.
- * @version 1.0.3
+ * @version 1.0.4
  */
 describe('Funky.Component.FileUpload', function() {
 

@@ -1,9 +1,9 @@
 /**
  * FunkyNav - Unified Navigation Position System
  * Handles navigation position detection, dropdown/flyout behavior,
- * and modal slide direction awareness for all four positions.
+ * modal slide direction awareness, and data-driven navigation rendering.
  * @module Funky.NavPosition
- * @version 1.0.3
+ * @version 1.1.0
  */
 (function(window) {
 	'use strict';
@@ -48,6 +48,12 @@
 		this.sidebarNav = null;
 		this.navGroups = [];
 
+		// Data-driven navigation state
+		this._items = null;           // Navigation items array
+		this._config = null;          // Configuration object
+		this._itemsById = {};         // Quick lookup by ID
+		this._spaUnsubscribe = null;  // PubSub unsubscribe function
+
 		// Bind methods for event handlers
 		this._handleOutsideClick = this._handleOutsideClick.bind(this);
 		this._handleEscapeKey = this._handleEscapeKey.bind(this);
@@ -57,13 +63,39 @@
 	/**
 	 * Initialize the navigation system
 	 * Should be called after DOM is ready
+	 * @param {Object} [config] - Optional configuration for data-driven navigation
+	 * @param {Array} [config.items] - Navigation items to render
+	 * @param {string} [config.container] - Container selector (default: '#sidebar')
+	 * @param {string} [config.navId] - Nav element ID (default: 'sidebarNav')
+	 * @param {string} [config.logoHref] - Logo link href
+	 * @param {string} [config.logoText] - Logo text
+	 * @param {string} [config.logoIcon] - Logo icon class
+	 * @param {boolean} [config.collapsible] - Enable sidebar collapse (default: true)
+	 * @param {string} [config.position] - Initial nav position
+	 * @param {boolean} [config.spaMode] - Enable SPA route detection (default: true when items provided)
+	 * @param {string} [config.activeClass] - CSS class for active items (default: 'active')
+	 * @param {Function} [config.onSelect] - Callback when item is selected
 	 */
-	FunkyNav.prototype.init = function() {
+	FunkyNav.prototype.init = function(config) {
 		var self = this;
+		config = config || {};
+		this._config = config;
+
+		// If items provided, render the navigation first
+		if (config.items && Array.isArray(config.items)) {
+			this._items = config.items;
+			this._buildItemsLookup();
+			this._renderNavigation(config);
+		}
+
+		// Set position from config if provided
+		if (config.position) {
+			document.body.setAttribute('data-nav-position', config.position);
+		}
 
 		// Get DOM references
-		this.sidebar = document.getElementById('sidebar');
-		this.sidebarNav = document.getElementById('sidebarNav');
+		this.sidebar = document.getElementById(config.container ? config.container.replace('#', '') : 'sidebar');
+		this.sidebarNav = document.getElementById(config.navId || 'sidebarNav');
 		this.navGroups = this.sidebarNav ?
 			Array.from(this.sidebarNav.querySelectorAll('.nav-group')) : [];
 
@@ -79,7 +111,20 @@
 		// Set up mutation observer to detect position changes
 		this._setupPositionObserver();
 
-		console.log('[FunkyNav] Initialized with position:', this.currentPosition);
+		// Set up SPA mode if enabled (default true when items provided)
+		if (this._items && config.spaMode !== false) {
+			this._setupSpaMode();
+			// Detect active item from current URL
+			this._detectActiveFromUrl();
+		}
+
+		// Re-initialize Navigation scroll persistence for dynamic nav
+		if (this._items && Funky.Navigation && Funky.Navigation.init) {
+			Funky.Navigation.init();
+		}
+
+		console.log('[FunkyNav] Initialized with position:', this.currentPosition,
+			this._items ? '(data-driven, ' + this._items.length + ' items)' : '(existing HTML)');
 
 		return this;
 	};
@@ -252,6 +297,445 @@
 		if (this.openDropdowns.length > 0) {
 			this.closeAllDropdowns();
 		}
+	};
+
+	// ============================================
+	// DATA-DRIVEN NAVIGATION RENDERING
+	// ============================================
+
+	/**
+	 * Build lookup table for items by ID
+	 * @private
+	 */
+	FunkyNav.prototype._buildItemsLookup = function() {
+		var self = this;
+		this._itemsById = {};
+
+		function traverse(items) {
+			items.forEach(function(item) {
+				if (item.id) {
+					self._itemsById[item.id] = item;
+				}
+				if (item.children && item.children.length > 0) {
+					traverse(item.children);
+				}
+			});
+		}
+
+		if (this._items) {
+			traverse(this._items);
+		}
+	};
+
+	/**
+	 * Render navigation structure from data
+	 * @param {Object} config - Configuration with items
+	 * @private
+	 */
+	FunkyNav.prototype._renderNavigation = function(config) {
+		var self = this;
+		var D = Funky.Dom;
+
+		if (!D) {
+			console.error('[FunkyNav] Funky.Dom is required for data-driven navigation');
+			return;
+		}
+
+		var containerId = config.container ? config.container.replace('#', '') : 'sidebar';
+		var navId = config.navId || 'sidebarNav';
+		var position = config.position || document.body.getAttribute('data-nav-position') || 'left';
+
+		// Create sidebar element
+		var sidebar = D.create('aside')
+			.class('sidebar')
+			.id(containerId);
+
+		// Add position-specific class for horizontal nav
+		if (position === 'top' || position === 'bottom') {
+			sidebar.class('sidebar sidebar-horizontal');
+		}
+
+		// Header with logo
+		if (config.logoText || config.logoHref || config.logoIcon) {
+			var logoContent = [];
+			if (config.logoIcon) {
+				logoContent.push(D.icon(config.logoIcon));
+			}
+			if (config.logoText) {
+				logoContent.push(D.span().class('sidebar-logo-text').text(config.logoText));
+			}
+
+			sidebar.child(
+				D.div().class('sidebar-header').child(
+					D.a()
+						.class('sidebar-logo')
+						.attr('href', config.logoHref || '/')
+						.child(logoContent)
+				)
+			);
+		}
+
+		// Navigation container
+		var nav = D.create('nav')
+			.class('sidebar-nav')
+			.id(navId);
+
+		// Render items
+		config.items.forEach(function(item) {
+			nav.child(self._renderNavItem(item, config));
+		});
+
+		sidebar.child(nav);
+
+		// Sidebar toggle button (for collapsible sidebar)
+		if (config.collapsible !== false) {
+			sidebar.child(
+				D.button()
+					.attr('type', 'button')
+					.class('sidebar-toggle')
+					.id('sidebarToggle')
+					.attr('title', 'Toggle Sidebar')
+					.aria('label', 'Toggle Sidebar')
+					.child(D.span().class('toggle-icon').text('◀'))
+			);
+		}
+
+		// Find or create container in DOM
+		var existingContainer = document.getElementById(containerId);
+		if (existingContainer) {
+			existingContainer.parentNode.replaceChild(sidebar.get(), existingContainer);
+		} else {
+			// Insert at beginning of body or before main content
+			var mainWrapper = document.querySelector('.main-wrapper');
+			if (mainWrapper) {
+				document.body.insertBefore(sidebar.get(), mainWrapper);
+			} else {
+				document.body.insertBefore(sidebar.get(), document.body.firstChild);
+			}
+		}
+	};
+
+	/**
+	 * Render a single navigation item (recursive for groups)
+	 * @param {Object} item - Navigation item data
+	 * @param {Object} config - Navigation config
+	 * @returns {Object} Funky.Dom element wrapper
+	 * @private
+	 */
+	FunkyNav.prototype._renderNavItem = function(item, config) {
+		var self = this;
+		var D = Funky.Dom;
+		var activeClass = config.activeClass || 'active';
+
+		// Group item (has children)
+		if (item.children && item.children.length > 0) {
+			var isCollapsed = item.expanded === false;
+			var contentId = 'nav-group-items-' + item.id;
+
+			return D.li()
+				.class(D.classes('nav-group', isCollapsed && 'collapsed'))
+				.data('group', item.id)
+				.child(
+					D.button()
+						.attr('type', 'button')
+						.class('nav-group-header')
+						.aria('expanded', String(!isCollapsed))
+						.aria('controls', contentId)
+						.child(
+							item.icon && D.span().class('nav-icon').child(
+								D.icon('fas ' + item.icon)
+							),
+							D.span().class('nav-text').text(item.label),
+							item.badge !== undefined && D.span().class('nav-badge').text(String(item.badge)),
+							D.span().class('nav-chevron').child(
+								D.icon('fas fa-chevron-down')
+							)
+						),
+					D.ul()
+						.id(contentId)
+						.class('nav-group-items')
+						.child(item.children.map(function(child) {
+							return self._renderNavItem(child, config);
+						}))
+				);
+		}
+
+		// Standalone item (leaf node)
+		var linkClasses = D.classes(
+			'nav-link',
+			item.active && activeClass,
+			item.disabled && 'disabled'
+		);
+
+		var link = D.a()
+			.class(linkClasses)
+			.attr('href', item.href || '#')
+			.data('id', item.id)
+			.child(
+				item.icon && D.span().class('nav-icon').child(
+					D.icon('fas ' + item.icon)
+				),
+				D.span().class('nav-text').text(item.label),
+				item.badge !== undefined && D.span().class('nav-badge').text(String(item.badge))
+			);
+
+		if (item.tooltip) {
+			link.data('tooltip', item.tooltip);
+		}
+
+		if (item.disabled) {
+			link.attr('aria-disabled', 'true').attr('tabindex', '-1');
+		}
+
+		if (item.active) {
+			link.aria('current', 'page');
+		}
+
+		// Add click handler for onSelect callback
+		if (config.onSelect) {
+			link.on('click', function(e) {
+				if (!item.disabled) {
+					config.onSelect(item, e);
+				}
+			});
+		}
+
+		return D.li()
+			.class('nav-standalone')
+			.data('id', item.id)
+			.child(link);
+	};
+
+	// ============================================
+	// SPA INTEGRATION
+	// ============================================
+
+	/**
+	 * Set up SPA mode - listen for route changes
+	 * @private
+	 */
+	FunkyNav.prototype._setupSpaMode = function() {
+		var self = this;
+
+		// Subscribe to SPA navigation events
+		if (Funky.PubSub) {
+			this._spaUnsubscribe = Funky.PubSub.on('funky:spa:navigate', function(data) {
+				self._detectActiveFromUrl();
+			});
+		}
+
+		// Also listen for popstate (browser back/forward)
+		this._popstateHandler = function() {
+			self._detectActiveFromUrl();
+		};
+		window.addEventListener('popstate', this._popstateHandler);
+	};
+
+	/**
+	 * Detect and set active item based on current URL
+	 * @private
+	 */
+	FunkyNav.prototype._detectActiveFromUrl = function() {
+		if (!this._items || !this.sidebarNav) return;
+
+		var self = this;
+		var path = window.location.pathname;
+		var activeClass = (this._config && this._config.activeClass) || 'active';
+		var bestMatch = null;
+		var bestMatchLength = 0;
+
+		// Find best matching item (longest matching href)
+		function findMatch(items) {
+			items.forEach(function(item) {
+				if (item.href) {
+					// Exact match
+					if (item.href === path) {
+						if (item.href.length > bestMatchLength) {
+							bestMatch = item;
+							bestMatchLength = item.href.length;
+						}
+					}
+					// Prefix match (for nested routes)
+					else if (path.startsWith(item.href) && item.href !== '/') {
+						if (item.href.length > bestMatchLength) {
+							bestMatch = item;
+							bestMatchLength = item.href.length;
+						}
+					}
+					// Special case for root
+					else if (item.href === '/' && path === '/') {
+						bestMatch = item;
+						bestMatchLength = 1;
+					}
+				}
+				if (item.children) {
+					findMatch(item.children);
+				}
+			});
+		}
+
+		findMatch(this._items);
+
+		// Clear all active states
+		var activeLinks = this.sidebarNav.querySelectorAll('.nav-link.' + activeClass);
+		activeLinks.forEach(function(link) {
+			link.classList.remove(activeClass);
+			link.removeAttribute('aria-current');
+		});
+
+		// Set new active state
+		if (bestMatch) {
+			this.setActive(bestMatch.id);
+		}
+	};
+
+	// ============================================
+	// PUBLIC API - Data-Driven Navigation
+	// ============================================
+
+	/**
+	 * Set the active navigation item
+	 * @param {string} itemId - Item ID to mark as active
+	 * @returns {FunkyNav} this for chaining
+	 */
+	FunkyNav.prototype.setActive = function(itemId) {
+		if (!this.sidebarNav) return this;
+
+		var activeClass = (this._config && this._config.activeClass) || 'active';
+
+		// Clear all active states
+		var activeLinks = this.sidebarNav.querySelectorAll('.nav-link.' + activeClass);
+		activeLinks.forEach(function(link) {
+			link.classList.remove(activeClass);
+			link.removeAttribute('aria-current');
+		});
+
+		// Find and activate the new item
+		var link = this.sidebarNav.querySelector('.nav-link[data-id="' + itemId + '"]');
+		if (link) {
+			link.classList.add(activeClass);
+			link.setAttribute('aria-current', 'page');
+
+			// Expand parent group if collapsed
+			var parentGroup = link.closest('.nav-group');
+			if (parentGroup && parentGroup.classList.contains('collapsed')) {
+				parentGroup.classList.remove('collapsed');
+				var header = parentGroup.querySelector('.nav-group-header');
+				if (header) {
+					header.setAttribute('aria-expanded', 'true');
+				}
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Add items to the navigation
+	 * @param {Array} items - Items to add
+	 * @param {string} [parentId] - Parent group ID (adds to root if omitted)
+	 * @returns {FunkyNav} this for chaining
+	 */
+	FunkyNav.prototype.addItems = function(items, parentId) {
+		if (!this._items || !items || !Array.isArray(items)) return this;
+
+		var self = this;
+
+		if (parentId) {
+			// Add to specific parent group
+			var parent = this._itemsById[parentId];
+			if (parent) {
+				parent.children = parent.children || [];
+				items.forEach(function(item) {
+					parent.children.push(item);
+					if (item.id) {
+						self._itemsById[item.id] = item;
+					}
+				});
+			}
+		} else {
+			// Add to root
+			items.forEach(function(item) {
+				self._items.push(item);
+				if (item.id) {
+					self._itemsById[item.id] = item;
+				}
+			});
+		}
+
+		// Re-render
+		this._renderNavigation(this._config);
+
+		return this;
+	};
+
+	/**
+	 * Remove an item from navigation
+	 * @param {string} itemId - Item ID to remove
+	 * @returns {FunkyNav} this for chaining
+	 */
+	FunkyNav.prototype.removeItem = function(itemId) {
+		if (!this._items) return this;
+
+		var self = this;
+
+		function removeFromArray(items) {
+			for (var i = items.length - 1; i >= 0; i--) {
+				if (items[i].id === itemId) {
+					items.splice(i, 1);
+					delete self._itemsById[itemId];
+					return true;
+				}
+				if (items[i].children && removeFromArray(items[i].children)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		removeFromArray(this._items);
+
+		// Re-render
+		this._renderNavigation(this._config);
+
+		return this;
+	};
+
+	/**
+	 * Update an existing item
+	 * @param {string} itemId - Item ID to update
+	 * @param {Object} updates - Properties to update
+	 * @returns {FunkyNav} this for chaining
+	 */
+	FunkyNav.prototype.updateItem = function(itemId, updates) {
+		var item = this._itemsById[itemId];
+		if (!item) return this;
+
+		// Merge updates
+		Object.assign(item, updates);
+
+		// Re-render
+		this._renderNavigation(this._config);
+
+		return this;
+	};
+
+	/**
+	 * Get current navigation items as data
+	 * @returns {Array|null} Items array or null if not data-driven
+	 */
+	FunkyNav.prototype.getItems = function() {
+		return this._items ? JSON.parse(JSON.stringify(this._items)) : null;
+	};
+
+	/**
+	 * Get an item by ID
+	 * @param {string} itemId - Item ID
+	 * @returns {Object|null} Item data or null
+	 */
+	FunkyNav.prototype.getItem = function(itemId) {
+		var item = this._itemsById[itemId];
+		return item ? Object.assign({}, item) : null;
 	};
 
 	// ============================================
@@ -911,6 +1395,16 @@
 		document.removeEventListener('keydown', this._handleEscapeKey);
 		window.removeEventListener('resize', this._handleResize);
 
+		// Clean up SPA mode listeners
+		if (this._spaUnsubscribe) {
+			this._spaUnsubscribe();
+			this._spaUnsubscribe = null;
+		}
+		if (this._popstateHandler) {
+			window.removeEventListener('popstate', this._popstateHandler);
+			this._popstateHandler = null;
+		}
+
 		// Clean up user menu listeners
 		if (this._userMenuCleanups) {
 			this._userMenuCleanups.forEach(function(fn) {
@@ -918,6 +1412,11 @@
 			});
 			this._userMenuCleanups = [];
 		}
+
+		// Reset data-driven state
+		this._items = null;
+		this._config = null;
+		this._itemsById = {};
 
 		this.openDropdowns = [];
 		this.changeListeners = [];

@@ -15,6 +15,8 @@ Intercepts internal navigation, loads content via AJAX, updates URL with History
 - **Cleanup hooks** for proper teardown
 - **Loading indicators** during transitions
 - **Modal cleanup** on navigation
+- **SubRouter** for URL-based state within pages (e.g., `/docs/architecture`, `/playground/button`)
+- **disableHistory** option for iframe usage
 
 ## Configuration
 
@@ -42,8 +44,21 @@ Funky.SPA.config = {
   enableIdleDetection: true,           // Enable idle detection
   idleTimeout: 300000,                 // 5 minutes until idle
   awayTimeout: 60000,                  // 1 minute until away (when hidden)
-  staleDataThreshold: 300000           // Refresh data if away > 5 min
+  staleDataThreshold: 300000,          // Refresh data if away > 5 min
+
+  // History API options
+  disableHistory: false                // If true, skip pushState/replaceState/popstate
 };
+```
+
+### disableHistory Option
+
+Set `disableHistory: true` to prevent SPA from manipulating browser history. This is useful when SPA runs inside an iframe where you don't want the iframe's navigation to affect the parent window's history.
+
+```javascript
+// In an iframe, disable history before SPA.init()
+Funky.SPA.config.disableHistory = true;
+Funky.SPA.init();
 ```
 
 ## API Reference
@@ -341,12 +356,14 @@ Get current presence channel name.
 | `funky:spa:away` | `{ awayTime }` | User went away (tab hidden) |
 | `funky:spa:return` | `{ awayDuration }` | User returned after being away |
 | `funky:spa:refresh-stale` | `{ page, url }` | Data should be refreshed after long absence |
+| `funky:spa:subroute` | `{ type, basePath, subPath, params, state }` | Sub-route changed |
 
 ### DOM Events (dot notation)
 
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `funky.spa.pageload` | `{ url, title }` | Page loaded (for addEventListener) |
+| `funky.spa.subroute` | `{ type, basePath, subPath, params, state }` | Sub-route changed |
 
 ## Page Lifecycle
 
@@ -361,6 +378,209 @@ Get current presence channel name.
 9. **Initialize** - Run initializer for new page
 10. **Complete** - Hide loading indicator
 
+## SubRouter
+
+`SPA.SubRouter` enables components to manage URL sub-paths and query parameters within a page while maintaining full History API integration. This is useful for pages like documentation viewers or component playgrounds where you want the URL to reflect the currently selected item.
+
+### SubRouter Methods
+
+#### `SubRouter.register(basePath, handler)`
+
+Register a sub-route handler for a base path.
+
+**Parameters:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| basePath | string | Yes | Base path (e.g., '/docs', '/playground') |
+| handler | object | Yes | Handler with `activate` and `restore` functions |
+
+**Handler Object:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| activate | function | Yes | Called on navigation `(context) => state` |
+| restore | function | Yes | Called on popstate `(state, context)` |
+| deactivate | function | No | Called before navigating away |
+| queryOnly | boolean | No | Only match exact base path, use query params for state |
+
+**Example:**
+```javascript
+Funky.SPA.SubRouter.register('/docs', {
+  activate: function(context) {
+    // context.subPath = 'architecture' for /docs/architecture
+    // context.params = { section: 'intro' } for ?section=intro
+    loadDoc(context.subPath);
+    return { docId: context.subPath };  // State stored in history
+  },
+  restore: function(state, context) {
+    // Called on browser back/forward
+    loadDoc(state.docId || context.subPath);
+  }
+});
+```
+
+---
+
+#### `SubRouter.unregister(basePath)`
+
+Unregister a sub-route handler.
+
+**Parameters:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| basePath | string | Yes | Base path to unregister |
+
+---
+
+#### `SubRouter.push(basePath, subPath, state, params)`
+
+Push a new sub-route state (creates history entry).
+
+**Parameters:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| basePath | string | Yes | Base path |
+| subPath | string | Yes | Sub-path to append |
+| state | object | No | State to store in history |
+| params | object | No | Query parameters |
+
+**Example:**
+```javascript
+// URL becomes /docs/architecture
+Funky.SPA.SubRouter.push('/docs', 'architecture', { docId: 'architecture' });
+
+// URL becomes /docs/api?version=2
+Funky.SPA.SubRouter.push('/docs', 'api', { docId: 'api' }, { version: '2' });
+```
+
+---
+
+#### `SubRouter.replace(basePath, subPath, state, params)`
+
+Replace current sub-route state (no new history entry).
+
+**Parameters:** Same as `push()`
+
+---
+
+#### `SubRouter.setParams(basePath, params)`
+
+Update only query params (replaces state, no new history entry).
+
+**Parameters:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| basePath | string | Yes | Base path |
+| params | object | Yes | Query parameters to set |
+
+**Example:**
+```javascript
+// Change from /docs/api?version=1 to /docs/api?version=2
+Funky.SPA.SubRouter.setParams('/docs', { version: '2' });
+```
+
+---
+
+#### `SubRouter.getCurrent(basePath)`
+
+Get current sub-route state for a base path.
+
+**Parameters:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| basePath | string | Yes | Base path to check |
+
+**Returns:** `{ subPath, params, state }` or `null`
+
+**Example:**
+```javascript
+var current = Funky.SPA.SubRouter.getCurrent('/docs');
+if (current) {
+  console.log('Current doc:', current.subPath);
+  console.log('Params:', current.params);
+}
+```
+
+---
+
+#### `SubRouter.has(basePath)`
+
+Check if a handler is registered for a base path.
+
+**Returns:** `boolean`
+
+---
+
+#### `SubRouter.handleInitialLoad()`
+
+Check if current URL matches a registered sub-route and activate it. Called automatically after page load.
+
+**Returns:** `boolean` - True if a sub-route was activated
+
+---
+
+### SubRouter Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `funky.spa.subroute` (DOM) | `{ type, basePath, subPath, params, state }` | Sub-route changed |
+| `funky:spa:subroute` (PubSub) | Same as above | Sub-route changed |
+
+**Event Types:** `push`, `replace`, `popstate`
+
+### SubRouter Example: Documentation Page
+
+```javascript
+// Register sub-route handler
+Funky.SPA.SubRouter.register('/docs', {
+  queryOnly: true,  // Use ?file=spa instead of /docs/spa
+
+  activate: function(context) {
+    var fileId = context.params.file || 'introduction';
+    loadDocFile(fileId);
+    highlightSideNav(fileId);
+    return { fileId: fileId };
+  },
+
+  restore: function(state, context) {
+    var fileId = state.fileId || context.params.file || 'introduction';
+    loadDocFile(fileId);
+    highlightSideNav(fileId);
+  }
+});
+
+// When user clicks a doc link
+function onDocClick(fileId) {
+  loadDocFile(fileId);
+  Funky.SPA.SubRouter.push('/docs', '', { fileId: fileId }, { file: fileId });
+  // URL becomes /docs?file=spa
+}
+```
+
+### SubRouter Example: Component Playground
+
+```javascript
+// Register sub-route handler (path-based)
+Funky.SPA.SubRouter.register('/playground', {
+  activate: function(context) {
+    var componentId = context.subPath || 'button';
+    loadComponent(componentId);
+    return { componentId: componentId };
+  },
+
+  restore: function(state, context) {
+    var componentId = state.componentId || context.subPath || 'button';
+    loadComponent(componentId);
+  }
+});
+
+// When user selects a component
+function onComponentSelect(componentId) {
+  loadComponent(componentId);
+  Funky.SPA.SubRouter.push('/playground', componentId, { componentId: componentId });
+  // URL becomes /playground/modal
+}
+```
+
 ## Dependencies
 
 - `Funky.Api` - For page fetching (optional, falls back to fetch)
@@ -368,6 +588,7 @@ Get current presence channel name.
 - `Funky.IdleDetector` - For idle detection (optional)
 - `Funky.Presence` - For presence tracking (optional)
 - `Funky.PageAnimate` - For page transitions (optional)
+- `Funky.Registry` - For SubRouter handler storage (optional, has fallback)
 
 ## Examples
 

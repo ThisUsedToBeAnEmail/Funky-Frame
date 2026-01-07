@@ -8,7 +8,7 @@
  * - Icon support per node
  * - Theme and density aware
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(Funky) {
 	'use strict';

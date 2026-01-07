@@ -6,7 +6,7 @@
  *   Funky.Navigation.saveScrollPosition();
  *   Funky.Navigation.restoreScrollPosition();
  * 
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';
@@ -18,6 +18,10 @@
 	}
 
 	var SCROLL_STORAGE_KEY = 'funky_nav_scroll_position';
+
+	// Track cleanup functions for re-initialization
+	var _cleanups = [];
+	var _initialized = false;
 
 	var Navigation = {
 		/**
@@ -64,40 +68,69 @@
 		},
 
 		/**
+		 * Clean up event listeners (for re-initialization)
+		 */
+		cleanup: function() {
+			_cleanups.forEach(function(fn) {
+				try { fn(); } catch (e) { /* ignore */ }
+			});
+			_cleanups = [];
+		},
+
+		/**
 		 * Initialize navigation scroll persistence
+		 * Can be called multiple times (cleans up previous listeners)
 		 */
 		init: function() {
 			var self = this;
 			var sidebarNav = document.querySelector('.sidebar-nav');
 			if (!sidebarNav) return;
 
-			// Save scroll position before navigating away
-			var navLinks = sidebarNav.querySelectorAll('.nav-link');
-			navLinks.forEach(function(link) {
-				link.addEventListener('click', function() {
+			// Clean up previous listeners if re-initializing
+			this.cleanup();
+
+			// Save scroll position before navigating away (delegated to sidebarNav)
+			var clickHandler = function(e) {
+				var link = e.target.closest('.nav-link');
+				if (link) {
 					self.saveScrollPosition();
-				});
+				}
+			};
+			sidebarNav.addEventListener('click', clickHandler);
+			_cleanups.push(function() {
+				sidebarNav.removeEventListener('click', clickHandler);
 			});
 
 			// Also save on any sidebar scroll (debounced)
 			var scrollTimeout;
-			sidebarNav.addEventListener('scroll', function() {
+			var scrollHandler = function() {
 				clearTimeout(scrollTimeout);
 				scrollTimeout = setTimeout(function() {
 					self.saveScrollPosition();
 				}, 100);
+			};
+			sidebarNav.addEventListener('scroll', scrollHandler);
+			_cleanups.push(function() {
+				sidebarNav.removeEventListener('scroll', scrollHandler);
+				clearTimeout(scrollTimeout);
 			});
 
-			// Save before page unload
-			window.addEventListener('beforeunload', function() {
-				self.saveScrollPosition();
-			});
+			// Save before page unload (only add once)
+			if (!_initialized) {
+				var unloadHandler = function() {
+					self.saveScrollPosition();
+				};
+				window.addEventListener('beforeunload', unloadHandler);
 
-			// Set header height on init and resize
-			self.updateHeaderHeight();
-			window.addEventListener('resize', function() {
+				// Set header height on init and resize
 				self.updateHeaderHeight();
-			});
+				var resizeHandler = function() {
+					self.updateHeaderHeight();
+				};
+				window.addEventListener('resize', resizeHandler);
+
+				_initialized = true;
+			}
 		}
 	};
 

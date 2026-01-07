@@ -12,7 +12,7 @@
  * - Mobile virtual keyboard dismissal
  *
  * @module Funky.FocusManager
- * @version 1.0.3
+ * @version 1.0.4
  */
 (function(window) {
 	'use strict';
